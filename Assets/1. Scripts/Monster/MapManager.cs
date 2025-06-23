@@ -47,6 +47,24 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 노드 Walkable 업데이트
+    /// </summary>
+    [ContextMenu("노드 업데이트")]
+    public void UpdateNodes()
+    {
+        for (int x = 0; x < _nodeCountX; x++)
+        {
+            for (int y = 0; y < _nodeCountY; y++)
+            {
+                Vector2Int gridPos = new Vector2Int(x, y);
+                Vector3 pos = GetWorldPosition(gridPos);
+                Collider2D hit = Physics2D.OverlapBox(pos, new Vector2(_nodeSize / 2f, _nodeSize / 2f), 0, _obstacleMask);
+                _nodeGrid[x, y].isWalkable = hit == null;
+            }
+        }
+    }
+
+    /// <summary>
     /// 해당 노드에 대한 월드 포지션을 반환
     /// </summary>
     /// <param name="node"></param>

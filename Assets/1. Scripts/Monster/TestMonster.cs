@@ -23,7 +23,7 @@ public class TestMonster : MonoBehaviour
 
     private void Update()
     {
-        if (_testCore == null || _path.Count <= 0) return;
+        if (_testCore == null || _path == null || _path?.Count <= 0) return;
 
         Vector3 targetPos = MapManager.Instance.GetWorldPosition(_path[0]);
         transform.position = Vector3.MoveTowards(transform.position, targetPos, _speed * Time.deltaTime);
@@ -36,7 +36,7 @@ public class TestMonster : MonoBehaviour
 
     private void OnDisable()
     {
-        _path.Clear();
+        _path?.Clear();
     }
 
     [ContextMenu("길 찾기")]
@@ -44,5 +44,7 @@ public class TestMonster : MonoBehaviour
     {
         _startPos = transform.position;
         _path = MapManager.Instance.FindPath(_startPos, _testCore.position);
+        if (_path == null)
+            Debug.Log("코어로 해당하는 길이 없습니다!");
     }
 }
