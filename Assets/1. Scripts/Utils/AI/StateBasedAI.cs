@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -23,6 +23,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
     private T _curState;
     private T _prevState;
 
+    protected bool HasStarted { get; private set; } = false;
     private Coroutine _runDoingStateCoroutine;
 
     protected class StateElem
@@ -161,6 +162,8 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
     private IEnumerator Start()
     {
         yield return StartCoroutine(OnStart());
+
+        HasStarted = true;
         RunDoingState();
     }
 
