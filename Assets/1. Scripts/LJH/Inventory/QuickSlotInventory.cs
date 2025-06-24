@@ -44,7 +44,7 @@ public class QuickSlotInventory : BaseInventory
 
     public override bool AddItem(Item item)
     {
-        throw new System.NotImplementedException();
+        return true;
     }
     
     public override void RefreshUI()
