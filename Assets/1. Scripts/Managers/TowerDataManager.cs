@@ -3,34 +3,13 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class TowerDataManager : IDataLoader
+public class TowerDataManager : BaseDataManager<TowerData>
 {
-    private const string TowerDataURL = "https://script.google.com/macros/s/your_url_here/exec";
+    protected override string DataUrl => "https://script.google.com/macros/s/your-tower-sheet-id/exec";
 
-    private Dictionary<int, TowerData> _towerDict = new();
+    protected override int GetId(TowerData data) => data.id;
 
-    public TowerData Get(int id) => _towerDict.TryGetValue(id, out var data) ? data : null;
+    protected override string GetName(TowerData data) => data.towerName;
 
-    public async Task LoadAsync()
-    {
-        string json = await JsonDownloader.DownloadJson(TowerDataURL);
-        if (!string.IsNullOrEmpty(json))
-        {
-            LoadFromJson(json);
-        }
-        else
-        {
-            Debug.LogError("[TowerDataManager] JSON 로딩 실패");
-        }
-    }
-
-    public void LoadFromJson(string json)
-    {
-        var towers = JsonHelper.FromJson<TowerData>(json);
-        _towerDict.Clear();
-        foreach (var tower in towers)
-            _towerDict[tower.id] = tower;
-
-        Debug.Log($"[TowerDataManager] 타워 {towers.Length}개 로드됨");
-    }
+    public IEnumerable<TowerData> GetAll() => dataIdDictionary.Values;
 }

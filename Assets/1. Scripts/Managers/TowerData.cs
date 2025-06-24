@@ -14,6 +14,23 @@ public class TowerData
     public float attackSpeed;
     public float attackRange;
 
-    public Dictionary<int, int> buildRequirements;
-    public Dictionary<int, int> upgradeRequirements;
+    public ResourceCost buildRequirements = new();
+    public ResourceCost upgradeRequirements = new();
+
+    public UpgradeStatBonus upgradeStatBonus = new();
+}
+
+[System.Serializable]
+public class ResourceCost
+{
+    public Dictionary<int, int> requirements = new();
+}
+
+[System.Serializable]
+public class UpgradeStatBonus
+{
+    public float maxHp;
+    public float attackPower;
+    public float attackSpeed;
+    public float attackRange;
 }
