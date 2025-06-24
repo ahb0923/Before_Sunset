@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +9,11 @@ public class PlayerInputHandler : MonoBehaviour
     private PlayerInputActions inputActions;
 
     public Vector2 MoveInput { get; private set; }
-    public bool IsInteracting { get; private set; }
+    public bool IsSwing { get; private set; }
 
-    public System.Action OnInventoryToggle;
-    public System.Action OnBuildMode;
-    public System.Action OnDestroyMode;
+    public Action OnInventoryToggle;
+    public Action OnBuildMode;
+    public Action OnDestroyMode;
 
     private void Awake()
     {
@@ -23,9 +24,9 @@ public class PlayerInputHandler : MonoBehaviour
         inputActions.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => MoveInput = Vector2.zero;
 
-        // 상호작용 (공격 등)
-        inputActions.Player.Interaction.performed += _ => IsInteracting = true;
-        inputActions.Player.Interaction.canceled += _ => IsInteracting = false;
+        // 스윙
+        inputActions.Player.Swing.performed += _ => IsSwing = true;
+        inputActions.Player.Swing.canceled += _ => IsSwing = false;
 
         // 인벤토리
         inputActions.Player.Inventory.performed += _ => OnInventoryToggle?.Invoke();
