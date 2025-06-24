@@ -1,37 +1,86 @@
 using System;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    [field: SerializeField] public bool IsEmpty { get; private set; } = true;
-    [field:SerializeField] public Item CurrentItem { get; private set; }
-    
     [SerializeField] private Image _itemImage;
-
+    [SerializeField] private TextMeshProUGUI _itemAmountText;
+    
+    private const string ITEM_IMAGE = "IconImage";
+    private const string ITEM_AMOUNT_TEXT = "AmountText";
+    
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
     private static ItemSlot _draggingOriginSlot;
+    
+    [field: SerializeField] public bool IsEmpty { get; private set; } = true;
+    public Item CurrentItem { get; private set; }
+
+    private void Reset()
+    {
+        _itemImage = UtilityLJH.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
+        _itemAmountText = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT_TEXT);
+    }
 
     public bool CanStack(Item item)
     {
-        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && CurrentItem.Data.stackable;
+        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !CurrentItem.IsMaxStack;
     }
 
     public void StackItem(Item item)
     {
-        if (CanStack(item))
+        CurrentItem.stack += item.Data.quantity;
+
+        if (CurrentItem.stack > CurrentItem.Data.maxStack)
         {
-            CurrentItem.Data.quantity += item.Data.quantity;
-            UpdateUI();
+            var left = CurrentItem.stack - CurrentItem.Data.maxStack;
+            CurrentItem.stack = CurrentItem.Data.maxStack;
+
+            item.stack = left;
+            //MainInventory.AddItem(item);
         }
+
+        UpdateUI();
+    }
+    
+    public bool CanMerge(Item item)
+    {
+        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !item.IsMaxStack;
+    }
+
+    public void MergeItem(Item item)
+    {
+        CurrentItem.stack += item.stack;
+
+        if (CurrentItem.IsMaxStack)
+        {
+            var left = CurrentItem.stack - CurrentItem.Data.maxStack;
+            CurrentItem.stack = CurrentItem.Data.maxStack;
+            
+            item.stack = left;
+            
+            _draggingOriginSlot.SetItem(item);
+        }
+        else
+        {
+            _draggingOriginSlot.SetItem(null);
+        }
+        
+        UpdateUI();
     }
 
     public void SetItem(Item item)
     {
         CurrentItem = item;
+
+        if (CurrentItem.Data.stackable)
+        {
+            CurrentItem.stack += item.Data.quantity;
+        }
+        
         IsEmpty = item == null;
         UpdateUI();
     }
@@ -40,6 +89,25 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         _itemImage.sprite = IsEmpty ? null : CurrentItem.Data.icon;
         _itemImage.enabled = !IsEmpty;
+        SetAmount();
+    }
+
+    private void SetAmount()
+    {
+        if (CurrentItem == null)
+        {
+            _itemAmountText.text = "";
+            return;
+        }
+        
+        if (CurrentItem.Data.stackable)
+        {
+            _itemAmountText.text = CurrentItem.stack.ToString();
+        }
+        else
+        {
+            _itemAmountText.text = "";
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -123,9 +191,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             SetItem(_draggingItem);
         }
         //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
-        else if (CanStack(_draggingItem))
+        else if (CanMerge(_draggingItem))
         {
-            StackItem(_draggingItem);
+            MergeItem(_draggingItem);
         }
         //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
         else

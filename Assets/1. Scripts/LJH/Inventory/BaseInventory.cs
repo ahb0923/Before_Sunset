@@ -24,6 +24,11 @@ public abstract class BaseInventory : MonoBehaviour
         }
 
         InitSlots();
+
+        foreach (var itemSlot in _itemSlots)
+        {
+            itemSlot.UpdateUI();
+        }
     }
     
     protected abstract void InitSlots();

@@ -7,6 +7,8 @@ public class ItemData : ScriptableObject
     public string itemName;
     public Sprite icon;
     public int quantity;
+    
+    public int maxStack = 20;
     public bool stackable;
     
     public Item CreateItem()
