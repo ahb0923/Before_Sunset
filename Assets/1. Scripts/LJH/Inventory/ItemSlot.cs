@@ -11,6 +11,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     private const string ITEM_IMAGE = "IconImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
+    private const string DRAGGING_ICON = "DraggingIcon";
     
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
@@ -27,20 +28,26 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public bool CanStack(Item item)
     {
-        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !CurrentItem.IsMaxStack;
+        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !CurrentItem.IsMaxStack && item.Data.stackable;
     }
 
     public void StackItem(Item item)
     {
-        CurrentItem.stack += item.Data.quantity;
-
-        if (CurrentItem.stack > CurrentItem.Data.maxStack)
+        var max = CurrentItem.Data.maxStack;
+        var result = CurrentItem.stack + item.Data.quantity;
+        
+        if (result > max)
         {
-            var left = CurrentItem.stack - CurrentItem.Data.maxStack;
-            CurrentItem.stack = CurrentItem.Data.maxStack;
-
+            var left = result - max;
+            
+            CurrentItem.stack = max;
             item.stack = left;
+            
             //MainInventory.AddItem(item);
+        }
+        else
+        {
+            CurrentItem.stack = result;
         }
 
         UpdateUI();
@@ -48,18 +55,19 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     public bool CanMerge(Item item)
     {
-        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !item.IsMaxStack;
+        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !item.IsMaxStack && item.Data.stackable;
     }
 
     public void MergeItem(Item item)
     {
-        CurrentItem.stack += item.stack;
+        var max = CurrentItem.Data.maxStack;
+        var result = CurrentItem.stack + item.stack;
 
-        if (CurrentItem.IsMaxStack)
+        if (result > max)
         {
-            var left = CurrentItem.stack - CurrentItem.Data.maxStack;
-            CurrentItem.stack = CurrentItem.Data.maxStack;
+            var left = result - max;
             
+            CurrentItem.stack = max;
             item.stack = left;
             
             _draggingOriginSlot.SetItem(item);
@@ -75,11 +83,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void SetItem(Item item)
     {
         CurrentItem = item;
-
-        if (CurrentItem.Data.stackable)
-        {
-            CurrentItem.stack += item.Data.quantity;
-        }
         
         IsEmpty = item == null;
         UpdateUI();
@@ -148,6 +151,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //해당 슬롯을 비워서, 드래그 하는것을 더 명시적으로 보여줌.
         SetItem(null);
     }
+
+    // public void ShowIcon()
+    // {
+    //     _draggingItemIcon.SetActive(true);
+    //     _draggingItemIcon.transform.SetParent(transform.root);
+    //     
+    //     _draggingItemIcon.Image.sprite = CurrentItem.Data.icon;
+    //     _draggingItemIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+    // }
+    //
+    // public void HideIcon()
+    // {
+    //     _draggingItemIcon.SetActive(false);
+    // }
     
     public void OnDrag(PointerEventData eventData)
     {
@@ -172,9 +189,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _draggingOriginSlot.SetItem(_draggingItem);
         }
-        
-        // _draggingItem = null;
-        // _draggingOriginSlot = null;
     }
     
     public void OnDrop(PointerEventData eventData)

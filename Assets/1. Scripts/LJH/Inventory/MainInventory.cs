@@ -34,14 +34,14 @@ public class MainInventory : BaseInventory
         }
     }
 
-    public override bool AddItem(Item item)
+    public override void AddItem(Item item)
     {
         foreach (var slot in _itemSlots)
         {
             if (slot.CanStack(item))
             {
                 slot.StackItem(item);
-                return true;
+                return;
             }
         }
         
@@ -50,12 +50,16 @@ public class MainInventory : BaseInventory
             if (slot.IsEmpty)
             {
                 slot.SetItem(item);
-                return true;
+                
+                if (item.Data.stackable)
+                {
+                    slot.StackItem(item);
+                }
+                return;
             }
         }
         
         Debug.Log("Inventory is full.");
-        return false;
     }
 
     public override void RefreshUI()

@@ -64,7 +64,7 @@ public abstract class BaseInventory : MonoBehaviour
         _inventory.SetActive(false);
     }
     
-    public abstract bool AddItem(Item item);
+    public abstract void AddItem(Item item);
 
     public abstract void RefreshUI();
 }

@@ -42,9 +42,9 @@ public class QuickSlotInventory : BaseInventory
         }
     }
 
-    public override bool AddItem(Item item)
+    public override void AddItem(Item item)
     {
-        return true;
+        
     }
     
     public override void RefreshUI()
