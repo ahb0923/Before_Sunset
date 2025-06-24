@@ -55,9 +55,11 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
             return;
         }
 
+        // 상태 갱신
         _prevState = _curState;
         _curState = nextState;
 
+        // 이전 상태에서 벗어날 때 처리할 로직 호출 (Exited)
         if (!COMPARER.Equals(_prevState, InvalidState))
         {
             StateElem stateElem = _states.Get(_prevState, null);
@@ -67,6 +69,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
             }
         }
 
+        // 새로이 들어가는 상태에서 처리할 로직 호출(Entered )
         if (!COMPARER.Equals(_curState, InvalidState))
         {
             StateElem stateElem = _states.Get(_curState, null);
@@ -77,12 +80,53 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
         }
     }
 
+    /// <summary>
+    /// 해당 ai에서 사용할 상태의 행동 정의
+    /// </summary>
     protected abstract void DefineStates();
 
+    /* << 예시 >> 
+    protected override void DefineStates()
+    {
+        AddState(BUILDING_STATE.Construction, new StateElem
+        {
+            Entered = () => Debug.Log("건설 시작"),
+            Doing = C_Construction,
+            Exited = () => {
+                building.SpawnArcherByTier(building.statHandler.Tier);
+                Debug.Log("건설 완료");
+            }
+        });
+        AddState(BUILDING_STATE.Attack, new StateElem
+        {
+            Entered = () => Debug.Log("공격 시작"),
+            Doing = C_Attack,
+        });
+
+        AddState(BUILDING_STATE.Idle, new StateElem
+        {
+            Entered = () => Debug.Log("건물 대기 중")
+        });
+
+        AddState(BUILDING_STATE.Destroy, new StateElem
+        {
+            Entered = () => Debug.Log("건물 파괴"),
+            Doing = C_Destroy
+        });
+    }
+     */
+
+
+    /// <summary>
+    /// Awake 단계에서 구현할게 있으면 이곳에
+    /// </summary>
     protected virtual void OnAwake()
     {
     }
-
+    /// <summary>
+    /// Start 단계에서 구현할게 있으면 이곳에
+    /// </summary>
+    /// <returns></returns>
     protected virtual IEnumerator OnStart()
     {
         yield break;
@@ -98,8 +142,11 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
         yield break;
     }
 
+    // IsAIEnded == true    =>   몬스터라면 죽어서 비활성화 되었거나..
+    // 전체 AI의 종료 여부 판단
     protected abstract bool IsAIEnded();
 
+    // 상태 전이 제한 조건을 걸때 사용, ex) Monster의 state == dead 라면 chase라던가 상태의 전이가 불가능하게
     protected abstract bool IsTerminalState(T state);
 
     private void Awake()
@@ -119,17 +166,20 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
     protected void RunDoingState()
     {
+        // 이미 실행중인 코루틴이 있다면 종료
         if (_runDoingStateCoroutine != null)
         {
             StopCoroutine(_runDoingStateCoroutine);
             _runDoingStateCoroutine = null;
         }
 
+        // 코루틴 시작
         _runDoingStateCoroutine = StartCoroutine(C_RunDoingState());
     }
 
     private IEnumerator C_RunDoingState()
     {
+        // 종료된 (ex 몬스터라면 사망처리된)AI라면 작동X
         while (!IsAIEnded())
         {
             IsInterrupted = false;
