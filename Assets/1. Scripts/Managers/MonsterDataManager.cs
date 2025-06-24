@@ -9,4 +9,9 @@ public class MonsterDataManager : IDataLoader
     {
         throw new System.NotImplementedException();
     }
+
+    public void LoadFromJson(string json)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
 {
     [Header(" [ Data ] ")]
-    [SerializeField] private Tower_SO _so;
+    [SerializeField] private TowerData data;
 
     private BaseTower _tower;
 
@@ -36,8 +36,8 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
     public float AttackSpeed { get; set; }
     public float AttackRange { get; set; }
     public float ProjectileSpeed { get; set; }
-    public ResourceRequirement BuildRequirements { get; private set; }
-    public ResourceRequirement UpgradeRequirements { get; private set; }
+    //public ResourceRequirement BuildRequirements { get; private set; }
+    //public ResourceRequirement UpgradeRequirements { get; private set; }
 
     public SpriteRenderer iconRenderer;
     private bool isFixingDelay = false;
@@ -51,23 +51,23 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
     {
         _tower = GetComponent<BaseTower>();
 
-        if (_so == null)
+        if (data == null)
         {
             Debug.Log("SO데이터 Attach 누락");
             return;
         }
-        Tier = _so.tier;
-        TowerName = _so.towerName;
-        Context = _so.context;
-        MaxHp = _so.maxHp;
+        Tier = data.tier;
+        TowerName = data.towerName;
+        Context = data.context;
+        MaxHp = data.maxHp;
         // C_Construction 최대 HP 비례해서 회복시킬 예정
         CurrHp = 0;
-        AttackPower = _so.attackPower;
-        AttackSpeed = _so.attackSpeed;
-        AttackRange = _so.attackRange;
+        AttackPower = data.attackPower;
+        AttackSpeed = data.attackSpeed;
+        AttackRange = data.attackRange;
 
-        BuildRequirements = _so.buildRequirements;
-        UpgradeRequirements = _so.upgradeRequirements;  
+        //BuildRequirements = data.buildRequirements;
+        //UpgradeRequirements = data.upgradeRequirements;  
     }
 
 
