@@ -26,13 +26,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
-    protected override IEnumerator OnStart()
-    {
-        _target = MapManager.Instance.TestCore;
-        CurState = MONSTER_STATE.Exploring;
-        yield break;
-    }
-
     protected override void DefineStates()
     {
         AddState(MONSTER_STATE.Exploring, new StateElem
@@ -125,8 +118,10 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private void OnEnable()
     {
         _target = MapManager.Instance?.TestCore;
-        RunDoingState();
         TransitionTo(MONSTER_STATE.Exploring, true);
+
+        // 상태 변환이 끝난 후에 Doing 코루틴 시작
+        RunDoingState();
     }
 
     // test 용
