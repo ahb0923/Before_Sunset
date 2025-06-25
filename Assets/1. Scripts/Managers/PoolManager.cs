@@ -6,7 +6,7 @@ public enum POOL_TYPE
     Monster,
     Projectile,
     Mineral,
-    // 풀링될 오브젝트 타입 추가
+    // 필요 시 풀링될 오브젝트 타입 추가
 }
 
 [System.Serializable]
