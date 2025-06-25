@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
@@ -10,6 +7,7 @@ public class InventoryManager : MonoBehaviour
     
     public ItemData itemData;
     public ItemData itemData2;
+    public ItemData itemData3;
 
     //싱글톤 패턴 구현 전이라 임시로 달아놓음
     //InventoryUI에서 업데이트 될거임
@@ -26,6 +24,16 @@ public class InventoryManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             mainInventory.AddItem(itemData2.CreateItem());
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            mainInventory.AddItem(itemData3.CreateItem());
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            mainInventory.Sort();
         }
     }
 }

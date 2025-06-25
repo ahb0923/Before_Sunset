@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +10,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     private const string ITEM_IMAGE = "IconImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
-    private const string DRAGGING_ICON = "DraggingIcon";
+    //private const string DRAGGING_ICON = "DraggingIcon";
     
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
@@ -26,11 +25,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         _itemAmountText = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT_TEXT);
     }
 
+    /// <summary>
+    /// 아이템이 더할 수 있는 아이템인지 확인하는 bool 체크 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public bool CanStack(Item item)
     {
         return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !CurrentItem.IsMaxStack && item.Data.stackable;
     }
 
+    /// <summary>
+    /// 갯수를 더할 수 있는 아이템을 얻었을때, 아이템을 더해주는 메서드
+    /// </summary>
+    /// <param name="item"></param>
     public void StackItem(Item item)
     {
         var max = CurrentItem.Data.maxStack;
@@ -53,11 +61,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         UpdateUI();
     }
     
+    /// <summary>
+    /// 두 아이템 슬롯의 아이템이 합쳐질 수 있는지 확인하는 bool 체크 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     public bool CanMerge(Item item)
     {
         return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !item.IsMaxStack && item.Data.stackable;
     }
 
+    /// <summary>
+    /// 두 아이템 슬롯의 아이템 수량을 합칠때 사용할 메서드
+    /// </summary>
+    /// <param name="item"></param>
     public void MergeItem(Item item)
     {
         var max = CurrentItem.Data.maxStack;
@@ -74,12 +91,17 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         else
         {
+            CurrentItem.stack = result;
             _draggingOriginSlot.SetItem(null);
         }
         
         UpdateUI();
     }
 
+    /// <summary>
+    /// 아이템 슬롯에 Item을 설정해주는 메서드
+    /// </summary>
+    /// <param name="item">넣어줄 Item</param>
     public void SetItem(Item item)
     {
         CurrentItem = item;
@@ -88,6 +110,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         UpdateUI();
     }
 
+    
+    /// <summary>
+    /// 아이템 슬롯의 UI 새로고침 메서드
+    /// </summary>
     public void UpdateUI()
     {
         _itemImage.sprite = IsEmpty ? null : CurrentItem.Data.icon;
@@ -95,6 +121,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         SetAmount();
     }
 
+    /// <summary>
+    /// 아이템 슬롯의 수량 표시 메서드
+    /// </summary>
     private void SetAmount()
     {
         if (CurrentItem == null)
@@ -152,6 +181,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         SetItem(null);
     }
 
+    //나중에 리펙토링 해 볼 예정
     // public void ShowIcon()
     // {
     //     _draggingItemIcon.SetActive(true);

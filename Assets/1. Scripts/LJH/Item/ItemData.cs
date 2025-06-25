@@ -4,6 +4,7 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     //테스트용
+    public int id;
     public string itemName;
     public Sprite icon;
     public int quantity;

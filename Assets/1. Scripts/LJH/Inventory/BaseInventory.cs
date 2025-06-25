@@ -33,6 +33,9 @@ public abstract class BaseInventory : MonoBehaviour
     
     protected abstract void InitSlots();
 
+    /// <summary>
+    /// 인벤토리 활성화 / 비활성화 스위치 메서드
+    /// </summary>
     public virtual void ToggleInventory()
     {
         if (_inventory != null)
