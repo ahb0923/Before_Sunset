@@ -124,9 +124,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     // 오브젝트 풀링 사용 대비 test
     private void OnEnable()
     {
-        if (!HasStarted)
-            return;
-
         _target = MapManager.Instance?.TestCore;
         RunDoingState();
         TransitionTo(MONSTER_STATE.Exploring, true);
