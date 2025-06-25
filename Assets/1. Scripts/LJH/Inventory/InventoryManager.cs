@@ -2,38 +2,54 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    public MainInventory mainInventory;
-    public QuickSlotInventory quickSlotInventory;
+    private static InventoryManager _instance;
+
+    public Inventory Inventory { get; private set; }
+    public InventoryUI InventoryUI { get; private set; }
+    public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
+
+    public static InventoryManager Instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+
+    private void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = FindObjectOfType<InventoryManager>();
+            if (_instance == null)
+            {
+                GameObject go = new GameObject("InventoryManager");
+                _instance = go.AddComponent<InventoryManager>();
+            }
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
+    public void Init(Inventory inventory)
+    {
+        Inventory = inventory;
+    }
+
+    public void Init(QuickSlotInventoryUI quickSlotInventoryUI)
+    {
+        QuickSlotInventoryUI = quickSlotInventoryUI;
+    }
+
+    public void Init(InventoryUI inventoryUI)
+    {
+        InventoryUI = inventoryUI;
+    }
     
     public ItemData itemData;
     public ItemData itemData2;
     public ItemData itemData3;
-
-    //싱글톤 패턴 구현 전이라 임시로 달아놓음
-    //InventoryUI에서 업데이트 될거임
-    private void Update()
-    {
-        mainInventory.ToggleInventory();
-        quickSlotInventory.ToggleInventory();
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            mainInventory.AddItem(itemData.CreateItem());
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            mainInventory.AddItem(itemData2.CreateItem());
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            mainInventory.AddItem(itemData3.CreateItem());
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            mainInventory.Sort();
-        }
-    }
 }

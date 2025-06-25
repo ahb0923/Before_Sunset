@@ -1,47 +1,49 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
-public class MainInventory : BaseInventory
+
+public class Inventory : MonoBehaviour
 {
-    [SerializeField] private int _numberOfQuickSlots = 9;
-    [SerializeField] private int _numberOfItemSlots = 20;
-    [SerializeField] private Transform _quickSlotContainer;
-    
-    private const string QUICK_SLOT_AREA = "QuickSlotArea";
-    private const string ITEM_SLOT_AREA = "ItemSlotArea";
-    private const string ITEM_SLOT_PREFAB = "ItemSlot";
-    
-    private void Reset()
+    private const string SORT_BUTTON = "SortButton";
+
+    private void Start()
     {
-        _inventory = this.gameObject;
-        _quickSlotContainer = _inventory.transform.Find(QUICK_SLOT_AREA);
-        _itemSlotContainer = _inventory.transform.Find(ITEM_SLOT_AREA);
-        _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
+        InventoryManager.Instance.Init(this);
+        Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
+        sortButton.onClick.AddListener(Sort);
     }
-    
-    protected override void InitSlots()
+
+    private void Update()
     {
-        for (int i = 0; i < _numberOfQuickSlots; i++)
+        //아이템 획득 키
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            var slot = Instantiate(_slotPrefab, _quickSlotContainer);
-            _itemSlots.Add(slot.GetComponent<ItemSlot>());
+            AddItem(InventoryManager.Instance.itemData.CreateItem());
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            AddItem(InventoryManager.Instance.itemData2.CreateItem());
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            AddItem(InventoryManager.Instance.itemData3.CreateItem());
         }
         
-        for (int i = 0; i < _numberOfItemSlots; i++)
-        {
-            var slot = Instantiate(_slotPrefab, _itemSlotContainer);
-            _itemSlots.Add(slot.GetComponent<ItemSlot>());
-        }
+        InventoryManager.Instance.InventoryUI.ToggleInventory();
+        InventoryManager.Instance.QuickSlotInventoryUI.ToggleInventory();
     }
 
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드
     /// </summary>
     /// <param name="item">추가 할 아이템</param>
-    public override void AddItem(Item item)
+    public void AddItem(Item item)
     {
+        List<ItemSlot> _itemSlots = InventoryManager.Instance.InventoryUI.itemSlots;
         foreach (var slot in _itemSlots)
         {
             if (slot.CanStack(item))
@@ -68,22 +70,13 @@ public class MainInventory : BaseInventory
         Debug.Log("Inventory is full.");
     }
 
-    /// <summary>
-    /// 인벤토리 아이템 슬롯 새로고침 메서드
-    /// </summary>
-    public override void RefreshUI()
-    {
-        foreach (var slot in _itemSlots)
-        {
-            slot.UpdateUI();
-        }
-    }
 
     /// <summary>
     /// 인벤토리 내 아이템 정렬 메서드
     /// </summary>
     public void Sort()
     {
+        List<ItemSlot> _itemSlots = InventoryManager.Instance.InventoryUI.itemSlots;
         List<Item> items = new List<Item>();
 
         foreach (var slot in _itemSlots)

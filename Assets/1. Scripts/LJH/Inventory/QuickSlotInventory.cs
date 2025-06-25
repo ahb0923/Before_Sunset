@@ -2,54 +2,87 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuickSlotInventory : BaseInventory
+public class QuickSlotInventoryUI : MonoBehaviour
 {
-    private List<QuickSlot> _quickSlots = new List<QuickSlot>();
+    [SerializeField] private int _numberOfQuickSlots = 9;
+    [SerializeField] private Transform _itemSlotContainer;
+    [SerializeField] private GameObject _slotPrefab;
+    
+    private List<ItemSlot> _quickSlots = new List<ItemSlot>();
     
     private const string ITEM_SLOT_AREA = "QuickSlotArea";
-    private const string ITEM_SLOT_PREFAB = "QuickSlot";
+    private const string ITEM_SLOT_PREFAB = "ItemSlot";
+    
     
     private void Reset()
     {
-        _inventory = this.gameObject;
-        _itemSlotContainer = _inventory.transform.Find(ITEM_SLOT_AREA);
+        _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
     }
 
-    protected override void Awake()
+    private void Start()
     {
-        if (_inventory == null)
+        InventoryManager.Instance.Init(this);
+        
+        InitSlots();
+        
+        if (this.gameObject == null)
         {
             Debug.Log("Quick Slot Inventory is empty");
         }
         else
         {
-            if (!_inventory.activeSelf)
+            if (!this.gameObject.activeSelf)
             {
-                _inventory.SetActive(true);
+                this.gameObject.SetActive(true);
             }
         }
-
-        InitSlots();
     }
-    
-    protected override void InitSlots()
+
+    private void InitSlots()
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < _numberOfQuickSlots; i++)
         {
             var slot = Instantiate(_slotPrefab, _itemSlotContainer);
-            _quickSlots.Add(slot.GetComponent<QuickSlot>());
+            _quickSlots.Add(slot.GetComponent<ItemSlot>());
         }
-    }
-
-    public override void AddItem(Item item)
-    {
         
     }
     
-    public override void RefreshUI()
+    /// <summary>
+    /// 인벤토리UI 활성화 / 비활성화 스위치 메서드
+    /// </summary>
+    public void ToggleInventory()
     {
-        foreach (var slot in _itemSlots)
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            bool isOpen = this.gameObject.activeSelf;
+            this.gameObject.SetActive(!isOpen);
+
+            if (!isOpen)
+            {
+                Open();
+            }
+            else
+            {
+                Close();
+            }
+        }
+    }
+    
+    private void Open()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    private void Close()
+    {
+        this.gameObject.SetActive(false);
+    }
+
+    public void RefreshUI()
+    {
+        foreach (var slot in _quickSlots)
         {
             slot.UpdateUI();
         }
