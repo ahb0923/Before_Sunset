@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 2.0f;
-    public Animator animator;
+    //public Animator animator;
     public Camera mainCamera;
 
     private Rigidbody2D rb;
@@ -42,23 +42,29 @@ public class PlayerController : MonoBehaviour
         Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 lookDir = (mouseWorld - transform.position).normalized;
 
-        animator.SetFloat("LookX", lookDir.x);
-        animator.SetFloat("LookY", lookDir.y);
+        //animator.SetFloat("LookX", lookDir.x);
+        //animator.SetFloat("LookY", lookDir.y);
 
-        if (lookDir.x > 0.1f) sr.flipX = false;
-        else if (lookDir.x < -0.1f) sr.flipX = true;
+        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
+        float snappedAngle = GetSnappedAngle(angle);
+        transform.rotation = Quaternion.Euler(0f, 0f, snappedAngle);
+
+        if (snappedAngle == 180f)
+            transform.localScale = new Vector3(1f, -1f, 1f);
+        else
+            transform.localScale = new Vector3(1f, 1f, 1f);
 
         if (isSwinging)
         {
             rb.velocity = Vector2.zero;
-            animator.SetBool("isWalking", false);
+            //animator.SetBool("isWalking", false);
             return;
         }
 
         Vector2 move = input.MoveInput;
         rb.velocity = move * moveSpeed;
 
-        animator.SetBool("isWalking", move.sqrMagnitude > 0.01f);
+        //animator.SetBool("isWalking", move.sqrMagnitude > 0.01f);
 
         if (input.IsSwing && !isSwinging)
         {
@@ -69,10 +75,23 @@ public class PlayerController : MonoBehaviour
     private IEnumerator SwingCoroutine()
     {
         isSwinging = true;
-        animator.SetBool("isSwinging", true);
+        //animator.SetBool("isSwinging", true);
         yield return new WaitForSeconds(0.5f);
-        animator.SetBool("isSwinging", false);
+        //animator.SetBool("isSwinging", false);
         isSwinging = false;
+    }
+    private float GetSnappedAngle(float angle)
+    {
+        angle = (angle + 360f) % 360f;
+
+        if (angle >= 45f && angle < 135f)
+            return 90f;
+        else if (angle >= 135f && angle < 225f)
+            return 180f;
+        else if (angle >= 225f && angle < 315f)
+            return 270f;
+        else
+            return 0f;
     }
 
     private void ToggleInventory()
