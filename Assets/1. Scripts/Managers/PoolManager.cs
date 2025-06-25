@@ -1,12 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPoolable
-{
-    void OnGetFromPool();
-    void OnReturnToPool();
-}
-
 public enum POOL_TYPE
 {
     Monster,
@@ -78,13 +72,8 @@ public class PoolManager : MonoSingleton<PoolManager>
             obj = Instantiate(_prefabs[type]);
             obj.SetActive(false);
         }
+
         obj.transform.SetParent(transform);
-
-        if(obj.TryGetComponent<IPoolable>(out IPoolable poolable))
-        {
-            poolable.OnGetFromPool();
-        }
-
         obj.SetActive(true);
         return obj;
     }
@@ -101,11 +90,6 @@ public class PoolManager : MonoSingleton<PoolManager>
             Debug.LogWarning($"[PoolManager] 반환하려는 타입이 등록되어 있지 않음 : {type}");
             Destroy(obj);
             return;
-        }
-
-        if(obj.TryGetComponent<IPoolable>(out IPoolable poolable))
-        {
-            poolable.OnReturnToPool();
         }
 
         obj.SetActive(false);

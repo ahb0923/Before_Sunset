@@ -158,10 +158,10 @@ public class MapManager : MonoSingleton<MapManager>
     /// <returns></returns>
     private Node GetNode(Vector3 worldPos)
     {
-        Vector3 pos = worldPos - _bottomLeftPosition;
-        Vector2Int gridIndex = new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
-        if (gridIndex.x < 0 || gridIndex.y < 0 || gridIndex.x >= _nodeCountX || gridIndex.y >= _nodeCountY)
-            return null;
+        if (worldPos.x < _bottomLeftPosition.x || worldPos.x > _bottomLeftPosition.x + _mapSize.x) return null;
+        if (worldPos.y < _bottomLeftPosition.y || worldPos.y > _bottomLeftPosition.y + _mapSize.y) return null;
+
+        Vector2Int gridIndex = Vector2Int.FloorToInt((worldPos - _bottomLeftPosition) / _nodeSize);
 
         return _nodeGrid[gridIndex.x, gridIndex.y];
     }

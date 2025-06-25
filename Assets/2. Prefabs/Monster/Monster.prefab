@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 6933819160329715657}
   - component: {fileID: 1101116313627243319}
   m_Layer: 0
-  m_Name: Walker
+  m_Name: Monster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190,7 +190,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 0.9}
+  m_Size: {x: 0.6, y: 0.9}
   m_EdgeRadius: 0
 --- !u!114 &1101116313627243319
 MonoBehaviour:
