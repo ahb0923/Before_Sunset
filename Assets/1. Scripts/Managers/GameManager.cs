@@ -9,6 +9,5 @@ public class GameManager : MonoBehaviour
     private async void Start()
     {
         await DataManager.Instance.InitAsync();
-
     }
 }

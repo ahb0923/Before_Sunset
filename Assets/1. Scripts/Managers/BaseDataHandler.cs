@@ -2,15 +2,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class BaseDataManager<TData> : IDataLoader where TData : class
+public abstract class BaseDataHandler<TData> : IDataLoader where TData : class
 {
     // 구글 스프레드시트에서 배포 된 url 주소  =>  Local에 JSON 파일로 저장 시 필요 없음
-    protected abstract string DataUrl { get; }
-    
+    //protected abstract string DataUrl { get; }
+
+    // 로컬 시 로드할 파일 이름
+    protected abstract string FileName { get; }
+
     // 아이템 ID가 key값
     protected Dictionary<int, TData> dataIdDictionary = new();
 
@@ -24,7 +28,8 @@ public abstract class BaseDataManager<TData> : IDataLoader where TData : class
     public TData GetByName(string name) => dataNameDictionary.TryGetValue(name, out var data) ? data : null;
 
 
-    public async Task LoadAsync()
+    // web에서 json데이터 받을 때 사용   =>   Local에 정보 있다면 필요없음   
+    /*public async Task LoadAsyncWeb()
     {
         string json = await JsonDownloader.DownloadJson(DataUrl);
         if (!string.IsNullOrEmpty(json))
@@ -35,6 +40,20 @@ public abstract class BaseDataManager<TData> : IDataLoader where TData : class
         {
             Debug.LogError($"[{typeof(TData).Name}Manager] JSON 로딩 실패");
         }
+    }
+    */
+    public async Task LoadAsyncLocal()
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, FileName);
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError($"[BaseDataManager] 파일 없음: {path}");
+            return;
+        }
+
+        string json = await File.ReadAllTextAsync(path);
+        LoadFromJson(json);
     }
 
     public void LoadFromJson(string json)
@@ -48,6 +67,7 @@ public abstract class BaseDataManager<TData> : IDataLoader where TData : class
             int id = GetId(item);
             string name = GetName(item);
 
+
             dataIdDictionary[id] = item;
 
             if (!string.IsNullOrWhiteSpace(name))
@@ -58,7 +78,13 @@ public abstract class BaseDataManager<TData> : IDataLoader where TData : class
         DebugLogAll();
     }
 
-    public void DebugLogAll(Func<TData, string> formatter = null)
+    public void SaveToJson()
+    {
+
+    }
+
+
+    public virtual void DebugLogAll(Func<TData, string> formatter = null)
     {
         foreach (var data in dataIdDictionary.Values)
         {
@@ -69,4 +95,5 @@ public abstract class BaseDataManager<TData> : IDataLoader where TData : class
 
     protected abstract int GetId(TData data);
     protected abstract string GetName(TData data);
+
 }
