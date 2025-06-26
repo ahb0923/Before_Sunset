@@ -65,6 +65,7 @@ public class Inventory : MonoBehaviour
         }
 
         InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
     }
 
     private void AddStackableItem(Item item, int quantity)
@@ -191,5 +192,6 @@ public class Inventory : MonoBehaviour
         }
         
         InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
     }
 }

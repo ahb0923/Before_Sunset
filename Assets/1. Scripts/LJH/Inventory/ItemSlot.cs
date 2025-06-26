@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,24 +6,33 @@ using UnityEngine.UI;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    [field: SerializeField] public bool IsEmpty { get; private set; } = true;
-    
     [SerializeField] private Image _itemImage;
+    [SerializeField] private Image _highlightImage;
+    [SerializeField] private GameObject _highlight;
     [SerializeField] private TextMeshProUGUI _itemAmountText;
+    
+    private float _highlightDuration = 0.1f;
+    private float _highlightAlpha = 0.4f;
+    
+    public Coroutine highlightCoroutine;
     
     public int SlotIndex { get; private set; }
     
     private const string ITEM_IMAGE = "IconImage";
+    private const string HIGHLIGHT_IMAGE = "HighlightImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
     //private const string DRAGGING_ICON = "DraggingIcon";
     
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
     private static ItemSlot _draggingOriginSlot;
+    private static ItemSlot _highlightOriginSlot;
     
     private void Reset()
     {
         _itemImage = UtilityLJH.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
+        _highlightImage = UtilityLJH.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
+        _highlight = UtilityLJH.FindChildInChild(this.transform, HIGHLIGHT_IMAGE).gameObject;
         _itemAmountText = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT_TEXT);
     }
 
@@ -79,12 +88,70 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (highlightCoroutine != null)
+        {
+            StopCoroutine(highlightCoroutine);
+        }
         
+        _highlightOriginSlot = this;
+        highlightCoroutine = StartCoroutine(C_HighlightFadeIn());
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (highlightCoroutine != null)
+        {
+            StopCoroutine(highlightCoroutine);
+        }
+
+        _highlightOriginSlot = null;
+        highlightCoroutine = StartCoroutine(C_HighlightFadeOut());
+    }
+
+    private IEnumerator C_HighlightFadeIn()
+    {
+        _highlight.SetActive(true);
+
+        float time = 0f;
         
+        Color color = Color.yellow;
+        color.a = 0f;
+        _highlightImage.color = color;
+
+        while (time < _highlightDuration)
+        {
+            time += Time.deltaTime;
+            float t = Mathf.Clamp01(time / _highlightDuration);
+            color.a = Mathf.Lerp(0f, _highlightAlpha, t);
+            _highlightImage.color = color;
+            yield return null;
+        }
+        
+        color.a = _highlightAlpha;
+        _highlightImage.color = color;
+    }
+
+    private IEnumerator C_HighlightFadeOut()
+    {
+        float time = 0f;
+        
+        Color color = Color.yellow;
+        color.a = _highlightAlpha;
+        _highlightImage.color = color;
+
+        while (time < _highlightDuration)
+        {
+            time += Time.deltaTime;
+            float t = Mathf.Clamp01(time / _highlightDuration);
+            color.a = Mathf.Lerp(_highlightAlpha, 0f, t);
+            _highlightImage.color = color;
+            yield return null;
+        }
+        
+        color.a = 0f;
+        _highlightImage.color = color;
+        
+        _highlight.SetActive(false);
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -207,7 +274,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             inventory.Items[SlotIndex] = _draggingItem;
         }
         
-        InventoryManager.Instance.Inventory.InventoryUI.RefreshUI(inventory.Items);
+        inventory.InventoryUI.RefreshUI(inventory.Items);
+        inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
 
         _draggingItem = null;
         _draggingOriginSlot = null;

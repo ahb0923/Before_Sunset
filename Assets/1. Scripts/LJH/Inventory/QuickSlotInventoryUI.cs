@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,8 +23,6 @@ public class QuickSlotInventoryUI : MonoBehaviour
 
     private void Start()
     {
-        //InventoryManager.Instance.Init(this);
-        
         InitSlots();
         
         if (this.gameObject == null)
@@ -37,6 +36,11 @@ public class QuickSlotInventoryUI : MonoBehaviour
                 this.gameObject.SetActive(true);
             }
         }
+        
+        foreach (var itemSlot in _quickSlots)
+        {
+            itemSlot.RefreshUI();
+        }
     }
 
     private void InitSlots()
@@ -47,6 +51,10 @@ public class QuickSlotInventoryUI : MonoBehaviour
             _quickSlots.Add(slot.GetComponent<ItemSlot>());
         }
         
+        for (int i = 0; i < _quickSlots.Count; i++)
+        {
+            _quickSlots[i].InitIndex(i);
+        }
     }
     
     /// <summary>
@@ -80,11 +88,11 @@ public class QuickSlotInventoryUI : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void RefreshUI()
+    public void RefreshUI(Item[] items)
     {
-        foreach (var slot in _quickSlots)
+        for (int i = 0; i < _quickSlots.Count; i++)
         {
-            slot.RefreshUI();
+            _quickSlots[i].RefreshUI();
         }
     }
 }

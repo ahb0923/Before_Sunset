@@ -30,8 +30,6 @@ public class InventoryUI : MonoBehaviour
     
     private void Start()
     {
-        // InventoryManager.Instance.Init(this);
-        
         if (this.gameObject == null)
         {
             Debug.Log("Inventory is empty");
