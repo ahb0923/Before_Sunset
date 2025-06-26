@@ -29,7 +29,7 @@ public class InventoryUI : MonoBehaviour
     
     private void Start()
     {
-        InventoryManager.Instance.Init(this);
+        // InventoryManager.Instance.Init(this);
         
         if (this.gameObject == null)
         {
@@ -47,13 +47,8 @@ public class InventoryUI : MonoBehaviour
         
         foreach (var itemSlot in itemSlots)
         {
-            itemSlot.UpdateUI();
+            itemSlot.RefreshUI();
         }
-    }
-
-    private void Update()
-    {
-        
     }
     
     private void InitSlots()
@@ -70,6 +65,10 @@ public class InventoryUI : MonoBehaviour
             itemSlots.Add(slot.GetComponent<ItemSlot>());
         }
         
+        for (int i = 0; i < itemSlots.Count; i++)
+        {
+            itemSlots[i].InitIndex(i);
+        }
     }
     
     
@@ -78,7 +77,7 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void ToggleInventory()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
         {
             bool isOpen = this.gameObject.activeSelf;
             this.gameObject.SetActive(!isOpen);
@@ -107,11 +106,11 @@ public class InventoryUI : MonoBehaviour
     /// <summary>
     /// 인벤토리 아이템 슬롯 새로고침 메서드
     /// </summary>
-    public void RefreshUI()
+    public void RefreshUI(Item[] items)
     {
-        foreach (var slot in itemSlots)
+        for (int i = 0; i < itemSlots.Count; i++)
         {
-            slot.UpdateUI();
+            itemSlots[i].RefreshUI();
         }
     }
 }

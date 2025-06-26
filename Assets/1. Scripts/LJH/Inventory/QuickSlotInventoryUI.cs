@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
 {
     [SerializeField] private int _numberOfQuickSlots = 9;
     [SerializeField] private Transform _itemSlotContainer;
+    
     [SerializeField] private GameObject _slotPrefab;
     
     private List<ItemSlot> _quickSlots = new List<ItemSlot>();
@@ -22,7 +22,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
 
     private void Start()
     {
-        InventoryManager.Instance.Init(this);
+        //InventoryManager.Instance.Init(this);
         
         InitSlots();
         
@@ -54,7 +54,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
     /// </summary>
     public void ToggleInventory()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
         {
             bool isOpen = this.gameObject.activeSelf;
             this.gameObject.SetActive(!isOpen);
@@ -84,7 +84,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
     {
         foreach (var slot in _quickSlots)
         {
-            slot.UpdateUI();
+            slot.RefreshUI();
         }
     }
 }

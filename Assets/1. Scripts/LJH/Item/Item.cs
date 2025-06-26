@@ -10,4 +10,11 @@ public class Item
     public bool IsMaxStack => stack >= Data.maxStack;
 
     public Item(ItemData data) => Data = data;
+
+    public Item Clone()
+    {
+        var clone = new Item(this.Data);
+        clone.stack = this.stack;
+        return clone;
+    }
 }

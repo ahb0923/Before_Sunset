@@ -39,15 +39,15 @@ public class InventoryManager : MonoBehaviour
         Inventory = inventory;
     }
 
-    public void Init(QuickSlotInventoryUI quickSlotInventoryUI)
-    {
-        QuickSlotInventoryUI = quickSlotInventoryUI;
-    }
+    // public void Init(QuickSlotInventoryUI quickSlotInventoryUI)
+    // {
+    //     QuickSlotInventoryUI = quickSlotInventoryUI;
+    // }
 
-    public void Init(InventoryUI inventoryUI)
-    {
-        InventoryUI = inventoryUI;
-    }
+    // public void Init(InventoryUI inventoryUI)
+    // {
+    //     InventoryUI = inventoryUI;
+    // }
     
     public ItemData itemData;
     public ItemData itemData2;
