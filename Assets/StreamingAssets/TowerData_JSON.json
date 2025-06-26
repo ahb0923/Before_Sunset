@@ -1,24 +1,61 @@
 [
   {
-    "id": 1,
-    "towerName": "구리 타워",
-    "tier": 1,
-    "context": "구리로 만든 짱쎈 구리 타워. (사실 약함)",
-    "maxHp": 50,
-    "attackPower": 5,
-    "attackSpeed": 1,
-    "attackRange": 3,
-    "upgradeStatBonus": {
-      "maxHp": 20,
-      "attackPower": 2,
-      "attackSpeed": -0.2
-    },
+    "ID": "400",
+    "TowerName": "구리 발사기",
+    "FlavorText": "구리와 기본 부품만으로 만들어낸 최초의 공격 수단.\n단일 표적을 처치하는데 특화되어 있다.",
+    "BuildType": "Base",
+    "NextUpgradeID": 401,
+    "Level": 1,
+    "TowerHp": 50,
+    "Damage": 5,
+    "Aps": 1,
+    "Range": 3,
     "buildRequirements": {
       "Cooper": 15
-    },
-    "upgradeRequirements": {
+    }
+  },
+  {
+    "ID": "401",
+    "TowerName": "구리 발사기+",
+    "FlavorText": "성능 향상을 위해 회로를 재정비한 개량형 구리 발사기.\n보다 강하게 단일 표적을 처치한다.",
+    "BuildType": "Upgrade",
+    "Level": 2,
+    "TowerHp": 20,
+    "Damage": 2,
+    "Aps": -0.2,
+    "buildRequirements": {
       "Cooper": 15,
       "Iron": 20
+    }
+  },
+  {
+    "ID": "410",
+    "TowerName": "철 캐논",
+    "FlavorText": "철을 이용해 만든 광역 공격 수단.\n느리지만 넓은 범위에 피해를 입힌다.",
+    "BuildType": "Base",
+    "NextUpgradeID": 411,
+    "Level": 1,
+    "TowerHp": 50,
+    "Damage": 8,
+    "Aps": 2,
+    "Range": 5,
+    "buildRequirements": {
+      "Cooper": 10,
+      "Iron": 30
+    }
+  },
+  {
+    "ID": "411",
+    "TowerName": "철 캐논+",
+    "FlavorText": "충격 장치를 덧댄 개량형 철 캐논.\n더 넓고 강한 폭발로 다수의 적을 제압한다.",
+    "BuildType": "Upgrade",
+    "Level": 2,
+    "TowerHp": 20,
+    "Damage": 5,
+    "Aps": -0.3,
+    "buildRequirements": {
+      "Iron": 30,
+      "Silver": 20
     }
   }
 ]

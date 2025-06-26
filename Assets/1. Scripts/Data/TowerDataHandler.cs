@@ -34,14 +34,20 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
             Debug.Log($"{ tower.buildRequirements.Count}");
 
             string buildReqs = string.Join(", ", tower.buildRequirements.Select(kv => $"ID {kv.Key}: {kv.Value}"));
-            string upgradeReqs = string.Join(", ", tower.upgradeRequirements.Select(kv => $"ID {kv.Key}: {kv.Value}"));
 
-            Debug.Log($"[타워] ID: {tower.id}, 이름: {tower.towerName}, 티어: {tower.tier}");
-            Debug.Log($"└ 설명: {tower.context}");
-            Debug.Log($"└ 스탯 - HP: {tower.maxHp}, 공격력: {tower.attackPower}, 공속: {tower.attackSpeed}, 사거리: {tower.attackRange}");
-            Debug.Log($"└ 업그레이드 증가량 - HP: {tower.upgradeStatBonus.maxHp}, 공격력: {tower.upgradeStatBonus.attackPower}, 공속: {tower.upgradeStatBonus.attackSpeed}, 사거리: {tower.upgradeStatBonus.attackRange}");
-            Debug.Log($"└ 제작 자원: {buildReqs}");
-            Debug.Log($"└ 업그레이드 자원: {upgradeReqs}");
+            Debug.Log($"[타워] ID: {tower.id}, 이름: {tower.towerName}, 티어: {tower.level}");
+            Debug.Log($"└ 설명: {tower.flavorText}");
+
+            if (tower.buildType == TOWER_BUILD_TYPE.Base)
+            {
+                Debug.Log($"└ 스탯 - HP: {tower.towerHp}, 공격력: {tower.damage}, 공속: {tower.aps}, 사거리: {tower.range}");
+                Debug.Log($"└ 제작 자원: {buildReqs}");
+            }
+            else
+            {
+                Debug.Log($"└ 업그레이드 증가량 - HP: {tower.towerHp}, 공격력: {tower.damage}, 공속: {tower.aps}, 사거리: {tower.range}");
+                Debug.Log($"└ 업그레이드 자원: {buildReqs}");
+            }
         }
     }
 }

@@ -56,15 +56,15 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
             Debug.Log("SO데이터 Attach 누락");
             return;
         }
-        Tier = data.tier;
+        Tier = data.level;
         TowerName = data.towerName;
-        Context = data.context;
-        MaxHp = data.maxHp;
+        Context = data.flavorText;
+        MaxHp = data.towerHp;
         // C_Construction 최대 HP 비례해서 회복시킬 예정
         CurrHp = 0;
-        AttackPower = data.attackPower;
-        AttackSpeed = data.attackSpeed;
-        AttackRange = data.attackRange;
+        AttackPower = data.damage;
+        AttackSpeed = data.aps;
+        AttackRange = data.range;
 
         //BuildRequirements = data.buildRequirements;
         //UpgradeRequirements = data.upgradeRequirements;  
