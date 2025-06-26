@@ -12,17 +12,19 @@ public enum SPAWN_POINT_DIRECTION
 
 public class MonsterSpawner : MonoBehaviour
 {
-    [Header("# Map Setting")]
-    [SerializeField] private Vector2 _mapSize;
-    private Vector3 _bottomLeftPosition;
-    [SerializeField] private float _nodeSize;
-    private float _nodeHalfSize => _nodeSize * 0.5f;
+    public const int NODE_SIZE = 1;
+    public const float NODE_HALF_SIZE = 0.5f;
+    
     private Node[,] _nodeGrid;
     private int _nodeCountX;
     private int _nodeCountY;
-    [SerializeField] private LayerMask _obstacleMask;
+    
+    private Dictionary<(SPAWN_POINT_DIRECTION, int), List<Node>> _pathCache = new();
 
-    private Dictionary<SPAWN_POINT_DIRECTION, Dictionary<int, List<Node>>> _pathCache = new();
+    [Header("# Map Setting")]
+    [SerializeField] private Vector2 _mapSize;
+    private Vector3 _bottomLeftPosition;
+    [SerializeField] private LayerMask _obstacleMask;
 
     [Header("# Spawn Setting")]
     [SerializeField] private Transform[] _spawnPoints;
@@ -30,13 +32,17 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private List<Monster_SO> _monsterDatas;
 
     [Header("# Test")]
-    public Transform TestCore; // 인스펙터에서 넣어도 되고 안 넣어도 됨
+    public Transform TestCore; // 인스펙터에서 안 넣어도 됨
+    private Core _core;
     public int testStage;
     
     private void Awake()
     {
         if(TestCore == null)
+        {
             TestCore = GameObject.Find("TestCore")?.GetComponent<Transform>();
+            _core = TestCore.GetComponent<Core>();
+        }
 
         if(TestCore == null)
         {
@@ -51,8 +57,8 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     private void GenerateNodes()
     {
-        _nodeCountX = Mathf.CeilToInt(_mapSize.x / _nodeSize);
-        _nodeCountY = Mathf.CeilToInt(_mapSize.y / _nodeSize);
+        _nodeCountX = Mathf.CeilToInt(_mapSize.x / NODE_SIZE);
+        _nodeCountY = Mathf.CeilToInt(_mapSize.y / NODE_SIZE);
         _nodeGrid = new Node[_nodeCountX, _nodeCountY];
 
         _bottomLeftPosition = new Vector2(transform.position.x, transform.position.y) - _mapSize * 0.5f;
@@ -61,8 +67,8 @@ public class MonsterSpawner : MonoBehaviour
             for (int y = 0; y < _nodeCountY; y++)
             {
                 Vector2Int gridPos = new Vector2Int(x, y);
-                Vector3 worldPos = _bottomLeftPosition + new Vector3(x * _nodeSize + _nodeHalfSize, y * _nodeSize + _nodeHalfSize);
-                Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(_nodeHalfSize, _nodeHalfSize), 0, _obstacleMask);
+                Vector3 worldPos = _bottomLeftPosition + new Vector3(x * NODE_SIZE + NODE_HALF_SIZE, y * NODE_SIZE + NODE_HALF_SIZE);
+                Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), 0, _obstacleMask);
                 _nodeGrid[x, y] = new Node(hit == null, gridPos, worldPos);
             }
         }
@@ -71,16 +77,16 @@ public class MonsterSpawner : MonoBehaviour
     /// <summary>
     /// 월드 포지션에 대한 가장 가까운 노드를 반환
     /// </summary>
-    private Node GetNearestNode(Vector3 worldPos)
+    private Node GetNodeFromWorldPosition(Vector3 worldPos)
     {
-        Vector2 relativePos = worldPos - _bottomLeftPosition;
-        Vector2Int gridIndex = Vector2Int.RoundToInt(relativePos / _nodeSize);
+        foreach(Node node in _nodeGrid)
+        {
+            float dist = Vector3.Distance(node.WorldPos, worldPos);
+            if (dist <= NODE_HALF_SIZE) return node;
+        }
 
-        // 유효 범위로 클램핑
-        gridIndex.x = Mathf.Clamp(gridIndex.x, 0, _nodeCountX - 1);
-        gridIndex.y = Mathf.Clamp(gridIndex.y, 0, _nodeCountY - 1);
-
-        return _nodeGrid[gridIndex.x, gridIndex.y];
+        // 맵 바깥에 대한 포지션은 null 반환
+        return null;
     }
 
     /// <summary>
@@ -91,63 +97,79 @@ public class MonsterSpawner : MonoBehaviour
     {
         foreach (Node node in _nodeGrid)
         {
-            Collider2D hit = Physics2D.OverlapBox(node.WorldPos, new Vector2(_nodeHalfSize, _nodeHalfSize), 0, _obstacleMask);
+            Collider2D hit = Physics2D.OverlapBox(node.WorldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), 0, _obstacleMask);
             node.isWalkable = hit == null;
         }
 
-        foreach(var dict in _pathCache.Values)
+        foreach(var key in _pathCache.Keys)
         {
-            foreach(var key in dict.Keys)
+            bool isChanged = false;
+
+            List<Node> path = _pathCache[key];
+            foreach (Node node in path)
             {
-                bool isChanged = false;
-
-                List<Node> path = dict[key];
-                foreach(Node node in path)
+                if (!node.isWalkable)
                 {
-                    if (!node.isWalkable)
-                    {
-                        isChanged = true;
-                        break;
-                    }
+                    isChanged = true;
+                    break;
                 }
+            }
 
-                if (isChanged)
-                {
-                    dict.Remove(key);
-                }
+            if (isChanged)
+            {
+                _pathCache.Remove(key);
             }
         }
     }
 
     /// <summary>
-    /// 캐싱된 길이 있는 지 확인하고 없으면 생성하여 반환
+    /// 캐싱된 경로가 있는 지 확인하고 없으면 생성하여 반환
     /// </summary>
     public List<Node> GetCachedPath(SPAWN_POINT_DIRECTION dir, int monsterSize)
     {
-        Node startNode = GetNearestNode(_spawnPoints[(int)dir].position);
-        Node endNode = GetNearestNode(TestCore.position);
-
-        // 방향별 딕셔너리 확보
-        if (!_pathCache.TryGetValue(dir, out var sizeDict))
-        {
-            sizeDict = new Dictionary<int, List<Node>>();
-            _pathCache[dir] = sizeDict;
-        }
-
-        // 사이즈별 경로 확인
-        if (sizeDict.TryGetValue(monsterSize, out var cachedPath))
+        // 캐싱된 경로가 있는 지 확인
+        if (_pathCache.TryGetValue((dir, monsterSize), out var cachedPath))
         {
             return cachedPath;
         }
 
         // 경로가 없으면 계산 후 저장
-        List<Node> path = AstarAlgorithm.FindPath(_nodeGrid, startNode, endNode, monsterSize);
-        if (path != null)
+        Node startNode = GetNodeFromWorldPosition(_spawnPoints[(int)dir].position);
+        List<Vector3> endPosList = _core.GetNearestNodePositionsFromCore();
+
+        Node endNode = GetNodeFromWorldPosition(endPosList[0]);
+        int dist = AstarAlgorithm.GetHeuristicDistance(startNode, endNode);
+        List<Node> finalPath = AstarAlgorithm.FindPath(_nodeGrid, startNode, endNode, monsterSize);
+
+        List<Node> path;
+        for (int i = 1; i < endPosList.Count; i++)
         {
-            sizeDict[monsterSize] = path;
+            endNode = GetNodeFromWorldPosition(endPosList[i]);
+            if (endNode == null) continue;
+
+            path = AstarAlgorithm.FindPath(_nodeGrid, startNode, endNode, monsterSize);
+
+            // 노드 숫자가 가장 적은 경로를 저장 → 같으면 시작 지점에서 가장 가까운 엔드 노드를 가지는 경로 저장
+            if(path.Count < finalPath.Count)
+            {
+                finalPath = new List<Node>(path);
+            }
+            else if(path.Count == finalPath.Count)
+            {
+                if (dist > AstarAlgorithm.GetHeuristicDistance(startNode, endNode))
+                {
+                    dist = AstarAlgorithm.GetHeuristicDistance(startNode, endNode);
+                    finalPath = new List<Node>(path);
+                }
+            }
         }
 
-        return path;
+        if (finalPath != null)
+        {
+            _pathCache[(dir, monsterSize)] = finalPath;
+        }
+
+        return finalPath;
     }
 
     /// <summary>
@@ -207,7 +229,7 @@ public class MonsterSpawner : MonoBehaviour
             foreach (Node node in _nodeGrid)
             {
                 Gizmos.color = node.isWalkable ? Color.green : Color.red;
-                Gizmos.DrawWireCube(node.WorldPos, new Vector2(_nodeHalfSize, _nodeHalfSize));
+                Gizmos.DrawWireCube(node.WorldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE));
             }
         }
     }
