@@ -1,29 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using static UnityEditor.Progress;
+using UnityEngine;
 
 
 public interface IDataLoader
 {
-    Task LoadAsync();
+    // protected abstract Task LoadAsyncWeb();
+    Task LoadAsyncLocal();
+    void LoadFromJson(string json);
 }
 
 public class DataManager : PlainSingleton<DataManager>
 {
-    public ItemDataManager ItemData { get; private set; }
-    public TowerDataManager TowerData { get; private set; }
-    public MonsterDataManager MonsterData { get; private set; }
+    public MineralDataHandler MineralData { get; private set; } = new();
+    public TowerDataHandler TowerData { get; private set; } = new();
+    //public MonsterDataManager MonsterData { get; private set; } = new();
 
-
-
-
-    public void Init()
+    public async Task InitAsync()
     {
-        List<IDataLoader> loaders = new() { ItemData, TowerData, MonsterData };
+        List<IDataLoader> loaders = new()
+        {
+            MineralData,
+            TowerData,
+            // MonsterData
+        };
 
-       /* foreach (var loader in loaders)
-            await loader.LoadAsync();*/
+        foreach (var loader in loaders)
+        {
+            await loader.LoadAsyncLocal();
+        }
 
+        Debug.Log("[DataManager] 모든 데이터 초기화 완료");
     }
 }

@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "towerName": "구리 타워",
+    "tier": 1,
+    "context": "구리로 만든 짱쎈 구리 타워. (사실 약함)",
+    "maxHp": 50,
+    "attackPower": 5,
+    "attackSpeed": 1,
+    "attackRange": 3,
+    "upgradeStatBonus": {
+      "maxHp": 20,
+      "attackPower": 2,
+      "attackSpeed": -0.2
+    },
+    "buildRequirements": {
+      "Cooper": 15
+    },
+    "upgradeRequirements": {
+      "Cooper": 15,
+      "Iron": 20
+    }
+  }
+]

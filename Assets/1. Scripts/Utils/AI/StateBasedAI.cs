@@ -85,38 +85,6 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
     /// </summary>
     protected abstract void DefineStates();
 
-    /* << 예시 >> 
-    protected override void DefineStates()
-    {
-        AddState(BUILDING_STATE.Construction, new StateElem
-        {
-            Entered = () => Debug.Log("건설 시작"),
-            Doing = C_Construction,
-            Exited = () => {
-                building.SpawnArcherByTier(building.statHandler.Tier);
-                Debug.Log("건설 완료");
-            }
-        });
-        AddState(BUILDING_STATE.Attack, new StateElem
-        {
-            Entered = () => Debug.Log("공격 시작"),
-            Doing = C_Attack,
-        });
-
-        AddState(BUILDING_STATE.Idle, new StateElem
-        {
-            Entered = () => Debug.Log("건물 대기 중")
-        });
-
-        AddState(BUILDING_STATE.Destroy, new StateElem
-        {
-            Entered = () => Debug.Log("건물 파괴"),
-            Doing = C_Destroy
-        });
-    }
-     */
-
-
     /// <summary>
     /// Awake 단계에서 구현할게 있으면 이곳에
     /// </summary>
