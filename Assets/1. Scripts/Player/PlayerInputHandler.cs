@@ -11,13 +11,17 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 MoveInput { get; private set; }
     public bool IsSwing { get; private set; }
 
-    public Action OnInventoryToggle;
-    public Action OnBuildMode;
-    public Action OnDestroyMode;
+    public event Action OnInventoryToggle;
+    public event Action OnBuildMode;
+    public event Action OnDestroyMode;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
         inputActions.Player.Enable();
 
         // 이동
@@ -28,13 +32,9 @@ public class PlayerInputHandler : MonoBehaviour
         inputActions.Player.Swing.performed += _ => IsSwing = true;
         inputActions.Player.Swing.canceled += _ => IsSwing = false;
 
-        // 인벤토리
+        // 이벤트 입력
         inputActions.Player.Inventory.performed += _ => OnInventoryToggle?.Invoke();
-
-        // 건설
         inputActions.Player.Build.performed += _ => OnBuildMode?.Invoke();
-
-        // 해체
         inputActions.Player.Destroy.performed += _ => OnDestroyMode?.Invoke();
     }
 
