@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    public Item[] Items { get; private set; } = new Item[28];
+    public Item[] Items { get; private set; } = new Item[29];
     
     [field:SerializeField] public InventoryUI InventoryUI { get; private set; }
     [field:SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
         QuickSlotInventoryUI = GetComponentInChildren<QuickSlotInventoryUI>();
     }
 
-    private void Start()
+    private void Awake()
     {
         InventoryManager.Instance.Init(this);
         Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
@@ -55,136 +55,85 @@ public class Inventory : MonoBehaviour
     /// <param name="item">추가 할 아이템</param>
     public void AddItem(Item item)
     {
-        // List<ItemSlot> _itemSlots = InventoryManager.Instance.InventoryUI.itemSlots;
-        // foreach (var slot in _itemSlots)
-        // {
-        //     if (slot.CanStack(item))
-        //     {
-        //         slot.StackItem(item);
-        //         return;
-        //     }
-        // }
+        if (item.Data.stackable)
+        {
+            AddStackableItem(item, item.Data.quantity);
+        }
+        else
+        {
+            AddNotStackableItem(item);
+        }
+
+        InventoryUI.RefreshUI(Items);
+    }
+
+    private void AddStackableItem(Item item, int quantity)
+    {
+        Item savedItem = null;
         
         for (int i = 0; i < Items.Length; i++)
         {
-            if (Items[i] != null && Items[i].Data.itemName == item.Data.itemName && Items[i].Data.stackable &&
-                !Items[i].IsMaxStack)
+            if (Items[i] == null || Items[i].IsMaxStack)
+                continue;
+            
+            if (Items[i].Data.itemName == item.Data.itemName)
             {
-                int max = Items[i].Data.maxStack;
-                int total = Items[i].stack + item.Data.quantity;
-
-                if (total <= max)
-                {
-                    Items[i].stack = total;
-                    return;
-                }
-                else
-                {
-                    Items[i].stack = max;
-                    item.stack = total - max;
-                }
+                savedItem = Items[i];
+                break;
             }
         }
 
+        if (savedItem == null)
+        {
+            int emptyIndex = GetEmptySlotIndex();
+            if (emptyIndex == -1)
+            {
+                Debug.LogWarning("추가 불가능");
+            }
+            else
+            {
+                item.stack += quantity;
+                Items[emptyIndex] = item;
+            }
+        }
+        // 기존에 겹칠수 있는 아이템이 있을 경우
+        else
+        {
+            int max = savedItem.Data.maxStack;
+            savedItem.stack += quantity;
+
+            if (savedItem.stack > max)
+            {
+                int left = savedItem.stack - max;
+                savedItem.stack = max;
+                AddStackableItem(item, left);
+            }
+        }
+    }
+    
+    private void AddNotStackableItem(Item item)
+    {
+        int emptyIndex = GetEmptySlotIndex();
+        if (emptyIndex == -1)
+        {
+            Debug.LogWarning("추가 불가능");
+        }
+        else
+        {
+            Items[emptyIndex] = item;
+        }
+    }
+
+    private int GetEmptySlotIndex()
+    {
         for (int i = 0; i < Items.Length; i++)
         {
             if (Items[i] == null)
-            {
-                Items[i] = item;
-                return;
-            }
+                return i;
         }
-        
-        // foreach (var slot in _itemSlots)
-        // {
-        //     if (slot.IsEmpty)
-        //     {
-        //         slot.SetItem(item);
-        //         
-        //         if (item.Data.stackable)
-        //         {
-        //             slot.StackItem(item);
-        //         }
-        //         return;
-        //     }
-        // }
-        
-        Debug.Log("Inventory is full.");
+
+        return -1;
     }
-
-
-    /// <summary>
-    /// 인벤토리 내 아이템 정렬 메서드
-    /// </summary>
-    // public void Sort()
-    // {
-    //     List<ItemSlot> _itemSlots = InventoryManager.Instance.InventoryUI.itemSlots;
-    //     List<Item> items = new List<Item>();
-    //
-    //     foreach (var slot in _itemSlots)
-    //     {
-    //         if (!slot.IsEmpty)
-    //         {
-    //             items.Add(slot.CurrentItem);
-    //         }
-    //     }
-    //
-    //     List<Item> mergedItems = new List<Item>();
-    //
-    //     foreach (var item in items)
-    //     {
-    //         var noMax = mergedItems.Find(x => x.Data.id == item.Data.id && x.Data.stackable);
-    //
-    //         if (noMax != null)
-    //         {
-    //             int result = noMax.stack + item.stack;
-    //             int max = item.Data.maxStack;
-    //
-    //             if (result <= max)
-    //             {
-    //                 noMax.stack = result;
-    //             }
-    //             else
-    //             {
-    //                 noMax.stack = max;
-    //
-    //                 Item leftover = item;
-    //                 leftover.stack = result - max;
-    //                 mergedItems.Add(leftover);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             mergedItems.Add(item);
-    //         }
-    //     }
-    //
-    //     mergedItems.Sort((a, b) =>
-    //     {
-    //         int result = a.Data.id.CompareTo(b.Data.id);
-    //         if (result != 0)
-    //         {
-    //             return result;
-    //         }
-    //         
-    //         bool isAMax = a.Data.stackable && a.stack == a.Data.maxStack;
-    //         bool isBMax = b.Data.stackable && b.stack == b.Data.maxStack;
-    //         
-    //         if (isAMax && !isBMax) return -1;
-    //
-    //         return 0;
-    //     });
-    //
-    //     foreach (var slot in _itemSlots)
-    //     {
-    //         slot.SetItem(null);
-    //     }
-    //
-    //     for (int i = 0; i < mergedItems.Count && i < _itemSlots.Count; i++)
-    //     {
-    //         _itemSlots[i].SetItem(mergedItems[i]);
-    //     }
-    // }
 
     public void NewSort()
     {
@@ -241,6 +190,6 @@ public class Inventory : MonoBehaviour
             Items[i] = i < mergedItems.Count ? mergedItems[i] : null;
         }
         
-        InventoryManager.Instance.InventoryUI.RefreshUI(Items);
+        InventoryUI.RefreshUI(Items);
     }
 }

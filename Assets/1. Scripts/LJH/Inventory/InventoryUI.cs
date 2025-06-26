@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +51,7 @@ public class InventoryUI : MonoBehaviour
             itemSlot.RefreshUI();
         }
     }
-    
+
     private void InitSlots()
     {
         for (int i = 0; i < _numberOfQuickSlots; i++)

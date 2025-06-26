@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +12,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private TextMeshProUGUI _itemAmountText;
     
     public int SlotIndex { get; private set; }
-    public Item CurrentItem { get; private set; }
     
     private const string ITEM_IMAGE = "IconImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
@@ -31,73 +31,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         SlotIndex = index;
     }
-
-    /// <summary>
-    /// 아이템이 더할 수 있는 아이템인지 확인하는 bool 체크 메서드
-    /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-    public bool CanStack(Item item)
-    {
-        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !CurrentItem.IsMaxStack && item.Data.stackable;
-    }
-
-    /// <summary>
-    /// 갯수를 더할 수 있는 아이템을 얻었을때, 아이템을 더해주는 메서드
-    /// </summary>
-    /// <param name="item"></param>
-    public void StackItem(Item item)
-    {
-        var max = CurrentItem.Data.maxStack;
-        var result = CurrentItem.stack + item.Data.quantity;
-        
-        if (result > max)
-        {
-            var left = result - max;
-            
-            CurrentItem.stack = max;
-            item.stack = left;
-            
-            //MainInventory.AddItem(item);
-        }
-        else
-        {
-            CurrentItem.stack = result;
-        }
-
-        RefreshUI();
-    }
-    
-    /// <summary>
-    /// 두 아이템 슬롯의 아이템이 합쳐질 수 있는지 확인하는 bool 체크 메서드
-    /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-    public bool CanMerge(Item item)
-    {
-        return !IsEmpty && CurrentItem.Data.itemName == item.Data.itemName && !item.IsMaxStack && item.Data.stackable;
-    }
-
-    /// <summary>
-    /// 두 아이템 슬롯의 아이템 수량을 합칠때 사용할 메서드
-    /// </summary>
-    /// <param name="item"></param>
-    public void MergeItem(Item item)
-    {
-        var max = item.Data.maxStack;
-        var total = _draggingItem.stack + item.stack;
-
-        if (total <= max)
-        {
-            item.stack = total;
-            _draggingItem = null;
-        }
-        else
-        {
-            item.stack = max;
-            _draggingItem.stack = total - max;
-        }
-    }
     
     /// <summary>
     /// 아이템 슬롯의 UI 새로고침 메서드
@@ -110,6 +43,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _itemImage.enabled = false;
             _itemImage.sprite = null;
+            SetAmount(null);
             return;
         }
         else
@@ -118,16 +52,14 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             _itemImage.sprite = item.Data.icon;
         }
         
-        SetAmount();
+        SetAmount(item);
     }
 
     /// <summary>
     /// 아이템 슬롯의 수량 표시 메서드
     /// </summary>
-    private void SetAmount()
+    private void SetAmount(Item item)
     {
-        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
-
         if (item == null)
         {
             _itemAmountText.text = "";
@@ -162,13 +94,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
+        
         //칸이 비었는지 확인후, 비어있지 않다면 작동.
-        if (IsEmpty)
+        if (item == null)
         {
             return;
         }
-        
-        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
         
         //드래그가 시작될 때, 해당 아이템 슬롯을 기억하고, 그 슬롯의 Item을 임시 저장.
         _draggingOriginSlot = this;
@@ -177,12 +109,14 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //드래그가 시작될 때, 마우스 포인터에 드래그 될 이미지를 표시.
         _draggingItemIcon = new GameObject("Dragging Icon");
         _draggingItemIcon.transform.SetParent(transform.root);
-        Image image = _draggingItemIcon.AddComponent<Image>();
-        image.sprite = CurrentItem.Data.icon;
+        var image = _draggingItemIcon.AddComponent<Image>();
+        image.sprite = item.Data.icon;
         image.raycastTarget = false;
         _draggingItemIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
         
         //해당 슬롯을 비워서, 드래그 하는것을 더 명시적으로 보여줌.
+        InventoryManager.Instance.Inventory.Items[SlotIndex] = null;
+        RefreshUI();
     }
 
     //나중에 리펙토링 해 볼 예정
@@ -218,11 +152,15 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             _draggingItemIcon = null;
         }
         
-        //일시적으로 아이템을 다시 원래 자리로 복구 시킴.
-        // if (_draggingItem != null && eventData.pointerEnter?.GetComponent<ItemSlot>() == null)
-        // {
-        //     _draggingOriginSlot.SetItem(_draggingItem);
-        // }
+        //아이템을 다시 원래 자리로 복구 시킴.
+        if (_draggingItem != null && eventData.pointerEnter?.GetComponent<ItemSlot>() == null)
+        {
+            InventoryManager.Instance.Inventory.Items[_draggingOriginSlot.SlotIndex] = _draggingItem;
+            _draggingOriginSlot.RefreshUI();
+        }
+
+        _draggingItem = null;
+        _draggingOriginSlot = null;
     }
     
     public void OnDrop(PointerEventData eventData)
@@ -239,12 +177,28 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //해당칸이 비어있다면, 드래그 중인 아이템으로 넣어줌.
         if (targetItem == null)
         {
-            inventory.Items[SlotIndex] = _draggingItem;
+            if (SlotIndex != _draggingOriginSlot.SlotIndex)
+            {
+                inventory.Items[SlotIndex] = _draggingItem;
+                inventory.Items[_draggingOriginSlot.SlotIndex] = null;
+            }
+            else
+            {
+                inventory.Items[SlotIndex] = _draggingItem;
+            }
         }
         //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
         else if (targetItem.Data.itemName == _draggingItem.Data.itemName && targetItem.Data.stackable)
         {
-            MergeItem(_draggingItem);
+            if (targetItem.IsMaxStack || _draggingItem.IsMaxStack)
+            {
+                inventory.Items[_draggingOriginSlot.SlotIndex] = targetItem;
+                inventory.Items[SlotIndex] = _draggingItem;
+            }
+            else
+            {
+                MergeItem(targetItem);
+            }
         }
         //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
         else
@@ -253,9 +207,30 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             inventory.Items[SlotIndex] = _draggingItem;
         }
         
-        InventoryManager.Instance.InventoryUI.RefreshUI(inventory.Items);
+        InventoryManager.Instance.Inventory.InventoryUI.RefreshUI(inventory.Items);
 
         _draggingItem = null;
         _draggingOriginSlot = null;
+    }
+    
+    /// <summary>
+    /// 두 아이템 슬롯의 아이템 수량을 합칠때 사용할 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    private void MergeItem(Item item)
+    {
+        var max = item.Data.maxStack;
+        var total = _draggingItem.stack + item.stack;
+
+        if (total <= max)
+        {
+            item.stack = total;
+            _draggingItem = null;
+        }
+        else
+        {
+            item.stack = max;
+            _draggingItem.stack = total - max;
+        }
     }
 }
