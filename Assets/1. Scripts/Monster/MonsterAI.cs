@@ -77,11 +77,25 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
             yield return null;
         }
+
+        CurState = MONSTER_STATE.Attack;
     }
 
     private IEnumerator C_Attack()
     {
-        yield return null;
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.deltaTime;
+
+            if(timer > _monster.Stat.Aps)
+            {
+                timer = 0f;
+                Debug.Log("Attack!");
+            }
+
+            yield return null;
+        }
     }
 
     /// <summary>

@@ -98,7 +98,7 @@ public static class AstarAlgorithm
     /// <param name="a"></param>
     /// <param name="b"></param>
     /// <returns></returns>
-    private static int GetHeuristicDistance(Node a, Node b)
+    public static int GetHeuristicDistance(Node a, Node b)
     {
         int distX = Mathf.Abs(a.GridIndex.x - b.GridIndex.x);
         int distY = Mathf.Abs(a.GridIndex.y - b.GridIndex.y);
