@@ -30,11 +30,19 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private List<Monster_SO> _monsterDatas;
 
     [Header("# Test")]
-    public Transform TestCore;
+    public Transform TestCore; // 인스펙터에서 넣어도 되고 안 넣어도 됨
     public int testStage;
     
     private void Awake()
     {
+        if(TestCore == null)
+            TestCore = GameObject.Find("TestCore")?.GetComponent<Transform>();
+
+        if(TestCore == null)
+        {
+            Debug.LogError("[MonsterSpawner] TestCore를 찾지 못했습니다.");
+        }
+
         GenerateNodes();
     }
 
