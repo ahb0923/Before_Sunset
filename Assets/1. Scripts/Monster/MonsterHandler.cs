@@ -12,6 +12,9 @@ public class MonsterHandler : MonoBehaviour
         Ai = GetComponent<MonsterAI>();
     }
 
+    /// <summary>
+    /// 몬스터 초기화
+    /// </summary>
     public void Init(Monster_SO stat, Vector3 position, Transform target, List<Node> path)
     {
         Stat = stat;
