@@ -114,11 +114,11 @@ public class BaseTower : MonoBehaviour
             Debug.LogWarning($"[설치 실패] 이미 건물이 있음 => 『{hit.gameObject.name}』 에 충돌");
             return false;
         }
-
+        /*
         if (!CheckResource())
         {
             return false;
-        }
+        }*/
 
 
         //건물 배치

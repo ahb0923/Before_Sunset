@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -53,7 +53,7 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
 
         if (data == null)
         {
-            Debug.Log("SO데이터 Attach 누락");
+            Debug.Log("데이터 세팅 누락");
             return;
         }
         Tier = data.level;
