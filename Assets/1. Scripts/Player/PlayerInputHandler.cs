@@ -13,7 +13,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public event Action OnInventoryToggle;
     public event Action OnBuildMode;
-    public event Action OnDestroyMode;
+    public event Action OnUnBuildMode;
 
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class PlayerInputHandler : MonoBehaviour
         // 이벤트 입력
         inputActions.Player.Inventory.performed += _ => OnInventoryToggle?.Invoke();
         inputActions.Player.Build.performed += _ => OnBuildMode?.Invoke();
-        inputActions.Player.Destroy.performed += _ => OnDestroyMode?.Invoke();
+        inputActions.Player.UnBuild.performed += _ => OnUnBuildMode?.Invoke();
     }
 
     private void OnDisable()

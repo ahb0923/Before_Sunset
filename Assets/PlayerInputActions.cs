@@ -64,7 +64,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Destroy"",
+                    ""name"": ""UnBuild"",
                     ""type"": ""Button"",
                     ""id"": ""2d4dbef9-f008-40ef-ac9b-30ce8e984064"",
                     ""expectedControlType"": ""Button"",
@@ -191,7 +191,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Destroy"",
+                    ""action"": ""UnBuild"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -206,7 +206,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Swing = m_Player.FindAction("Swing", throwIfNotFound: true);
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         m_Player_Build = m_Player.FindAction("Build", throwIfNotFound: true);
-        m_Player_Destroy = m_Player.FindAction("Destroy", throwIfNotFound: true);
+        m_Player_UnBuild = m_Player.FindAction("UnBuild", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -272,7 +272,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Swing;
     private readonly InputAction m_Player_Inventory;
     private readonly InputAction m_Player_Build;
-    private readonly InputAction m_Player_Destroy;
+    private readonly InputAction m_Player_UnBuild;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -281,7 +281,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Swing => m_Wrapper.m_Player_Swing;
         public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
         public InputAction @Build => m_Wrapper.m_Player_Build;
-        public InputAction @Destroy => m_Wrapper.m_Player_Destroy;
+        public InputAction @UnBuild => m_Wrapper.m_Player_UnBuild;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -303,9 +303,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Build.started += instance.OnBuild;
             @Build.performed += instance.OnBuild;
             @Build.canceled += instance.OnBuild;
-            @Destroy.started += instance.OnDestroy;
-            @Destroy.performed += instance.OnDestroy;
-            @Destroy.canceled += instance.OnDestroy;
+            @UnBuild.started += instance.OnUnBuild;
+            @UnBuild.performed += instance.OnUnBuild;
+            @UnBuild.canceled += instance.OnUnBuild;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -322,9 +322,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Build.started -= instance.OnBuild;
             @Build.performed -= instance.OnBuild;
             @Build.canceled -= instance.OnBuild;
-            @Destroy.started -= instance.OnDestroy;
-            @Destroy.performed -= instance.OnDestroy;
-            @Destroy.canceled -= instance.OnDestroy;
+            @UnBuild.started -= instance.OnUnBuild;
+            @UnBuild.performed -= instance.OnUnBuild;
+            @UnBuild.canceled -= instance.OnUnBuild;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -348,6 +348,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnSwing(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
         void OnBuild(InputAction.CallbackContext context);
-        void OnDestroy(InputAction.CallbackContext context);
+        void OnUnBuild(InputAction.CallbackContext context);
     }
 }

@@ -27,14 +27,14 @@ public class PlayerController : MonoBehaviour
     {
         input.OnInventoryToggle += ToggleInventory;
         input.OnBuildMode += EnterBuildMode;
-        input.OnDestroyMode += EnterDestroyMode;
+        input.OnUnBuildMode += EnterUnBuildMode;
     }
 
     private void OnDestroy()
     {
         input.OnInventoryToggle -= ToggleInventory;
         input.OnBuildMode -= EnterBuildMode;
-        input.OnDestroyMode -= EnterDestroyMode;
+        input.OnUnBuildMode -= EnterUnBuildMode;
     }
 
     private void Update()
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("건설 모드 진입");
     }
 
-    private void EnterDestroyMode()
+    private void EnterUnBuildMode()
     {
         Debug.Log("해체 모드 진입");
     }
