@@ -13,6 +13,7 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
     protected override int GetId(TowerData data) => data.id;
     protected override string GetName(TowerData data) => data.towerName;
 
+    [ContextMenu ("Debug all Log")]
     public override void DebugLogAll(Func<TowerData, string> formatter = null)
     {
         if (dataIdDictionary.Count == 0)
@@ -30,8 +31,6 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
                 Debug.Log(formatter(tower));
                 continue;
             }
-
-            Debug.Log($"{ tower.buildRequirements.Count}");
 
             string buildReqs = string.Join(", ", tower.buildRequirements.Select(kv => $"ID {kv.Key}: {kv.Value}"));
 

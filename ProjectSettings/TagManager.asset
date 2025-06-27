@@ -14,7 +14,7 @@ TagManager:
   - Tower
   - Monster
   - Obstacle
-  - 
+  - Ground
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 2565922313
+    locked: 0
+  - name: Tower
+    uniqueID: 2170103857
+    locked: 0
+  - name: UI
+    uniqueID: 3759000591
     locked: 0
