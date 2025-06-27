@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
+public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
 {
     [Header(" [ Data ] ")]
     [SerializeField] private TowerData data;
@@ -40,7 +40,9 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
     //public ResourceRequirement UpgradeRequirements { get; private set; }
 
     public SpriteRenderer iconRenderer;
-    private bool isFixingDelay = false;
+    //private bool isFixingDelay = false;
+
+
 
     /// <summary>
     /// 풀링 사용시 OnGet될때 초기화 호출<br/>
@@ -60,8 +62,8 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
         TowerName = data.towerName;
         Context = data.flavorText;
         MaxHp = data.towerHp;
-        // C_Construction 최대 HP 비례해서 회복시킬 예정
-        CurrHp = 0;
+        // C_Construction 최대 HP 비례해서 회복시킬 예정 => 기획변동 없을시 초기화에서 최대값으로
+        CurrHp = MaxHp;
         AttackPower = data.damage;
         AttackSpeed = data.aps;
         AttackRange = data.range;
@@ -70,11 +72,41 @@ public class TowerStatHandler : MonoBehaviour //, IDamagable, IInteractable
         //UpgradeRequirements = data.upgradeRequirements;  
     }
 
-
-    public void UpgradeTower()
+    /// <summary>
+    /// 데미지 테스팅 메서드
+    /// </summary>
+    [ContextMenu("테스트 데미지 80")]
+    private void TestDamage()
     {
+        var dummy = new Damaged
+        {
+            Value = 80,
+            IgnoreDefense = false,
+            Attacker = this.gameObject
+        };
 
+        OnDamaged(dummy);
+        Debug.Log($"CurrHp : {CurrHp}");
+    }
+    /// <summary>
+    /// 실제 hp 변동 메서드
+    /// </summary>
+    /// <param name="damaged">받은 데미지 정보</param>
+    public void OnDamaged(Damaged damaged)
+    {
+        if (damaged.Attacker == null)
+        {
+            Debug.LogWarning("타격 대상 못찾음!");
+            return;
+        }
 
+        CurrHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
+        CurrHp = Mathf.Max(CurrHp, 0);
 
+        if (CurrHp <= 0)
+        {
+            CurrHp = 0;
+            _tower.ai.SetState(TOWER_STATE.Destroy, force: true);
+        }
     }
 }

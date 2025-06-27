@@ -12,15 +12,12 @@ public class MapManager : MonoSingleton<MapManager>
     public BuildPreview BuildPreview { get; private set; }
      
     public DragIcon DragIcon { get; private set; }
-
-    private void Start()
+    private void Awake()
     {
+        base.Awake();
         GroundTile = GetComponentInChildren<Tilemap>();
-        Debug.Log(GroundTile);
         BuildPreview = GetComponentInChildren<BuildPreview>();
-        Debug.Log(BuildPreview);
         DragIcon = GetComponentInChildren<DragIcon>(true);
-        Debug.Log(DragIcon);
     }
 
 }
