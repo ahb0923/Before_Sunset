@@ -185,7 +185,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         if(_path != null)
         {
-            Gizmos.color = Color.white;
+            Gizmos.color = Color.red;
 
             Vector3 pos = _path.Path[0].WorldPos;
             for (int i = 1; i < _path.Path.Count; i++)
