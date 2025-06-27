@@ -11403,6 +11403,7 @@ MonoBehaviour:
   moveSpeed: 2
   animator: {fileID: 8779816976417086534}
   mainCamera: {fileID: 969134075631786501}
+  inventoryUI: {fileID: 0}
   buildModeUI: {fileID: 1760039391}
   unbuildModeUI: {fileID: 732666535}
 --- !u!212 &201733399374223832
@@ -11676,7 +11677,8 @@ MonoBehaviour:
   virtualCam: {fileID: 1560517441441792286}
   zoomSpeed: 10
   minZoom: 1
-  maxZoom: 3
+  maxZoom: 5
+  zoomSmoothSpeed: 0.2
 --- !u!4 &4252454168146059220
 Transform:
   m_ObjectHideFlags: 3

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isSwinging = false;
 
+    public GameObject inventoryUI;
     public GameObject buildModeUI;
     public GameObject unbuildModeUI;
 
@@ -108,18 +109,29 @@ public class PlayerController : MonoBehaviour
 
     private void ToggleInventory()
     {
-        Debug.Log("인벤토리 열기/닫기");
+        if (inventoryUI != null)
+            inventoryUI.SetActive(!inventoryUI.activeSelf);
     }
 
     private void EnterBuildMode()
     {
         if (buildModeUI != null)
-            buildModeUI.SetActive(!buildModeUI.activeSelf);
+        {
+            bool isActive = !buildModeUI.activeSelf;
+            buildModeUI.SetActive(isActive);
+            if (isActive && unbuildModeUI != null)
+                unbuildModeUI.SetActive(false);
+        }
     }
 
     private void EnterUnBuildMode()
     {
         if (unbuildModeUI != null)
-            unbuildModeUI.SetActive(!unbuildModeUI.activeSelf);
+        {
+            bool isActive = !unbuildModeUI.activeSelf;
+            unbuildModeUI.SetActive(isActive);
+            if (isActive && buildModeUI != null)
+                buildModeUI.SetActive(false);
+        }
     }
 }
