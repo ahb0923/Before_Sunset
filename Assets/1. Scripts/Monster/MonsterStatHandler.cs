@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MonsterStatHandler : MonoBehaviour
+public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
     private BaseMonster _monster;
 
@@ -49,5 +49,27 @@ public class MonsterStatHandler : MonoBehaviour
         WaitAttack = new WaitForSeconds(AttackPerSec);
         AttackRange = data.range;
         Speed = data.speed;
+    }
+
+    /// <summary>
+    /// 실제 hp 변동 메서드
+    /// </summary>
+    /// <param name="damaged">받은 데미지 정보</param>
+    public void OnDamaged(Damaged damaged)
+    {
+        if (damaged.Attacker == null)
+        {
+            Debug.LogWarning("타격 대상 못찾음!");
+            return;
+        }
+
+        CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
+        CurHp = Mathf.Max(CurHp, 0);
+
+        if (CurHp <= 0)
+        {
+            CurHp = 0;
+            _monster.Ai.ChangeState(MONSTER_STATE.Dead);
+        }
     }
 }
