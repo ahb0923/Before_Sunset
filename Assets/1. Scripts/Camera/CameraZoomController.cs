@@ -3,33 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
-
 public class CameraZoomController : MonoBehaviour
 {
-    public CinemachineVirtualCamera virtualCam;
+    [SerializeField] private CinemachineVirtualCamera virtualCam;
 
-    [Header("Zoom Settings")]
-    public float zoomSpeed = 10f;
-    public float minZoom = 3f;
-    public float maxZoom = 10f;
+    [SerializeField] private float zoomSpeed = 10f;
+    [SerializeField] private float minZoom = 3f;
+    [SerializeField] private float maxZoom = 10f;
+    [SerializeField] private float zoomSmoothSpeed = 0.2f;
 
-    [Header("Smooth Zoom")]
-    public float zoomSmoothSpeed = 0.2f;
-
-    private float targetZoom;
-    private float currentZoom;
+    private float _targetZoom;
+    private float _currentZoom;
 
     private void Start()
     {
         if (virtualCam == null)
         {
-            Debug.LogWarning("Virtual Camera 연결되지않음.");
+            Debug.LogWarning("Virtual Camera 연결되지않음");
             return;
         }
 
-        currentZoom = virtualCam.m_Lens.OrthographicSize;
-        targetZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
-        virtualCam.m_Lens.OrthographicSize = targetZoom;
+        _currentZoom = virtualCam.m_Lens.OrthographicSize;
+        _targetZoom = Mathf.Clamp(_currentZoom, minZoom, maxZoom);
+        virtualCam.m_Lens.OrthographicSize = _targetZoom;
     }
 
     private void Update()
@@ -40,13 +36,14 @@ public class CameraZoomController : MonoBehaviour
 
         if (Mathf.Abs(scroll) > 0.01f)
         {
-            targetZoom -= scroll * zoomSpeed * 0.1f;
-            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
+            _targetZoom -= scroll * zoomSpeed * 0.1f;
+            _targetZoom = Mathf.Clamp(_targetZoom, minZoom, maxZoom);
         }
 
-        currentZoom = Mathf.Lerp(currentZoom, targetZoom, zoomSmoothSpeed);
+        _currentZoom = Mathf.Lerp(_currentZoom, _targetZoom, zoomSmoothSpeed);
+
         var lens = virtualCam.m_Lens;
-        lens.OrthographicSize = currentZoom;
+        lens.OrthographicSize = _currentZoom;
         virtualCam.m_Lens = lens;
     }
 }

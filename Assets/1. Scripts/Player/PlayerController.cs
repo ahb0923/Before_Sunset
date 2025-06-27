@@ -6,40 +6,36 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(PlayerInputHandler))]
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 2.0f;
-    public Animator animator;
-    public Camera mainCamera;
+    [SerializeField] private float moveSpeed = 2.0f;
+    [SerializeField] private Animator animator;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private GameObject buildModeUI;
+    [SerializeField] private GameObject unbuildModeUI;
 
-    private Rigidbody2D rb;
-    private SpriteRenderer sr;
-    private PlayerInputHandler input;
-
-    private bool isSwinging = false;
-
-    public GameObject inventoryUI;
-    public GameObject buildModeUI;
-    public GameObject unbuildModeUI;
-
+    private Rigidbody2D _rigidbody;
+    private SpriteRenderer _spriteRenderer;
+    private PlayerInputHandler _input;
+    private bool _isSwinging = false;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
-        input = GetComponent<PlayerInputHandler>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _input = GetComponent<PlayerInputHandler>();
     }
 
     private void Start()
     {
-        input.OnInventoryToggle += ToggleInventory;
-        input.OnBuildMode += EnterBuildMode;
-        input.OnUnBuildMode += EnterUnBuildMode;
+        _input.OnInventoryToggle += ToggleInventory;
+        _input.OnBuildMode += EnterBuildMode;
+        _input.OnUnBuildMode += EnterUnBuildMode;
     }
 
     private void OnDestroy()
     {
-        input.OnInventoryToggle -= ToggleInventory;
-        input.OnBuildMode -= EnterBuildMode;
-        input.OnUnBuildMode -= EnterUnBuildMode;
+        _input.OnInventoryToggle -= ToggleInventory;
+        _input.OnBuildMode -= EnterBuildMode;
+        _input.OnUnBuildMode -= EnterUnBuildMode;
     }
 
     private void Update()
@@ -49,8 +45,11 @@ public class PlayerController : MonoBehaviour
         HandleSwing();
     }
 
+    // 마우스 방향을 바라보도록 회전
     private void HandleLookAndFlip()
     {
+        if (mainCamera == null) return;
+
         Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 lookDir = (mouseWorld - transform.position).normalized;
 
@@ -66,51 +65,53 @@ public class PlayerController : MonoBehaviour
             : new Vector3(1f, 1f, 1f);
     }
 
+    // 이동 처리
     private void HandleMovement()
     {
-        if (isSwinging)
+        if (_isSwinging)
         {
-            rb.velocity = Vector2.zero;
+            _rigidbody.velocity = Vector2.zero;
             animator.SetBool("isWalking", false);
             return;
         }
 
-        Vector2 move = input.MoveInput;
-        rb.velocity = move * moveSpeed;
+        Vector2 move = _input.MoveInput;
+        _rigidbody.velocity = move * moveSpeed;
         animator.SetBool("isWalking", move.sqrMagnitude > 0.01f);
     }
 
+    // 스윙 처리
     private void HandleSwing()
     {
-        if (input.IsSwing && !isSwinging)
+        if (_input.IsSwing && !_isSwinging)
         {
-            StartCoroutine(SwingCoroutine());
+            StartCoroutine(C_Swing());
         }
     }
 
-    private IEnumerator SwingCoroutine()
+    private IEnumerator C_Swing()
     {
-        isSwinging = true;
+        _isSwinging = true;
         animator.SetBool("isSwinging", true);
         yield return new WaitForSeconds(1.2f);
         animator.SetBool("isSwinging", false);
-        isSwinging = false;
+        _isSwinging = false;
     }
 
+    // 마우스 방향을 4방향으로 스냅
     private float GetSnappedAngle(float angle)
     {
         angle = (angle + 360f) % 360f;
 
         if (angle >= 45f && angle < 135f) return 90f;
-        else if (angle >= 135f && angle < 225f) return 180f;
-        else if (angle >= 225f && angle < 315f) return 270f;
-        else return 0f;
+        if (angle >= 135f && angle < 225f) return 180f;
+        if (angle >= 225f && angle < 315f) return 270f;
+        return 0f;
     }
 
     private void ToggleInventory()
     {
-        if (inventoryUI != null)
-            inventoryUI.SetActive(!inventoryUI.activeSelf);
+        Debug.Log("인벤토리 열기/닫기");
     }
 
     private void EnterBuildMode()

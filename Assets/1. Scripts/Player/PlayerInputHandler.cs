@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    private PlayerInputActions inputActions;
+    private PlayerInputActions _inputActions;
 
     public Vector2 MoveInput { get; private set; }
     public bool IsSwing { get; private set; }
@@ -17,29 +17,71 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
-        inputActions = new PlayerInputActions();
+        _inputActions = new PlayerInputActions();
     }
 
     private void OnEnable()
     {
-        inputActions.Player.Enable();
+        _inputActions.Player.Enable();
 
-        // 이동
-        inputActions.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
-        inputActions.Player.Move.canceled += _ => MoveInput = Vector2.zero;
+        _inputActions.Player.Move.performed += OnMovePerformed;
+        _inputActions.Player.Move.canceled += OnMoveCanceled;
 
-        // 스윙
-        inputActions.Player.Swing.performed += _ => IsSwing = true;
-        inputActions.Player.Swing.canceled += _ => IsSwing = false;
+        _inputActions.Player.Swing.performed += OnSwingPerformed;
+        _inputActions.Player.Swing.canceled += OnSwingCanceled;
 
-        // 이벤트 입력
-        inputActions.Player.Inventory.performed += _ => OnInventoryToggle?.Invoke();
-        inputActions.Player.Build.performed += _ => OnBuildMode?.Invoke();
-        inputActions.Player.UnBuild.performed += _ => OnUnBuildMode?.Invoke();
+        _inputActions.Player.Inventory.performed += OnInventoryPerformed;
+        _inputActions.Player.Build.performed += OnBuildPerformed;
+        _inputActions.Player.UnBuild.performed += OnUnBuildPerformed;
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Disable();
+        _inputActions.Player.Move.performed -= OnMovePerformed;
+        _inputActions.Player.Move.canceled -= OnMoveCanceled;
+
+        _inputActions.Player.Swing.performed -= OnSwingPerformed;
+        _inputActions.Player.Swing.canceled -= OnSwingCanceled;
+
+        _inputActions.Player.Inventory.performed -= OnInventoryPerformed;
+        _inputActions.Player.Build.performed -= OnBuildPerformed;
+        _inputActions.Player.UnBuild.performed -= OnUnBuildPerformed;
+
+        _inputActions.Player.Disable();
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        MoveInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        MoveInput = Vector2.zero;
+    }
+
+    private void OnSwingPerformed(InputAction.CallbackContext context)
+    {
+        IsSwing = true;
+    }
+
+    private void OnSwingCanceled(InputAction.CallbackContext context)
+    {
+        IsSwing = false;
+    }
+
+    private void OnInventoryPerformed(InputAction.CallbackContext context)
+    {
+        OnInventoryToggle?.Invoke();
+    }
+
+    private void OnBuildPerformed(InputAction.CallbackContext context)
+    {
+        OnBuildMode?.Invoke();
+    }
+
+    private void OnUnBuildPerformed(InputAction.CallbackContext context)
+    {
+        OnUnBuildMode?.Invoke();
     }
 }
