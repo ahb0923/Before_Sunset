@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPoolable
@@ -23,7 +23,7 @@ public class PoolManager : MonoSingleton<PoolManager>
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
-    protected override void Awake()
+    private void Start()
     {
         _prefabs = new Dictionary<int, GameObject>();
         _pools = new Dictionary<int, Queue<GameObject>>();
@@ -44,6 +44,12 @@ public class PoolManager : MonoSingleton<PoolManager>
                 queue.Enqueue(obj);
             }
         }
+        
+    }
+
+    protected override void Awake()
+    {
+
     }
 
     /// <summary>
