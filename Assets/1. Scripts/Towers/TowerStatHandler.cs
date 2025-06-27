@@ -9,16 +9,17 @@ using UnityEngine.Serialization;
 public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
 {
     [Header(" [ Data ] ")]
-    [SerializeField] private TowerData data;
+    [SerializeField] private TowerData _data;
+    [SerializeField] private int _towerID;
 
     private BaseTower _tower;
 
     public event Action<float, float> OnHpChanged;
     public Coroutine fixCoroutine;
 
-    public int Tier { get; private set; }
+    public int Level { get; private set; }
     public string TowerName { get; private set; }
-    public string Context { get; private set; }
+    public string FlavorText { get; private set; }
 
     private float _currHp;
     public float CurrHp
@@ -52,21 +53,22 @@ public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
     public void Init()
     {
         _tower = GetComponent<BaseTower>();
+        _data = DataManager.Instance.TowerData.GetById(_towerID);
 
-        if (data == null)
+        if (_data == null)
         {
             Debug.Log("데이터 세팅 누락");
             return;
         }
-        Tier = data.level;
-        TowerName = data.towerName;
-        Context = data.flavorText;
-        MaxHp = data.towerHp;
+        Level = _data.level;
+        TowerName = _data.towerName;
+        FlavorText = _data.flavorText;
+        MaxHp = _data.towerHp;
         // C_Construction 최대 HP 비례해서 회복시킬 예정 => 기획변동 없을시 초기화에서 최대값으로
         CurrHp = MaxHp;
-        AttackPower = data.damage;
-        AttackSpeed = data.aps;
-        AttackRange = data.range;
+        AttackPower = _data.damage;
+        AttackSpeed = _data.aps;
+        AttackRange = _data.range;
 
         //BuildRequirements = data.buildRequirements;
         //UpgradeRequirements = data.upgradeRequirements;  
