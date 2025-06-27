@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum MONSTER_STATE
 {
     Invalid,
-    Idle,
+    Explore,
     Move,
     Attack,
     Dead,
@@ -13,23 +12,27 @@ public enum MONSTER_STATE
 
 public class MonsterAI : StateBasedAI<MONSTER_STATE>
 {
-    private MonsterHandler _monster;
+    private BaseMonster _monster;
+    private Core _core;
 
     public Transform Target { get; private set; }
-    public List<Node> Path { get; private set; }
+    private NodePath _path;
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
-    protected override void OnAwake()
+    public void Init(BaseMonster monster, Core core)
     {
-        _monster = GetComponent<MonsterHandler>();
+        _monster = monster;
+        _core = core;
     }
 
     protected override void DefineStates()
     {
-        AddState(MONSTER_STATE.Idle, new StateElem
+        AddState(MONSTER_STATE.Explore, new StateElem
         {
-
+            Entered = () => Debug.Log("탐색 시작"),
+            Doing = C_Explore,
+            Exited = () => Debug.Log("탐색 종료")
         });
 
         AddState(MONSTER_STATE.Move, new StateElem
@@ -48,7 +51,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         AddState(MONSTER_STATE.Dead, new StateElem
         {
-            Entered = () => PoolManager.Instance.ReturnToPool(POOL_TYPE.Monster, gameObject)
+            Entered = Dead
         });
     }
 
@@ -62,60 +65,134 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         return false;
     }
 
-    private IEnumerator C_Move()
+    /// <summary>
+    /// 코어를 향한 A* 경로 탐색 → 경로 없으면 가장 빠른 경로를 방해하는 타워 탐색
+    /// </summary>
+    private IEnumerator C_Explore()
     {
-        if(Path == null) yield break;
-
-        int index = 0;
-        while(index < Path.Count)
+        _path = FindPathToCore();
+        if( _path != null)
         {
-            transform.position = Vector2.MoveTowards(transform.position, Path[index].WorldPos, _monster.Stat.Speed * Time.deltaTime);
-            if(Vector2.Distance(transform.position, Path[index].WorldPos) < 0.01f)
-            {
-                transform.position = Path[index].WorldPos;
-                index++;
-            }
-            yield return null;
+            ChangeState(MONSTER_STATE.Move);
+            yield break;
         }
-
-        CurState = MONSTER_STATE.Attack;
-    }
-
-    private IEnumerator C_Attack()
-    {
-        float timer = 0f;
-        while (true)
+        else
         {
-            timer += Time.deltaTime;
-
-            if(timer > _monster.Stat.Aps)
-            {
-                timer = 0f;
-                Debug.Log("Attack!");
-            }
-
-            yield return null;
+            // 새로운 타겟과 그에 따른 경로를 받아와야 함
         }
     }
 
     /// <summary>
-    /// 타겟과 길을 추가하고 이동 상태로 변환
+    /// 코어를 향한 A* 경로 탐색
     /// </summary>
-    /// <param name="target"></param>
-    /// <param name="path"></param>
-    public void AddTarget(Transform target, List<Node> path)
+    private NodePath FindPathToCore()
     {
-        Target = target;
-        Path = path;
+        Node startNode = AstarAlgorithm.GetNodeFromWorldPosition(transform.position);
+        return AstarAlgorithm.FindPath(startNode, _core.transform, _core.Size, false); // 대각선 이동 미포함
+    }
 
-        TransitionTo(MONSTER_STATE.Move, true);
+    /// <summary>
+    /// 현재 위치에서 다음 노드의 위치로 이동
+    /// </summary>
+    private IEnumerator C_Move()
+    {
+        // 경로에 이동 불가능 노드가 포함되면, 다시 탐색 진행
+        if (!_path.IsWalkablePath())
+        {
+            ChangeState(MONSTER_STATE.Explore);
+            yield break;
+        }
 
-        // 상태 변환이 끝난 후에 Doing 코루틴 시작
+        while(_path.CurNode.isWalkable)
+        {
+            if (IsInterrupted)
+                yield break;
+
+            transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
+
+            if(Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
+            {
+                transform.position = _path.CurNode.WorldPos;
+
+                // 다음 노드가 없다면, 다시 탐색 진행
+                if (!_path.Next())
+                {
+                    ChangeState(MONSTER_STATE.Explore);
+                }
+                yield break;
+            }
+
+            yield return null;
+        }
+
+        // 가야하는 노드가 이동 불가능 노드가 되면, 다시 탐색 진행
+        ChangeState(MONSTER_STATE.Explore);
+    }
+
+    /// <summary>
+    /// 타겟에 대한 1회 공격
+    /// </summary>
+    private IEnumerator C_Attack()
+    {
+        // 타겟이 없을 경우 탐색 진행
+        if(Target == null)
+        {
+            ChangeState(MONSTER_STATE.Explore);
+            yield break;
+        }
+
+        // 타겟에 대한 대미지 부여는 여기서 진행
+        Debug.Log($"{_monster.Stat.MonsterName} : 공격!");
+
+        yield return _monster.Stat.WaitAttack;
+    }
+
+    /// <summary>
+    /// 사망 애니메이션 & 풀링 반환
+    /// </summary>
+    private void Dead()
+    {
+        // 사망 애니메이션 처리
+        Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
+
+        PoolManager.Instance.ReturnToPool(_monster.Stat.Id, gameObject);
+    }
+
+    /// <summary>
+    /// 스폰되었을 때 상태 초기화
+    /// </summary>
+    public void InitExploreState()
+    {
+        Target = _core.transform;
+        _path = null;
+        TransitionTo(MONSTER_STATE.Explore, true);
+
         RunDoingState();
     }
 
-    public void Dead()
+    /// <summary>
+    /// 상태 변환
+    /// </summary>
+    public void ChangeState(MONSTER_STATE state)
     {
-        CurState = MONSTER_STATE.Dead;
+        CurState = state;
+    }
+
+    /// <summary>
+    /// 해당 오브젝트 선택 시 경로 시각화
+    /// </summary>
+    private void OnDrawGizmosSelected()
+    {
+        if(_path != null)
+        {
+            Gizmos.color = Color.white;
+
+            Vector3 pos = _path.Path[0].WorldPos;
+            for (int i = 1; i < _path.Path.Count; i++)
+            {
+                Gizmos.DrawLine(pos, _path.Path[i].WorldPos);
+                pos = _path.Path[i].WorldPos;
+            }
+        }
     }
 }

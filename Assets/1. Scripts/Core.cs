@@ -1,28 +1,30 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Core : MonoBehaviour
+public class Core : MonoBehaviour //IDamagable 필요
 {
     [SerializeField] private int _size;
-    private float _halfSize => _size * 0.5f;
+    public int Size => _size;
+    [SerializeField] private int _maxHp = 500;
+    private int currHp;
 
-    public List<Vector3> GetNearestNodePositionsFromCore()
+    private void Awake()
     {
-        Vector3 bottomLeftPos = transform.position - new Vector3(_halfSize + MonsterSpawner.NODE_HALF_SIZE, _halfSize + MonsterSpawner.NODE_HALF_SIZE);
+        SetFullHp();
+    }
 
-        List<Vector3> positions = new List<Vector3>();
-        for (int x = 0; x < _size + 2; x++) 
+    public void SetFullHp()
+    {
+        currHp = _maxHp;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currHp -= damage;
+
+        if(currHp <= 0)
         {
-            for (int y = 0; y < _size + 2; y++) 
-            {
-                if(x == 0 || y == 0 || x == _size + 1 || y == _size + 1)
-                {
-                    Vector3 pos = bottomLeftPos + new Vector3(x * MonsterSpawner.NODE_SIZE, y * MonsterSpawner.NODE_SIZE, 0);
-                    positions.Add(pos);
-                }
-            }
+            currHp = 0;
+            Debug.Log("게임 오버");
         }
-
-        return positions;
     }
 }
