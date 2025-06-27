@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour
                 Value = Damage,
                 IgnoreDefense = false
             });
-
+            Debug.Log($"{Target}에게 {Damage}만큼의 데미지!");
             _isSentDamaged = true;
 
             if (_damageEffect != null)
