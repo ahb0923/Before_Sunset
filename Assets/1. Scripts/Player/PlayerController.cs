@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
 
     private bool isSwinging = false;
 
+    public GameObject buildModeUI;
+    public GameObject unbuildModeUI;
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -87,7 +91,7 @@ public class PlayerController : MonoBehaviour
     {
         isSwinging = true;
         animator.SetBool("isSwinging", true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.2f);
         animator.SetBool("isSwinging", false);
         isSwinging = false;
     }
@@ -109,11 +113,13 @@ public class PlayerController : MonoBehaviour
 
     private void EnterBuildMode()
     {
-        Debug.Log("건설 모드 진입");
+        if (buildModeUI != null)
+            buildModeUI.SetActive(!buildModeUI.activeSelf);
     }
 
     private void EnterUnBuildMode()
     {
-        Debug.Log("해체 모드 진입");
+        if (unbuildModeUI != null)
+            unbuildModeUI.SetActive(!unbuildModeUI.activeSelf);
     }
 }

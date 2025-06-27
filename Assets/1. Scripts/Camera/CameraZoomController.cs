@@ -7,14 +7,10 @@ using Cinemachine;
 public class CameraZoomController : MonoBehaviour
 {
     public CinemachineVirtualCamera virtualCam;
-    public CinemachineConfiner2D confiner;
 
     public float zoomSpeed = 10f;
     public float minZoom = 3f;
     public float maxZoom = 10f;
-
-    private float confinerResetCooldown = 0f;
-    public float confinerResetInterval = 0.2f;
 
     private void Start()
     {
@@ -34,21 +30,5 @@ public class CameraZoomController : MonoBehaviour
         float newZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
         lens.OrthographicSize = newZoom;
         virtualCam.m_Lens = lens;
-
-        if (Time.time > confinerResetCooldown && confiner != null)
-        {
-            StartCoroutine(ResetConfiner());
-            confinerResetCooldown = Time.time + confinerResetInterval;
-        }
-    }
-
-    IEnumerator ResetConfiner()
-    {
-        yield return null;
-
-        var shape = confiner.m_BoundingShape2D;
-        confiner.m_BoundingShape2D = null;
-        yield return null; // 1 프레임 더 기다리는 게 안정적
-        confiner.m_BoundingShape2D = shape;
     }
 }
