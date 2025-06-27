@@ -5,16 +5,16 @@ public class NodePath
     public Node StartNode {  get; private set; }
     public Node EndNode { get; private set; }
 
-    private List<Node> _path;
+    public List<Node> Path { get; private set; }
     private int _index;
 
-    public Node CurNode => _path[_index];
+    public Node CurNode => Path[_index];
 
     public NodePath(Node startNode, Node endNode, List<Node> path)
     {
         StartNode = startNode;
         EndNode = endNode;
-        _path = path;
+        Path = path;
 
         _index = 0;
     }
@@ -24,7 +24,7 @@ public class NodePath
     /// </summary>
     public bool Next()
     {
-        if (_index + 1 >= _path.Count)
+        if (_index + 1 >= Path.Count)
         {
             return false;
         }
@@ -38,11 +38,11 @@ public class NodePath
     /// </summary>
     public bool IsWalkablePath()
     {
-        int index = _path.IndexOf(CurNode);
+        int index = Path.IndexOf(CurNode);
 
-        for(int i = index; i < _path.Count; i++)
+        for(int i = index; i < Path.Count; i++)
         {
-            if (!_path[i].isWalkable)
+            if (!Path[i].isWalkable)
             {
                 return false;
             }

@@ -93,6 +93,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         while(_path.CurNode.isWalkable)
         {
+            if (IsInterrupted)
+                yield break;
+
             transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
 
             if(Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
@@ -167,5 +170,20 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     public void ChangeState(MONSTER_STATE state)
     {
         CurState = state;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(_path != null)
+        {
+            Gizmos.color = Color.white;
+
+            Vector3 pos = _path.Path[0].WorldPos;
+            for (int i = 1; i < _path.Path.Count; i++)
+            {
+                Gizmos.DrawLine(pos, _path.Path[i].WorldPos);
+                pos = _path.Path[i].WorldPos;
+            }
+        }
     }
 }
