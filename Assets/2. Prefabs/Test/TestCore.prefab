@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4519815998269468675}
   - component: {fileID: 6179638935455356683}
   - component: {fileID: 2593556748722853542}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TestCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,3 +144,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _size: 3
+  _maxHp: 500

@@ -2,186 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SPAWN_POINT_DIRECTION
+public class MonsterSpawner : MonoSingleton<MonsterSpawner>
 {
-    Up,
-    Right,
-    Down,
-    Left,
-}
-
-public class MonsterSpawner : MonoBehaviour
-{
-    public const int NODE_SIZE = 1;
-    public const float NODE_HALF_SIZE = 0.5f;
-    
-    private Node[,] _nodeGrid;
-    private int _nodeCountX;
-    private int _nodeCountY;
-    
-    private Dictionary<(SPAWN_POINT_DIRECTION, int), List<Node>> _pathCache = new();
-
     [Header("# Map Setting")]
     [SerializeField] private Vector2 _mapSize;
-    private Vector3 _bottomLeftPosition;
+    [SerializeField] private int _nodeSize = 1;
     [SerializeField] private LayerMask _obstacleMask;
+    public Core Core { get; private set; }
 
     [Header("# Spawn Setting")]
-    [SerializeField] private Transform[] _spawnPoints;
+    [SerializeField] private List<Transform> _spawnPoints;
     [SerializeField] private float _spawnTime;
-    [SerializeField] private List<Monster_SO> _monsterDatas;
 
     [Header("# Test")]
-    public Transform TestCore; // 인스펙터에서 안 넣어도 됨
-    private Core _core;
-    public int testStage;
+    public int spawnCount;
+    public int id;
     
-    private void Awake()
+    protected override void Awake()
     {
-        if(TestCore == null)
+        base.Awake();
+
+        if(Core == null)
         {
-            TestCore = GameObject.Find("TestCore")?.GetComponent<Transform>();
-            _core = TestCore.GetComponent<Core>();
+            Core = FindObjectOfType<Core>();
+
+            if(Core == null)
+            {
+                Debug.LogError("[MonsterSpawner] TestCore를 찾지 못했습니다.");
+            }
         }
 
-        if(TestCore == null)
-        {
-            Debug.LogError("[MonsterSpawner] TestCore를 찾지 못했습니다.");
-        }
-
-        GenerateNodes();
+        AstarAlgorithm.GenerateNode(transform.position, _mapSize, _nodeSize, _obstacleMask);
     }
 
-    /// <summary>
-    /// 맵 사이즈와 노드 사이즈를 바탕으로 노드를 생성
-    /// </summary>
-    private void GenerateNodes()
+    private void Update()
     {
-        _nodeCountX = Mathf.CeilToInt(_mapSize.x / NODE_SIZE);
-        _nodeCountY = Mathf.CeilToInt(_mapSize.y / NODE_SIZE);
-        _nodeGrid = new Node[_nodeCountX, _nodeCountY];
-
-        _bottomLeftPosition = new Vector2(transform.position.x, transform.position.y) - _mapSize * 0.5f;
-        for (int x = 0; x < _nodeCountX; x++)
-        {
-            for (int y = 0; y < _nodeCountY; y++)
-            {
-                Vector2Int gridPos = new Vector2Int(x, y);
-                Vector3 worldPos = _bottomLeftPosition + new Vector3(x * NODE_SIZE + NODE_HALF_SIZE, y * NODE_SIZE + NODE_HALF_SIZE);
-                Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), 0, _obstacleMask);
-                _nodeGrid[x, y] = new Node(hit == null, gridPos, worldPos);
-            }
-        }
-    }
-
-    /// <summary>
-    /// 월드 포지션에 대한 가장 가까운 노드를 반환
-    /// </summary>
-    private Node GetNodeFromWorldPosition(Vector3 worldPos)
-    {
-        foreach(Node node in _nodeGrid)
-        {
-            float dist = Vector3.Distance(node.WorldPos, worldPos);
-            if (dist <= NODE_HALF_SIZE) return node;
-        }
-
-        // 맵 바깥에 대한 포지션은 null 반환
-        return null;
-    }
-
-    /// <summary>
-    /// Obstacle 레이어 콜라이더를 기반으로 노드 Walkable 업데이트
-    /// </summary>
-    [ContextMenu("맵 업데이트")]
-    public void UpdateNodesWalkable()
-    {
-        foreach (Node node in _nodeGrid)
-        {
-            Collider2D hit = Physics2D.OverlapBox(node.WorldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE), 0, _obstacleMask);
-            node.isWalkable = hit == null;
-        }
-
-        foreach(var key in _pathCache.Keys)
-        {
-            bool isChanged = false;
-
-            List<Node> path = _pathCache[key];
-            foreach (Node node in path)
-            {
-                if (!node.isWalkable)
-                {
-                    isChanged = true;
-                    break;
-                }
-            }
-
-            if (isChanged)
-            {
-                _pathCache.Remove(key);
-            }
-        }
-    }
-
-    /// <summary>
-    /// 캐싱된 경로가 있는 지 확인하고 없으면 생성하여 반환
-    /// </summary>
-    public List<Node> GetCachedPath(SPAWN_POINT_DIRECTION dir, int monsterSize)
-    {
-        // 캐싱된 경로가 있는 지 확인
-        if (_pathCache.TryGetValue((dir, monsterSize), out var cachedPath))
-        {
-            return cachedPath;
-        }
-
-        // 경로가 없으면 계산 후 저장
-        Node startNode = GetNodeFromWorldPosition(_spawnPoints[(int)dir].position);
-        List<Vector3> endPosList = _core.GetNearestNodePositionsFromCore();
-
-        Node endNode = GetNodeFromWorldPosition(endPosList[0]);
-        int dist = AstarAlgorithm.GetHeuristicDistance(startNode, endNode);
-        List<Node> finalPath = AstarAlgorithm.FindPath(_nodeGrid, startNode, endNode, monsterSize);
-
-        List<Node> path;
-        for (int i = 1; i < endPosList.Count; i++)
-        {
-            endNode = GetNodeFromWorldPosition(endPosList[i]);
-            if (endNode == null) continue;
-
-            path = AstarAlgorithm.FindPath(_nodeGrid, startNode, endNode, monsterSize);
-
-            // 노드 숫자가 가장 적은 경로를 저장 → 같으면 시작 지점에서 가장 가까운 엔드 노드를 가지는 경로 저장
-            if(path.Count < finalPath.Count)
-            {
-                finalPath = new List<Node>(path);
-            }
-            else if(path.Count == finalPath.Count)
-            {
-                if (dist > AstarAlgorithm.GetHeuristicDistance(startNode, endNode))
-                {
-                    dist = AstarAlgorithm.GetHeuristicDistance(startNode, endNode);
-                    finalPath = new List<Node>(path);
-                }
-            }
-        }
-
-        if (finalPath != null)
-        {
-            _pathCache[(dir, monsterSize)] = finalPath;
-        }
-
-        return finalPath;
+        AstarAlgorithm.UpdateAllWalkable();
     }
 
     /// <summary>
     /// 스테이지에 따른 모든 몬스터 소환
     /// </summary>
-    /// <param name="stage"></param>
     [ContextMenu("몬스터 소환")]
     public void SpawnAllMonsters()
     {
         StartCoroutine(C_SpawnMonsters());
     }
-
     private IEnumerator C_SpawnMonsters()
     {
         int count = 0;
@@ -189,7 +55,7 @@ public class MonsterSpawner : MonoBehaviour
 
         while (true)
         {
-            if(count >= testStage * 20) // test용
+            if(count >= spawnCount) // test용
                 yield break;
 
             timer += Time.deltaTime;
@@ -205,33 +71,12 @@ public class MonsterSpawner : MonoBehaviour
             yield return null;
         }
     }
-
     private void SpawnMonster()
     {
-        int randInt = Random.Range(0, _spawnPoints.Length);
+        int randInt = Random.Range(0, _spawnPoints.Count);
         Vector3 pos = _spawnPoints[randInt].position;
-        List<Node> path = GetCachedPath((SPAWN_POINT_DIRECTION)randInt, 1);
 
-        GameObject obj = PoolManager.Instance.GetFromPool(POOL_TYPE.Monster);
-        obj.GetComponent<MonsterHandler>().Init(_monsterDatas[0], pos, TestCore, path);
+        GameObject obj = PoolManager.Instance.GetFromPool(id);
+        obj.transform.position = pos;
     }
-
-    #region Editor Only
-    private void OnDrawGizmos()
-    {
-        // 맵 사이즈 시각화
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, _mapSize);
-
-        // 노드 시각화
-        if (_nodeGrid != null)
-        {
-            foreach (Node node in _nodeGrid)
-            {
-                Gizmos.color = node.isWalkable ? Color.green : Color.red;
-                Gizmos.DrawWireCube(node.WorldPos, new Vector2(NODE_HALF_SIZE, NODE_HALF_SIZE));
-            }
-        }
-    }
-    #endregion
 }
