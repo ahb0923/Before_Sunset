@@ -65,6 +65,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         return false;
     }
 
+    /// <summary>
+    /// 코어를 향한 A* 경로 탐색 → 경로 없으면 가장 빠른 경로를 방해하는 타워 탐색
+    /// </summary>
     private IEnumerator C_Explore()
     {
         _path = FindPathToCore();
@@ -77,6 +80,15 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         {
             // 새로운 타겟과 그에 따른 경로를 받아와야 함
         }
+    }
+
+    /// <summary>
+    /// 코어를 향한 A* 경로 탐색
+    /// </summary>
+    private NodePath FindPathToCore()
+    {
+        Node startNode = AstarAlgorithm.GetNodeFromWorldPosition(transform.position);
+        return AstarAlgorithm.FindPath(startNode, _core.transform, _core.Size, false); // 대각선 이동 미포함
     }
 
     /// <summary>
@@ -146,12 +158,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         PoolManager.Instance.ReturnToPool(_monster.Stat.Id, gameObject);
     }
 
-    private NodePath FindPathToCore()
-    {
-        Node startNode = AstarAlgorithm.GetNodeFromWorldPosition(transform.position);
-        return AstarAlgorithm.FindPath(startNode, _core.transform, _core.Size, true);
-    }
-
     /// <summary>
     /// 스폰되었을 때 상태 초기화
     /// </summary>
@@ -172,6 +178,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         CurState = state;
     }
 
+    /// <summary>
+    /// 해당 오브젝트 선택 시 경로 시각화
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         if(_path != null)

@@ -23,6 +23,7 @@ public class MonsterAttackSensor : MonoBehaviour
     {
         if (_monster.Ai.Target == null) return;
 
+        // 타겟이 공격 범위 안에 들어오면 공격 상태 전환
         if(collision.transform == _monster.Ai.Target)
         {
             _monster.Ai.ChangeState(MONSTER_STATE.Attack);

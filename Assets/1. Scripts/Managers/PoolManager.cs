@@ -18,6 +18,8 @@ public class ObjectPoolData
 public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
+
+    // 일단 키 값을 ID로 받아오는데 enum으로 바꿔야 할 지 생각 중
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 

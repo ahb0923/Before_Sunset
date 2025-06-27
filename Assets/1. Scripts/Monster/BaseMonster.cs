@@ -19,6 +19,9 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Sensor.Init(this);
     }
 
+    /// <summary>
+    /// 풀링에서 가져올 때 호출
+    /// </summary>
     public void OnGetFromPool()
     {
         Stat.CurHp = Stat.MaxHp;
@@ -26,6 +29,9 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Ai.InitExploreState();
     }
 
+    /// <summary>
+    /// 풀링으로 반환할 때 호출
+    /// </summary>
     public void OnReturnToPool()
     {
         
