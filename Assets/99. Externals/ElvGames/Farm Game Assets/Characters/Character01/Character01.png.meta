@@ -3,7 +3,7 @@ guid: f5bd545440105c74eaff91f50b5ac5a7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -74,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -86,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -98,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -110,6 +116,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -2478,121 +2498,120 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Character01_75: 1368610884
+      Character01_0: 242417949
+      Character01_1: -355133031
+      Character01_10: 866054028
       Character01_100: -813397073
-      Character01_87: -1975769959
-      Character01_109: 1858788300
-      Character01_55: 1032484653
-      Character01_80: 950950217
-      Character01_46: 1008357498
+      Character01_101: 1996021480
+      Character01_102: 2124212461
+      Character01_103: -1901020021
+      Character01_104: -541119479
+      Character01_105: 570626073
+      Character01_106: -396184345
+      Character01_107: 1251910877
       Character01_108: 63104899
-      Character01_83: 324971523
-      Character01_66: 1997724752
-      Character01_81: -793204823
-      Character01_36: -910236554
-      Character01_88: -1175936715
-      Character01_97: 2061363437
-      Character01_52: 1080708950
-      Character01_67: -1513588280
-      Character01_9: 1926748540
-      Character01_45: -1216030767
+      Character01_109: 1858788300
+      Character01_11: -1701249720
+      Character01_110: -867073383
+      Character01_111: 1766621621
+      Character01_12: -1464579696
+      Character01_13: -1582322114
+      Character01_14: 1693260230
+      Character01_15: 157695078
+      Character01_16: 242278468
+      Character01_17: -174694438
+      Character01_18: -1151282371
+      Character01_19: 1546390986
+      Character01_2: 2113587357
+      Character01_20: -1308761850
+      Character01_21: 62685157
+      Character01_22: 946463776
+      Character01_23: -976811387
+      Character01_24: 451714853
+      Character01_25: 1374796401
+      Character01_26: 793000778
+      Character01_27: -1025637352
+      Character01_28: -1430031127
+      Character01_29: 1490998805
+      Character01_3: -1936763051
+      Character01_30: -567574081
+      Character01_31: -1729870725
+      Character01_32: 959181299
+      Character01_33: -172291746
       Character01_34: -83546922
       Character01_35: 1861414003
-      Character01_3: -1936763051
-      Character01_69: -730374320
-      Character01_13: -1582322114
-      Character01_82: 2093311831
-      Character01_94: 306229858
-      Character01_0: 242417949
-      Character01_30: -567574081
-      Character01_68: -957822233
-      Character01_21: 62685157
-      Character01_111: 1766621621
-      Character01_20: -1308761850
-      Character01_59: -645949384
-      Character01_65: 1129184907
-      Character01_47: -1276965159
-      Character01_23: -976811387
-      Character01_89: -874170310
-      Character01_53: 1389136043
-      Character01_51: 363162458
-      Character01_60: 1310547317
-      Character01_5: 698263888
-      Character01_78: -508441254
-      Character01_107: 1251910877
-      Character01_10: 866054028
-      Character01_70: 1725910962
-      Character01_4: -1119629555
-      Character01_95: -854458271
-      Character01_102: 2124212461
-      Character01_25: 1374796401
-      Character01_12: -1464579696
-      Character01_22: 946463776
-      Character01_8: 1858054744
-      Character01_57: -322330310
-      Character01_92: -1317886520
-      Character01_74: -1457563042
-      Character01_76: 1765581087
-      Character01_40: -76799441
-      Character01_105: 570626073
-      Character01_85: -1622423550
-      Character01_17: -174694438
-      Character01_99: -1093076393
-      Character01_32: 959181299
-      Character01_38: -176738174
-      Character01_73: 1723243096
-      Character01_19: 1546390986
+      Character01_36: -910236554
       Character01_37: -1816282789
-      Character01_2: 2113587357
-      Character01_56: 1041379711
-      Character01_90: 791747309
-      Character01_86: 554394625
-      Character01_33: -172291746
-      Character01_48: 1985070535
-      Character01_61: 1289843366
-      Character01_26: 793000778
-      Character01_106: -396184345
-      Character01_63: 1019457878
-      Character01_42: 53637506
-      Character01_27: -1025637352
-      Character01_58: -2123352911
-      Character01_49: 1465602377
-      Character01_64: 1879625575
-      Character01_41: -2065597747
-      Character01_54: 1317356932
-      Character01_1: -355133031
-      Character01_6: 247384591
-      Character01_15: 157695078
-      Character01_91: -192566140
-      Character01_77: -1280914020
-      Character01_16: 242278468
-      Character01_24: 451714853
-      Character01_18: -1151282371
-      Character01_14: 1693260230
-      Character01_93: -774966746
-      Character01_103: -1901020021
-      Character01_110: -867073383
-      Character01_79: -577739404
-      Character01_84: -1404248519
-      Character01_98: -138381703
-      Character01_11: -1701249720
-      Character01_104: -541119479
-      Character01_7: 2113447515
-      Character01_50: -516160525
-      Character01_28: -1430031127
-      Character01_96: -1188918135
-      Character01_101: 1996021480
-      Character01_72: -1559280416
-      Character01_31: -1729870725
-      Character01_62: 760038594
-      Character01_44: 1324188771
-      Character01_29: 1490998805
+      Character01_38: -176738174
       Character01_39: -493884021
+      Character01_4: -1119629555
+      Character01_40: -76799441
+      Character01_41: -2065597747
+      Character01_42: 53637506
       Character01_43: -1054295871
+      Character01_44: 1324188771
+      Character01_45: -1216030767
+      Character01_46: 1008357498
+      Character01_47: -1276965159
+      Character01_48: 1985070535
+      Character01_49: 1465602377
+      Character01_5: 698263888
+      Character01_50: -516160525
+      Character01_51: 363162458
+      Character01_52: 1080708950
+      Character01_53: 1389136043
+      Character01_54: 1317356932
+      Character01_55: 1032484653
+      Character01_56: 1041379711
+      Character01_57: -322330310
+      Character01_58: -2123352911
+      Character01_59: -645949384
+      Character01_6: 247384591
+      Character01_60: 1310547317
+      Character01_61: 1289843366
+      Character01_62: 760038594
+      Character01_63: 1019457878
+      Character01_64: 1879625575
+      Character01_65: 1129184907
+      Character01_66: 1997724752
+      Character01_67: -1513588280
+      Character01_68: -957822233
+      Character01_69: -730374320
+      Character01_7: 2113447515
+      Character01_70: 1725910962
       Character01_71: -1583216256
-  spritePackingTag: 
+      Character01_72: -1559280416
+      Character01_73: 1723243096
+      Character01_74: -1457563042
+      Character01_75: 1368610884
+      Character01_76: 1765581087
+      Character01_77: -1280914020
+      Character01_78: -508441254
+      Character01_79: -577739404
+      Character01_8: 1858054744
+      Character01_80: 950950217
+      Character01_81: -793204823
+      Character01_82: 2093311831
+      Character01_83: 324971523
+      Character01_84: -1404248519
+      Character01_85: -1622423550
+      Character01_86: 554394625
+      Character01_87: -1975769959
+      Character01_88: -1175936715
+      Character01_89: -874170310
+      Character01_9: 1926748540
+      Character01_90: 791747309
+      Character01_91: -192566140
+      Character01_92: -1317886520
+      Character01_93: -774966746
+      Character01_94: 306229858
+      Character01_95: -854458271
+      Character01_96: -1188918135
+      Character01_97: 2061363437
+      Character01_98: -138381703
+      Character01_99: -1093076393
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

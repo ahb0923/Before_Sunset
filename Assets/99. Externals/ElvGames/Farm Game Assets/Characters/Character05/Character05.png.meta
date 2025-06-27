@@ -3,7 +3,7 @@ guid: 78d1a5e18195e7045ba74526528db71a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -74,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -86,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -98,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -110,6 +116,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -2478,121 +2498,120 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Character05_66: 1968314882
-      Character05_5: 1880591796
-      Character05_78: 20209149
-      Character05_77: 261569081
-      Character05_26: 1159454121
-      Character05_17: -1222983492
-      Character05_92: 1193012340
-      Character05_106: -833697371
-      Character05_100: -199344930
-      Character05_37: -588107562
-      Character05_29: 21653905
-      Character05_24: 54670942
-      Character05_90: -1436281131
-      Character05_107: 2119226268
-      Character05_55: -1376831614
-      Character05_105: 910993942
-      Character05_16: -632910010
-      Character05_59: -1846645477
-      Character05_98: -500186579
-      Character05_85: -1564352815
-      Character05_70: 658326253
-      Character05_96: 1336023013
-      Character05_19: -861839280
-      Character05_84: 750402212
-      Character05_72: -531878482
-      Character05_57: -1041305874
-      Character05_45: 882371608
-      Character05_86: 2004640696
-      Character05_48: 1908920494
-      Character05_53: 1994848467
-      Character05_15: -632034668
-      Character05_50: 1235617581
-      Character05_12: 2073011792
-      Character05_74: 441090037
-      Character05_31: -401728710
-      Character05_22: 135383860
-      Character05_6: -1438178314
-      Character05_4: -751325097
-      Character05_25: 1789623242
-      Character05_101: -638671693
-      Character05_83: -2128018312
-      Character05_89: 1137340744
-      Character05_69: -369371228
-      Character05_27: -128754602
-      Character05_65: -726105213
-      Character05_71: 1476319301
-      Character05_75: -1431051777
-      Character05_52: -159722868
-      Character05_108: -714396495
-      Character05_76: 1105102369
-      Character05_11: -315940410
-      Character05_62: 1728868077
-      Character05_21: 696946398
-      Character05_93: 1841327335
-      Character05_110: 2048968375
-      Character05_13: -312060477
-      Character05_79: 1629351004
-      Character05_43: -1844094561
-      Character05_94: -1717843530
-      Character05_40: -1253728914
-      Character05_7: -107382166
-      Character05_109: 268233679
-      Character05_32: 1978447836
-      Character05_51: -174846545
-      Character05_2: -1358879186
-      Character05_67: -2078147630
-      Character05_82: 1650828597
-      Character05_73: 101261007
-      Character05_91: -1068609971
-      Character05_61: -1941685899
-      Character05_88: -24695022
-      Character05_9: 613559928
-      Character05_33: -2003800969
-      Character05_58: 1171754197
-      Character05_49: -2097677912
-      Character05_36: -1900154128
-      Character05_103: -1397143135
-      Character05_30: 569016776
-      Character05_87: 1256162284
-      Character05_95: -1417372666
-      Character05_104: -2073885113
-      Character05_34: -669939965
-      Character05_44: -98068804
-      Character05_102: 173329673
-      Character05_28: -783572074
       Character05_0: 1314935766
-      Character05_23: 1334926914
-      Character05_68: 584358599
       Character05_1: -1627844416
-      Character05_35: 1685843020
-      Character05_39: 1339504255
-      Character05_99: 324890846
-      Character05_8: -1158717862
-      Character05_111: -489035289
-      Character05_80: -926049125
-      Character05_46: 366093852
-      Character05_56: 1375275928
-      Character05_81: -894838893
-      Character05_97: 1038984969
-      Character05_60: -424668118
-      Character05_63: -211468180
-      Character05_41: -1067058606
-      Character05_64: 280081087
-      Character05_3: -1506639638
-      Character05_14: -1439484566
-      Character05_38: 1164893151
-      Character05_18: -74316033
-      Character05_42: 530614867
-      Character05_20: -1705856801
-      Character05_54: -98155670
       Character05_10: 456088731
+      Character05_100: -199344930
+      Character05_101: -638671693
+      Character05_102: 173329673
+      Character05_103: -1397143135
+      Character05_104: -2073885113
+      Character05_105: 910993942
+      Character05_106: -833697371
+      Character05_107: 2119226268
+      Character05_108: -714396495
+      Character05_109: 268233679
+      Character05_11: -315940410
+      Character05_110: 2048968375
+      Character05_111: -489035289
+      Character05_12: 2073011792
+      Character05_13: -312060477
+      Character05_14: -1439484566
+      Character05_15: -632034668
+      Character05_16: -632910010
+      Character05_17: -1222983492
+      Character05_18: -74316033
+      Character05_19: -861839280
+      Character05_2: -1358879186
+      Character05_20: -1705856801
+      Character05_21: 696946398
+      Character05_22: 135383860
+      Character05_23: 1334926914
+      Character05_24: 54670942
+      Character05_25: 1789623242
+      Character05_26: 1159454121
+      Character05_27: -128754602
+      Character05_28: -783572074
+      Character05_29: 21653905
+      Character05_3: -1506639638
+      Character05_30: 569016776
+      Character05_31: -401728710
+      Character05_32: 1978447836
+      Character05_33: -2003800969
+      Character05_34: -669939965
+      Character05_35: 1685843020
+      Character05_36: -1900154128
+      Character05_37: -588107562
+      Character05_38: 1164893151
+      Character05_39: 1339504255
+      Character05_4: -751325097
+      Character05_40: -1253728914
+      Character05_41: -1067058606
+      Character05_42: 530614867
+      Character05_43: -1844094561
+      Character05_44: -98068804
+      Character05_45: 882371608
+      Character05_46: 366093852
       Character05_47: 90722609
-  spritePackingTag: 
+      Character05_48: 1908920494
+      Character05_49: -2097677912
+      Character05_5: 1880591796
+      Character05_50: 1235617581
+      Character05_51: -174846545
+      Character05_52: -159722868
+      Character05_53: 1994848467
+      Character05_54: -98155670
+      Character05_55: -1376831614
+      Character05_56: 1375275928
+      Character05_57: -1041305874
+      Character05_58: 1171754197
+      Character05_59: -1846645477
+      Character05_6: -1438178314
+      Character05_60: -424668118
+      Character05_61: -1941685899
+      Character05_62: 1728868077
+      Character05_63: -211468180
+      Character05_64: 280081087
+      Character05_65: -726105213
+      Character05_66: 1968314882
+      Character05_67: -2078147630
+      Character05_68: 584358599
+      Character05_69: -369371228
+      Character05_7: -107382166
+      Character05_70: 658326253
+      Character05_71: 1476319301
+      Character05_72: -531878482
+      Character05_73: 101261007
+      Character05_74: 441090037
+      Character05_75: -1431051777
+      Character05_76: 1105102369
+      Character05_77: 261569081
+      Character05_78: 20209149
+      Character05_79: 1629351004
+      Character05_8: -1158717862
+      Character05_80: -926049125
+      Character05_81: -894838893
+      Character05_82: 1650828597
+      Character05_83: -2128018312
+      Character05_84: 750402212
+      Character05_85: -1564352815
+      Character05_86: 2004640696
+      Character05_87: 1256162284
+      Character05_88: -24695022
+      Character05_89: 1137340744
+      Character05_9: 613559928
+      Character05_90: -1436281131
+      Character05_91: -1068609971
+      Character05_92: 1193012340
+      Character05_93: 1841327335
+      Character05_94: -1717843530
+      Character05_95: -1417372666
+      Character05_96: 1336023013
+      Character05_97: 1038984969
+      Character05_98: -500186579
+      Character05_99: 324890846
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

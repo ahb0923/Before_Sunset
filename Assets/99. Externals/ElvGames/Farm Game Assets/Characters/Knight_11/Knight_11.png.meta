@@ -3,7 +3,7 @@ guid: fe13c600e580fbe46ba201f91706838b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -74,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -86,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -98,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -110,6 +116,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -2478,121 +2498,120 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Knight_11_108: 1012850745
-      Knight_11_78: -829777356
-      Knight_11_22: 1815085428
-      Knight_11_2: -1315838825
-      Knight_11_51: 1385369002
-      Knight_11_87: 1657540937
-      Knight_11_69: -214087288
-      Knight_11_16: 612652919
-      Knight_11_93: -295537214
-      Knight_11_50: -1056939402
-      Knight_11_24: 643357999
-      Knight_11_68: -157908006
-      Knight_11_18: -34955433
-      Knight_11_82: -576922584
-      Knight_11_77: 2024167713
-      Knight_11_44: -532137885
-      Knight_11_10: -160101849
       Knight_11_0: -1087969018
-      Knight_11_11: -1197158155
-      Knight_11_30: 1327887597
-      Knight_11_31: 829150337
-      Knight_11_38: 2022333847
       Knight_11_1: 1700992958
-      Knight_11_42: 566801136
-      Knight_11_70: 1117478334
+      Knight_11_10: -160101849
       Knight_11_100: 264813732
       Knight_11_101: -1068369107
-      Knight_11_83: -1496299378
-      Knight_11_29: -1890905124
-      Knight_11_104: 2025675003
-      Knight_11_110: 1142787546
-      Knight_11_89: 712454008
-      Knight_11_57: 284859191
-      Knight_11_7: 1221758478
-      Knight_11_85: -1117430411
-      Knight_11_107: 1265432158
-      Knight_11_58: 1716032643
-      Knight_11_64: 1396681781
-      Knight_11_84: -1631633511
-      Knight_11_35: 1193939377
-      Knight_11_88: 1594710249
-      Knight_11_98: -1165928043
-      Knight_11_53: 837382066
-      Knight_11_73: -1155558718
-      Knight_11_3: -774110684
-      Knight_11_94: 132247582
-      Knight_11_28: -1012895822
-      Knight_11_41: -47279287
-      Knight_11_12: 1443418100
-      Knight_11_61: 644130726
-      Knight_11_63: 1313201060
-      Knight_11_45: -300130226
+      Knight_11_102: -551855579
       Knight_11_103: 928892690
-      Knight_11_81: 1409993206
-      Knight_11_26: -1998064941
-      Knight_11_46: 1510803631
-      Knight_11_86: -1286902018
+      Knight_11_104: 2025675003
+      Knight_11_105: -1865159541
+      Knight_11_106: 185658209
+      Knight_11_107: 1265432158
+      Knight_11_108: 1012850745
       Knight_11_109: 1513307291
-      Knight_11_62: -296760573
+      Knight_11_11: -1197158155
+      Knight_11_110: 1142787546
+      Knight_11_111: -799433346
+      Knight_11_12: 1443418100
+      Knight_11_13: 948256987
+      Knight_11_14: -2090816795
+      Knight_11_15: 1145839732
+      Knight_11_16: 612652919
+      Knight_11_17: -1250234177
+      Knight_11_18: -34955433
+      Knight_11_19: 1019947904
+      Knight_11_2: -1315838825
+      Knight_11_20: -770050285
+      Knight_11_21: 1620404298
+      Knight_11_22: 1815085428
+      Knight_11_23: -1331678026
+      Knight_11_24: 643357999
+      Knight_11_25: 536236156
+      Knight_11_26: -1998064941
+      Knight_11_27: -1571558561
+      Knight_11_28: -1012895822
+      Knight_11_29: -1890905124
+      Knight_11_3: -774110684
+      Knight_11_30: 1327887597
+      Knight_11_31: 829150337
+      Knight_11_32: 2106175639
+      Knight_11_33: -772350948
+      Knight_11_34: 748222201
+      Knight_11_35: 1193939377
+      Knight_11_36: 111532247
+      Knight_11_37: 1759712732
+      Knight_11_38: 2022333847
+      Knight_11_39: -607798300
+      Knight_11_4: 314257026
+      Knight_11_40: 247401939
+      Knight_11_41: -47279287
+      Knight_11_42: 566801136
+      Knight_11_43: -999379998
+      Knight_11_44: -532137885
+      Knight_11_45: -300130226
+      Knight_11_46: 1510803631
+      Knight_11_47: 7477653
       Knight_11_48: -118122255
       Knight_11_49: -1460102354
-      Knight_11_75: -775090371
-      Knight_11_17: -1250234177
-      Knight_11_99: 1440896795
-      Knight_11_9: -1220086280
-      Knight_11_43: -999379998
-      Knight_11_56: 1696493997
-      Knight_11_34: 748222201
-      Knight_11_32: 2106175639
-      Knight_11_60: 1925572662
-      Knight_11_8: 725583876
-      Knight_11_72: 1725880668
-      Knight_11_47: 7477653
-      Knight_11_19: 1019947904
-      Knight_11_55: -1467950085
-      Knight_11_27: -1571558561
-      Knight_11_65: -1929988746
-      Knight_11_71: -1257479396
-      Knight_11_95: 116945810
-      Knight_11_97: 2141434008
-      Knight_11_13: 948256987
-      Knight_11_52: -429067898
-      Knight_11_91: 1422949948
-      Knight_11_14: -2090816795
-      Knight_11_105: -1865159541
-      Knight_11_4: 314257026
-      Knight_11_76: -694642009
       Knight_11_5: 1856096652
-      Knight_11_25: 536236156
-      Knight_11_67: 1498270483
-      Knight_11_15: 1145839732
-      Knight_11_79: -75811835
-      Knight_11_66: -1956810690
-      Knight_11_92: -946877637
-      Knight_11_59: -708775931
-      Knight_11_106: 185658209
-      Knight_11_6: 236506171
-      Knight_11_90: 1127862568
-      Knight_11_96: -577220233
+      Knight_11_50: -1056939402
+      Knight_11_51: 1385369002
+      Knight_11_52: -429067898
+      Knight_11_53: 837382066
       Knight_11_54: 540566322
-      Knight_11_36: 111532247
-      Knight_11_102: -551855579
-      Knight_11_21: 1620404298
-      Knight_11_37: 1759712732
+      Knight_11_55: -1467950085
+      Knight_11_56: 1696493997
+      Knight_11_57: 284859191
+      Knight_11_58: 1716032643
+      Knight_11_59: -708775931
+      Knight_11_6: 236506171
+      Knight_11_60: 1925572662
+      Knight_11_61: 644130726
+      Knight_11_62: -296760573
+      Knight_11_63: 1313201060
+      Knight_11_64: 1396681781
+      Knight_11_65: -1929988746
+      Knight_11_66: -1956810690
+      Knight_11_67: 1498270483
+      Knight_11_68: -157908006
+      Knight_11_69: -214087288
+      Knight_11_7: 1221758478
+      Knight_11_70: 1117478334
+      Knight_11_71: -1257479396
+      Knight_11_72: 1725880668
+      Knight_11_73: -1155558718
       Knight_11_74: 1250392816
-      Knight_11_40: 247401939
-      Knight_11_20: -770050285
-      Knight_11_39: -607798300
-      Knight_11_111: -799433346
-      Knight_11_33: -772350948
+      Knight_11_75: -775090371
+      Knight_11_76: -694642009
+      Knight_11_77: 2024167713
+      Knight_11_78: -829777356
+      Knight_11_79: -75811835
+      Knight_11_8: 725583876
       Knight_11_80: 1965863522
-      Knight_11_23: -1331678026
-  spritePackingTag: 
+      Knight_11_81: 1409993206
+      Knight_11_82: -576922584
+      Knight_11_83: -1496299378
+      Knight_11_84: -1631633511
+      Knight_11_85: -1117430411
+      Knight_11_86: -1286902018
+      Knight_11_87: 1657540937
+      Knight_11_88: 1594710249
+      Knight_11_89: 712454008
+      Knight_11_9: -1220086280
+      Knight_11_90: 1127862568
+      Knight_11_91: 1422949948
+      Knight_11_92: -946877637
+      Knight_11_93: -295537214
+      Knight_11_94: 132247582
+      Knight_11_95: 116945810
+      Knight_11_96: -577220233
+      Knight_11_97: 2141434008
+      Knight_11_98: -1165928043
+      Knight_11_99: 1440896795
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
