@@ -16,7 +16,7 @@ public class DataManager : PlainSingleton<DataManager>
 {
     public MineralDataHandler MineralData { get; private set; } = new();
     public TowerDataHandler TowerData { get; private set; } = new();
-    //public MonsterDataManager MonsterData { get; private set; } = new();
+    //public MonsterDataHandler MonsterData { get; private set; } = new();
 
     public async Task InitAsync()
     {
@@ -24,7 +24,7 @@ public class DataManager : PlainSingleton<DataManager>
         {
             MineralData,
             TowerData,
-            // MonsterData
+            //MonsterData
         };
 
         foreach (var loader in loaders)

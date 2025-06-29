@@ -12,6 +12,11 @@ public enum TOWER_STATE
     Attack,
     Destroy
 }
+public enum TOWER_ATTACK_TYPE
+{
+    Projectile,
+    Areaofeffect
+}
 
 public class TowerAI : StateBasedAI<TOWER_STATE>
 {
@@ -88,27 +93,40 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                 Debug.Log("[C_Attack] 상태 중단 감지");
                 yield break;
             }
-            tower.attackSensor.CheckTargetValid();
 
-            GameObject target = tower.attackSensor.CurrentTarget;
-            if (target == null)
-            {
-                Debug.Log("타겟 없음, Idle로 전환");
-                CurState = TOWER_STATE.Idle;
-                yield break;
-            }
-
-            TowerStatHandler stat = tower.statHandler;
+            var stat = tower.statHandler;
             // 발사 위치 변경시 이곳
             Vector3 firePosition = tower.transform.position;
 
-            // 화살 발사
-            //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
-            GameObject projObj = Instantiate(tower.projectile);
-            Projectile proj = projObj.GetComponent<Projectile>();
-            // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
-            proj.Init(target, 10, stat.AttackPower, firePosition);
-                
+            switch (tower.statHandler.attackType)
+            {
+                // 투사체 발사 타워
+                case TOWER_ATTACK_TYPE.Projectile:
+                    tower.attackSensor.CheckTargetValid();
+
+                    GameObject target = tower.attackSensor.CurrentTarget;
+                    if (target == null)
+                    {
+                        Debug.Log("타겟 없음, Idle로 전환");
+                        CurState = TOWER_STATE.Idle;
+                        yield break;
+                    }
+
+                    // 화살 발사
+                    //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
+                    GameObject projObj = Instantiate(tower.projectile);
+                    Projectile proj = projObj.GetComponent<Projectile>();
+                    // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
+                    proj.Init(target, 10, stat.AttackPower, firePosition);
+                    break;
+
+                // 자신 중심 공격 타워
+                case TOWER_ATTACK_TYPE.Areaofeffect:
+
+                    break;
+
+            }
+
             yield return new WaitForSeconds(stat.AttackSpeed);
         }
     }

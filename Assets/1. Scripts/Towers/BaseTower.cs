@@ -31,6 +31,32 @@ public class BaseTower : MonoBehaviour
     // 발사체
     public GameObject projectile;
 
+
+    private void Reset()
+    {
+        if (ai == null)
+            ai = GetComponent<TowerAI>();
+
+        if (statHandler == null)
+            statHandler = new TowerStatHandler();
+        statHandler.Init();
+
+        if (attackSensor == null)
+            attackSensor = GetComponentInChildren<TowerAttackSensor>();
+        attackSensor.Init();
+
+        if (ui == null)
+            ui = GetComponentInChildren<TowerUI>();
+        ui.Init();
+
+        if (icon == null)
+            icon = GetComponentInChildren<SpriteRenderer>();
+
+        if (_mainCollider == null)
+            _mainCollider = GetComponent<Collider2D>();
+    }
+    
+
     private void Awake()
     {
         if (ai == null)
@@ -54,5 +80,4 @@ public class BaseTower : MonoBehaviour
         if (_mainCollider == null)
             _mainCollider = GetComponent<Collider2D>();
     }
-
 }

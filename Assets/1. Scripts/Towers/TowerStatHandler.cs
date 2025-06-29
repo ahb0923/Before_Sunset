@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
+public class TowerStatHandler : MonoBehaviour, IDamageable, IInteractable
 {
     [Header(" [ Data ] ")]
     [SerializeField] private TowerData _data;
@@ -19,6 +19,9 @@ public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
 
     public int Level { get; private set; }
     public string TowerName { get; private set; }
+
+    public TOWER_ATTACK_TYPE attackType { get; private set; }
+
     public string FlavorText { get; private set; }
 
     private float _currHp;
@@ -36,9 +39,10 @@ public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
     public float AttackPower { get; set; }
     public float AttackSpeed { get; set; }
     public float AttackRange { get; set; }
+
+    // 투사체 속도 => projectile로 이동
     public float ProjectileSpeed { get; set; }
     //public ResourceRequirement BuildRequirements { get; private set; }
-    //public ResourceRequirement UpgradeRequirements { get; private set; }
 
     public SpriteRenderer iconRenderer;
     //private bool isFixingDelay = false;
@@ -69,28 +73,10 @@ public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
         AttackPower = _data.damage;
         AttackSpeed = _data.aps;
         AttackRange = _data.range;
-
-        //BuildRequirements = data.buildRequirements;
-        //UpgradeRequirements = data.upgradeRequirements;  
     }
 
     /// <summary>
-    /// 데미지 테스팅 메서드
-    /// </summary>
-    [ContextMenu("테스트 데미지 30")]
-    private void TestDamage()
-    {
-        var dummy = new Damaged
-        {
-            Value = 30,
-            IgnoreDefense = false,
-            Attacker = this.gameObject
-        };
-
-        OnDamaged(dummy);
-        Debug.Log($"CurrHp : {CurrHp}");
-    }
-    /// <summary>
+    /// <<IDamageable>>
     /// 실제 hp 변동 메서드
     /// </summary>
     /// <param name="damaged">받은 데미지 정보</param>
@@ -110,5 +96,32 @@ public class TowerStatHandler : MonoBehaviour, IDamageable    //, IInteractable
             CurrHp = 0;
             _tower.ai.SetState(TOWER_STATE.Destroy, force: true);
         }
+    }
+
+    /// <summary>
+    /// <<IInteractable>>
+    /// 수리 메서드 이쪽에서 호출 가능하도록
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public void OnPressE()
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// 데미지 테스팅 메서드
+    /// </summary>
+    [ContextMenu("테스트 데미지 30")]
+    private void TestDamage()
+    {
+        var dummy = new Damaged
+        {
+            Value = 30,
+            IgnoreDefense = false,
+            Attacker = this.gameObject
+        };
+
+        OnDamaged(dummy);
+        Debug.Log($"CurrHp : {CurrHp}");
     }
 }

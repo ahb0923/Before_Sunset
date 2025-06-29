@@ -10,6 +10,7 @@ public class TowerAttackSensor : MonoBehaviour
 
     private HashSet<GameObject> detectedEnemies = new();
     public HashSet<GameObject> DetectedEnemies { get { return detectedEnemies; } }
+
     public bool HasDetectedEnemy() => detectedEnemies.Count > 0;
 
     private GameObject _currentTarget;
@@ -31,7 +32,7 @@ public class TowerAttackSensor : MonoBehaviour
         {
             useLayerMask = true,
             layerMask = enemyLayerMask,
-            useTriggers = true          //트리거 Collider도 포함해서 검사할지 여부
+            useTriggers = true          //트리거(IsTrigger) Collider도 포함해서 검사할지 여부
         };
 
         int count = GetComponent<Collider2D>().OverlapCollider(filter, results);
@@ -73,7 +74,10 @@ public class TowerAttackSensor : MonoBehaviour
         }
 
     }
-
+    /// <summary>
+    /// detectedEnemies 해시셋에 등록된 가장 근접한 적을 찾는 메서드
+    /// </summary>
+    /// <returns></returns>
     public GameObject NearestTarget()
     {
         GameObject nearest = null;
@@ -94,7 +98,35 @@ public class TowerAttackSensor : MonoBehaviour
         }
         return nearest;
     }
+    /// <summary>
+    /// detectedEnemies 해시셋에 등록된 가장 멀리 있는 적을 찾는 메서드
+    /// </summary>
+    /// <returns></returns>
+    public GameObject FurthestTarget()
+    {
+        GameObject furthest = null;
+        float maxDist = float.MinValue;
+        Vector3 origin = transform.position;
 
+        foreach (var enemy in detectedEnemies)
+        {
+            // 검사하는 타이밍에 맞춰서 다른 타워가 해당 몬스터를 부숴버릴 경우에 대비
+            if (enemy == null) continue;
+
+            float dist = Vector3.Distance(origin, enemy.transform.position);
+            if (dist > maxDist)
+            {
+                maxDist = dist;
+                furthest = enemy;
+            }
+        }
+        return furthest;
+    }
+
+    /// <summary>
+    /// 현재 타겟을 새로이 설정할때 쓰는 메서드<br/>
+    /// 찾는 타겟이 없다면 타워의 상태를 Idle로 변경
+    /// </summary>
     public void RefreshTarget()
     {
         _currentTarget = NearestTarget();
@@ -110,6 +142,10 @@ public class TowerAttackSensor : MonoBehaviour
             _tower.ai.SetState(TOWER_STATE.Idle);
         }
     }
+
+    /// <summary>
+    /// 현재 타겟이 범위를 벗어났을 경우(hashSet에서 제거되었을 경우) 새로운 적을 탐색
+    /// </summary>
     public void CheckTargetValid()
     {
         if (_currentTarget == null || !_currentTarget.activeSelf)

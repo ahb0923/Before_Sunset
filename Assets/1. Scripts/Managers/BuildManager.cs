@@ -12,10 +12,8 @@ public class BuildManager : MonoSingleton<BuildManager>
 
     private Collider2D _towerMainCollider;
 
-    [SerializeField] 
-    private LayerMask _buildingLayer;
-    [SerializeField]
-    private bool _isPlacing;
+    [SerializeField] private LayerMask _buildingLayer;
+    [SerializeField] private bool _isPlacing;
     public bool IsPlacing => _isPlacing;
 
 

@@ -12,6 +12,7 @@ public class MapManager : MonoSingleton<MapManager>
     public BuildPreview BuildPreview { get; private set; }
      
     public DragIcon DragIcon { get; private set; }
+
     private void Awake()
     {
         base.Awake();
