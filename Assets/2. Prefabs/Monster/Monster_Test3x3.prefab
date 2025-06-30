@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7211768120753557082}
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 1101116313627243319}
   - component: {fileID: 8189292471688351104}
   m_Layer: 7
-  m_Name: Monster_Muff
+  m_Name: Monster_Test3x3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +183,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 1.3
 --- !u!114 &3537268559729682308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data:
-    id: 600
+    id: 10
     monsterName: "\uBA38\uD504"
     monsterType: 0
     hp: 30
@@ -231,7 +231,7 @@ MonoBehaviour:
     speed: 1
     range: 1
     context: 
-  _size: 1
+  _size: 3
 --- !u!1 &5748688620454532976
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,7 +299,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 2
 --- !u!114 &3615270285135225005
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -66,29 +66,24 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 코어를 향한 A* 경로 탐색 → 경로 없으면 가장 빠른 경로를 방해하는 타워 탐색
+    /// 코어를 향한 경로 탐색 → 경로 없으면, 가장 빠른 경로를 방해하는 타워 탐색
     /// </summary>
     private IEnumerator C_Explore()
     {
-        _path = FindPathToCore();
-        if( _path != null)
+        // 코어를 향한 경로 탐색
+        _path = AstarAlgorithm.FindPathToCore(AstarAlgorithm.GetNodeFromWorldPosition(transform.position), _monster.Stat.Size);
+
+        if(_path != null)
         {
+            // 경로가 있으면, 이동 상태 전환
             ChangeState(MONSTER_STATE.Move);
             yield break;
         }
         else
         {
-            // 새로운 타겟과 그에 따른 경로를 받아와야 함
+            // 경로가 없으면, 새로운 타겟과 그에 따른 경로를 받아와야 함
+            Debug.Log("타겟을 타워로 변경합니다!");
         }
-    }
-
-    /// <summary>
-    /// 코어를 향한 A* 경로 탐색
-    /// </summary>
-    private NodePath FindPathToCore()
-    {
-        Node startNode = AstarAlgorithm.GetNodeFromWorldPosition(transform.position);
-        return AstarAlgorithm.FindPath(startNode, _core.transform, _core.Size, false); // 대각선 이동 미포함
     }
 
     /// <summary>
@@ -96,37 +91,36 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Move()
     {
-        // 경로에 이동 불가능 노드가 포함되면, 다시 탐색 진행
-        if (!_path.IsWalkablePath())
+        // 해당 경로가 이동 불가능하면, 탐색 상태 전환
+        while(_path.IsWalkablePath(_monster.Stat.Size))
         {
-            ChangeState(MONSTER_STATE.Explore);
-            yield break;
-        }
-
-        while(_path.CurNode.isWalkable)
-        {
-            if (IsInterrupted)
-                yield break;
-
-            transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
-
-            if(Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
+            // 이동하려는 노드가 이동 가능하면, 이동
+            while (AstarAlgorithm.IsAreaWalkable(_path.CurNode, _monster.Stat.Size))
             {
-                transform.position = _path.CurNode.WorldPos;
+                // 인터럽트 발생하면, 코루틴 탈출
+                if (IsInterrupted)
+                    yield break;
 
-                // 다음 노드가 없다면, 다시 탐색 진행
-                if (!_path.Next())
+                // 실제 오브젝트 이동
+                transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
+
+                if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
                 {
-                    ChangeState(MONSTER_STATE.Explore);
+                    transform.position = _path.CurNode.WorldPos;
+
+                    // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
+                    if (!_path.Next())
+                    {
+                        ChangeState(MONSTER_STATE.Explore);
+                    }
+
+                    // 이동하려는 노드 도착 시, 경로의 이동 가능 검사를 위해 코루틴 탈출
+                    break;
                 }
-                yield break;
+
+                yield return null;
             }
-
-            yield return null;
         }
-
-        // 가야하는 노드가 이동 불가능 노드가 되면, 다시 탐색 진행
-        ChangeState(MONSTER_STATE.Explore);
     }
 
     /// <summary>
@@ -134,14 +128,14 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Attack()
     {
-        // 타겟이 없을 경우 탐색 진행
+        // 타겟이 없을 경우, 탐색 상태 전환
         if(Target == null)
         {
             ChangeState(MONSTER_STATE.Explore);
             yield break;
         }
 
-        // 타겟에 대한 대미지 부여는 여기서 진행
+        // 타겟에 대한 대미지 부여
         DamagedSystem.Instance.Send(new Damaged
         {
             Attacker = gameObject,
@@ -151,6 +145,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         });
         Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
 
+        // Attack Per Sec 동안 기다림
         yield return _monster.Stat.WaitAttack;
     }
 

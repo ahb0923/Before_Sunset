@@ -29,10 +29,12 @@ public class MonsterSpawner : MonoSingleton<MonsterSpawner>
             if(Core == null)
             {
                 Debug.LogError("[MonsterSpawner] TestCore를 찾지 못했습니다.");
+                return;
             }
         }
 
-        AstarAlgorithm.GenerateNode(transform.position, _mapSize, _nodeSize, _obstacleMask);
+        AstarAlgorithm.GenerateNodeFromTarget(transform.position, _mapSize, _nodeSize, false, _obstacleMask);
+        AstarAlgorithm.SetCore(Core.transform, Core.Size);
     }
 
     private void Update()

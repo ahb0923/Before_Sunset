@@ -12,7 +12,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     {
         Ai = GetComponent<MonsterAI>();
         Stat = GetComponent<MonsterStatHandler>();
-        Sensor = GetComponentInChildren<MonsterAttackSensor>(true);
+        Sensor = GetComponentInChildren<MonsterAttackSensor>();
 
         Ai.Init(this, MonsterSpawner.Instance.Core);
         Stat.Init(this);

@@ -19,6 +19,15 @@ public class NodePath
         _index = 0;
     }
 
+    public NodePath(NodePath nodePath)
+    {
+        StartNode = nodePath.StartNode;
+        EndNode = nodePath.EndNode;
+        Path = nodePath.Path;
+
+        _index = 0;
+    }
+
     /// <summary>
     /// CurNode를 경로의 다음 노드로 이동
     /// </summary>
@@ -36,13 +45,11 @@ public class NodePath
     /// <summary>
     /// 남은 경로의 이동 가능 유무를 조사하여 갈 수 있는 경로인지 판단
     /// </summary>
-    public bool IsWalkablePath()
+    public bool IsWalkablePath(int entitySize)
     {
-        int index = Path.IndexOf(CurNode);
-
-        for(int i = index; i < Path.Count; i++)
+        for(int i = _index; i < Path.Count; i++)
         {
-            if (!Path[i].isWalkable)
+            if (!AstarAlgorithm.IsAreaWalkable(Path[i], entitySize))
             {
                 return false;
             }

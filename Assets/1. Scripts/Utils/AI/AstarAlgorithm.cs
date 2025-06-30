@@ -3,33 +3,35 @@ using UnityEngine;
 
 public static class AstarAlgorithm
 {
-    private static bool _isInitialized;
-
-    private static Node[,] _grid;
-    private static Dictionary<Node, Vector2Int> _gridIndexDict;
-    private static Dictionary<Node, NodePath> _pathCacheToCoreDict;
     private static int _nodeSize;
     private static float _nodeHalfSize => _nodeSize * 0.5f;
+    private static bool _containDiagonal;
+    private static Node[,] _grid;
+    private static Dictionary<Node, Vector2Int> _gridIndexDict;
     private static Vector3 _bottomLeftNodePos;
     private static LayerMask _obstacleMask;
+    private static bool _isInitialized;
+
+    private static Node _coreNode;
+    private static Dictionary<(Node, int), NodePath> _pathCacheToCoreDict;
+    private static HashSet<Node> _coreNodeSet;
+    private static bool _isSetCore;
 
     /// <summary>
     /// 맵과 노드 사이즈에 맞는 노드들을 생성함<br/>
     /// 모든 A* 메서드는 노드 생성 후에 사용 가능
     /// </summary>
-    public static void GenerateNode(Vector3 center, Vector2 mapSize, int nodeSize, LayerMask obstacleMask)
+    public static void GenerateNodeFromTarget(Vector3 center, Vector2 mapSize, int nodeSize, bool containDiagonal, LayerMask obstacleMask)
     {
-        int nodeCountX = Mathf.CeilToInt(mapSize.x / nodeSize);
-        int nodeCountY = Mathf.CeilToInt(mapSize.y / nodeSize);
-        _grid = new Node[nodeCountX, nodeCountY];
-        
-        _gridIndexDict = new Dictionary<Node, Vector2Int>();
-        _pathCacheToCoreDict = new Dictionary<Node, NodePath>();
-
         _nodeSize = nodeSize;
+        _containDiagonal = containDiagonal;
+        int nodeCountX = Mathf.CeilToInt(mapSize.x / _nodeSize);
+        int nodeCountY = Mathf.CeilToInt(mapSize.y / _nodeSize);
+        _grid = new Node[nodeCountX, nodeCountY];
+        _gridIndexDict = new Dictionary<Node, Vector2Int>();
+
         Vector3 halfMapSize = new Vector3(mapSize.x * 0.5f, mapSize.y * 0.5f);
         _bottomLeftNodePos = center - halfMapSize + new Vector3(_nodeHalfSize, _nodeHalfSize);
-
         _obstacleMask = obstacleMask;
 
         for (int x = 0; x < nodeCountX; x++)
@@ -37,8 +39,8 @@ public static class AstarAlgorithm
             for (int y = 0; y < nodeCountY; y++)
             {
                 Vector2Int gridPos = new Vector2Int(x, y);
-                Vector3 worldPos = _bottomLeftNodePos + new Vector3(x * nodeSize, y * nodeSize);
-                Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(_nodeHalfSize, _nodeHalfSize), 0, obstacleMask);
+                Vector3 worldPos = _bottomLeftNodePos + new Vector3(x * _nodeSize, y * _nodeSize);
+                Collider2D hit = Physics2D.OverlapBox(worldPos, new Vector2(_nodeHalfSize, _nodeHalfSize), 0, _obstacleMask);
 
                 Node node = new Node(hit == null, worldPos);
                 _grid[x, y] = node;
@@ -50,9 +52,22 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
-    /// 노드 그리드 상에서 시작 노드부터 목표까지의 가장 빠른 경로를 반환
+    /// 코어 설정<br/>
+    /// FindPathToCore 메서드는 코어 설정 후에 가능
     /// </summary>
-    public static NodePath FindPath(Node startNode, Transform target, int targetSize, bool containDiagonalNode)
+    public static void SetCore(Transform core, int coreSize)
+    {
+        _coreNode = GetNodeFromWorldPosition(core.position);
+        _coreNodeSet = GetSurroudingNodesFromTarget(_coreNode, coreSize, true);
+        _pathCacheToCoreDict = new Dictionary<(Node, int), NodePath>();
+
+        _isSetCore = true;
+    }
+
+    /// <summary>
+    /// 노드 그리드 상에서 시작 노드부터 설정한 코어까지의 가장 빠른 경로를 반환
+    /// </summary>
+    public static NodePath FindPathToCore(Node startNode, int entitySize)
     {
         if (!_isInitialized)
         {
@@ -60,9 +75,90 @@ public static class AstarAlgorithm
             return null;
         }
 
-        if (target.TryGetComponent<Core>(out _) && _pathCacheToCoreDict.TryGetValue(startNode, out var pathCache) && pathCache.IsWalkablePath())
+        if (!_isSetCore)
         {
-            return pathCache;
+            Debug.LogError("[A*] 코어가 설정되어 있지 않습니다.");
+            return null;
+        }
+
+        // 캐싱된 경로가 있으면 반환
+        if (_pathCacheToCoreDict.TryGetValue((startNode, entitySize), out var pathCache))
+        {
+            return new NodePath(pathCache);
+        }
+
+        List<Node> openList = new List<Node>();
+        HashSet<Node> closedSet = new HashSet<Node>();
+
+        // 모든 노드 초기화
+        foreach (Node node in _grid)
+        {
+            node.gCost = int.MaxValue;
+            node.parent = null;
+        }
+
+        // 시작 노드 초기화
+        startNode.gCost = 0;
+        startNode.hCost = GetHeuristicDistance(startNode, _coreNode);
+        openList.Add(startNode);
+
+        while (openList.Count > 0)
+        {
+            // F 비용이 가장 낮은 노드 → H 비용이 가장 낮은 노드 순으로 탐색
+            Node curNode = openList[0];
+            for (int i = 1; i < openList.Count; i++)
+            {
+                if (openList[i].FCost < curNode.FCost ||
+                   (openList[i].FCost == curNode.FCost && openList[i].hCost < curNode.hCost))
+                {
+                    curNode = openList[i];
+                }
+            }
+
+            // F 비용이 가장 낮은 노드는 오픈 리스트에서 제거 & 클로즈 셋에 추가
+            openList.Remove(curNode);
+            closedSet.Add(curNode);
+
+            // 목표 노드에 도달했을 경우, 길을 역추적하여 반환
+            if (_coreNodeSet.Contains(curNode))
+            {
+                NodePath path = RetracePath(startNode, curNode);
+                _pathCacheToCoreDict[(startNode, entitySize)] = path;
+                return path;
+            }
+
+            foreach (Node neighbor in GetNeighbors(curNode, entitySize, _containDiagonal))
+            {
+                if (closedSet.Contains(neighbor)) continue;
+
+                // 검색해야 할 이웃 노드 오픈 리스트에 추가 & 코스트와 부모 노드 업데이트
+                int updatedGCost = curNode.gCost + GetHeuristicDistance(curNode, neighbor);
+                if (updatedGCost < neighbor.gCost)
+                {
+                    neighbor.parent = curNode;
+                    neighbor.gCost = updatedGCost;
+                    neighbor.hCost = GetHeuristicDistance(neighbor, _coreNode);
+
+                    if (!openList.Contains(neighbor))
+                    {
+                        openList.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 노드 그리드 상에서 시작 노드부터 목표 노드까지의 가장 빠른 경로를 반환
+    /// </summary>
+    public static NodePath FindPath(Node startNode, int entitySize ,Transform target, int targetSize)
+    {
+        if (!_isInitialized)
+        {
+            Debug.LogError("[A*] 노드 그리드가 생성되어 있지 않습니다.");
+            return null;
         }
 
         List<Node> openList = new List<Node>();
@@ -105,14 +201,12 @@ public static class AstarAlgorithm
             if (endNodeSet.Contains(curNode))
             {
                 NodePath path = RetracePath(startNode, curNode);
-                if(target.TryGetComponent<Core>(out _))
-                    _pathCacheToCoreDict[startNode] = path;
                 return path;
             }
 
-            foreach (Node neighbor in GetNeighbors(curNode, containDiagonalNode))
+            foreach (Node neighbor in GetNeighbors(curNode, entitySize, _containDiagonal))
             {
-                if (!neighbor.isWalkable || closedSet.Contains(neighbor)) continue;
+                if (closedSet.Contains(neighbor)) continue;
 
                 // 검색해야 할 이웃 노드 오픈 리스트에 추가 & 코스트와 부모 노드 업데이트
                 int updatedGCost = curNode.gCost + GetHeuristicDistance(curNode, neighbor);
@@ -177,6 +271,32 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
+    /// 엔티티 사이즈에 따른 이동 불가 유무 반환
+    /// </summary>
+    public static bool IsAreaWalkable(Node center, int entitySize)
+    {
+        Vector2Int gridIndex = _gridIndexDict[center];
+        int boundary = entitySize / 2;
+        int maxX = _grid.GetLength(0);
+        int maxY = _grid.GetLength(1);
+
+        for (int x = -boundary; x <= boundary; x++)
+        {
+            for (int y = -boundary; y <= boundary; y++)
+            {
+                int gridX = gridIndex.x + x;
+                int gridY = gridIndex.y + y;
+
+                if (gridX < 0 || gridY < 0 || gridX >= maxX || gridY >= maxY) continue;
+                if (_grid[gridX, gridY].isCore) continue;
+                if (!_grid[gridX, gridY].isWalkable) return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// 노드 사이의 휴리스틱 거리를 반환<br/>
     /// ※ 상하좌우 10 / 대각선 14
     /// </summary>
@@ -198,11 +318,17 @@ public static class AstarAlgorithm
     /// 이웃 노드 리스트를 반환<br/>
     /// ※ containDiagonal : 대각선 포함 유무
     /// </summary>
-    private static List<Node> GetNeighbors(Node node, bool containDiagonal)
+    private static List<Node> GetNeighbors(Node node, int entitySize, bool containDiabonal)
     {
         if (!_isInitialized)
         {
             Debug.LogError("[A*] 노드 그리드가 생성되어 있지 않습니다.");
+            return null;
+        }
+
+        if(entitySize == 0)
+        {
+            Debug.LogError("[A*] 엔티티 사이즈가 0 입니다.");
             return null;
         }
 
@@ -215,9 +341,10 @@ public static class AstarAlgorithm
             for (int y = _gridIndexDict[node].y - 1; y <= _gridIndexDict[node].y + 1; y++)
             {
                 if (x < 0 || y < 0 || x >= maxX || y >= maxY) continue; // 범위 밖 제외
-                if (!node.isWalkable) continue; // 해당 노드로 갈 수 없으면 제외
                 if (x == _gridIndexDict[node].x && y == _gridIndexDict[node].y) continue; // 자기 자신 제외
-                if (!containDiagonal && Mathf.Abs(x - _gridIndexDict[node].x) == 1 && Mathf.Abs(y - _gridIndexDict[node].y) == 1) continue; // 대각선 제외
+                if (!containDiabonal && Mathf.Abs(x - _gridIndexDict[node].x) == 1 && Mathf.Abs(y - _gridIndexDict[node].y) == 1) continue; // 대각선 제외
+
+                if (!IsAreaWalkable(_grid[x, y], entitySize)) continue; // 이동 불가능하면 제외
 
                 neighborList.Add(_grid[x, y]);
             }
@@ -254,7 +381,7 @@ public static class AstarAlgorithm
     /// <summary>
     /// 타겟 근처의 모든 노드 해시셋를 반환
     /// </summary>
-    private static HashSet<Node> GetSurroudingNodesFromTarget(Node targetNode, int targetSize)
+    private static HashSet<Node> GetSurroudingNodesFromTarget(Node targetNode, int targetSize, bool isCore = false)
     {
         if (!_isInitialized)
         {
@@ -270,9 +397,16 @@ public static class AstarAlgorithm
         {
             for (int y = -boundary; y <= boundary; y++)
             {
+                int gridX = targetGridIndex.x + x;
+                int gridY = targetGridIndex.y + y;
+
                 if(Mathf.Abs(x) == boundary || Mathf.Abs(y) == boundary)
                 {
-                    nodes.Add(_grid[targetGridIndex.x + x, targetGridIndex.y + y]);
+                    nodes.Add(_grid[gridX, gridY]);
+                }
+                else if(isCore)
+                {
+                    _grid[gridX, gridY].isCore = true;
                 }
             }
         }

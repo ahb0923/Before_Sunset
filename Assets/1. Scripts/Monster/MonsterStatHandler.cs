@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+using System.Drawing;
+using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
     private BaseMonster _monster;
 
     [SerializeField] private MonsterData data;
+    [SerializeField] private int _size; // test용
 
     public int Id { get; private set; }
     public string MonsterName { get; private set; }
@@ -27,8 +29,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public WaitForSeconds WaitAttack { get; private set; }
     public float AttackRange { get; private set; }
     public float Speed { get; private set; }
+    public int Size { get; private set; }
     public string Context { get; private set; }
-
 
     public void Init(BaseMonster monster)
     {
@@ -50,6 +52,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         WaitAttack = new WaitForSeconds(AttackPerSec);
         AttackRange = data.range;
         Speed = data.speed;
+        Size = _size;
         Context = data.context;
     }
 
