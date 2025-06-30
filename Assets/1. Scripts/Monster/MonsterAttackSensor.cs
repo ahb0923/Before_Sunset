@@ -14,9 +14,11 @@ public class MonsterAttackSensor : MonoBehaviour
     /// <summary>
     /// 공격 센서 범위 설정
     /// </summary>
-    public void SetSensorRange(float range)
+    public void SetSensorRange(int size, float range)
     {
-        _collider.radius = range;
+        float halfSize = size * 0.5f;
+        float halfRange = range * 0.5f;
+        _collider.radius = halfSize + halfRange;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
