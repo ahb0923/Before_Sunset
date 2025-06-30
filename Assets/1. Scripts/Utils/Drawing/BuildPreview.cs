@@ -27,8 +27,12 @@ public class BuildPreview : MonoBehaviour
     {
         previewTilemap.ClearAllTiles();
 
+        int offsetX = size.x / 2;
+        int offsetY = size.y / 2;
+
         Tilemap groundTilemap = MapManager.Instance.GroundTile;
-        Vector3Int origin = groundTilemap.WorldToCell(worldPos);
+        Vector3Int centerCell = groundTilemap.WorldToCell(worldPos);
+        Vector3Int origin = centerCell - new Vector3Int(offsetX, offsetY, 0);
 
         // 현재 설치하려는 건물의 x와 y좌표
         for (int x = 0; x < size.x; x++)

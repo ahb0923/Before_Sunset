@@ -1,0 +1,35 @@
+[
+  {
+    "id": "600",
+    "monsterName": "머프",
+    "monsterType": "Melee",
+    "hp": 30,
+    "damage": 5,
+    "aps": 1,
+    "speed": 1,
+    "range": 1,
+    "context": "어두운 통로를 기어다니는 근접형 몬스터. 몰려다니는 경향이 있다."
+  },
+  {
+    "id": "601",
+    "monsterName": "드리즐",
+    "monsterType": "Ranged",
+    "hp": 20,
+    "damage": 5,
+    "aps": 1.2,
+    "speed": 1.2,
+    "range": 3,
+    "context": "멀리서 공격을 퍼붓는 몬스터. 속도와 사거리가 강점이다."
+  },
+  {
+    "id": 602,
+    "monsterName": "헤비",
+    "monsterType": "Tank",
+    "hp": 100,
+    "damage": 10,
+    "aps": 0.7,
+    "speed": 0.5,
+    "range": 1,
+    "context": "묵직한 몸체로 천천히 다가오는 거대한 몬스터. 체력이 높고 느리다."
+  }
+]
