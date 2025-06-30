@@ -79,4 +79,13 @@ public class MonsterSpawner : MonoSingleton<MonsterSpawner>
         GameObject obj = PoolManager.Instance.GetFromPool(id);
         obj.transform.position = pos;
     }
+
+    /// <summary>
+    /// 맵 사이즈 확인
+    /// </summary>
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position, _mapSize);
+    }
 }

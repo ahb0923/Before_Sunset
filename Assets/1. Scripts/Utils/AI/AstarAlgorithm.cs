@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public static class AstarAlgorithm
@@ -76,12 +75,13 @@ public static class AstarAlgorithm
             node.parent = null;
         }
 
-        // 엔드 노드 리스트 초기화
-        HashSet<Node> endNodeList = GetSurroudingNodesFromTarget(target.position, targetSize);
+        // 엔드 노드 초기화
+        Node endNode = GetNodeFromWorldPosition(target.position);
+        HashSet<Node> endNodeSet = GetSurroudingNodesFromTarget(endNode, targetSize);
 
         // 시작 노드 초기화
         startNode.gCost = 0;
-        startNode.hCost = GetHeuristicDistanceToAnyTarget(startNode, endNodeList);
+        startNode.hCost = GetHeuristicDistance(startNode, endNode);
         openList.Add(startNode);
 
         while (openList.Count > 0)
@@ -102,7 +102,7 @@ public static class AstarAlgorithm
             closedSet.Add(curNode);
 
             // 목표 노드에 도달했을 경우, 길을 역추적하여 반환
-            if (endNodeList.Contains(curNode))
+            if (endNodeSet.Contains(curNode))
             {
                 NodePath path = RetracePath(startNode, curNode);
                 if(target.TryGetComponent<Core>(out _))
@@ -120,7 +120,7 @@ public static class AstarAlgorithm
                 {
                     neighbor.parent = curNode;
                     neighbor.gCost = updatedGCost;
-                    neighbor.hCost = GetHeuristicDistanceToAnyTarget(neighbor, endNodeList);
+                    neighbor.hCost = GetHeuristicDistance(neighbor, endNode);
 
                     if (!openList.Contains(neighbor))
                     {
@@ -195,21 +195,6 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
-    /// 노드와 타겟 노드 해시셋 사이에서 가장 작은 휴리스틱 거리를 반환<br/>
-    /// </summary>
-    private static int GetHeuristicDistanceToAnyTarget(Node from, HashSet<Node> targetNodes)
-    {
-        int minDist = int.MaxValue;
-        foreach (var target in targetNodes)
-        {
-            int dist = GetHeuristicDistance(from, target);
-            if (dist < minDist) minDist = dist;
-        }
-
-        return minDist;
-    }
-
-    /// <summary>
     /// 이웃 노드 리스트를 반환<br/>
     /// ※ containDiagonal : 대각선 포함 유무
     /// </summary>
@@ -269,7 +254,7 @@ public static class AstarAlgorithm
     /// <summary>
     /// 타겟 근처의 모든 노드 해시셋를 반환
     /// </summary>
-    private static HashSet<Node> GetSurroudingNodesFromTarget(Vector3 targetPos, int targetSize)
+    private static HashSet<Node> GetSurroudingNodesFromTarget(Node targetNode, int targetSize)
     {
         if (!_isInitialized)
         {
@@ -277,22 +262,21 @@ public static class AstarAlgorithm
             return null;
         }
 
+        Vector2Int targetGridIndex = _gridIndexDict[targetNode];
         HashSet<Node> nodes = new HashSet<Node>();
-        float targetHalfSize = targetSize * 0.5f;
-        Vector3 bottomeLeftPos = targetPos - new Vector3(targetHalfSize + _nodeHalfSize, targetHalfSize + _nodeHalfSize);
-        for (int x = 0; x < targetSize + 2; x++)
+
+        int boundary = targetSize / 2 + 1;
+        for (int x = -boundary; x <= boundary; x++)
         {
-            for (int y = 0; y < targetSize + 2; y++)
+            for (int y = -boundary; y <= boundary; y++)
             {
-                if (x == 0 || y == 0 || x == targetSize + 1 || y == targetSize + 1)
+                if(Mathf.Abs(x) == boundary || Mathf.Abs(y) == boundary)
                 {
-                    Vector3 pos = bottomeLeftPos + new Vector3(x * _nodeSize, y * _nodeSize, 0);
-                    Node node = GetNodeFromWorldPosition(pos);
-                    nodes.Add(node);
+                    nodes.Add(_grid[targetGridIndex.x + x, targetGridIndex.y + y]);
                 }
             }
         }
-
+        
         return nodes;
     }
 }

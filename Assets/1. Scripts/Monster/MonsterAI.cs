@@ -179,13 +179,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 해당 오브젝트 선택 시 경로 시각화
+    /// 경로 시각화
     /// </summary>
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         if(_path != null)
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.yellow;
 
             Vector3 pos = _path.Path[0].WorldPos;
             for (int i = 1; i < _path.Path.Count; i++)
