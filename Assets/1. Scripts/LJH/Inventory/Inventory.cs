@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    public Item Pickaxe { get; private set; }
     public Item[] Items { get; private set; } = new Item[29];
     
     [field:SerializeField] public InventoryUI InventoryUI { get; private set; }
@@ -24,7 +25,8 @@ public class Inventory : MonoBehaviour
     {
         InventoryManager.Instance.Init(this);
         Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
-        sortButton.onClick.AddListener(NewSort);
+        sortButton.onClick.AddListener(Sort);
+        Pickaxe = InventoryManager.Instance.pickaxeItemData.CreateItem();
     }
 
     private void Update()
@@ -136,7 +138,7 @@ public class Inventory : MonoBehaviour
         return -1;
     }
 
-    public void NewSort()
+    public void Sort()
     {
         List<Item> items = Items.Where(item => item != null).ToList();
         

@@ -11,6 +11,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Transform _quickSlotContainer;
     [SerializeField] private Button _sortButton;
     
+    [SerializeField] private PickaxeSlot _pickaxeSlot;
     [SerializeField] private GameObject _slotPrefab;
     
     public List<ItemSlot> itemSlots = new List<ItemSlot>();
@@ -18,6 +19,7 @@ public class InventoryUI : MonoBehaviour
     private const string QUICK_SLOT_AREA = "QuickSlotArea";
     private const string ITEM_SLOT_AREA = "ItemSlotArea";
     private const string ITEM_SLOT_PREFAB = "ItemSlot";
+    private const string PICKAXE_SLOT = "PickaxeSlot";
     private const string SORT_BUTTON = "SortButton";
     
     private void Reset()
@@ -25,6 +27,7 @@ public class InventoryUI : MonoBehaviour
         _quickSlotContainer = this.gameObject.transform.Find(QUICK_SLOT_AREA);
         _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
+        _pickaxeSlot = UtilityLJH.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
         _sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
     }
     
@@ -43,6 +46,8 @@ public class InventoryUI : MonoBehaviour
         }
         
         InitSlots();
+        
+        _pickaxeSlot.RefreshUI();
         
         foreach (var itemSlot in itemSlots)
         {

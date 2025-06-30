@@ -6,18 +6,21 @@ public class QuickSlotInventoryUI : MonoBehaviour
 {
     [SerializeField] private int _numberOfQuickSlots = 9;
     [SerializeField] private Transform _itemSlotContainer;
-    
+
     [SerializeField] private GameObject _slotPrefab;
+    [SerializeField] private PickaxeSlot _pickaxeSlot;
     
     private List<ItemSlot> _quickSlots = new List<ItemSlot>();
     
     private const string ITEM_SLOT_AREA = "QuickSlotArea";
     private const string ITEM_SLOT_PREFAB = "ItemSlot";
+    private const string PICKAXE_SLOT = "PickaxeSlot";
     
     
     private void Reset()
     {
         _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);
+        _pickaxeSlot = UtilityLJH.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
         _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
     }
 
@@ -36,6 +39,8 @@ public class QuickSlotInventoryUI : MonoBehaviour
                 this.gameObject.SetActive(true);
             }
         }
+        
+        _pickaxeSlot.RefreshUI();
         
         foreach (var itemSlot in _quickSlots)
         {

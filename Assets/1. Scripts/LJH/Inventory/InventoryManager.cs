@@ -7,6 +7,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
     public ItemData itemData;
     public ItemData itemData2;
     public ItemData itemData3;
+    public ItemData pickaxeItemData;
 
     public void Init(Inventory inventory)
     {

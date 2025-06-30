@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -300,5 +301,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             item.stack = max;
             _draggingItem.stack = total - max;
         }
+    }
+
+    private void OnDisable()
+    {
+        _highlight.SetActive(false);
     }
 }
