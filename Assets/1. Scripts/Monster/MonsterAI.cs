@@ -91,7 +91,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Move()
     {
-        // 해당 경로가 이동 불가능하면, 탐색 상태 전환
+        // 해당 경로가 이동 불가능하면, 탐색 상태 전환 (맨 밑 명령어)
         while(_path.IsWalkablePath(_monster.Stat.Size))
         {
             // 이동하려는 노드가 이동 가능하면, 이동
@@ -121,6 +121,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 yield return null;
             }
         }
+
+        ChangeState(MONSTER_STATE.Explore);
     }
 
     /// <summary>
