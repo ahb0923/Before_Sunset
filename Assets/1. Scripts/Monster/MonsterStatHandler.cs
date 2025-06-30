@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
@@ -26,8 +26,9 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public float AttackPerSec { get; private set; }
     public WaitForSeconds WaitAttack { get; private set; }
     public float AttackRange { get; private set; }
-    
     public float Speed { get; private set; }
+    public string Context { get; private set; }
+
 
     public void Init(BaseMonster monster)
     {
@@ -41,7 +42,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
         Id = data.id;
         MonsterName = data.monsterName;
-        Type = data.type;
+        Type = data.monsterType;
         MaxHp = data.hp;
         CurHp = data.hp;
         AttackPower = data.damage;
@@ -49,6 +50,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         WaitAttack = new WaitForSeconds(AttackPerSec);
         AttackRange = data.range;
         Speed = data.speed;
+        Context = data.context;
     }
 
     /// <summary>

@@ -15,7 +15,8 @@ public enum TOWER_STATE
 public enum TOWER_ATTACK_TYPE
 {
     Projectile,
-    Areaofeffect
+    Areaofeffect,
+    Healing
 }
 
 public class TowerAI : StateBasedAI<TOWER_STATE>
