@@ -82,7 +82,7 @@ public static class AstarAlgorithm
         }
 
         // 캐싱된 경로가 있으면 반환
-        if (_pathCacheToCoreDict.TryGetValue((startNode, entitySize), out var pathCache))
+        if (_pathCacheToCoreDict.TryGetValue((startNode, entitySize), out var pathCache) && pathCache.IsWalkablePath(entitySize))
         {
             return new NodePath(pathCache);
         }
