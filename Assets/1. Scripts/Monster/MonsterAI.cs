@@ -15,7 +15,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private BaseMonster _monster;
     private Core _core;
 
-    public Transform Target { get; private set; }
+    public GameObject Target { get; private set; }
     private NodePath _path;
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
@@ -142,7 +142,14 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         }
 
         // 타겟에 대한 대미지 부여는 여기서 진행
-        Debug.Log($"{_monster.Stat.MonsterName} : 공격!");
+        DamagedSystem.Instance.Send(new Damaged
+        {
+            Attacker = gameObject,
+            Victim = Target,
+            Value = _monster.Stat.AttackPower,
+            IgnoreDefense = false
+        });
+        Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
 
         yield return _monster.Stat.WaitAttack;
     }
@@ -163,7 +170,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     public void InitExploreState()
     {
-        Target = _core.transform;
+        Target = _core.gameObject;
         _path = null;
         TransitionTo(MONSTER_STATE.Explore, true);
 

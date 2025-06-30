@@ -38,6 +38,7 @@ public class Core : MonoBehaviour, IDamageable
         if (_curHp <= 0)
         {
             _curHp = 0;
+            Debug.Log("게임 오버!");
         }
     }
 }
