@@ -11,6 +11,7 @@ public class OreData
     public int hp;
     public int def;
     public int spawnProbability;
+    public int spawnStage;
 
     // 아직 데이터 없음
     public string context;

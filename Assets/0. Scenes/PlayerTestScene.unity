@@ -10502,6 +10502,59 @@ Transform:
   - {fileID: 496993954}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1417518166
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1417518168}
+  - component: {fileID: 1417518167}
+  m_Layer: 0
+  m_Name: OreSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1417518167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417518166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1fb26c60c6fbb245a0af50103c1b05d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAreaCenter: {x: 0, y: 0}
+  spawnAreaSize: {x: 20, y: 20}
+  spawnCount: 20
+  orePrefabs:
+  - {fileID: 4102517613622959670, guid: d9f00bedccdd5f64eb928ed888e41d64, type: 3}
+  - {fileID: 4102517613622959670, guid: cb231ed4a0031754a90744fc16fe8fa8, type: 3}
+  - {fileID: 4102517613622959670, guid: 7e9cefe036d7b7549bbb34b86d92cf1f, type: 3}
+  - {fileID: 4102517613622959670, guid: 7d63393c489a2fb4fb522eb1c7c31f6d, type: 3}
+  - {fileID: 4102517613622959670, guid: 049ec4f4e74fd154190cc27c6b746fa1, type: 3}
+--- !u!4 &1417518168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417518166}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1473944414
 GameObject:
   m_ObjectHideFlags: 0
@@ -12316,3 +12369,4 @@ SceneRoots:
   - {fileID: 2127684937}
   - {fileID: 980875875}
   - {fileID: 1217630791}
+  - {fileID: 1417518168}
