@@ -17,6 +17,11 @@ public class RefinerySlot : MonoBehaviour
         _refineryIcon = UtilityLJH.FindChildComponent<Image>(this.transform, REFINERY_ICON);
     }
 
+    private void Awake()
+    {
+        
+    }
+
     public void SetSlot(int slotIndex)
     {
         SetIndex(slotIndex);
@@ -31,12 +36,14 @@ public class RefinerySlot : MonoBehaviour
 
     private void SetUI()
     {
-        //_refineryIcon = refineryData[index].icon
+        //_refineryIcon = refineryData[_index].icon
     }
 
     private void OpenRefineryInfo()
     {
-        //UIManager.Instance.refineryInfoUI.Open();
-        //UIManager.Instance.refineryInfoUI.UpdateUI(refineryData[index]);
+        var infoUI = this.transform.parent.parent.parent.parent.parent.GetComponent<RefineryUI>().RefineryInfoUI;
+        
+        infoUI.Open();
+        //infoUI.UpdateUI(refineryData[_index]);
     }
 }

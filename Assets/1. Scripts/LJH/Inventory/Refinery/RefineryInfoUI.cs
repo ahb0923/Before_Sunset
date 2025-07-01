@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,9 @@ public class RefineryInfoUI : MonoBehaviour
     private const string FIRST_MATERIAL_AMOUNT = "FirstMaterialAmount";
     private const string SECOND_MATERIAL_AMOUNT = "SecondMaterialAmount";
     private const string THIRD_MATERIAL_AMOUNT = "ThirdMaterialAmount";
+    
+    private const string EXIT_BUTTON = "ExitButton";
+    private const string CRAFT_BUTTON = "CraftButton";
 
     private void Reset()
     {
@@ -32,6 +36,14 @@ public class RefineryInfoUI : MonoBehaviour
         _firstMaterialAmount = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, FIRST_MATERIAL_AMOUNT);
         _secondMaterialAmount = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, SECOND_MATERIAL_AMOUNT);
         _thirdMaterialAmount = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, THIRD_MATERIAL_AMOUNT);
+    }
+
+    private void Awake()
+    {
+        Button exitButton = UtilityLJH.FindChildComponent<Button>(this.transform, EXIT_BUTTON);
+        Button craftButton = UtilityLJH.FindChildComponent<Button>(this.transform, CRAFT_BUTTON);
+        exitButton.onClick.AddListener(Close);
+        //craftButton.onClick.AddListener();
     }
 
     public void UpdateUI()

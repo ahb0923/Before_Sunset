@@ -32,17 +32,17 @@ public class Inventory : MonoBehaviour
     private void Update()
     {
         //아이템 획득 키
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             AddItem(InventoryManager.Instance.itemData.CreateItem());
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.O))
         {
             AddItem(InventoryManager.Instance.itemData2.CreateItem());
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             AddItem(InventoryManager.Instance.itemData3.CreateItem());
         }
@@ -51,6 +51,7 @@ public class Inventory : MonoBehaviour
         QuickSlotInventoryUI.ToggleInventory();
     }
 
+    
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드
     /// </summary>
