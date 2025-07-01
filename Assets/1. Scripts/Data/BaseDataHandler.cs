@@ -93,6 +93,12 @@ public abstract class BaseDataHandler<TData> : IDataLoader where TData : class
         }
     }
 
+    public List<TData> GetAllItems()
+    {
+        // 추후에 성능 개선 시에 캐싱 고려
+        return dataIdDictionary.Values.ToList();
+    }
+
     protected abstract int GetId(TData data);
     protected abstract string GetName(TData data);
 

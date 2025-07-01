@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class MineralData
+public class ItemData
 {
     public int id;
     public string itemName;
