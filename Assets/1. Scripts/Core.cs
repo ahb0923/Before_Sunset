@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Core : MonoBehaviour, IDamageable
 {
@@ -6,6 +7,7 @@ public class Core : MonoBehaviour, IDamageable
     public int Size => _size;
     [SerializeField] private int _maxHp = 500;
     private int _curHp;
+    [SerializeField] private Image _hpBar;
 
     private void Awake()
     {
@@ -17,7 +19,7 @@ public class Core : MonoBehaviour, IDamageable
     /// </summary>
     public void SetFullHp()
     {
-        _curHp = _maxHp;
+        SetHp(_maxHp);
     }
 
     /// <summary>
@@ -32,13 +34,21 @@ public class Core : MonoBehaviour, IDamageable
             return;
         }
 
-        _curHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
-        _curHp = Mathf.Max(_curHp, 0);
+        SetHp(Mathf.Max(_curHp - DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense), 0));
 
         if (_curHp <= 0)
         {
             _curHp = 0;
             Debug.Log("게임 오버!");
         }
+    }
+
+    /// <summary>
+    /// 현재 HP 업데이트
+    /// </summary>
+    private void SetHp(int hp)
+    {
+        _curHp = hp;
+        _hpBar.fillAmount = (float)_curHp / _maxHp;
     }
 }
