@@ -13,6 +13,8 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
     protected override int GetId(TowerData data) => data.id;
     protected override string GetName(TowerData data) => data.towerName;
 
+
+
     [ContextMenu ("Debug all Log")]
     public override void DebugLogAll(Func<TowerData, string> formatter = null)
     {
