@@ -5,6 +5,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     [SerializeField] private int _id;
     public int GetId() => _id;
 
+    public SpriteRenderer Spriter { get; private set; }
     public MonsterAI Ai { get; private set; }
     public MonsterStatHandler Stat { get; private set; }
     public MonsterAttackSensor Sensor { get; private set; }
@@ -12,16 +13,23 @@ public class BaseMonster : MonoBehaviour, IPoolable
     // 원거리 공격 몬스터만 투사체 받아옴
     [SerializeField] private GameObject projectile;
 
+    private void LateUpdate()
+    {
+        if (Spriter == null) return;
+        RenderUtil.SetSortingOrderByY(Spriter);
+    }
+
     /// <summary>
     /// 풀링에서 오브젝트 생성 시 단 1번 실행
     /// </summary>
     public void OnInstantiate()
     {
+        Spriter = GetComponentInChildren<SpriteRenderer>();
         Ai = GetComponent<MonsterAI>();
         Stat = GetComponent<MonsterStatHandler>();
         Sensor = GetComponentInChildren<MonsterAttackSensor>();
 
-        Ai.Init(this, MonsterSpawner.Instance.Core);
+        Ai.Init(this);
         Stat.Init(this, _id);
         Sensor.Init(this);
     }

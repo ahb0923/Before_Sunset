@@ -13,17 +13,16 @@ public enum MONSTER_STATE
 public class MonsterAI : StateBasedAI<MONSTER_STATE>
 {
     private BaseMonster _monster;
-    private Core _core;
 
-    public GameObject Target { get; private set; }
+    public Transform Target { get; private set; }
     private NodePath _path;
+    private Node _nextNode;
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
-    public void Init(BaseMonster monster, Core core)
+    public void Init(BaseMonster monster)
     {
         _monster = monster;
-        _core = core;
     }
 
     protected override void DefineStates()
@@ -70,20 +69,17 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Explore()
     {
-        // 코어를 향한 경로 탐색
-        _path = AstarAlgorithm.FindPathToCore(AstarAlgorithm.GetNodeFromWorldPosition(transform.position), _monster.Stat.Size);
+        while(_path == null)
+        {
+            Vector3 startPos = _nextNode == null ? transform.position : _nextNode.WorldPos;
+            Target = MapManager.Instance.Core.transform; // 타겟을 어떻게 설정할 건지
+            _path = MapManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
 
-        if(_path != null)
-        {
-            // 경로가 있으면, 이동 상태 전환
-            ChangeState(MONSTER_STATE.Move);
-            yield break;
+            yield return null;
         }
-        else
-        {
-            // 경로가 없으면, 새로운 타겟과 그에 따른 경로를 받아와야 함
-            Debug.Log("타겟을 타워로 변경합니다!");
-        }
+
+        // 경로를 찾으면, 이동 상태 전환
+        ChangeState(MONSTER_STATE.Move);
     }
 
     /// <summary>
@@ -91,37 +87,35 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Move()
     {
-        // 해당 경로가 이동 불가능하면, 탐색 상태 전환 (맨 밑 명령어)
-        while(_path.IsWalkablePath(_monster.Stat.Size))
+        _nextNode = _path.CurNode;
+
+        // 해당 경로가 이동 불가능하면, 탐색 상태 전환
+        while (_path.IsWalkablePath(_monster.Stat.Size, MapManager.Instance.GetWalkableId(Target)))
         {
-            // 이동하려는 노드가 이동 가능하면, 이동
-            while (AstarAlgorithm.IsAreaWalkable(_path.CurNode, _monster.Stat.Size))
+            // 인터럽트 발생하면, 코루틴 탈출
+            if (IsInterrupted)
+                yield break;
+
+            // 실제 오브젝트 이동
+            transform.position = Vector2.MoveTowards(transform.position, _nextNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
+
+            if (Vector2.Distance(transform.position, _nextNode.WorldPos) < 0.01f)
             {
-                // 인터럽트 발생하면, 코루틴 탈출
-                if (IsInterrupted)
-                    yield break;
+                transform.position = _nextNode.WorldPos;
 
-                // 실제 오브젝트 이동
-                transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
-
-                if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
+                // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
+                if (!_path.Next())
                 {
-                    transform.position = _path.CurNode.WorldPos;
-
-                    // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
-                    if (!_path.Next())
-                    {
-                        ChangeState(MONSTER_STATE.Explore);
-                    }
-
-                    // 이동하려는 노드 도착 시, 경로의 이동 가능 검사를 위해 코루틴 탈출
                     break;
                 }
 
-                yield return null;
+                _nextNode = _path.CurNode;
             }
+
+            yield return null;
         }
 
+        _path = null;
         ChangeState(MONSTER_STATE.Explore);
     }
 
@@ -141,7 +135,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         DamagedSystem.Instance.Send(new Damaged
         {
             Attacker = gameObject,
-            Victim = Target,
+            Victim = Target.gameObject,
             Value = _monster.Stat.AttackPower,
             IgnoreDefense = false
         });
@@ -167,8 +161,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     public void InitExploreState()
     {
-        Target = _core.gameObject;
         _path = null;
+        _nextNode = null;
         ChangeState(MONSTER_STATE.Explore);
 
         RunDoingState();

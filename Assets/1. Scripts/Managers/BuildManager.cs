@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -112,6 +112,7 @@ public class BuildManager : MonoSingleton<BuildManager>
 
         // 배치 성공
         BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
+        MapManager.Instance.AddObstacle(tower.transform, 1); // 일단 1x1이니까 1로 두었음
         RenderUtil.SetSortingOrderByY(tower.icon);
 
         return true;
