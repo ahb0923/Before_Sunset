@@ -5,7 +5,8 @@
     "dropMineralId": "100",
     "hp": 1,
     "def": 0,
-    "spawnProbability": 65
+    "spawnProbability": 65,
+    "spawnStage": 1
   },
   {
     "id": "001",
@@ -13,7 +14,8 @@
     "dropMineralId": "110",
     "hp": 2,
     "def": 0,
-    "spawnProbability": 40
+    "spawnProbability": 40,
+    "spawnStage": 1
   },
   {
     "id": "002",
@@ -21,7 +23,8 @@
     "dropMineralId": "120",
     "hp": 4,
     "def": 1,
-    "spawnProbability": 30
+    "spawnProbability": 30,
+    "spawnStage": 2
   },
   {
     "id": "003",
@@ -29,7 +32,8 @@
     "dropMineralId": "130",
     "hp": 5,
     "def": 2,
-    "spawnProbability": 20
+    "spawnProbability": 20,
+    "spawnStage": 2
   },
   {
     "id": "004",
@@ -37,6 +41,7 @@
     "dropMineralId": "140",
     "hp": 6,
     "def": 3,
-    "spawnProbability": 20
+    "spawnProbability": 20,
+    "spawnStage": 2
   }
 ]
