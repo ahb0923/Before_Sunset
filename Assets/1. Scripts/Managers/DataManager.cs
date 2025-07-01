@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -46,15 +47,14 @@ public class DataManager : PlainSingleton<DataManager>
     // ↓ 인벤토리에 들어가지 않는 아이템
     public TowerDataHandler TowerData { get; private set; } = new();
     public MonsterDataHandler MonsterData { get; private set; } = new();
-    // public OreDataHandler OreData { get; private set; } = new();
+    public OreDataHandler OreData { get; private set; } = new();
 
 
-
-    // ↓ 인벤토리에 들어가는 아이템
-    // public ItemDataHandler ItemData { get; private set; } = new();
+    public ItemDataHandler ItemData { get; private set; } = new();
+    // ↓ 인벤토리에 들어가는 아이템 데이터
     public MineralDataHandler MineralData { get; private set; } = new();
-    // public JewelDataHandler JewelData { get; private set; } = new();
-    // public EquipmentDataHandler EquipmentDataHandler { get; private set; } = new();
+    public JewelDataHandler JewelData { get; private set; } = new();
+    public EquipmentDataHandler EquipmentData { get; private set; } = new();
 
 
     public async Task InitAsync()
@@ -64,9 +64,9 @@ public class DataManager : PlainSingleton<DataManager>
             MineralData,
             TowerData,
             MonsterData,
-            //JewelData,
-            //OreData,
-            //EquipmnetData,
+            JewelData,
+            OreData,
+            EquipmentData
         };
 
         foreach (var loader in loaders)
@@ -74,8 +74,15 @@ public class DataManager : PlainSingleton<DataManager>
             await loader.LoadAsyncLocal();
         }
 
+        ItemData.Init(MineralData, JewelData, EquipmentData);
+
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
 
-        MonsterData.DebugLogAll();
+        //MineralData.DebugLogAll();
+        //TowerData.DebugLogAll();
+        //MonsterData.DebugLogAll();
+        //JewelData.DebugLogAll();
+        //OreData.DebugLogAll();
+        //EquipmentData.DebugLogAll();
     }
 }
