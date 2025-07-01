@@ -1,14 +1,11 @@
-using System.Drawing;
 using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
     private BaseMonster _monster;
 
-    [SerializeField] private MonsterData data;
-    [SerializeField] private int _size; // test용
+    [SerializeField] private MonsterData _data;
 
-    public int Id { get; private set; }
     public string MonsterName { get; private set; }
     public MONSTER_TYPE Type { get; private set; }
 
@@ -32,9 +29,11 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public int Size { get; private set; }
     public string Context { get; private set; }
 
-    public void Init(BaseMonster monster)
+    public void Init(BaseMonster monster, int id)
     {
-        if (data == null)
+        _data = DataManager.Instance.MonsterData.GetById(id);
+
+        if (_data == null)
         {
             Debug.Log("[MonsterStatHandler] 몬스터 데이터가 존재하지 않습니다.");
             return;
@@ -42,18 +41,17 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
         _monster = monster;
 
-        Id = data.id;
-        MonsterName = data.monsterName;
-        Type = data.monsterType;
-        MaxHp = data.hp;
-        CurHp = data.hp;
-        AttackPower = data.damage;
-        AttackPerSec = data.aps;
+        MonsterName = _data.monsterName;
+        Type = _data.monsterType;
+        MaxHp = _data.hp;
+        CurHp = _data.hp;
+        AttackPower = _data.damage;
+        AttackPerSec = _data.aps;
         WaitAttack = new WaitForSeconds(AttackPerSec);
-        AttackRange = data.range;
-        Speed = data.speed;
-        Size = _size;
-        Context = data.context;
+        AttackRange = _data.range;
+        Speed = _data.speed;
+        Size = _data.size;
+        Context = _data.context;
     }
 
     /// <summary>

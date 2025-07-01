@@ -159,7 +159,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 사망 애니메이션 처리
         Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
 
-        PoolManager.Instance.ReturnToPool(_monster.Stat.Id, gameObject);
+        PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
     }
 
     /// <summary>
@@ -169,7 +169,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         Target = _core.gameObject;
         _path = null;
-        TransitionTo(MONSTER_STATE.Explore, true);
+        ChangeState(MONSTER_STATE.Explore);
 
         RunDoingState();
     }

@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class SpawnData
+{
+    public int id;
+    public int spawnCount;
+}
+
 public class MonsterSpawner : MonoSingleton<MonsterSpawner>
 {
     [Header("# Map Setting")]
@@ -13,10 +20,11 @@ public class MonsterSpawner : MonoSingleton<MonsterSpawner>
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     [SerializeField] private float _spawnTime;
+    [SerializeField] private Transform _monsterParent;
 
     [Header("# Test")]
-    public int spawnCount;
-    public int id;
+    [SerializeField] private int _spawnNum;
+    [SerializeField] private List<SpawnData> _spawnDatas;
     
     protected override void Awake()
     {
@@ -48,16 +56,18 @@ public class MonsterSpawner : MonoSingleton<MonsterSpawner>
     [ContextMenu("몬스터 소환")]
     public void SpawnAllMonsters()
     {
-        StartCoroutine(C_SpawnMonsters());
+        StartCoroutine(C_SpawnMonsters(_spawnNum));
     }
-    private IEnumerator C_SpawnMonsters()
+    private IEnumerator C_SpawnMonsters(int spawnDataNum)
     {
+        SpawnData spawnData = _spawnDatas[spawnDataNum];
+
         int count = 0;
         float timer = 0f;
 
         while (true)
         {
-            if(count >= spawnCount) // test용
+            if(count >= spawnData.spawnCount) // test용
                 yield break;
 
             timer += Time.deltaTime;
@@ -67,19 +77,17 @@ public class MonsterSpawner : MonoSingleton<MonsterSpawner>
                 count++;
 
                 // 지금은 일단 스테이지마다 무슨 몬스터를 몇 마리 소환할 지 모르니까 Walker만 소환
-                SpawnMonster();
+                SpawnMonster(spawnData.id);
             }
 
             yield return null;
         }
     }
-    private void SpawnMonster()
+    private void SpawnMonster(int monsterId)
     {
-        int randInt = Random.Range(0, _spawnPoints.Count);
-        Vector3 pos = _spawnPoints[randInt].position;
+        Vector3 pos = _spawnPoints[Random.Range(0, _spawnPoints.Count)].position;
 
-        GameObject obj = PoolManager.Instance.GetFromPool(id);
-        obj.transform.position = pos;
+        GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
     }
 
     /// <summary>

@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 917686060, guid: 60d4a04ecb0dd6440b5f43f51897a0f6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2216981, g: 0.42488214, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: 1101116313627243319}
   - component: {fileID: 8189292471688351104}
   m_Layer: 7
-  m_Name: Monster_Muff
+  m_Name: Monster_Drizzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e9dd189854c75499f01dee4e284305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 600
+  _id: 601
   projectile: {fileID: 0}
 --- !u!114 &1101116313627243319
 MonoBehaviour:

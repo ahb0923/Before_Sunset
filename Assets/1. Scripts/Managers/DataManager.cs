@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +33,5 @@ public class DataManager : PlainSingleton<DataManager>
         }
 
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
-
-        MonsterData.DebugLogAll();
     }
 }
