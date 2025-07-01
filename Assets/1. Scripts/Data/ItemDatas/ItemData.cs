@@ -7,4 +7,5 @@ public class ItemData
     public int id;
     public string itemName;
     public string context;
+    //public string sprite;
 }

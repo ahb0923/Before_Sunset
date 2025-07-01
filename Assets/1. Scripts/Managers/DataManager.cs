@@ -44,7 +44,7 @@ public interface IDataLoader
 }
 public class DataManager : PlainSingleton<DataManager>
 {
-    // ↓ 인벤토리에 들어가지 않는 아이템
+    // ↓ 인벤토리에 들어가지 않는 아이템(오브젝트 데이터)
     public TowerDataHandler TowerData { get; private set; } = new();
     public MonsterDataHandler MonsterData { get; private set; } = new();
     public OreDataHandler OreData { get; private set; } = new();
@@ -55,7 +55,6 @@ public class DataManager : PlainSingleton<DataManager>
     public MineralDataHandler MineralData { get; private set; } = new();
     public JewelDataHandler JewelData { get; private set; } = new();
     public EquipmentDataHandler EquipmentData { get; private set; } = new();
-
 
     public async Task InitAsync()
     {
