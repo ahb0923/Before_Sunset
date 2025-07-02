@@ -5,28 +5,35 @@ using UnityEngine.Tilemaps;
 public class MapManager : MonoSingleton<MapManager>
 {
     [Header("# Map Setting")]
-    [SerializeField] private Vector3 _mapCenter = Vector3.zero;
+    [SerializeField] private Vector3 _mapCenter;
     [SerializeField] private Vector2 _mapSize;
     [SerializeField] private int _nodeSize = 1;
     private NodeGrid _grid;
 
-    public Core Core { get; private set; }
-    public Tilemap GroundTile { get; private set; }
-    public BuildPreview BuildPreview { get; private set; }
-    public DragIcon DragIcon { get; private set; }
-
-    // 맵 장애물 설정
+    // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
     private Dictionary<Transform, int> _walkableIdDict = new Dictionary<Transform, int>();
     private Dictionary<Transform, int> _obstacleSizeDict = new Dictionary<Transform, int>();
     private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
+    public Core Core { get; private set; }
+    [field: SerializeField] public MonsterSpawner MonsterSpawner { get; private set; }
+
+    public Tilemap GroundTile { get; private set; }
+    public BuildPreview BuildPreview { get; private set; }
+    public DragIcon DragIcon { get; private set; }
+
     protected override void Awake()
     {
         base.Awake();
 
         Core = GetComponentInChildren<Core>();
+        if(MonsterSpawner == null)
+        {
+            MonsterSpawner = FindObjectOfType<MonsterSpawner>();
+        }
+
         GroundTile = GetComponentInChildren<Tilemap>();
         BuildPreview = GetComponentInChildren<BuildPreview>();
         DragIcon = GetComponentInChildren<DragIcon>(true);
@@ -78,6 +85,8 @@ public class MapManager : MonoSingleton<MapManager>
         _obstacleSizeDict.Remove(obstacle);
 
         _distFromCoreDict[GetChebyshevDistanceFromCore(obstacle.position)].Remove(obstacle);
+
+        MonsterSpawner.OnObstacleDestroyed();
     }
 
     /// <summary>

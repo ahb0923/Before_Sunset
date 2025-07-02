@@ -16,6 +16,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private BaseMonster _monster;
 
     public Transform Target { get; private set; }
+    private bool _isTargetAlive => Target != null && Target.gameObject.activeInHierarchy;
     private NodePath _path;
     private Node _nextNode;
 
@@ -120,42 +121,33 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 타겟 리스트 중 오브젝트와 가장 가까운 타겟을 반환
-    /// </summary>
-    private Transform GetNearestTarget(List<Transform> targetList, HashSet<Transform> closed)
-    {
-        float dist = float.MaxValue;
-        Transform nearest = null;
-
-        foreach(Transform target in targetList)
-        {
-            if (closed.Contains(target)) continue;
-
-            float tempDist = Vector2.Distance(transform.position, target.position);
-
-            if (dist > tempDist)
-            {
-                dist = tempDist;
-                nearest = target;
-            }
-        }
-
-        return nearest;
-    }
-
-    /// <summary>
     /// 현재 위치에서 다음 노드의 위치로 이동
     /// </summary>
     private IEnumerator C_Move()
     {
-        _nextNode = _path.CurNode;
+        // 타겟이 없으면, 탐색 상태 전환
+        if (!_isTargetAlive)
+        {
+            ChangeState(MONSTER_STATE.Explore);
+            yield break;
+        }
 
-        // 해당 경로가 이동 불가능하면, 탐색 상태 전환
-        while (_path.IsWalkablePath(_monster.Stat.Size, MapManager.Instance.GetWalkableId(Target)))
+        _nextNode = _path.CurNode;
+        int walkableId = MapManager.Instance.GetWalkableId(Target);
+
+        // 해당 경로가 이동 불가능하거나 타겟이 없으면, 탐색 상태 전환
+        while (_path.IsWalkablePath(_monster.Stat.Size, walkableId) && _isTargetAlive)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
+
+            // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
+            if (_monster.Sensor.DetectedObstacles.Contains(Target))
+            {
+                ChangeState(MONSTER_STATE.Attack);
+                yield break;
+            }
 
             // 실제 오브젝트 이동
             transform.position = Vector2.MoveTowards(transform.position, _nextNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
@@ -186,7 +178,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private IEnumerator C_Attack()
     {
         // 타겟이 없어지면, 탐색 상태 전환
-        while(Target != null && Target.gameObject.activeInHierarchy)
+        while(_isTargetAlive)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
@@ -231,6 +223,30 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
 
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
+    }
+
+    /// <summary>
+    /// 타겟 리스트 중 오브젝트와 가장 가까운 타겟을 반환
+    /// </summary>
+    private Transform GetNearestTarget(List<Transform> targetList, HashSet<Transform> closed)
+    {
+        float dist = float.MaxValue;
+        Transform nearest = null;
+
+        foreach (Transform target in targetList)
+        {
+            if (closed.Contains(target)) continue;
+
+            float tempDist = Vector2.Distance(transform.position, target.position);
+
+            if (dist > tempDist)
+            {
+                dist = tempDist;
+                nearest = target;
+            }
+        }
+
+        return nearest;
     }
 
     /// <summary>

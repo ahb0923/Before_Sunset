@@ -19,10 +19,35 @@ public class MonsterSpawner : MonoBehaviour
     [Header("# Test")]
     [SerializeField] private List<SpawnData> _spawnDatas;
 
+    private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
+
+    public void OnObstacleDestroyed()
+    {
+        HashSet<BaseMonster> deadMonsterSet = new HashSet<BaseMonster>();
+
+        foreach (BaseMonster monster in _aliveMonsterSet)
+        {
+            if (!monster.gameObject.activeInHierarchy)
+            {
+                deadMonsterSet.Add(monster);
+                continue;
+            }
+
+            monster.Ai.ChangeState(MONSTER_STATE.Explore);
+            Debug.Log("불러짐");
+        }
+
+        foreach (BaseMonster mosnter in deadMonsterSet)
+        {
+            _aliveMonsterSet.Remove(mosnter);
+        }
+    }
+
+    #region Monster Spawn
     /// <summary>
     /// 스테이지에 따른 모든 몬스터 소환
     /// </summary>
-    public void SpawnAllMonsters(int index)
+    public void SpawnAllMonsters(int index, int posIndex = -1)
     {
         if (index < 0 || index >= _spawnDatas.Count)
         {
@@ -30,13 +55,13 @@ public class MonsterSpawner : MonoBehaviour
             return;
         }
 
-        StartCoroutine(C_SpawnMonsters(index));
+        StartCoroutine(C_SpawnMonsters(index, posIndex));
     }
 
     /// <summary>
     /// 스폰 타임마다 몬스터를 소환하는 코루틴
     /// </summary>
-    private IEnumerator C_SpawnMonsters(int spawnDataNum)
+    private IEnumerator C_SpawnMonsters(int spawnDataNum, int posIndex)
     {
         SpawnData spawnData = _spawnDatas[spawnDataNum];
 
@@ -54,7 +79,7 @@ public class MonsterSpawner : MonoBehaviour
                 timer = 0f;
                 count++;
 
-                SpawnMonster(spawnData.id);
+                SpawnMonster(spawnData.id, posIndex);
             }
 
             yield return null;
@@ -64,9 +89,16 @@ public class MonsterSpawner : MonoBehaviour
     /// <summary>
     /// 해당하는 몬스터 ID를 가진 몬스터 소환
     /// </summary>
-    private void SpawnMonster(int monsterId)
+    private void SpawnMonster(int monsterId, int posIndex)
     {
         Vector3 pos = _spawnPoints[Random.Range(0, _spawnPoints.Count)].position;
+        if(posIndex != -1)
+        {
+            pos = _spawnPoints[posIndex].position;
+        }
+
         GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
+        _aliveMonsterSet.Add(obj.GetComponent<BaseMonster>());
     }
+    #endregion
 }
