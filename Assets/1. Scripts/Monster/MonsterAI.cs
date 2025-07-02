@@ -240,7 +240,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         _path = null;
         _nextNode = null;
-        ChangeState(MONSTER_STATE.Explore);
+        TransitionTo(MONSTER_STATE.Explore, true);
 
         RunDoingState();
     }

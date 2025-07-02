@@ -31,7 +31,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
 
         Ai.Init(this);
         Stat.Init(this, _id);
-        Sensor.Init(this);
+        Sensor.Init(this, Stat.Size, Stat.AttackRange);
     }
 
     /// <summary>
@@ -40,7 +40,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void OnGetFromPool()
     {
         Stat.SetFullHp();
-        Sensor.SetSensorRange(Stat.Size, Stat.AttackRange);
         Ai.InitExploreState();
     }
 

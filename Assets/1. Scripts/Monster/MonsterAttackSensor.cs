@@ -5,16 +5,17 @@ public class MonsterAttackSensor : MonoBehaviour
     private BaseMonster _monster;
     private CircleCollider2D _collider;
 
-    public void Init(BaseMonster monster)
+    public void Init(BaseMonster monster, int size, float range)
     {
         _collider = GetComponent<CircleCollider2D>();
         _monster = monster;
+        SetSensorRange(size, range);
     }
 
     /// <summary>
     /// 공격 센서 범위 설정
     /// </summary>
-    public void SetSensorRange(int size, float range)
+    private void SetSensorRange(int size, float range)
     {
         float halfSize = size * 0.5f;
         float halfRange = range * 0.5f;
