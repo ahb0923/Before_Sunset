@@ -28,6 +28,11 @@ public class MonsterDebugWindow : EditorWindow
         {
             FindObjectOfType<MonsterSpawner>().SpawnAllMonsters(2);
         }
+
+        if (GUILayout.Button("몬스터 스폰 : 테스트"))
+        {
+            FindObjectOfType<MonsterSpawner>().SpawnAllMonsters(3);
+        }
     }
 }
 #endif

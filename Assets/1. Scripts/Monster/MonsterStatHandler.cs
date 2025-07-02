@@ -10,16 +10,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public MONSTER_TYPE Type { get; private set; }
 
     public int MaxHp { get; private set; }
-    private int _curHp;
-    public int CurHp
-    {
-        get => _curHp;
-        set
-        {
-            _curHp = Mathf.Clamp(value, 0, MaxHp);
-            // 0 아래로 떨어지면 사망 처리
-        }
-    }
+    public int CurHp { get; private set; }
     
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
@@ -54,6 +45,11 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         Context = _data.context;
     }
 
+    public void SetFullHp()
+    {
+        CurHp = MaxHp;
+    }
+
     /// <summary>
     /// 실제 hp 변동 메서드
     /// </summary>
@@ -69,9 +65,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
         CurHp = Mathf.Max(CurHp, 0);
 
-        if (CurHp <= 0)
+        if (CurHp == 0)
         {
-            CurHp = 0;
             _monster.Ai.ChangeState(MONSTER_STATE.Dead);
         }
     }

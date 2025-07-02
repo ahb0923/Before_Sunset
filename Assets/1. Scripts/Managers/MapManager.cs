@@ -20,6 +20,7 @@ public class MapManager : MonoSingleton<MapManager>
     private Stack<int> _walkableIdStack = new Stack<int>();
     private Dictionary<Transform, int> _walkableIdDict = new Dictionary<Transform, int>();
     private Dictionary<Transform, int> _obstacleSizeDict = new Dictionary<Transform, int>();
+    private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
     protected override void Awake()
     {
@@ -58,20 +59,38 @@ public class MapManager : MonoSingleton<MapManager>
         _walkableIdDict[obstacle] = walkableId;
         _obstacleSizeDict[obstacle] = size;
         _grid.SetWalkableIndex(walkableId, obstacle.position, size);
+
+        int dist = GetChebyshevDistanceFromCore(obstacle.position);
+        if (!_distFromCoreDict.ContainsKey(dist)) _distFromCoreDict[dist] = new List<Transform>();
+        _distFromCoreDict[dist].Add(obstacle);
     }
 
     /// <summary>
     /// 코어, 타워 등의 장애물 transform을 딕셔너리에서 제거
     /// </summary>
-    /// <param name="size">장애물 사이즈 (1x1이면 1)</param>
-    public void RemoveObstacle(Transform obstacle, int size)
+    public void RemoveObstacle(Transform obstacle)
     {
         int walkableId = _walkableIdDict[obstacle];
         if (!_walkableIdStack.Contains(walkableId)) _walkableIdStack.Push(walkableId);
 
+        _grid.SetWalkableIndex(-1, obstacle.position, _obstacleSizeDict[obstacle]);
         _walkableIdDict.Remove(obstacle);
         _obstacleSizeDict.Remove(obstacle);
-        _grid.SetWalkableIndex(-1, obstacle.position, size);
+
+        _distFromCoreDict[GetChebyshevDistanceFromCore(obstacle.position)].Remove(obstacle);
+    }
+
+    /// <summary>
+    /// 코어에서 dist만큼 떨어진 타겟 리스트를 반환
+    /// </summary>
+    public List<Transform> GetTargetList(int dist)
+    {
+        int defaultDist = Core.Size / 2 + 1;
+
+        if (_distFromCoreDict.ContainsKey(defaultDist + dist))
+            return _distFromCoreDict[defaultDist + dist];
+        else
+            return null;
     }
 
     /// <summary>
@@ -101,12 +120,24 @@ public class MapManager : MonoSingleton<MapManager>
     }
 
     /// <summary>
+    /// 코어로부터 체비쇼프 거리를 반환<br/>
+    /// ※ 체비쇼프 거리는 상하좌우나 대각선에서 1타일 떨어져 있으면 모두 1을 반환
+    /// </summary>
+    private int GetChebyshevDistanceFromCore(Vector3 targetPos)
+    {
+        Vector2Int coreGridIndex = _grid.GetGridIndex(Core.transform.position);
+        Vector2Int targetGridIndex = _grid.GetGridIndex(targetPos);
+
+        return Mathf.Max(Mathf.Abs(coreGridIndex.x - targetGridIndex.x), Mathf.Abs(coreGridIndex.y - targetGridIndex.y));
+    }
+
+    /// <summary>
     /// 맵 사이즈 & 노드 상태 확인
     /// </summary>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(transform.position, _mapSize);
+        Gizmos.DrawWireCube(_mapCenter, _mapSize);
 
         if(_grid != null)
         {

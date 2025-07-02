@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum MONSTER_STATE
@@ -69,17 +70,68 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Explore()
     {
+        int count = 0;
+        HashSet<Transform> closedSet = new HashSet<Transform>();
+
         while(_path == null)
         {
             Vector3 startPos = _nextNode == null ? transform.position : _nextNode.WorldPos;
-            Target = MapManager.Instance.Core.transform; // 타겟을 어떻게 설정할 건지
-            _path = MapManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
 
+            if(count == 0)
+            {
+                Target = MapManager.Instance.Core.transform;
+                count++;
+            }
+            else
+            {
+                List<Transform> targetList = MapManager.Instance.GetTargetList(count);
+                if(targetList == null || targetList.Count == 0)
+                {
+                    count++;
+                    continue;
+                }
+
+                Target = GetNearestTarget(targetList, closedSet);
+
+                if(Target == null)
+                {
+                    count++;
+                    continue;
+                }
+
+                closedSet.Add(Target);
+            }
+
+            _path = MapManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
             yield return null;
         }
 
         // 경로를 찾으면, 이동 상태 전환
         ChangeState(MONSTER_STATE.Move);
+    }
+
+    /// <summary>
+    /// 타겟 리스트 중 오브젝트와 가장 가까운 타겟을 반환
+    /// </summary>
+    private Transform GetNearestTarget(List<Transform> targetList, HashSet<Transform> closed)
+    {
+        float dist = float.MaxValue;
+        Transform nearest = null;
+
+        foreach(Transform target in targetList)
+        {
+            if (closed.Contains(target)) continue;
+
+            float tempDist = Vector2.Distance(transform.position, target.position);
+
+            if (dist > tempDist)
+            {
+                dist = tempDist;
+                nearest = target;
+            }
+        }
+
+        return nearest;
     }
 
     /// <summary>

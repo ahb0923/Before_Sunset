@@ -39,7 +39,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnGetFromPool()
     {
-        Stat.CurHp = Stat.MaxHp;
+        Stat.SetFullHp();
         Sensor.SetSensorRange(Stat.Size, Stat.AttackRange);
         Ai.InitExploreState();
     }

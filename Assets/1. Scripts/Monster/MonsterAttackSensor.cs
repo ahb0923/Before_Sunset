@@ -21,7 +21,7 @@ public class MonsterAttackSensor : MonoBehaviour
         _collider.radius = halfSize + halfRange;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (_monster.Ai.Target == null) return;
 

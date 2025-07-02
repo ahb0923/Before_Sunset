@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 781191483235563226}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 27, y: -1, z: 0}
+  m_LocalPosition: {x: 26.25, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 3916148959812132463}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -27, y: -1, z: 0}
+  m_LocalPosition: {x: -26.25, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 4532505794454069371}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 13, z: 0}
+  m_LocalPosition: {x: 0, y: 12.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -149,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 5273864959578259943}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -14, z: 0}
+  m_LocalPosition: {x: 0, y: -14.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -236,11 +236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03f0c0945b4d5934b96060682cda08b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapSize: {x: 57, y: 33}
-  _nodeSize: 1
-  _obstacleMask:
-    serializedVersion: 2
-    m_Bits: 320
   _spawnPoints:
   - {fileID: 4856711860426802461}
   - {fileID: 3192110086161681868}
@@ -254,4 +249,6 @@ MonoBehaviour:
   - id: 601
     spawnCount: 1
   - id: 602
+    spawnCount: 1
+  - id: 699
     spawnCount: 1
