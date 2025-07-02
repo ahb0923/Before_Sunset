@@ -16,7 +16,11 @@ public class TowerMaterialSlot : MonoBehaviour
 
     public void SetSlot(ItemData data, int amount)
     {
-        _iconImage.sprite = data.icon;
+        
+        
+        /*_iconImage.sprite = data.icon;*/
+        
+        
         _amountText.text = amount.ToString();
         gameObject.SetActive(true);
     }

@@ -35,8 +35,6 @@ public class TowerMaterialSlotArea : MonoBehaviour
         {
             slot.ClearSlot();
         }
-        
-        //for (int i = 0; i <)
     }
 
     public void ToggleMaterialSlotArea()

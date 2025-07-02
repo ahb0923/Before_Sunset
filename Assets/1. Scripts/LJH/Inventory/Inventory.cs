@@ -26,41 +26,33 @@ public class Inventory : MonoBehaviour
         InventoryManager.Instance.Init(this);
         Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
         sortButton.onClick.AddListener(Sort);
-        Pickaxe = InventoryManager.Instance.pickaxeItemData.CreateItem();
+        
+        //Pickaxe
     }
 
     private void Update()
     {
-        //아이템 획득 키
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            AddItem(InventoryManager.Instance.itemData.CreateItem());
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            AddItem(InventoryManager.Instance.itemData2.CreateItem());
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            AddItem(InventoryManager.Instance.itemData3.CreateItem());
-        }
-        
         InventoryUI.ToggleInventory();
         QuickSlotInventoryUI.ToggleInventory();
     }
 
+    public Item CreateItem(int id)
+    {
+        Item item = new Item(DataManager.Instance.ItemData.GetId(id));
+        return item;
+    }
     
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드
     /// </summary>
     /// <param name="item">추가 할 아이템</param>
-    public void AddItem(Item item)
+    public void AddItem(int id, int quantity)
     {
-        if (item.Data.stackable)
+        Item item = CreateItem(id);
+        
+        if (item.Stackable)
         {
-            AddStackableItem(item, item.Data.quantity);
+            AddStackableItem(item, quantity);
         }
         else
         {
@@ -103,7 +95,7 @@ public class Inventory : MonoBehaviour
         // 기존에 겹칠수 있는 아이템이 있을 경우
         else
         {
-            int max = savedItem.Data.maxStack;
+            int max = savedItem.MaxStack;
             savedItem.stack += quantity;
 
             if (savedItem.stack > max)
@@ -147,11 +139,11 @@ public class Inventory : MonoBehaviour
 
         foreach (var item in items)
         {
-            var noMax = mergedItems.FirstOrDefault(x => x.Data.id == item.Data.id && x.Data.stackable && x.stack < x.Data.maxStack);
+            var noMax = mergedItems.FirstOrDefault(x => x.Data.id == item.Data.id && x.Stackable && x.stack < x.MaxStack);
 
             if (noMax != null)
             {
-                int max = item.Data.maxStack;
+                int max = item.MaxStack;
                 int result = noMax.stack + item.stack;
 
                 if (result <= max)
@@ -181,8 +173,8 @@ public class Inventory : MonoBehaviour
                 return result;
             }
             
-            bool isAMax = a.Data.stackable && a.stack == a.Data.maxStack;
-            bool isBMax = b.Data.stackable && b.stack == b.Data.maxStack;
+            bool isAMax = a.Stackable && a.stack == a.MaxStack;
+            bool isBMax = b.Stackable && b.stack == b.MaxStack;
             
             if (isAMax && !isBMax) return -1;
 

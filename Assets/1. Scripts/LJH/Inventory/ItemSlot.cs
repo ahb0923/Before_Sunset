@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -12,10 +11,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private GameObject _highlight;
     [SerializeField] private TextMeshProUGUI _itemAmountText;
     
-    private float _highlightDuration = 0.1f;
-    private float _highlightAlpha = 0.4f;
-    
-    public Coroutine highlightCoroutine;
+    private Tween _tween;
     
     public int SlotIndex { get; private set; }
     
@@ -59,7 +55,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         else
         {
             _itemImage.enabled = true;
-            _itemImage.sprite = item.Data.icon;
+            
+            
+            /*_itemImage.sprite = item.Data.icon;*/
+            
+            
         }
         
         SetAmount(item);
@@ -76,7 +76,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         else
         {
-            if (item.Data.stackable)
+            if (item.Stackable)
             {
                 _itemAmountText.text = item.stack.ToString();
             }
@@ -89,70 +89,31 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (highlightCoroutine != null)
+        if (_tween != null)
         {
-            StopCoroutine(highlightCoroutine);
+            _tween.Kill();
         }
+        Debug.Log("OnPointerEnter");
+        _highlight.SetActive(true);
+        _highlightImage.color = new Color(1f, 1f, 0f, 0f);
+
+        _tween = _highlightImage.DOFade(0.3f, 0.2f);
         
-        _highlightOriginSlot = this;
-        highlightCoroutine = StartCoroutine(C_HighlightFadeIn());
+        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
+
+        TooltipManager.Instance.ShowTooltip(item.Data.itemName, item.Data.context);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (highlightCoroutine != null)
+        if (_tween != null)
         {
-            StopCoroutine(highlightCoroutine);
+            _tween.Kill();
         }
 
-        _highlightOriginSlot = null;
-        highlightCoroutine = StartCoroutine(C_HighlightFadeOut());
-    }
-
-    private IEnumerator C_HighlightFadeIn()
-    {
-        _highlight.SetActive(true);
-
-        float time = 0f;
+        _tween = _highlightImage.DOFade(0f, 0.2f).OnComplete(() => _highlight.SetActive(false));
         
-        Color color = Color.yellow;
-        color.a = 0f;
-        _highlightImage.color = color;
-
-        while (time < _highlightDuration)
-        {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / _highlightDuration);
-            color.a = Mathf.Lerp(0f, _highlightAlpha, t);
-            _highlightImage.color = color;
-            yield return null;
-        }
-        
-        color.a = _highlightAlpha;
-        _highlightImage.color = color;
-    }
-
-    private IEnumerator C_HighlightFadeOut()
-    {
-        float time = 0f;
-        
-        Color color = Color.yellow;
-        color.a = _highlightAlpha;
-        _highlightImage.color = color;
-
-        while (time < _highlightDuration)
-        {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / _highlightDuration);
-            color.a = Mathf.Lerp(_highlightAlpha, 0f, t);
-            _highlightImage.color = color;
-            yield return null;
-        }
-        
-        color.a = 0f;
-        _highlightImage.color = color;
-        
-        _highlight.SetActive(false);
+        TooltipManager.Instance.HideTooltip();
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -178,7 +139,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         _draggingItemIcon = new GameObject("Dragging Icon");
         _draggingItemIcon.transform.SetParent(transform.root);
         var image = _draggingItemIcon.AddComponent<Image>();
-        image.sprite = item.Data.icon;
+        
+        
+        /*image.sprite = item.Data.icon;*/
+        
+        
         image.raycastTarget = false;
         _draggingItemIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
         
@@ -256,7 +221,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
         //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
-        else if (targetItem.Data.itemName == _draggingItem.Data.itemName && targetItem.Data.stackable)
+        else if (targetItem.Data.itemName == _draggingItem.Data.itemName && targetItem.Stackable)
         {
             if (targetItem.IsMaxStack || _draggingItem.IsMaxStack)
             {
@@ -288,7 +253,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// <param name="item"></param>
     private void MergeItem(Item item)
     {
-        var max = item.Data.maxStack;
+        var max = item.MaxStack;
         var total = _draggingItem.stack + item.stack;
 
         if (total <= max)

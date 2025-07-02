@@ -43,7 +43,11 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         else
         {
             _itemImage.enabled = true;
-            _itemImage.sprite = item.Data.icon;
+            
+            
+            /*_itemImage.sprite = item.Data.icon;*/
+            
+            
         }
     }
 
