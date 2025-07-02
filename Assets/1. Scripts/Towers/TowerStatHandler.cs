@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class TowerStatHandler : MonoBehaviour, IDamageable, IInteractable
+public class TowerStatHandler : MonoBehaviour, IDamageable
 {
     [Header(" [ Data ] ")]
     [SerializeField] private TowerData _data;
@@ -98,16 +98,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable, IInteractable
         }
     }
 
-    /// <summary>
-    /// <<IInteractable>>
-    /// 수리 메서드 이쪽에서 호출 가능하도록
-    /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public void OnPressE()
-    {
-        throw new NotImplementedException();
-    }
-
+    
     /// <summary>
     /// 데미지 테스팅 메서드
     /// </summary>

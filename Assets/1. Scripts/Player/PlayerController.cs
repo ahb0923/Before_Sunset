@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(PlayerInputHandler))]
 public class PlayerController : MonoBehaviour
@@ -83,6 +85,9 @@ public class PlayerController : MonoBehaviour
     // 스윙 처리
     private void HandleSwing()
     {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (_input.IsSwing && !_isSwinging)
         {
             StartCoroutine(C_Swing());
