@@ -70,20 +70,28 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Explore()
     {
-        int count = 0;
+        // 해시셋은 이미 탐색을 진행한 타겟인지를 확인하는 용도
         HashSet<Transform> closedSet = new HashSet<Transform>();
 
+        int count = 0;
         while(_path == null)
         {
+            // 인터럽트 발생하면, 코루틴 탈출
+            if (IsInterrupted)
+                yield break;
+
+            // 이동하려는 노드가 있었으면, 그 위치를 받아옴
             Vector3 startPos = _nextNode == null ? transform.position : _nextNode.WorldPos;
 
             if(count == 0)
             {
+                // 처음 타겟은 무조건 코어
                 Target = MapManager.Instance.Core.transform;
                 count++;
             }
             else
             {
+                // 이후 타겟은 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
                 List<Transform> targetList = MapManager.Instance.GetTargetList(count);
                 if(targetList == null || targetList.Count == 0)
                 {
@@ -91,6 +99,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                     continue;
                 }
 
+                // 타겟 리스트 중에서 현재 몬스터와 가장 가까운 타겟을 탐색
                 Target = GetNearestTarget(targetList, closedSet);
 
                 if(Target == null)
@@ -176,25 +185,41 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Attack()
     {
-        // 타겟이 없을 경우, 탐색 상태 전환
-        if(Target == null)
+        // 타겟이 없어지면, 탐색 상태 전환
+        while(Target != null && Target.gameObject.activeInHierarchy)
         {
-            ChangeState(MONSTER_STATE.Explore);
-            yield break;
+            // 인터럽트 발생하면, 코루틴 탈출
+            if (IsInterrupted)
+                yield break;
+
+            switch (_monster.Stat.Type)
+            {
+                // 원거리 타입은 사거리에 들어오면 원거리 공격
+                case MONSTER_TYPE.Ranged:
+                    Projectile proj = Instantiate(_monster.Projectile).GetComponent<Projectile>();
+                    proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);
+                    break;
+
+                // 근접과 탱크 타입은 사거리에 들어오면 근접 공격
+                case MONSTER_TYPE.Melee:
+                case MONSTER_TYPE.Tank:
+                    DamagedSystem.Instance.Send(new Damaged
+                    {
+                        Attacker = gameObject,
+                        Victim = Target.gameObject,
+                        Value = _monster.Stat.AttackPower,
+                        IgnoreDefense = false
+                    });
+
+                    Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
+                    break;
+            }
+
+            // Attack Per Sec 동안 기다림
+            yield return _monster.Stat.WaitAttack;
         }
 
-        // 타겟에 대한 대미지 부여
-        DamagedSystem.Instance.Send(new Damaged
-        {
-            Attacker = gameObject,
-            Victim = Target.gameObject,
-            Value = _monster.Stat.AttackPower,
-            IgnoreDefense = false
-        });
-        Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
-
-        // Attack Per Sec 동안 기다림
-        yield return _monster.Stat.WaitAttack;
+        ChangeState(MONSTER_STATE.Explore);
     }
 
     /// <summary>

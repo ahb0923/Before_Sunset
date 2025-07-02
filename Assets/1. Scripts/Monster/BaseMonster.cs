@@ -11,7 +11,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public MonsterAttackSensor Sensor { get; private set; }
 
     // 원거리 공격 몬스터만 투사체 받아옴
-    [SerializeField] private GameObject projectile;
+    [field: SerializeField] public GameObject Projectile { get; private set; }
 
     private void LateUpdate()
     {
