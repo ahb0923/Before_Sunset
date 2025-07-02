@@ -74,6 +74,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 해시셋은 이미 탐색을 진행한 타겟인지를 확인하는 용도
         HashSet<Transform> closedSet = new HashSet<Transform>();
 
+        _path = null;
         int count = 0;
         while(_path == null)
         {
@@ -168,7 +169,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             yield return null;
         }
 
-        _path = null;
         ChangeState(MONSTER_STATE.Explore);
     }
 
