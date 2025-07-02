@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MiningEntrance : MonoBehaviour, IInteractable
+public class MiningHandler : MonoBehaviour, IInteractable
 {
     private PlayerStateHandler _playerState;
 
+    [SerializeField] private bool isEntering = true;
+
     private void Start()
     {
-        // 플레이어 오브젝트 찾기 (예: 태그 "Player"로 찾기)
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
             _playerState = player.GetComponent<PlayerStateHandler>();
@@ -21,10 +22,18 @@ public class MiningEntrance : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (_playerState != null)
+        if (_playerState == null)
+            return;
+
+        if (isEntering)
         {
-            _playerState.IsInMiningArea = true;  // 광산 상태로 변경
-            Debug.Log("광산 입장: IsInMiningArea = true");
+            _playerState.EnterMiningArea();
+            Debug.Log("광산 입장");
+        }
+        else
+        {
+            _playerState.ExitMiningArea();
+            Debug.Log("광산 퇴장");
         }
     }
 }

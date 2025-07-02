@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject buildModeUI;
     [SerializeField] private GameObject unbuildModeUI;
+    [SerializeField] private int pickaxePower = 1;
+    [SerializeField] private int miningDamage = 1;
+
 
     private Rigidbody2D _rigidbody;
     private SpriteRenderer _spriteRenderer;
@@ -98,9 +101,43 @@ public class PlayerController : MonoBehaviour
     {
         _isSwinging = true;
         animator.SetBool("isSwinging", true);
+        TryMineOre();
         yield return new WaitForSeconds(1.2f);
         animator.SetBool("isSwinging", false);
         _isSwinging = false;
+    }
+    private void TryMineOre()
+    {
+        // 플레이어가 바라보는 방향 가져오기
+        float angle = transform.rotation.eulerAngles.z;
+        Vector2 dir = Vector2.right;
+
+        if (Mathf.Approximately(angle, 90f)) dir = Vector2.up;
+        else if (Mathf.Approximately(angle, 180f)) dir = Vector2.left;
+        else if (Mathf.Approximately(angle, 270f)) dir = Vector2.down;
+
+        // 광석 감지
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 0.5f, LayerMask.GetMask("Ore"));
+
+        if (hit.collider != null)
+        {
+            OreController ore = hit.collider.GetComponent<OreController>();
+            if (ore != null)
+            {
+                if (ore.CanBeMined(pickaxePower))
+                {
+                    bool destroyed = ore.Mine(miningDamage);
+                    if (destroyed)
+                        Debug.Log("광석이 파괴됨!");
+                    else
+                        Debug.Log("광석에 데미지 입힘");
+                }
+                else
+                {
+                    Debug.Log("곡괭이 파워 부족!");
+                }
+            }
+        }
     }
 
     // 마우스 방향을 4방향으로 스냅
