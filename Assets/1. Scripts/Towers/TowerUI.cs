@@ -29,7 +29,7 @@ public class TowerUI : MonoBehaviour
         _tower.statHandler.OnHpChanged += UpdateHpBar;
     }
 
-    private void UpdateHpBar(float curr, float max)
+    public void UpdateHpBar(float curr, float max)
     {
         float ratio = Mathf.Clamp01(curr / max);
 
