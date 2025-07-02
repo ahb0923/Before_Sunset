@@ -16,10 +16,12 @@ public class PlayerInteractor : MonoBehaviour
     private Vector3 lastPlayerPos;
 
     private PlayerStateHandler stateHandler;
+    private CircleCollider2D playerCollider;
 
     void Awake()
     {
         stateHandler = GetComponent<PlayerStateHandler>();
+        playerCollider = GetComponent<CircleCollider2D>();
     }
 
     void Update()
@@ -95,7 +97,6 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentCursor != cursor)
         {
-            // hotspot 조절 필요하면 여기서 조절하세요. (기본은 좌상단 (0,0))
             Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
             currentCursor = cursor;
         }
@@ -109,26 +110,15 @@ public class PlayerInteractor : MonoBehaviour
     float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)
     {
         Vector2 fromPos2D = new Vector2(fromPos.x, fromPos.y);
+        Vector2 closest = col.ClosestPoint(fromPos2D);
+        float distance = Vector2.Distance(fromPos2D, closest);
 
-        if (col is CircleCollider2D circle)
+        if (playerCollider != null)
         {
-            Vector2 center = (Vector2)circle.transform.position + circle.offset;
-            float radius = circle.radius * Mathf.Max(circle.transform.lossyScale.x, circle.transform.lossyScale.y);
-            float distToCenter = Vector2.Distance(fromPos2D, center);
-            float distanceToEdge = Mathf.Max(0f, distToCenter - radius);
-            return distanceToEdge;
+            float playerRadius = playerCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+            distance -= playerRadius;
         }
-        else if (col is BoxCollider2D box)
-        {
-            Vector2 closest = col.ClosestPoint(fromPos2D);
-            float distanceToEdge = Vector2.Distance(fromPos2D, closest);
-            return distanceToEdge;
-        }
-        else
-        {
-            Vector2 closest = col.ClosestPoint(fromPos2D);
-            float distanceToEdge = Vector2.Distance(fromPos2D, closest);
-            return distanceToEdge;
-        }
+
+        return Mathf.Max(0f, distance);
     }
 }

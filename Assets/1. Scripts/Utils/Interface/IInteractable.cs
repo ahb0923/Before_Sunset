@@ -5,5 +5,5 @@ using UnityEngine;
 public interface IInteractable
 {
     public void Interact();
-    public bool IsInteractable(Vector3 playerPos, float range);
+    bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider);
 }

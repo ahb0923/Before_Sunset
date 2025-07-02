@@ -15,14 +15,15 @@ public class OreSpawner : MonoBehaviour
     [Header("광석 프리팹 리스트")]
     [SerializeField] private List<GameObject> orePrefabs;
 
-    [Header("스폰 금지 영역 (직사각형 목록)")]
-    [SerializeField] private List<Rect> bannedAreas = new();
-
-    [Header("중복 방지 반지름")]
+    [Header("광석 간 중복 방지 반지름")]
     [SerializeField] private float overlapRadius = 1.0f;
+
+    [Header("장애물 위 스폰 방지용 레이어 마스크")]
+    [SerializeField] private LayerMask obstacleLayerMask;
 
     private Dictionary<int, GameObject> orePrefabCache;
     private List<OreData> spawnableOreList = new();
+    private List<Vector3> placedOrePositions = new();
 
     private IEnumerator Start()
     {
@@ -58,6 +59,7 @@ public class OreSpawner : MonoBehaviour
     public void SpawnOres(int currentStage)
     {
         spawnableOreList.Clear();
+        placedOrePositions.Clear();
 
         var allOres = DataManager.Instance.OreData.GetAllItems();
 
@@ -72,7 +74,7 @@ public class OreSpawner : MonoBehaviour
 
         int placed = 0;
         int attempts = 0;
-        int maxAttempts = spawnCount * 10; // 무한루프 방지
+        int maxAttempts = spawnCount * 10;
 
         while (placed < spawnCount && attempts < maxAttempts)
         {
@@ -80,8 +82,9 @@ public class OreSpawner : MonoBehaviour
 
             Vector3 randomPos = GetRandomPositionInArea();
 
-            if (IsBannedPosition(randomPos)) continue;
-            if (Physics2D.OverlapCircle(randomPos, overlapRadius) != null) continue;
+            if (Physics2D.OverlapCircle(randomPos, 0.1f, obstacleLayerMask) != null) continue;
+
+            if (IsTooCloseToOtherOres(randomPos)) continue;
 
             OreData selectedOre = GetRandomOreByProbability();
             if (selectedOre != null && orePrefabCache.TryGetValue(selectedOre.id, out var prefab))
@@ -91,6 +94,7 @@ public class OreSpawner : MonoBehaviour
                 if (oreController != null)
                 {
                     oreController.Initialize(selectedOre);
+                    placedOrePositions.Add(randomPos);
                     placed++;
                 }
             }
@@ -104,11 +108,11 @@ public class OreSpawner : MonoBehaviour
         return new Vector3(x, y, 0f);
     }
 
-    private bool IsBannedPosition(Vector3 pos)
+    private bool IsTooCloseToOtherOres(Vector3 pos)
     {
-        foreach (var rect in bannedAreas)
+        foreach (var otherPos in placedOrePositions)
         {
-            if (rect.Contains(new Vector2(pos.x, pos.y)))
+            if (Vector3.Distance(pos, otherPos) < overlapRadius)
                 return true;
         }
         return false;

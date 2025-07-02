@@ -108,20 +108,42 @@ public class PlayerController : MonoBehaviour
     }
     private void TryMineOre()
     {
-        // 플레이어가 바라보는 방향 가져오기
-        float angle = transform.rotation.eulerAngles.z;
-        Vector2 dir = Vector2.right;
+        if (_rigidbody == null) return;
 
+        // 플레이어 위치 및 콜라이더 반지름 계산
+        CircleCollider2D playerCollider = GetComponent<CircleCollider2D>();
+        if (playerCollider == null)
+        {
+            Debug.LogWarning("플레이어에 CircleCollider2D가 필요합니다!");
+            return;
+        }
+
+        Vector2 playerPos2D = (Vector2)transform.position;
+        float playerRadius = playerCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+
+        // 채굴 가능 거리 (플레이어 외곽선부터 얼마나 떨어져야 할지)
+        float miningRange = 0.5f;
+
+        // 플레이어 외곽 기준 반경
+        float checkRadius = playerRadius + miningRange;
+
+        // 플레이어가 바라보는 방향 (단위 벡터)
+        float angle = transform.rotation.eulerAngles.z;
+        Vector2 dir;
         if (Mathf.Approximately(angle, 90f)) dir = Vector2.up;
         else if (Mathf.Approximately(angle, 180f)) dir = Vector2.left;
         else if (Mathf.Approximately(angle, 270f)) dir = Vector2.down;
+        else dir = Vector2.right;
 
-        // 광석 감지
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 0.5f, LayerMask.GetMask("Ore"));
+        // 광석 탐색 위치는 플레이어 외곽선에서 miningRange만큼 떨어진 점
+        Vector2 checkPos = playerPos2D + dir * checkRadius;
 
-        if (hit.collider != null)
+        // 특정 반경 내 광석 찾기 (레이어 "Ore"만)
+        Collider2D[] hits = Physics2D.OverlapCircleAll(checkPos, miningRange, LayerMask.GetMask("Ore"));
+
+        foreach (var hit in hits)
         {
-            OreController ore = hit.collider.GetComponent<OreController>();
+            OreController ore = hit.GetComponent<OreController>();
             if (ore != null)
             {
                 if (ore.CanBeMined(pickaxePower))
@@ -136,9 +158,12 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log("곡괭이 파워 부족!");
                 }
+                // 첫 번째 광석만 처리하고 종료
+                break;
             }
         }
     }
+
 
     // 마우스 방향을 4방향으로 스냅
     private float GetSnappedAngle(float angle)
