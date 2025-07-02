@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInputActions _inputActions;
+    private PlayerStateHandler _stateHandler;
 
     public Vector2 MoveInput { get; private set; }
     public bool IsSwing { get; private set; }
@@ -18,6 +19,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
+        _stateHandler = GetComponent<PlayerStateHandler>();
     }
 
     private void OnEnable()
@@ -62,7 +64,14 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnSwingPerformed(InputAction.CallbackContext context)
     {
-        IsSwing = true;
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            IsSwing = true;
+        }
+        else
+        {
+            IsSwing = false;
+        }
     }
 
     private void OnSwingCanceled(InputAction.CallbackContext context)
