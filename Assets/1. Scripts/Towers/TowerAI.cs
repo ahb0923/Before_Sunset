@@ -157,7 +157,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
             var stat = tower.statHandler;
             // 발사 위치 변경시 이곳
-            Vector3 firePosition = tower.transform.position;
+            Vector3 firePosition = tower.transform.position + new Vector3(0, 2, 0);
 
             switch (tower.statHandler.attackType)
             {
@@ -176,7 +176,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     // 화살 발사
                     //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
                     GameObject projObj = Instantiate(tower.projectile);
-                    Projectile proj = projObj.GetComponent<Projectile>();
+                    BaseProjectile proj = projObj.GetComponent<BaseProjectile>();
                     // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
                     proj.Init(target, 10, stat.AttackPower, firePosition);
                     break;
