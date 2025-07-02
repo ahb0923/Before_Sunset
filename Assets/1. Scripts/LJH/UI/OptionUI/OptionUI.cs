@@ -1,18 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OptionUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private const string OPTION_BUTTON = "OptionButton";
+    private const string UN_PAUSE_BUTTON = "UnPauseButton";
+    
+    private void Awake()
     {
+        Button optionButton = Helper_Component.FindChildComponent<Button>(this.transform.parent, OPTION_BUTTON);
+        Button unPauseButton = Helper_Component.FindChildComponent<Button>(this.transform, UN_PAUSE_BUTTON);
+        optionButton.onClick.AddListener(Open);
+        unPauseButton.onClick.AddListener(Close);
         
+        Close();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Open()
     {
-        
+        this.gameObject.SetActive(true);
+    }
+
+    private void Close()
+    {
+        this.gameObject.SetActive(false);
     }
 }
