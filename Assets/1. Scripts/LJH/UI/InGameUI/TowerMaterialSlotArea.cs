@@ -27,6 +27,10 @@ public class TowerMaterialSlotArea : MonoBehaviour
             materialSlot.InitIndex(i);
             slot.SetActive(false);
         }
+
+        var go = this.gameObject.transform.parent.gameObject;
+        go.SetActive(false);
+        Close();
     }
 
     public void SetMaterialSlot(TowerData data)
@@ -57,8 +61,13 @@ public class TowerMaterialSlotArea : MonoBehaviour
         this.gameObject.SetActive(true);
     }
 
-    private void Close()
+    public void Close()
     {
+        foreach (var slot in _materialSlots)
+        {
+            slot.ClearSlot();
+        }
+        
         this.gameObject.SetActive(false);
     }
 }

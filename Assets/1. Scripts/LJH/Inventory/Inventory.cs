@@ -12,13 +12,16 @@ public class Inventory : MonoBehaviour
     
     [field:SerializeField] public InventoryUI InventoryUI { get; private set; }
     [field:SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
-
+    [SerializeField] private Button _inventoryButton;
+    
     private const string SORT_BUTTON = "SortButton";
+    private const string INVENTORY_BUTTON = "InventoryButton";
 
     private void Reset()
     {
         InventoryUI = GetComponentInChildren<InventoryUI>();
         QuickSlotInventoryUI = GetComponentInChildren<QuickSlotInventoryUI>();
+        _inventoryButton = Helper_Component.FindChildComponent<Button>(this.transform.parent.parent, INVENTORY_BUTTON);
     }
 
     private void Awake()
@@ -26,7 +29,7 @@ public class Inventory : MonoBehaviour
         InventoryManager.Instance.Init(this);
         Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
         sortButton.onClick.AddListener(Sort);
-        
+        _inventoryButton.onClick.AddListener(Toggle);
         //Pickaxe
     }
 
@@ -34,6 +37,12 @@ public class Inventory : MonoBehaviour
     {
         InventoryUI.ToggleInventory();
         QuickSlotInventoryUI.ToggleInventory();
+    }
+
+    private void Toggle()
+    {
+        InventoryUI.Toggle();
+        QuickSlotInventoryUI.Toggle();
     }
 
     public Item CreateItem(int id)

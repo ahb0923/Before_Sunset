@@ -1,5 +1,7 @@
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.UI;
 
 public class TooltipManager : MonoSingleton<TooltipManager>
 {
@@ -16,8 +18,8 @@ public class TooltipManager : MonoSingleton<TooltipManager>
         base.Awake();
         
         _tooltipObject = GameObject.Find(TOOLTIP_CONTAINER);
-        _objectName = Helper_Component.GetComponentInChildren<TextMeshProUGUI>(_tooltipObject, OBJECT_NAME);
-        _tooltipText = Helper_Component.GetComponentInChildren<TextMeshProUGUI>(_tooltipObject, TOOLTIP_TEXT);
+        _objectName = Helper_Component.FindChildByName(_tooltipObject.transform, OBJECT_NAME).GetComponent<TextMeshProUGUI>();
+        _tooltipText = Helper_Component.FindChildByName(_tooltipObject.transform, TOOLTIP_TEXT).GetComponent<TextMeshProUGUI>();
         HideTooltip();
     }
 
@@ -34,8 +36,13 @@ public class TooltipManager : MonoSingleton<TooltipManager>
         if (!_tooltipObject.activeSelf)
         {
             _tooltipObject.SetActive(true);
+            
             _objectName.text = objectName;
             _tooltipText.text = description;
+            
+            //친구가 알려준 코드..
+            //레이아웃을 강제적으로 리빌드하는 메서드
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_tooltipObject.GetComponent<RectTransform>());
         }
     }
 
@@ -43,9 +50,11 @@ public class TooltipManager : MonoSingleton<TooltipManager>
     {
         if (_tooltipObject.activeSelf)
         {
-        _tooltipObject.SetActive(false);
-        _objectName.text = "";
-        _tooltipText.text = "";
+            _objectName.text = "";
+            _tooltipText.text = "";
+            _tooltipObject.SetActive(false);
+            
+            _tooltipObject.transform.position = new Vector3(20000, 20000, 0);
         }
     }
 }

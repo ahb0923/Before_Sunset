@@ -9,7 +9,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private int _numberOfItemSlots = 20;
     [SerializeField] private Transform _itemSlotContainer;
     [SerializeField] private Transform _quickSlotContainer;
-    [SerializeField] private Button _sortButton;
+    
     
     [SerializeField] private PickaxeSlot _pickaxeSlot;
     [SerializeField] private GameObject _slotPrefab;
@@ -20,19 +20,20 @@ public class InventoryUI : MonoBehaviour
     private const string ITEM_SLOT_AREA = "ItemSlotArea";
     private const string ITEM_SLOT_PREFAB = "ItemSlot";
     private const string PICKAXE_SLOT = "PickaxeSlot";
-    private const string SORT_BUTTON = "SortButton";
+    
     
     private void Reset()
     {
         _quickSlotContainer = this.gameObject.transform.Find(QUICK_SLOT_AREA);
         _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
-        _pickaxeSlot = UtilityLJH.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
-        _sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
+        _pickaxeSlot = Helper_Component.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
     }
     
     private void Start()
     {
+        
+        
         if (this.gameObject == null)
         {
             Debug.Log("Inventory is empty");
@@ -94,6 +95,21 @@ public class InventoryUI : MonoBehaviour
             {
                 Close();
             }
+        }
+    }
+
+    public void Toggle()
+    {
+        bool isOpen = this.gameObject.activeSelf;
+        this.gameObject.SetActive(!isOpen);
+
+        if (!isOpen)
+        {
+            Open();
+        }
+        else
+        {
+            Close();
         }
     }
     

@@ -23,7 +23,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
     private static ItemSlot _draggingOriginSlot;
-    private static ItemSlot _highlightOriginSlot;
     
     private void Reset()
     {
@@ -93,15 +92,17 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _tween.Kill();
         }
-        Debug.Log("OnPointerEnter");
+        
         _highlight.SetActive(true);
         _highlightImage.color = new Color(1f, 1f, 0f, 0f);
 
         _tween = _highlightImage.DOFade(0.3f, 0.2f);
         
         var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
-
-        TooltipManager.Instance.ShowTooltip(item.Data.itemName, item.Data.context);
+        if (item != null)
+        {
+            TooltipManager.Instance.ShowTooltip(item.Data.itemName, item.Data.context);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -113,7 +114,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         _tween = _highlightImage.DOFade(0f, 0.2f).OnComplete(() => _highlight.SetActive(false));
         
-        TooltipManager.Instance.HideTooltip();
+        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
+        if (item != null)
+        {
+            TooltipManager.Instance.HideTooltip();
+        }
     }
     
     public void OnPointerDown(PointerEventData eventData)

@@ -1,14 +1,24 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TowerMaterialSlot : MonoBehaviour
 {
+    public int Index { get; private set; }
+    
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _amountText;
     
-    public int Index { get; private set; }
-    
+    // private const string TOWER_MATERIAL_ICON = "TowerMaterialIcon";
+    // private const string TOWER_MATERIAL_AMOUNT = "TowerMaterialAmount";
+
+    private void Reset()
+    {
+        _iconImage = GetComponentInChildren<Image>();
+        _amountText = GetComponentInChildren<TextMeshProUGUI>();
+    }
+
     public void InitIndex(int index)
     {
         Index = index;
