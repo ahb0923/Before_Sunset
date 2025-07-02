@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4551609607560423749}
   - component: {fileID: 8459309262913598922}
   m_Layer: 6
-  m_Name: IronTower
+  m_Name: DiaprismTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,7 +124,7 @@ MonoBehaviour:
   statHandler: {fileID: 8459309262913598922}
   attackSensor: {fileID: 8261416276646684489}
   ui: {fileID: 0}
-  projectile: {fileID: 1135823945734847574, guid: 4c7b9bf8cf965064598bc0d7f07d62f1, type: 3}
+  projectile: {fileID: 1135823945734847574, guid: eb29621551b39944b81aa3c3749aeba5, type: 3}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    id: 410
+    id: 400
     towerName: 
     flavorText: 
     buildType: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
     damage: 0
     aps: 0
     range: 0
-  _towerID: 410
+  _towerID: 400
   iconRenderer: {fileID: 1109353221721809788}
 --- !u!1 &3037772152855085370
 GameObject:
@@ -360,8 +360,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7556676893509196285}
-  - component: {fileID: 4794343508024102983}
   - component: {fileID: 4869803506577090178}
+  - component: {fileID: 7132922346847372962}
   m_Layer: 0
   m_Name: InteractArea(Blue)
   m_TagString: Untagged
@@ -384,23 +384,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5810697340881791416}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4794343508024102983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4863951095676426394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be8abe0b03441aa4baad8f7cd8191911, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  color: {r: 0.008939743, g: 0, b: 1, a: 1}
-  radius: 0.1
-  currType: 1
-  rayDirection: 0
-  size: {x: 1, y: 3, z: 1}
 --- !u!61 &4869803506577090178
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -446,6 +429,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 3}
   m_EdgeRadius: 0
+--- !u!114 &7132922346847372962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4863951095676426394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be8abe0b03441aa4baad8f7cd8191911, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 0, g: 0.065570354, b: 1, a: 1}
+  radius: 0.1
+  currType: 1
+  rayDirection: 0
+  size: {x: 1, y: 3, z: 1}
 --- !u!1 &6119171507542935585
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,7 +766,7 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 20
-  m_Sprite: {fileID: 21300000, guid: b95fe146e5abf814d800ec6487fecb55, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 045b6e01f5bcdb04282f0133b56455fb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -824,7 +824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   color: {r: 1, g: 0, b: 0.9700179, a: 1}
-  radius: 5.5
+  radius: 3.5
   currType: 2
   rayDirection: 0
   size: {x: 10, y: 0, z: 1}
@@ -862,7 +862,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 5.5
+  m_Radius: 3.5
 --- !u!114 &8261416276646684489
 MonoBehaviour:
   m_ObjectHideFlags: 0
