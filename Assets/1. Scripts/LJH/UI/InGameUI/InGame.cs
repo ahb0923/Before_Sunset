@@ -1,7 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
-using UnityEngine.UI;
 
 public class InGame : MonoBehaviour
 {
