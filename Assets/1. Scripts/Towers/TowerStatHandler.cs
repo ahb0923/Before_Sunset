@@ -102,12 +102,12 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     /// <summary>
     /// 데미지 테스팅 메서드
     /// </summary>
-    [ContextMenu("테스트 데미지 30")]
+    [ContextMenu("테스트 데미지 15")]
     private void TestDamage()
     {
         var dummy = new Damaged
         {
-            Value = 30,
+            Value = 15,
             IgnoreDefense = false,
             Attacker = this.gameObject
         };
