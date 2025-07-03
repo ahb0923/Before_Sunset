@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 643838291061315518}
   - component: {fileID: 3911881215437772812}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,9 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7169157676754105709}
   - component: {fileID: 1553269638665619496}
-  - component: {fileID: -4165120668668365647}
   - component: {fileID: 5594350411403384768}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Ore_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,19 +130,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ec291a8b4bea2b43883542201ac549a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-4165120668668365647
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4102517613622959670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 086f08c759eb6584dbc4a21c78e06292, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionRange: 0.5
+  dropPrefabs:
+  - id: 110
+    prefab: {fileID: 5442702181559230353, guid: e9261b1c42d7b1444966886fd6c833bb, type: 3}
 --- !u!58 &5594350411403384768
 CircleCollider2D:
   m_ObjectHideFlags: 0

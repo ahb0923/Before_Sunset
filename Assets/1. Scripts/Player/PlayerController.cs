@@ -1,9 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(PlayerInputHandler))]
 public class PlayerController : MonoBehaviour
@@ -14,10 +12,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject buildModeUI;
     [SerializeField] private GameObject unbuildModeUI;
 
+    // DataHandler를 에디터에서 연결하거나 코드에서 할당
+    private EquipmentDataHandler equipmentDataHandler;
+
     private Rigidbody2D _rigidbody;
     private SpriteRenderer _spriteRenderer;
     private PlayerInputHandler _input;
+
     private bool _isSwinging = false;
+
+    // 현재 장착 곡괭이 데이터 (초기값은 null)
+    private EquipmentData _equippedPickaxe;
 
     private void Awake()
     {
@@ -26,11 +31,23 @@ public class PlayerController : MonoBehaviour
         _input = GetComponent<PlayerInputHandler>();
     }
 
-    private void Start()
+    private async void Start()
     {
         _input.OnInventoryToggle += ToggleInventory;
         _input.OnBuildMode += EnterBuildMode;
         _input.OnUnBuildMode += EnterUnBuildMode;
+
+        if (equipmentDataHandler == null)
+            equipmentDataHandler = new EquipmentDataHandler();
+
+        await equipmentDataHandler.LoadAsyncLocal();
+
+        _equippedPickaxe = equipmentDataHandler.GetById(700);
+
+        if (_equippedPickaxe == null)
+            Debug.LogError("초기 곡괭이 데이터가 없습니다!");
+        else
+            animator.speed = _equippedPickaxe.speed;
     }
 
     private void OnDestroy()
@@ -47,7 +64,6 @@ public class PlayerController : MonoBehaviour
         HandleSwing();
     }
 
-    // 마우스 방향을 바라보도록 회전
     private void HandleLookAndFlip()
     {
         if (mainCamera == null) return;
@@ -55,19 +71,27 @@ public class PlayerController : MonoBehaviour
         Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 lookDir = (mouseWorld - transform.position).normalized;
 
-        animator.SetFloat("LookX", lookDir.x);
-        animator.SetFloat("LookY", lookDir.y);
+        bool isUp = false;
+        bool isDown = false;
+        bool isSide = false;
 
-        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
-        float snappedAngle = GetSnappedAngle(angle);
-        transform.rotation = Quaternion.Euler(0f, 0f, snappedAngle);
+        if (Mathf.Abs(lookDir.x) > Mathf.Abs(lookDir.y))
+        {
+            isSide = true;
+            _spriteRenderer.flipX = lookDir.x > 0;
+        }
+        else
+        {
+            _spriteRenderer.flipX = false;
+            isUp = lookDir.y > 0;
+            isDown = !isUp;
+        }
 
-        transform.localScale = (snappedAngle == 180f)
-            ? new Vector3(1f, -1f, 1f)
-            : new Vector3(1f, 1f, 1f);
+        animator.SetBool("isUp", isUp);
+        animator.SetBool("isDown", isDown);
+        animator.SetBool("isSide", isSide);
     }
 
-    // 이동 처리
     private void HandleMovement()
     {
         if (_isSwinging)
@@ -82,7 +106,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isWalking", move.sqrMagnitude > 0.01f);
     }
 
-    // 스윙 처리
     private void HandleSwing()
     {
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
@@ -98,21 +121,61 @@ public class PlayerController : MonoBehaviour
     {
         _isSwinging = true;
         animator.SetBool("isSwinging", true);
-        yield return new WaitForSeconds(1.2f);
+
+        TryMineOre();
+
+        yield return new WaitForSeconds(1.2f / (_equippedPickaxe?.speed ?? 1f)); // 곡괭이 속도 반영
+
         animator.SetBool("isSwinging", false);
         _isSwinging = false;
     }
 
-    // 마우스 방향을 4방향으로 스냅
-    private float GetSnappedAngle(float angle)
+    private void TryMineOre()
     {
-        angle = (angle + 360f) % 360f;
+        if (_equippedPickaxe == null)
+        {
+            Debug.LogWarning("장착된 곡괭이가 없습니다.");
+            return;
+        }
 
-        if (angle >= 45f && angle < 135f) return 90f;
-        if (angle >= 135f && angle < 225f) return 180f;
-        if (angle >= 225f && angle < 315f) return 270f;
-        return 0f;
+        Vector2 playerPos2D = (Vector2)transform.position;
+
+        // 방향 결정
+        Vector2 dir = Vector2.right;
+        if (animator.GetBool("isUp")) dir = Vector2.up;
+        else if (animator.GetBool("isDown")) dir = Vector2.down;
+        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.right : Vector2.left;
+
+        float range = _equippedPickaxe.range;
+
+        // 레이캐스트 (layerMask로 "Ore"만 검사)
+        int oreLayerMask = LayerMask.GetMask("Ore");
+        RaycastHit2D hit = Physics2D.Raycast(playerPos2D, dir, range, oreLayerMask);
+
+        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f); // 시각화
+
+        if (hit.collider != null)
+        {
+            OreController ore = hit.collider.GetComponent<OreController>();
+            if (ore != null)
+            {
+                if (ore.CanBeMined(_equippedPickaxe.crushingForce))
+                {
+                    bool destroyed = ore.Mine(_equippedPickaxe.damage);
+                    Debug.Log(destroyed ? "광석이 파괴됨!" : "광석에 데미지 입힘");
+                }
+                else
+                {
+                    Debug.Log("곡괭이 파워 부족!");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("채광 범위 내에 광석 없음");
+        }
     }
+
 
     private void ToggleInventory()
     {

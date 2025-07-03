@@ -1,48 +1,73 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 광산 내 생성된 광석 오브젝트의 동작을 제어하는 클래스
-/// </summary>
 public class OreController : MonoBehaviour
 {
     public OreData Data { get; private set; }
 
     private int _currentHP;
 
-    /// <summary>
-    /// 광석 데이터로 초기화 (체력 등 설정)
-    /// </summary>
+    [System.Serializable]
+    public class DropPrefabEntry
+    {
+        public int id;
+        public GameObject prefab;
+    }
+
+    [Header("드롭 프리팹 매핑")]
+    [SerializeField] private List<DropPrefabEntry> dropPrefabs = new();
+
+    private Dictionary<int, GameObject> _dropPrefabDict;
+
+    private void Awake()
+    {
+        _dropPrefabDict = new Dictionary<int, GameObject>();
+        foreach (var entry in dropPrefabs)
+        {
+            if (!_dropPrefabDict.ContainsKey(entry.id))
+            {
+                _dropPrefabDict.Add(entry.id, entry.prefab);
+            }
+        }
+    }
+
     public void Initialize(OreData oreData)
     {
         Data = oreData;
         _currentHP = Data.hp;
     }
 
-    /// <summary>
-    /// 채굴 가능한지 여부 반환 (곡괭이 파괴력 >= 방어력)
-    /// </summary>
     public bool CanBeMined(int pickaxePower)
     {
         if (Data == null) return false;
         return pickaxePower >= Data.def;
     }
 
-    /// <summary>
-    /// 채굴 시 데미지를 입히고 파괴 여부 반환
-    /// </summary>
-    /// <returns>파괴되면 true</returns>
     public bool Mine(int damage)
     {
         _currentHP -= damage;
 
         if (_currentHP <= 0)
         {
+            DropItem();
             Destroy(gameObject);
             return true;
         }
 
         return false;
+    }
+
+    private void DropItem()
+    {
+        int dropId = Data.dropMineralId;
+
+        if (_dropPrefabDict != null && _dropPrefabDict.TryGetValue(dropId, out var prefab) && prefab != null)
+        {
+            Instantiate(prefab, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning($"[OreController] 드롭 프리팹이 존재하지 않거나 null입니다. ID: {dropId}");
+        }
     }
 }

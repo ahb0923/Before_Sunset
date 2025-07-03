@@ -15,8 +15,18 @@ public class OreSpawner : MonoBehaviour
     [Header("광석 프리팹 리스트")]
     [SerializeField] private List<GameObject> orePrefabs;
 
+    [Header("광석 간 중복 방지 반지름")]
+    [SerializeField] private float overlapRadius = 1.0f;
+
+    [Header("장애물 위 스폰 방지용 레이어 마스크")]
+    [SerializeField] private LayerMask obstacleLayerMask;
+
+    [Header("생성된 오브젝트 부모")]
+    [SerializeField] private Transform oreParent;
+
     private Dictionary<int, GameObject> orePrefabCache;
     private List<OreData> spawnableOreList = new();
+    private List<Vector3> placedOrePositions = new();
 
     private IEnumerator Start()
     {
@@ -33,6 +43,12 @@ public class OreSpawner : MonoBehaviour
             int id = ParseIdFromName(prefab.name);
             if (id >= 0)
                 orePrefabCache[id] = prefab;
+        }
+
+        if (oreParent == null)
+        {
+            GameObject parentObj = new GameObject("OreContainer");
+            oreParent = parentObj.transform;
         }
     }
 
@@ -52,6 +68,7 @@ public class OreSpawner : MonoBehaviour
     public void SpawnOres(int currentStage)
     {
         spawnableOreList.Clear();
+        placedOrePositions.Clear();
 
         var allOres = DataManager.Instance.OreData.GetAllItems();
 
@@ -64,22 +81,30 @@ public class OreSpawner : MonoBehaviour
         if (spawnableOreList.Count == 0)
             return;
 
-        for (int i = 0; i < spawnCount; i++)
+        int placed = 0;
+        int attempts = 0;
+        int maxAttempts = spawnCount * 10;
+
+        while (placed < spawnCount && attempts < maxAttempts)
         {
+            attempts++;
+
             Vector3 randomPos = GetRandomPositionInArea();
 
-            OreData selectedOre = GetRandomOreByProbability();
-            if (selectedOre != null)
-            {
-                if (orePrefabCache.TryGetValue(selectedOre.id, out var prefab))
-                {
-                    GameObject oreObj = Instantiate(prefab, randomPos, Quaternion.identity);
+            if (Physics2D.OverlapCircle(randomPos, 0.1f, obstacleLayerMask) != null) continue;
 
-                    var oreController = oreObj.GetComponent<OreController>();
-                    if (oreController != null)
-                    {
-                        oreController.Initialize(selectedOre);
-                    }
+            if (IsTooCloseToOtherOres(randomPos)) continue;
+
+            OreData selectedOre = GetRandomOreByProbability();
+            if (selectedOre != null && orePrefabCache.TryGetValue(selectedOre.id, out var prefab))
+            {
+                GameObject oreObj = Instantiate(prefab, randomPos, Quaternion.identity, oreParent);
+                var oreController = oreObj.GetComponent<OreController>();
+                if (oreController != null)
+                {
+                    oreController.Initialize(selectedOre);
+                    placedOrePositions.Add(randomPos);
+                    placed++;
                 }
             }
         }
@@ -89,8 +114,17 @@ public class OreSpawner : MonoBehaviour
     {
         float x = Random.Range(spawnAreaCenter.x - spawnAreaSize.x / 2f, spawnAreaCenter.x + spawnAreaSize.x / 2f);
         float y = Random.Range(spawnAreaCenter.y - spawnAreaSize.y / 2f, spawnAreaCenter.y + spawnAreaSize.y / 2f);
-
         return new Vector3(x, y, 0f);
+    }
+
+    private bool IsTooCloseToOtherOres(Vector3 pos)
+    {
+        foreach (var otherPos in placedOrePositions)
+        {
+            if (Vector3.Distance(pos, otherPos) < overlapRadius)
+                return true;
+        }
+        return false;
     }
 
     private OreData GetRandomOreByProbability()

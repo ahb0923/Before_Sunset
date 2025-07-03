@@ -19,7 +19,15 @@ public class MapManager : MonoSingleton<MapManager>
 
     public Core Core { get; private set; }
     [field: SerializeField] public MonsterSpawner MonsterSpawner { get; private set; }
+    // ========== [맵 관련 필드] ==========
+    [Header("맵 관련 설정")]
+    [SerializeField] private GameObject[] mapChunks;
+    [SerializeField] private Transform player;
 
+    private int currentMapIndex = 0;
+    private int previousMapIndex = -1;
+
+    // ========== [맵 구성 요소] ==========
     public Tilemap GroundTile { get; private set; }
     public BuildPreview BuildPreview { get; private set; }
     public DragIcon DragIcon { get; private set; }
@@ -39,6 +47,15 @@ public class MapManager : MonoSingleton<MapManager>
         DragIcon = GetComponentInChildren<DragIcon>(true);
 
         InitGridAndWalkableStack();
+
+        // 모든 맵 중 기본 맵(0번)만 활성화 (LKM)
+        for (int i = 0; i < mapChunks.Length; i++)
+        {
+            mapChunks[i].SetActive(i == 0);
+        }
+
+        currentMapIndex = 0;
+        previousMapIndex = -1;
     }
 
     /// <summary>
@@ -170,5 +187,42 @@ public class MapManager : MonoSingleton<MapManager>
                 Gizmos.DrawCube(node.WorldPos, nodeQuarterSize);
             }
         }
+    }
+        
+
+    // ========== [맵 전환 메서드] ==========(LKM)
+    public void MoveToRandomMap()
+    {
+        int nextIndex;
+
+        if (mapChunks.Length <= 1) return;
+
+        do
+        {
+            nextIndex = Random.Range(1, mapChunks.Length);
+        } while (nextIndex == currentMapIndex);
+
+        MoveToMap(nextIndex);
+    }
+
+    public void MoveToPreviousMap()
+    {
+        if (previousMapIndex == -1) return;
+
+        MoveToMap(previousMapIndex);
+    }
+
+    private void MoveToMap(int targetIndex)
+    {
+        if (targetIndex < 0 || targetIndex >= mapChunks.Length) return;
+
+        mapChunks[currentMapIndex].SetActive(false);
+
+        mapChunks[targetIndex].SetActive(true);
+
+        previousMapIndex = currentMapIndex;
+        currentMapIndex = targetIndex;
+
+        player.position = mapChunks[targetIndex].transform.position + new Vector3(0f, 0f, 0f);
     }
 }

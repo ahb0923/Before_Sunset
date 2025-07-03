@@ -16,10 +16,12 @@ public class PlayerInteractor : MonoBehaviour
     private Vector3 lastPlayerPos;
 
     private PlayerStateHandler stateHandler;
+    private CircleCollider2D playerCollider;
 
     void Awake()
     {
         stateHandler = GetComponent<PlayerStateHandler>();
+        playerCollider = GetComponent<CircleCollider2D>();
     }
 
     void Update()
@@ -45,7 +47,7 @@ public class PlayerInteractor : MonoBehaviour
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(screenPos);
         Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
 
-        float currentRange = stateHandler != null && stateHandler.IsInMiningArea ? 0.5f : interactionRange;
+        float currentRange = GetEffectiveRange();
 
         Collider2D col = Physics2D.OverlapPoint(mousePos2D);
         if (col != null)
@@ -53,7 +55,8 @@ public class PlayerInteractor : MonoBehaviour
             var interactable = col.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                if (interactable.IsInteractable(playerPos, currentRange))
+                float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
+                if (distanceToEdge <= currentRange)
                 {
                     SetCustomCursor(interactCursor);
                 }
@@ -73,15 +76,19 @@ public class PlayerInteractor : MonoBehaviour
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
 
-        float currentRange = stateHandler != null && stateHandler.IsInMiningArea ? 0.5f : interactionRange;
+        float currentRange = GetEffectiveRange();
 
         Collider2D col = Physics2D.OverlapPoint(mousePos2D);
         if (col != null)
         {
             var interactable = col.GetComponent<IInteractable>();
-            if (interactable != null && interactable.IsInteractable(playerPos, currentRange))
+            if (interactable != null)
             {
-                interactable.Interact();
+                float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
+                if (distanceToEdge <= currentRange)
+                {
+                    interactable.Interact();
+                }
             }
         }
     }
@@ -93,5 +100,25 @@ public class PlayerInteractor : MonoBehaviour
             Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
             currentCursor = cursor;
         }
+    }
+
+    float GetEffectiveRange()
+    {
+        return (stateHandler != null && stateHandler.IsInMiningArea) ? 0.5f : interactionRange;
+    }
+
+    float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)
+    {
+        Vector2 fromPos2D = new Vector2(fromPos.x, fromPos.y);
+        Vector2 closest = col.ClosestPoint(fromPos2D);
+        float distance = Vector2.Distance(fromPos2D, closest);
+
+        if (playerCollider != null)
+        {
+            float playerRadius = playerCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
+            distance -= playerRadius;
+        }
+
+        return Mathf.Max(0f, distance);
     }
 }
