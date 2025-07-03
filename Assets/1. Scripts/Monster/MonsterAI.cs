@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -209,7 +209,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             {
                 // 원거리 타입은 사거리에 들어오면 원거리 공격
                 case MONSTER_TYPE.Ranged:
-                    Projectile proj = Instantiate(_monster.Projectile).GetComponent<Projectile>();
+                    BaseProjectile proj = Instantiate(_monster.Projectile).GetComponent<BaseProjectile>();
                     proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);
                     break;
 
