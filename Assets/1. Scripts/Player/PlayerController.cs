@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -12,13 +11,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject buildModeUI;
     [SerializeField] private GameObject unbuildModeUI;
-    [SerializeField] private int pickaxePower = 1;
-    [SerializeField] private int miningDamage = 1;
+
+    // DataHandler를 에디터에서 연결하거나 코드에서 할당
+    private EquipmentDataHandler equipmentDataHandler;
 
     private Rigidbody2D _rigidbody;
     private SpriteRenderer _spriteRenderer;
     private PlayerInputHandler _input;
+
     private bool _isSwinging = false;
+
+    // 현재 장착 곡괭이 데이터 (초기값은 null)
+    private EquipmentData _equippedPickaxe;
 
     private void Awake()
     {
@@ -27,11 +31,23 @@ public class PlayerController : MonoBehaviour
         _input = GetComponent<PlayerInputHandler>();
     }
 
-    private void Start()
+    private async void Start()
     {
         _input.OnInventoryToggle += ToggleInventory;
         _input.OnBuildMode += EnterBuildMode;
         _input.OnUnBuildMode += EnterUnBuildMode;
+
+        if (equipmentDataHandler == null)
+            equipmentDataHandler = new EquipmentDataHandler();
+
+        await equipmentDataHandler.LoadAsyncLocal();
+
+        _equippedPickaxe = equipmentDataHandler.GetById(700);
+
+        if (_equippedPickaxe == null)
+            Debug.LogError("초기 곡괭이 데이터가 없습니다!");
+        else
+            animator.speed = _equippedPickaxe.speed;
     }
 
     private void OnDestroy()
@@ -105,48 +121,61 @@ public class PlayerController : MonoBehaviour
     {
         _isSwinging = true;
         animator.SetBool("isSwinging", true);
+
         TryMineOre();
-        yield return new WaitForSeconds(1.2f);
+
+        yield return new WaitForSeconds(1.2f / (_equippedPickaxe?.speed ?? 1f)); // 곡괭이 속도 반영
+
         animator.SetBool("isSwinging", false);
         _isSwinging = false;
     }
 
     private void TryMineOre()
     {
-        CircleCollider2D playerCollider = GetComponent<CircleCollider2D>();
-        if (playerCollider == null) return;
+        if (_equippedPickaxe == null)
+        {
+            Debug.LogWarning("장착된 곡괭이가 없습니다.");
+            return;
+        }
 
         Vector2 playerPos2D = (Vector2)transform.position;
-        float playerRadius = playerCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
-        float miningRange = 0.5f;
-        float checkRadius = playerRadius + miningRange;
 
+        // 방향 결정
         Vector2 dir = Vector2.right;
         if (animator.GetBool("isUp")) dir = Vector2.up;
         else if (animator.GetBool("isDown")) dir = Vector2.down;
-        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.right : Vector2.left;
 
-        Vector2 checkPos = playerPos2D + dir * checkRadius;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(checkPos, miningRange, LayerMask.GetMask("Ore"));
+        float range = _equippedPickaxe.range;
 
-        foreach (var hit in hits)
+        // 레이캐스트 (layerMask로 "Ore"만 검사)
+        int oreLayerMask = LayerMask.GetMask("Ore");
+        RaycastHit2D hit = Physics2D.Raycast(playerPos2D, dir, range, oreLayerMask);
+
+        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f); // 시각화
+
+        if (hit.collider != null)
         {
-            OreController ore = hit.GetComponent<OreController>();
+            OreController ore = hit.collider.GetComponent<OreController>();
             if (ore != null)
             {
-                if (ore.CanBeMined(pickaxePower))
+                if (ore.CanBeMined(_equippedPickaxe.crushingForce))
                 {
-                    bool destroyed = ore.Mine(miningDamage);
+                    bool destroyed = ore.Mine(_equippedPickaxe.damage);
                     Debug.Log(destroyed ? "광석이 파괴됨!" : "광석에 데미지 입힘");
                 }
                 else
                 {
                     Debug.Log("곡괭이 파워 부족!");
                 }
-                break;
             }
         }
+        else
+        {
+            Debug.Log("채광 범위 내에 광석 없음");
+        }
     }
+
 
     private void ToggleInventory()
     {
