@@ -35083,7 +35083,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 100
-  m_Sprite: {fileID: -765463992, guid: 0ba83ae3e39fa1e418bf74f5e82b1f5d, type: 3}
+  m_Sprite: {fileID: -768099374, guid: 9d3a979c2427beb469c87c1e4843dc7f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -35236,15 +35236,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3635165512423497510}
-  - component: {fileID: 5705466042300689717}
   - component: {fileID: 201733399374223832}
+  - component: {fileID: 5705466042300689717}
+  - component: {fileID: 8779816976417086537}
   - component: {fileID: 8779816976417086534}
   - component: {fileID: 8779816976417086533}
   - component: {fileID: 5741441657500126707}
   - component: {fileID: 150267055232626006}
   - component: {fileID: 8779816976417086535}
   - component: {fileID: 8779816976417086536}
-  - component: {fileID: 8779816976417086537}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -35378,7 +35378,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &5741441657500126707
 MonoBehaviour:
   m_ObjectHideFlags: 0
