@@ -8,7 +8,7 @@ public class EquipmentData : ItemData
 {
     public int nextUpgradeId;
     public int damage;
-    public int aps;
-    public int speed;
-    public int range;
+    public float aps;
+    public float speed;
+    public float range;
 }
