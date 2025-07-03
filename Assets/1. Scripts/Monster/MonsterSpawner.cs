@@ -2,81 +2,116 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterSpawner : MonoSingleton<MonsterSpawner>
+[System.Serializable]
+public class SpawnData
 {
-    [Header("# Map Setting")]
-    [SerializeField] private Vector2 _mapSize;
-    [SerializeField] private int _nodeSize = 1;
-    [SerializeField] private LayerMask _obstacleMask;
-    public Core Core { get; private set; }
+    public int id;
+    public int spawnCount;
+}
 
+[System.Serializable]
+public class StageData
+{
+    public int stage;
+    public List<SpawnData> spawnDatas;
+}
+
+public class MonsterSpawner : MonoBehaviour
+{
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
+    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
     [SerializeField] private float _spawnTime;
+    [SerializeField] private Transform _monsterParent;
+    [SerializeField] private List<StageData> _stageData;
+    private Dictionary<int, StageData> _stageDict;
 
-    [Header("# Test")]
-    public int spawnCount;
-    public int id;
-    
-    protected override void Awake()
+    private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
+    public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
+
+    private void Awake()
     {
-        base.Awake();
+        _stageDict = new Dictionary<int, StageData>();
 
-        if(Core == null)
+        foreach (StageData data in _stageData)
         {
-            Core = FindObjectOfType<Core>();
-
-            if(Core == null)
-            {
-                Debug.LogError("[MonsterSpawner] TestCore를 찾지 못했습니다.");
-            }
+            _stageDict[data.stage] = data;
         }
-
-        AstarAlgorithm.GenerateNode(transform.position, _mapSize, _nodeSize, _obstacleMask);
-    }
-
-    private void Update()
-    {
-        AstarAlgorithm.UpdateAllWalkable();
     }
 
     /// <summary>
-    /// 스테이지에 따른 모든 몬스터 소환
+    /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
     /// </summary>
-    [ContextMenu("몬스터 소환")]
-    public void SpawnAllMonsters()
+    public void RemoveDeadMonster(BaseMonster monster)
     {
-        StartCoroutine(C_SpawnMonsters());
+        _aliveMonsterSet.Remove(monster);
     }
-    private IEnumerator C_SpawnMonsters()
+
+    /// <summary>
+    /// 코어나 타워가 부서졌을 때에 모든 몬스터의 상태를 탐색 상태로 전환
+    /// </summary>
+    public void OnObstacleDestroyed()
     {
-        int count = 0;
-        float timer = 0f;
-
-        while (true)
+        foreach (BaseMonster monster in _aliveMonsterSet)
         {
-            if(count >= spawnCount) // test용
-                yield break;
-
-            timer += Time.deltaTime;
-            if(timer >= _spawnTime)
-            {
-                timer = 0f;
-                count++;
-
-                // 지금은 일단 스테이지마다 무슨 몬스터를 몇 마리 소환할 지 모르니까 Walker만 소환
-                SpawnMonster();
-            }
-
-            yield return null;
+            monster.Ai.ChangeState(MONSTER_STATE.Explore);
         }
     }
-    private void SpawnMonster()
-    {
-        int randInt = Random.Range(0, _spawnPoints.Count);
-        Vector3 pos = _spawnPoints[randInt].position;
 
-        GameObject obj = PoolManager.Instance.GetFromPool(id);
-        obj.transform.position = pos;
+    /// <summary>
+    /// 게임 오버 시에 모든 몬스터 못 움직이게 상태 전환
+    /// </summary>
+    public void OnGameOver()
+    {
+        foreach (BaseMonster monster in _aliveMonsterSet)
+        {
+            monster.Ai.ChangeState(MONSTER_STATE.Invalid);
+        }
     }
+
+    #region Monster Spawn
+    /// <summary>
+    /// 스테이지에 따른 모든 몬스터 소환
+    /// </summary>
+    public void SpawnAllMonsters()
+    {
+        StageData data = _stageDict[TimeManager.Instance.Stage];
+        StartCoroutine(C_SpawnMonsters(data));
+    }
+
+    /// <summary>
+    /// 스폰 타임마다 몬스터를 소환하는 코루틴
+    /// </summary>
+    private IEnumerator C_SpawnMonsters(StageData stageData)
+    {
+        int monsterCount = 0;
+        while(monsterCount < stageData.spawnDatas.Count)
+        {
+            SpawnData spawnData = stageData.spawnDatas[monsterCount];
+            for (int i = 0; i < spawnData.spawnCount; i++)
+            {
+                // 일시 정지 시에는 스폰 중지
+                while (TimeManager.Instance.IsGamePause)
+                    yield return null;
+                
+                SpawnMonster(spawnData.id, Random.Range(0, _spawnPointLimt));
+                yield return Helper_Coroutine.WaitSeconds(_spawnTime);
+            }
+
+            monsterCount++;
+        }
+
+        TimeManager.Instance.OnSpawnOver();
+    }
+
+    /// <summary>
+    /// 해당하는 몬스터 ID를 가진 몬스터 소환
+    /// </summary>
+    public void SpawnMonster(int monsterId, int posIndex)
+    {
+        Vector3 pos = _spawnPoints[posIndex].position;
+        GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
+        _aliveMonsterSet.Add(obj.GetComponent<BaseMonster>());
+    }
+    #endregion
 }

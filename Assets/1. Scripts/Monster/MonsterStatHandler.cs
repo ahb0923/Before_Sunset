@@ -1,38 +1,30 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
     private BaseMonster _monster;
 
-    [SerializeField] private MonsterData data;
+    [SerializeField] private MonsterData _data;
 
-    public int Id { get; private set; }
     public string MonsterName { get; private set; }
     public MONSTER_TYPE Type { get; private set; }
 
     public int MaxHp { get; private set; }
-    private int _curHp;
-    public int CurHp
-    {
-        get => _curHp;
-        set
-        {
-            _curHp = Mathf.Clamp(value, 0, MaxHp);
-            // 0 아래로 떨어지면 사망 처리
-        }
-    }
+    public int CurHp { get; private set; }
     
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
     public WaitForSeconds WaitAttack { get; private set; }
     public float AttackRange { get; private set; }
     public float Speed { get; private set; }
+    public int Size { get; private set; }
     public string Context { get; private set; }
 
-
-    public void Init(BaseMonster monster)
+    public void Init(BaseMonster monster, int id)
     {
-        if (data == null)
+        _data = DataManager.Instance.MonsterData.GetById(id);
+
+        if (_data == null)
         {
             Debug.Log("[MonsterStatHandler] 몬스터 데이터가 존재하지 않습니다.");
             return;
@@ -40,17 +32,22 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
         _monster = monster;
 
-        Id = data.id;
-        MonsterName = data.monsterName;
-        Type = data.monsterType;
-        MaxHp = data.hp;
-        CurHp = data.hp;
-        AttackPower = data.damage;
-        AttackPerSec = data.aps;
+        MonsterName = _data.monsterName;
+        Type = _data.monsterType;
+        MaxHp = _data.hp;
+        CurHp = _data.hp;
+        AttackPower = _data.damage;
+        AttackPerSec = _data.aps;
         WaitAttack = new WaitForSeconds(AttackPerSec);
-        AttackRange = data.range;
-        Speed = data.speed;
-        Context = data.context;
+        AttackRange = _data.range;
+        Speed = _data.speed;
+        Size = _data.size;
+        Context = _data.context;
+    }
+
+    public void SetFullHp()
+    {
+        CurHp = MaxHp;
     }
 
     /// <summary>
@@ -68,9 +65,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
         CurHp = Mathf.Max(CurHp, 0);
 
-        if (CurHp <= 0)
+        if (CurHp == 0)
         {
-            CurHp = 0;
             _monster.Ai.ChangeState(MONSTER_STATE.Dead);
         }
     }

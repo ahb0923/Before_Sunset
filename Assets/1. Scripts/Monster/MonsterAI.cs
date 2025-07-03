@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum MONSTER_STATE
@@ -13,17 +14,17 @@ public enum MONSTER_STATE
 public class MonsterAI : StateBasedAI<MONSTER_STATE>
 {
     private BaseMonster _monster;
-    private Core _core;
 
     public Transform Target { get; private set; }
+    private bool _isTargetAlive => Target != null && Target.gameObject.activeInHierarchy;
     private NodePath _path;
+    private Node _nextNode;
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
-    public void Init(BaseMonster monster, Core core)
+    public void Init(BaseMonster monster)
     {
         _monster = monster;
-        _core = core;
     }
 
     protected override void DefineStates()
@@ -66,29 +67,65 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 코어를 향한 A* 경로 탐색 → 경로 없으면 가장 빠른 경로를 방해하는 타워 탐색
+    /// 코어를 향한 경로 탐색 → 경로 없으면, 가장 빠른 경로를 방해하는 타워 탐색
     /// </summary>
     private IEnumerator C_Explore()
     {
-        _path = FindPathToCore();
-        if( _path != null)
+        // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
+        if(MapManager.Instance.Core.IsDead)
         {
-            ChangeState(MONSTER_STATE.Move);
+            ChangeState(MONSTER_STATE.Invalid);
             yield break;
         }
-        else
-        {
-            // 새로운 타겟과 그에 따른 경로를 받아와야 함
-        }
-    }
 
-    /// <summary>
-    /// 코어를 향한 A* 경로 탐색
-    /// </summary>
-    private NodePath FindPathToCore()
-    {
-        Node startNode = AstarAlgorithm.GetNodeFromWorldPosition(transform.position);
-        return AstarAlgorithm.FindPath(startNode, _core.transform, _core.Size, false); // 대각선 이동 미포함
+        // 해시셋은 이미 탐색을 진행한 타겟인지를 확인하는 용도
+        HashSet<Transform> closedSet = new HashSet<Transform>();
+
+        _path = null;
+        int count = 0;
+        while(_path == null)
+        {
+            // 인터럽트 발생하면, 코루틴 탈출
+            if (IsInterrupted)
+                yield break;
+
+            // 이동하려는 노드가 있었으면, 그 위치를 받아옴
+            Vector3 startPos = _nextNode == null ? transform.position : _nextNode.WorldPos;
+
+            if(count == 0)
+            {
+                // 처음 타겟은 무조건 코어
+                Target = MapManager.Instance.Core.transform;
+                count++;
+            }
+            else
+            {
+                // 이후 타겟은 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
+                List<Transform> targetList = MapManager.Instance.GetTargetList(count);
+                if(targetList == null || targetList.Count == 0)
+                {
+                    count++;
+                    continue;
+                }
+
+                // 타겟 리스트 중에서 현재 몬스터와 가장 가까운 타겟을 탐색
+                Target = GetNearestTarget(targetList, closedSet);
+
+                if(Target == null)
+                {
+                    count++;
+                    continue;
+                }
+
+                closedSet.Add(Target);
+            }
+
+            _path = MapManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+            yield return null;
+        }
+
+        // 경로를 찾으면, 이동 상태 전환
+        ChangeState(MONSTER_STATE.Move);
     }
 
     /// <summary>
@@ -96,36 +133,56 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Move()
     {
-        // 경로에 이동 불가능 노드가 포함되면, 다시 탐색 진행
-        if (!_path.IsWalkablePath())
+        // 타겟이 없으면, 탐색 상태 전환
+        if (!_isTargetAlive)
         {
             ChangeState(MONSTER_STATE.Explore);
             yield break;
         }
 
-        while(_path.CurNode.isWalkable)
+        _nextNode = _path.CurNode;
+        int walkableId = MapManager.Instance.GetWalkableId(Target);
+
+        // 해당 경로가 이동 불가능하거나 타겟이 없으면, 탐색 상태 전환
+        while (_path.IsWalkablePath(_monster.Stat.Size, walkableId) && _isTargetAlive)
         {
+            // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
 
-            transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
-
-            if(Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.01f)
+            // 일시 정지 시에는 이동 중지
+            if (TimeManager.Instance.IsGamePause)
             {
-                transform.position = _path.CurNode.WorldPos;
+                yield return null;
+                continue;
+            }
 
-                // 다음 노드가 없다면, 다시 탐색 진행
+            // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
+            if (_monster.Sensor.DetectedObstacles.Contains(Target))
+            {
+                ChangeState(MONSTER_STATE.Attack);
+                yield break;
+            }
+
+            // 실제 오브젝트 이동
+            transform.position = Vector2.MoveTowards(transform.position, _nextNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
+
+            if (Vector2.Distance(transform.position, _nextNode.WorldPos) < 0.01f)
+            {
+                transform.position = _nextNode.WorldPos;
+
+                // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
                 if (!_path.Next())
                 {
-                    ChangeState(MONSTER_STATE.Explore);
+                    break;
                 }
-                yield break;
+
+                _nextNode = _path.CurNode;
             }
 
             yield return null;
         }
 
-        // 가야하는 노드가 이동 불가능 노드가 되면, 다시 탐색 진행
         ChangeState(MONSTER_STATE.Explore);
     }
 
@@ -134,17 +191,48 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Attack()
     {
-        // 타겟이 없을 경우 탐색 진행
-        if(Target == null)
+        // 타겟이 없어지면, 탐색 상태 전환
+        while(_isTargetAlive)
         {
-            ChangeState(MONSTER_STATE.Explore);
-            yield break;
+            // 인터럽트 발생하면, 코루틴 탈출
+            if (IsInterrupted)
+                yield break;
+
+            // 일시 정지 시에는 공격 중지
+            if (TimeManager.Instance.IsGamePause)
+            {
+                yield return null;
+                continue;
+            }
+
+            switch (_monster.Stat.Type)
+            {
+                // 원거리 타입은 사거리에 들어오면 원거리 공격
+                case MONSTER_TYPE.Ranged:
+                    Projectile proj = Instantiate(_monster.Projectile).GetComponent<Projectile>();
+                    proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);
+                    break;
+
+                // 근접과 탱크 타입은 사거리에 들어오면 근접 공격
+                case MONSTER_TYPE.Melee:
+                case MONSTER_TYPE.Tank:
+                    DamagedSystem.Instance.Send(new Damaged
+                    {
+                        Attacker = gameObject,
+                        Victim = Target.gameObject,
+                        Value = _monster.Stat.AttackPower,
+                        IgnoreDefense = false
+                    });
+
+                    Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
+                    break;
+            }
+
+            // Attack Per Sec 동안 기다림
+            yield return _monster.Stat.WaitAttack;
         }
 
-        // 타겟에 대한 대미지 부여는 여기서 진행
-        Debug.Log($"{_monster.Stat.MonsterName} : 공격!");
-
-        yield return _monster.Stat.WaitAttack;
+        ChangeState(MONSTER_STATE.Explore);
     }
 
     /// <summary>
@@ -155,7 +243,31 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 사망 애니메이션 처리
         Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
 
-        PoolManager.Instance.ReturnToPool(_monster.Stat.Id, gameObject);
+        PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
+    }
+
+    /// <summary>
+    /// 타겟 리스트 중 오브젝트와 가장 가까운 타겟을 반환
+    /// </summary>
+    private Transform GetNearestTarget(List<Transform> targetList, HashSet<Transform> closed)
+    {
+        float dist = float.MaxValue;
+        Transform nearest = null;
+
+        foreach (Transform target in targetList)
+        {
+            if (closed.Contains(target)) continue;
+
+            float tempDist = Vector2.Distance(transform.position, target.position);
+
+            if (dist > tempDist)
+            {
+                dist = tempDist;
+                nearest = target;
+            }
+        }
+
+        return nearest;
     }
 
     /// <summary>
@@ -163,8 +275,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     public void InitExploreState()
     {
-        Target = _core.transform;
         _path = null;
+        _nextNode = null;
         TransitionTo(MONSTER_STATE.Explore, true);
 
         RunDoingState();
@@ -179,13 +291,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 해당 오브젝트 선택 시 경로 시각화
+    /// 경로 시각화
     /// </summary>
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         if(_path != null)
         {
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.yellow;
 
             Vector3 pos = _path.Path[0].WorldPos;
             for (int i = 1; i < _path.Path.Count; i++)

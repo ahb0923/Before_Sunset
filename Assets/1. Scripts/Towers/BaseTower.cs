@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -22,7 +22,7 @@ public class BaseTower : MonoBehaviour
 
     // state 는 ai로 접근
     public TowerAI ai;
-    // stat Handler => 타워 스탯 관련 
+    // stat Handler => 타워 스탯 관련
     public TowerStatHandler statHandler;
     // 공격 센서
     public TowerAttackSensor attackSensor;

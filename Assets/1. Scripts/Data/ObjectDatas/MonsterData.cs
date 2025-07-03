@@ -1,4 +1,4 @@
-﻿public enum MONSTER_TYPE
+public enum MONSTER_TYPE
 {
     Melee,
     Ranged,
@@ -17,6 +17,7 @@ public class MonsterData
     public float aps;
     public float speed;
     public float range;
+    public int size;
 
     public string context;
 }

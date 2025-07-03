@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Core : MonoBehaviour, IDamageable
 {
@@ -6,9 +7,15 @@ public class Core : MonoBehaviour, IDamageable
     public int Size => _size;
     [SerializeField] private int _maxHp = 500;
     private int _curHp;
+    [SerializeField] private Image _hpBar;
+    public bool IsDead { get; private set; }
+
+    private SpriteRenderer _spriter;
 
     private void Awake()
     {
+        _spriter = GetComponentInChildren<SpriteRenderer>();
+
         SetFullHp();
     }
 
@@ -17,7 +24,7 @@ public class Core : MonoBehaviour, IDamageable
     /// </summary>
     public void SetFullHp()
     {
-        _curHp = _maxHp;
+        SetHp(_maxHp);
     }
 
     /// <summary>
@@ -26,18 +33,30 @@ public class Core : MonoBehaviour, IDamageable
     /// <param name="damaged">받은 데미지 정보</param>
     public void OnDamaged(Damaged damaged)
     {
+        if (IsDead) return;
+
         if (damaged.Attacker == null)
         {
             Debug.LogWarning("타격 대상 못찾음!");
             return;
         }
 
-        _curHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
-        _curHp = Mathf.Max(_curHp, 0);
+        SetHp(Mathf.Max(_curHp - DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense), 0));
 
-        if (_curHp <= 0)
+        if (_curHp == 0)
         {
-            _curHp = 0;
+            IsDead = true;
+            _spriter.color = _spriter.color.WithAlpha(0.5f);
+            TimeManager.Instance.TestGameOver();
         }
+    }
+
+    /// <summary>
+    /// 현재 HP 업데이트
+    /// </summary>
+    private void SetHp(int hp)
+    {
+        _curHp = hp;
+        _hpBar.fillAmount = (float)_curHp / _maxHp;
     }
 }

@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -14,9 +14,29 @@ public class MonsterDebugWindow : EditorWindow
     {
         GUILayout.Label("Monster Debug Tools", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("몬스터 전체 제거"))
+        if (GUILayout.Button("몬스터 스폰 : 머프"))
         {
-            Debug.Log("몬스터가 전부 제거 됩니다.");
+            MapManager.Instance.MonsterSpawner.SpawnMonster(600, 3);
+        }
+
+        if (GUILayout.Button("몬스터 스폰 : 드리즐"))
+        {
+            MapManager.Instance.MonsterSpawner.SpawnMonster(601, 3);
+        }
+
+        if (GUILayout.Button("몬스터 스폰 : 헤비"))
+        {
+            MapManager.Instance.MonsterSpawner.SpawnMonster(602, 3);
+        }
+
+        if (GUILayout.Button("몬스터 스폰 : 테스트 - 왼쪽에서 소환"))
+        {
+            MapManager.Instance.MonsterSpawner.SpawnMonster(699, 3);
+        }
+
+        if (GUILayout.Button("몬스터 스폰 : 테스트 - 위쪽에서 소환"))
+        {
+            MapManager.Instance.MonsterSpawner.SpawnMonster(699, 0);
         }
     }
 }
