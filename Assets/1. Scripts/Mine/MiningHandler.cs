@@ -2,54 +2,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MiningHandler : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Collider2D))]
+public class MiningHandler : MonoBehaviour
 {
     private PlayerStateHandler _playerState;
+    private Collider2D _collider;
 
     [SerializeField] private bool isEntering = true;
+    [SerializeField] private float stayTimeToTrigger = 1.5f;
 
-    private Collider2D _collider;
+    private Coroutine _triggerCoroutine;
 
     private void Start()
     {
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-        {
             _playerState = player.GetComponent<PlayerStateHandler>();
-        }
 
         _collider = GetComponent<Collider2D>();
     }
 
-    public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_collider == null || playerCollider == null)
-            return false;
-
-        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
-        Vector2 closestPoint = _collider.ClosestPoint(playerPos2D);
-        float distance = Vector2.Distance(playerPos2D, closestPoint);
-
-        float playerRadius = playerCollider.radius * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
-        distance -= playerRadius;
-
-        return distance <= range;
+        if (other.CompareTag("Player") && _triggerCoroutine == null)
+        {
+            _triggerCoroutine = StartCoroutine(WaitAndTrigger(other));
+        }
     }
 
-    public void Interact()
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (_playerState == null)
-            return;
+        if (other.CompareTag("Player") && _triggerCoroutine != null)
+        {
+            StopCoroutine(_triggerCoroutine);
+            _triggerCoroutine = null;
+        }
+    }
 
-        if (isEntering)
+    private IEnumerator WaitAndTrigger(Collider2D player)
+    {
+        yield return new WaitForSeconds(stayTimeToTrigger);
+
+        if (_playerState == null) yield break;
+
+        yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
-            _playerState.EnterMiningArea();
-            Debug.Log("광산 입장");
-        }
-        else
-        {
-            _playerState.ExitMiningArea();
-            Debug.Log("광산 퇴장");
-        }
+            if (isEntering)
+            {
+                _playerState.EnterMiningArea();
+                MapManager.Instance.MoveToRandomMap();
+                Debug.Log("광산 입장");
+            }
+            else
+            {
+                _playerState.ExitMiningArea();
+                MapManager.Instance.MoveToPreviousMap();
+                Debug.Log("광산 퇴장");
+            }
+        }));
+
+        _triggerCoroutine = null;
     }
 }

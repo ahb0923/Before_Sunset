@@ -21,6 +21,9 @@ public class OreSpawner : MonoBehaviour
     [Header("장애물 위 스폰 방지용 레이어 마스크")]
     [SerializeField] private LayerMask obstacleLayerMask;
 
+    [Header("생성된 오브젝트 부모")]
+    [SerializeField] private Transform oreParent;
+
     private Dictionary<int, GameObject> orePrefabCache;
     private List<OreData> spawnableOreList = new();
     private List<Vector3> placedOrePositions = new();
@@ -40,6 +43,12 @@ public class OreSpawner : MonoBehaviour
             int id = ParseIdFromName(prefab.name);
             if (id >= 0)
                 orePrefabCache[id] = prefab;
+        }
+
+        if (oreParent == null)
+        {
+            GameObject parentObj = new GameObject("OreContainer");
+            oreParent = parentObj.transform;
         }
     }
 
@@ -89,7 +98,7 @@ public class OreSpawner : MonoBehaviour
             OreData selectedOre = GetRandomOreByProbability();
             if (selectedOre != null && orePrefabCache.TryGetValue(selectedOre.id, out var prefab))
             {
-                GameObject oreObj = Instantiate(prefab, randomPos, Quaternion.identity);
+                GameObject oreObj = Instantiate(prefab, randomPos, Quaternion.identity, oreParent);
                 var oreController = oreObj.GetComponent<OreController>();
                 if (oreController != null)
                 {
