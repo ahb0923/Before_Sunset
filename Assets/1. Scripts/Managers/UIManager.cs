@@ -4,17 +4,12 @@ using UnityEngine;
 public class UIManager : MonoSingleton<UIManager>
 {
     [SerializeField] public GameObject testBuildSlot;
+    public GameTimeUI GameTimeUI { get; private set; }
 
-    private void Update()
+    protected override void Awake()
     {
-        // 테스트용 E키
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (testBuildSlot != null)
-            {
-                bool isActive = testBuildSlot.activeSelf;
-                testBuildSlot.SetActive(!isActive);
-            }
-        }
+        base.Awake();
+
+        GameTimeUI = GetComponentInChildren<GameTimeUI>();
     }
 }

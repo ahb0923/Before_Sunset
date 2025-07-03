@@ -72,7 +72,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private IEnumerator C_Explore()
     {
         // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
-        if(MapManager.Instance.Core.IsDead)
+        if(DefenseManager.Instance.Core.IsDead)
         {
             ChangeState(MONSTER_STATE.Invalid);
             yield break;
@@ -95,13 +95,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             if(count == 0)
             {
                 // 처음 타겟은 무조건 코어
-                Target = MapManager.Instance.Core.transform;
+                Target = DefenseManager.Instance.Core.transform;
                 count++;
             }
             else
             {
                 // 이후 타겟은 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
-                List<Transform> targetList = MapManager.Instance.GetTargetList(count);
+                List<Transform> targetList = DefenseManager.Instance.GetTargetList(count);
                 if(targetList == null || targetList.Count == 0)
                 {
                     count++;
@@ -120,7 +120,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 closedSet.Add(Target);
             }
 
-            _path = MapManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+            _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
             yield return null;
         }
 
@@ -141,7 +141,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         }
 
         _nextNode = _path.CurNode;
-        int walkableId = MapManager.Instance.GetWalkableId(Target);
+        int walkableId = DefenseManager.Instance.GetWalkableId(Target);
 
         // 해당 경로가 이동 불가능하거나 타겟이 없으면, 탐색 상태 전환
         while (_path.IsWalkablePath(_monster.Stat.Size, walkableId) && _isTargetAlive)

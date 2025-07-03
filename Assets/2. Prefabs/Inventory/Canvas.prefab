@@ -279,6 +279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <InventoryUI>k__BackingField: {fileID: 3937447882433322123}
   <QuickSlotInventoryUI>k__BackingField: {fileID: 5108893749520773329}
+  _inventoryButton: {fileID: 0}
 --- !u!1 &864022335920743848
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,7 +2145,6 @@ MonoBehaviour:
   _numberOfItemSlots: 20
   _itemSlotContainer: {fileID: 8144183403838095852}
   _quickSlotContainer: {fileID: 8453857145643042544}
-  _sortButton: {fileID: 3312043399302737031}
   _pickaxeSlot: {fileID: 6405510941588995054}
   _slotPrefab: {fileID: 7407233304449865545, guid: f6be210f695db1946888ff6abe5d28aa, type: 3}
   itemSlots: []
@@ -2502,8 +2502,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8205630922459087202}
   m_HandleRect: {fileID: 2909037369330366137}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.48542023
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

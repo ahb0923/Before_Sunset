@@ -198,7 +198,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         yield return null;
 
         _isDestroy = true;
-        MapManager.Instance.RemoveObstacle(transform);
+        DefenseManager.Instance.RemoveObstacle(transform);
         Destroy(tower.gameObject);
 
         yield return null;

@@ -20,7 +20,7 @@ public class BuildManager : MonoSingleton<BuildManager>
     private void Start()
     {
         if (_groundTilemap == null)
-            _groundTilemap = MapManager.Instance.GroundTile;
+            _groundTilemap = DefenseManager.Instance.GroundTile;
     }
 
     public void StartPlacing(BaseTower prefab)
@@ -30,8 +30,8 @@ public class BuildManager : MonoSingleton<BuildManager>
         Debug.Log(_towerMainCollider);
         _isPlacing = true;
 
-        MapManager.Instance.DragIcon.Show();
-        MapManager.Instance.DragIcon.SetIcon(prefab.icon.sprite);
+        DefenseManager.Instance.DragIcon.Show();
+        DefenseManager.Instance.DragIcon.SetIcon(prefab.icon.sprite);
     }
 
     public void CancelPlacing()
@@ -39,8 +39,8 @@ public class BuildManager : MonoSingleton<BuildManager>
         _isPlacing = false;
         _towerPrefab = null;
 
-        MapManager.Instance.DragIcon.Hide();
-        MapManager.Instance.BuildPreview.Clear();
+        DefenseManager.Instance.DragIcon.Hide();
+        DefenseManager.Instance.BuildPreview.Clear();
     }
     private void Update()
     {
@@ -53,8 +53,8 @@ public class BuildManager : MonoSingleton<BuildManager>
         mouseWorld.z = 0;
 
         // 프리뷰 표시
-        MapManager.Instance.DragIcon.SetPosition(Input.mousePosition);
-        MapManager.Instance.BuildPreview.ShowPreview(mouseWorld, _towerPrefab.size);
+        DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
+        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _towerPrefab.size);
 
         // 좌클릭 확정
         if (Input.GetMouseButtonDown(0)) //  && !EventSystem.current.IsPointerOverGameObject()
@@ -112,7 +112,7 @@ public class BuildManager : MonoSingleton<BuildManager>
 
         // 배치 성공
         BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
-        MapManager.Instance.AddObstacle(tower.transform, 1); // 일단 1x1이니까 1로 두었음
+        DefenseManager.Instance.AddObstacle(tower.transform, 1); // 일단 1x1이니까 1로 두었음
         RenderUtil.SetSortingOrderByY(tower.icon);
 
         return true;

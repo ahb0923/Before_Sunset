@@ -19,10 +19,7 @@ public class TimeManager : MonoSingleton<TimeManager>
 
     private bool _isSpawned;
     private bool _isSpawnOver;
-    public bool IsStageClear => _isSpawnOver && !MapManager.Instance.MonsterSpawner.IsMonsterAlive;
-
-    [Header("# Test")]
-    [SerializeField] private GameTimeUI _gameTimeUI; // 이거는 UI 매니저에서 가져오는 방식으로 바꿔야 할 듯
+    public bool IsStageClear => _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     public bool IsGamePause { get; private set; }
 
@@ -47,7 +44,7 @@ public class TimeManager : MonoSingleton<TimeManager>
         if(Day == _maxDay - 1 && IsNight && !_isSpawned)
         {
             _isSpawned = true;
-            MapManager.Instance.MonsterSpawner.SpawnAllMonsters();
+            DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
         }
     }
 
@@ -61,7 +58,7 @@ public class TimeManager : MonoSingleton<TimeManager>
         Stage = 1;
 
         IsGamePause = false;
-        _gameTimeUI.SetDayPieces();
+        UIManager.Instance.GameTimeUI.SetDayPieces();
     }
 
     /// <summary>
@@ -88,7 +85,7 @@ public class TimeManager : MonoSingleton<TimeManager>
             Day++;
         }
 
-        _gameTimeUI.SetDayPieces();
+        UIManager.Instance.GameTimeUI.SetDayPieces();
     }
 
     /// <summary>
@@ -109,7 +106,7 @@ public class TimeManager : MonoSingleton<TimeManager>
 
         _isSpawned = false;
         _isSpawnOver = false;
-        _gameTimeUI.SetStageText();
+        UIManager.Instance.GameTimeUI.SetStageText();
     }
 
     /// <summary>
@@ -139,7 +136,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     /// </summary>
     public void TestGameOver()
     {
-        MapManager.Instance.MonsterSpawner.OnGameOver();
+        DefenseManager.Instance.MonsterSpawner.OnGameOver();
     }
 
     /// <summary>

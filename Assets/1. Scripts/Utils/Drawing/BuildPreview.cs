@@ -30,7 +30,7 @@ public class BuildPreview : MonoBehaviour
         int offsetX = size.x / 2;
         int offsetY = size.y / 2;
 
-        Tilemap groundTilemap = MapManager.Instance.GroundTile;
+        Tilemap groundTilemap = DefenseManager.Instance.GroundTile;
         Vector3Int centerCell = groundTilemap.WorldToCell(worldPos);
         Vector3Int origin = centerCell - new Vector3Int(offsetX, offsetY, 0);
 
