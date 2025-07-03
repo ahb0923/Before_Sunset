@@ -1,9 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StraightProjectile : BaseProjectile
 {
+    public override void Init(GameObject target, float speed, float damage, Vector3 spawnPosition, int chainCount = 0, GameObject fromTarget = null)
+    {
+        base.Init(target, speed, damage, spawnPosition);
+        attackType = PROJECTILE_TYPE.Defalut;
+    }
+
     protected override void UpdateMovement()
     {
         if (Target == null) return;

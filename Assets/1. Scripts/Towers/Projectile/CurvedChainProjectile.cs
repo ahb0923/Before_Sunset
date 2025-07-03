@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 
-public class CurvedProjectile : BaseProjectile
+public class CurvedChainProjectile : BaseProjectile
 {
     public override void Init(GameObject target, float speed, float damage, Vector3 spawnPosition, int chainCount = 0, GameObject fromTarget = null)
     {
@@ -15,7 +15,13 @@ public class CurvedProjectile : BaseProjectile
         duration = 0.5f;
         maxHeight = 2f;
 
-        attackType = PROJECTILE_TYPE.Defalut;
+        currentChainCount = chainCount;
+        previousTarget = fromTarget;
+
+        maxChains = 2;
+        chainRange = 3f;
+
+        attackType = PROJECTILE_TYPE.Chaining;
     }
 
     protected override void UpdateMovement()
@@ -34,4 +40,6 @@ public class CurvedProjectile : BaseProjectile
         if (normalizedTime >= 1f)
             OnHit();
     }
+
+
 }
