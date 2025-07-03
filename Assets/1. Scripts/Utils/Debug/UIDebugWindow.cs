@@ -14,9 +14,19 @@ public class UIDebugWindow : EditorWindow
     {
         GUILayout.Label("UI Debug Tools", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("UI 리셋"))
+        if (GUILayout.Button("100번 아이템 추가"))
         {
-            Debug.Log("특정 UI를 리셋합니다.");
+            InventoryManager.Instance.Inventory.AddItem(100,1);
+        }
+        
+        if (GUILayout.Button("200번 아이템 추가"))
+        {
+            InventoryManager.Instance.Inventory.AddItem(200,3);
+        }
+        
+        if (GUILayout.Button("700번 장비 아이템 추가"))
+        {
+            InventoryManager.Instance.Inventory.AddItem(700,0);
         }
     }
 }

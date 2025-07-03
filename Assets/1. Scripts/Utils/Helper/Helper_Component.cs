@@ -297,4 +297,32 @@ public static class Helper_Component
         return foundTransform?.gameObject;
     }
 
+    /// <summary>
+    /// 특정 자식의 컴포넌트를 찾아내는 메서드 (무거우니 절대 남용 금지)
+    /// </summary>
+    /// <param name="parent">주체 부모 오브젝트</param>
+    /// <param name="name">목표 자식 오브젝트 이름</param>
+    /// <typeparam name="T">찾고싶은 컴포넌트</typeparam>
+    /// <returns></returns>
+    public static T FindChildComponent<T>(Transform parent, string name) where T : Component
+    {
+        foreach (Transform child in parent)
+        {
+            string compareName = child.name;
+            
+            if (compareName == name)
+            {
+                T component = child.GetComponent<T>();
+                return component;
+            }
+
+            T result = FindChildComponent<T>(child, name);
+
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        return null;
+    }
 }
