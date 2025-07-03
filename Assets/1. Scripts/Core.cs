@@ -8,9 +8,14 @@ public class Core : MonoBehaviour, IDamageable
     [SerializeField] private int _maxHp = 500;
     private int _curHp;
     [SerializeField] private Image _hpBar;
+    public bool IsDead { get; private set; }
+
+    private SpriteRenderer _spriter;
 
     private void Awake()
     {
+        _spriter = GetComponentInChildren<SpriteRenderer>();
+
         SetFullHp();
     }
 
@@ -28,6 +33,8 @@ public class Core : MonoBehaviour, IDamageable
     /// <param name="damaged">받은 데미지 정보</param>
     public void OnDamaged(Damaged damaged)
     {
+        if (IsDead) return;
+
         if (damaged.Attacker == null)
         {
             Debug.LogWarning("타격 대상 못찾음!");
@@ -36,10 +43,11 @@ public class Core : MonoBehaviour, IDamageable
 
         SetHp(Mathf.Max(_curHp - DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense), 0));
 
-        if (_curHp <= 0)
+        if (_curHp == 0)
         {
-            _curHp = 0;
-            Debug.Log("게임 오버!");
+            IsDead = true;
+            _spriter.color = _spriter.color.WithAlpha(0.5f);
+            TimeManager.Instance.TestGameOver();
         }
     }
 

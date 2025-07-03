@@ -43,6 +43,14 @@ public class GameTimeUI : MonoBehaviour
     /// </summary>
     private void UpdateSkipButtonState()
     {
+        // 일시 정지 시에는 비활성화
+        if (TimeManager.Instance.IsGamePause)
+        {
+            _daySkipBtn.interactable = false;
+            _halfDaySkipBtn.interactable = false;
+        }
+
+        // 3일차 까지는 활성화
         if(TimeManager.Instance.Day <= TimeManager.Instance.MaxDay - 2)
         {
             _daySkipBtn.interactable = true;
@@ -50,31 +58,45 @@ public class GameTimeUI : MonoBehaviour
         }
         else
         {
+            // 4일차 낮에는 하프 데이 스킵만 가능
             if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && !TimeManager.Instance.IsNight)
+            {
                 _halfDaySkipBtn.interactable = true;
+                _daySkipBtn.interactable = false;
+            }
             else
-                _halfDaySkipBtn.interactable = false;
-
-            _daySkipBtn.interactable = false;
+            {
+                // 몬스터 스폰 이후에는 모든 몬스터가 죽었을 때만 스킵 가능
+                if (TimeManager.Instance.IsStageClear)
+                {
+                    _halfDaySkipBtn.interactable = true;
+                    _daySkipBtn.interactable = true;
+                }
+                else
+                {
+                    _halfDaySkipBtn.interactable = false;
+                    _daySkipBtn.interactable = false;
+                }
+            }
         }
     }
 
     /// <summary>
     /// 날짜에 따라서 날짜 피스 활성화
     /// </summary>
-    public void SetDayPieces(int day)
+    public void SetDayPieces()
     {
         for (int i = 1; i < _dayPieceList.Length; i++) 
         {
-            _dayPieceList[i].gameObject.SetActive(i <= day);
+            _dayPieceList[i].gameObject.SetActive(i <= TimeManager.Instance.Day);
         }
     }
 
     /// <summary>
     /// 스테이지 텍스트 업데이트
     /// </summary>
-    public void SetStageText(int stage)
+    public void SetStageText()
     {
-        _stageText.text = $"{stage} Stage";
+        _stageText.text = $"{TimeManager.Instance.Stage} Stage";
     }
 }

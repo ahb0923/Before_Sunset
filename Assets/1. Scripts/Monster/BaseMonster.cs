@@ -49,5 +49,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void OnReturnToPool()
     {
         Ai.ChangeState(MONSTER_STATE.Invalid);
+        MapManager.Instance.MonsterSpawner.RemoveDeadMonster(this);
     }
 }

@@ -17,6 +17,10 @@ public class TimeManager : MonoSingleton<TimeManager>
     public int Day { get; private set; }
     public int Stage { get; private set; }
 
+    private bool _isSpawned;
+    private bool _isSpawnOver;
+    public bool IsStageClear => _isSpawnOver && !MapManager.Instance.MonsterSpawner.IsMonsterAlive;
+
     [Header("# Test")]
     [SerializeField] private GameTimeUI _gameTimeUI; // 이거는 UI 매니저에서 가져오는 방식으로 바꿔야 할 듯
 
@@ -39,6 +43,12 @@ public class TimeManager : MonoSingleton<TimeManager>
         {
             NextDay();
         }
+
+        if(Day == _maxDay - 1 && IsNight && !_isSpawned)
+        {
+            _isSpawned = true;
+            MapManager.Instance.MonsterSpawner.SpawnAllMonsters();
+        }
     }
 
     /// <summary>
@@ -51,7 +61,7 @@ public class TimeManager : MonoSingleton<TimeManager>
         Stage = 1;
 
         IsGamePause = false;
-        _gameTimeUI.SetDayPieces(Day);
+        _gameTimeUI.SetDayPieces();
     }
 
     /// <summary>
@@ -63,13 +73,14 @@ public class TimeManager : MonoSingleton<TimeManager>
         
         if(Day == _maxDay)
         {
-            if (true) //몬스터를 모두 처치했다면
+            if (IsStageClear)
             {
                 NextStage();
             }
             else
             {
-                // 패배
+                // 패배 시에 일시 정지 & 엔티티 움직임 정지
+                TestGameOver();
             }
         }
         else
@@ -77,7 +88,7 @@ public class TimeManager : MonoSingleton<TimeManager>
             Day++;
         }
 
-        _gameTimeUI.SetDayPieces(Day);
+        _gameTimeUI.SetDayPieces();
     }
 
     /// <summary>
@@ -87,6 +98,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     {
         if(Stage == _maxStage)
         {
+            ControlPause(true);
             // 승리
         }
         else
@@ -95,7 +107,17 @@ public class TimeManager : MonoSingleton<TimeManager>
             Stage++;
         }
 
-        _gameTimeUI.SetStageText(Stage);
+        _isSpawned = false;
+        _isSpawnOver = false;
+        _gameTimeUI.SetStageText();
+    }
+
+    /// <summary>
+    /// 모든 몬스터 스폰이 끝났을 때 호출
+    /// </summary>
+    public void OnSpawnOver()
+    {
+        _isSpawnOver = true;
     }
 
     /// <summary>
@@ -103,7 +125,21 @@ public class TimeManager : MonoSingleton<TimeManager>
     /// </summary>
     public void ControlPause()
     {
-         IsGamePause = !IsGamePause;
+        ControlPause(!IsGamePause);
+    }
+    public void ControlPause(bool doPause)
+    {
+        IsGamePause = doPause;
+        Debug.Log($"게임 일시 정지 : {IsGamePause}");
+    }
+
+    /// <summary>
+    /// 게임 오버 시 일단 몬스터 정지<br/>
+    /// ※ 이거는 나중에 게임 매니저에 옮겨도 될 듯
+    /// </summary>
+    public void TestGameOver()
+    {
+        MapManager.Instance.MonsterSpawner.OnGameOver();
     }
 
     /// <summary>

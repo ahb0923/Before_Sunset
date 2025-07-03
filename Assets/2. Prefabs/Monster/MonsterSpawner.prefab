@@ -243,12 +243,20 @@ MonoBehaviour:
   - {fileID: 2020608704552248769}
   _spawnTime: 1
   _monsterParent: {fileID: 727782791731575410}
-  _spawnDatas:
-  - id: 600
-    spawnCount: 1
-  - id: 601
-    spawnCount: 1
-  - id: 602
-    spawnCount: 1
-  - id: 699
-    spawnCount: 1
+  _stageData:
+  - stage: 1
+    spawnDatas:
+    - id: 600
+      spawnCount: 15
+    - id: 601
+      spawnCount: 7
+    - id: 602
+      spawnCount: 2
+  - stage: 2
+    spawnDatas:
+    - id: 600
+      spawnCount: 20
+    - id: 601
+      spawnCount: 13
+    - id: 602
+      spawnCount: 3

@@ -71,6 +71,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Explore()
     {
+        // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
+        if(MapManager.Instance.Core.IsDead)
+        {
+            ChangeState(MONSTER_STATE.Invalid);
+            yield break;
+        }
+
         // 해시셋은 이미 탐색을 진행한 타겟인지를 확인하는 용도
         HashSet<Transform> closedSet = new HashSet<Transform>();
 
@@ -143,6 +150,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             if (IsInterrupted)
                 yield break;
 
+            // 일시 정지 시에는 이동 중지
+            if (TimeManager.Instance.IsGamePause)
+            {
+                yield return null;
+                continue;
+            }
+
             // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
             if (_monster.Sensor.DetectedObstacles.Contains(Target))
             {
@@ -183,6 +197,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
+
+            // 일시 정지 시에는 공격 중지
+            if (TimeManager.Instance.IsGamePause)
+            {
+                yield return null;
+                continue;
+            }
 
             switch (_monster.Stat.Type)
             {
