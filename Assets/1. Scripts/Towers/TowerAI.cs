@@ -20,11 +20,13 @@ public enum TOWER_ATTACK_TYPE
     Healing
 }
 
+
 public class TowerAI : StateBasedAI<TOWER_STATE>
 {
     private bool _isDestroy = false;
     private bool _isNowBuilding = true;
     public BaseTower tower;
+    public Vector3 firePosition;
 
     protected override TOWER_STATE InvalidState => TOWER_STATE.None;
 
@@ -44,7 +46,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             Entered = () => Debug.Log("건설 시작"),
             Doing = C_Construction,
-            Exited = () => {
+            Exited = () =>
+            {
                 Debug.Log("건설 완료");
             }
         });
@@ -156,8 +159,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             }
 
             var stat = tower.statHandler;
-            // 발사 위치 변경시 이곳
-            Vector3 firePosition = tower.transform.position + new Vector3(0, 2, 0);
 
             switch (tower.statHandler.attackType)
             {
@@ -176,9 +177,64 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     // 화살 발사
                     //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
                     GameObject projObj = Instantiate(tower.projectile);
-                    BaseProjectile proj = projObj.GetComponent<BaseProjectile>();
+                    Projectile proj = Helper_Component.GetComponent<Projectile>(projObj);
                     // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
-                    proj.Init(target, 10, stat.AttackPower, firePosition);
+
+                    // 추후에 필드 멤버로 만들어서 init에서 세팅해버리기
+
+
+                    // 이쪽 추후에 리팩터링
+                    if (tower.towerType == TOWER_TYPE.CooperTower)
+                    {
+                        ProjectileAttackSettings projAttackSettings = new()
+                        {
+                            attacker = projObj,
+                            target = target,
+                            damage = stat.AttackPower,
+                        };
+                        ProjectileMovementSettings projMovementSettings = new()
+                        {
+                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            moveSpeed = 10f,
+                        };
+                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Straight(), new ProjectileAttack_Single());
+                    }
+                    else if (tower.towerType == TOWER_TYPE.IronTower)
+                    {
+                        ProjectileAttackSettings projAttackSettings = new()
+                        {
+                            attacker = projObj,
+                            target = target,
+                            damage = stat.AttackPower,
+                            splashRadius = 1.5f,
+                            enemyLayer = LayerMask.GetMask("Monster")
+                        };
+                        ProjectileMovementSettings projMovementSettings = new()
+                        {
+                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            duration = 1f,
+                        };
+                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Curved(), new ProjectileAttack_Splash());
+                    }
+                    else if (tower.towerType == TOWER_TYPE.DiaprismTower)
+                    {
+                        ProjectileAttackSettings projAttackSettings = new()
+                        {
+                            attacker = projObj,
+                            target = target,
+                            damage = stat.AttackPower,
+                            enemyLayer = LayerMask.GetMask("Monster"),
+                            chainCount = 2,
+                            chainingRaduis = 2f,
+                            previousTarget = null,
+                        };
+                        ProjectileMovementSettings projMovementSettings = new()
+                        {
+                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            duration = 3f,
+                        };
+                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Curved(), new ProjectileAttack_Chaining());
+                    }
                     break;
 
                 // 자신 중심 공격 타워

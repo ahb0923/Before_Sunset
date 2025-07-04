@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -9,9 +9,16 @@ public enum BUILDING_TYPE
     Normal,
     Slow
 }
+public enum TOWER_TYPE
+{
+    CooperTower,
+    IronTower,
+    DiaprismTower
+}
 public class BaseTower : MonoBehaviour
 {
     [Header(" [에디터 할당] ")]
+    [SerializeField] public TOWER_TYPE towerType;
     [SerializeField] public SpriteRenderer icon;
     [SerializeField] public List<Sprite> constructionIcon;
     [SerializeField] public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등

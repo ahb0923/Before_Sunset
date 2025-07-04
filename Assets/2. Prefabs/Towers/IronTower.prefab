@@ -114,6 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13f239bd4219a1b48ab1ad0d7ea58c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  towerType: 1
   icon: {fileID: 1109353221721809788}
   constructionIcon: []
   size: {x: 3, y: 3}
@@ -138,6 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tower: {fileID: 6044215668753884168}
+  firePosition: {x: 0, y: 0, z: 0}
 --- !u!114 &8459309262913598922
 MonoBehaviour:
   m_ObjectHideFlags: 0
