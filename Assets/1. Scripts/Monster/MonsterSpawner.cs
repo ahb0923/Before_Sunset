@@ -9,19 +9,21 @@ public class MonsterSpawner : MonoBehaviour
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
     [SerializeField] private float _spawnTime;
     [SerializeField] private Transform _monsterParent;
-    [SerializeField] private List<StageData> _stageData;
-    private Dictionary<int, StageData> _stageDict;
-
+    [SerializeField] private List<WaveData> _waveData;
+    private Dictionary<int, List<WaveData>> _stageDict;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
 
     private void Awake()
     {
-        _stageDict = new Dictionary<int, StageData>();
+        _stageDict = new Dictionary<int, List<WaveData>>();
 
-        foreach (StageData data in _stageData)
+        foreach (WaveData waveData in _waveData)
         {
-            _stageDict[data.stage] = data;
+            int stage = waveData.stageId;
+            if(!_stageDict.ContainsKey(stage)) _stageDict[stage] = new List<WaveData>();
+
+            _stageDict[stage].Add(waveData);
         }
     }
 
@@ -61,32 +63,33 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
-        StageData data = _stageDict[TimeManager.Instance.Stage];
+        List<WaveData> data = _stageDict[TimeManager.Instance.Stage];
         StartCoroutine(C_SpawnMonsters(data));
     }
 
     /// <summary>
     /// 스폰 타임마다 몬스터를 소환하는 코루틴
     /// </summary>
-    private IEnumerator C_SpawnMonsters(StageData stageData)
+    private IEnumerator C_SpawnMonsters(List<WaveData> stageData)
     {
         int waveCount = 0;
-        while(waveCount < stageData.waveDatas.Count)
+        while(waveCount < stageData.Count)
         {
             while (TimeManager.Instance.IsGamePause)
                 yield return null;
 
-            WaveData waveData = stageData.waveDatas[waveCount];
-            List<SpawnData> spawnDatas = waveData.spawnDatas;
-            foreach (SpawnData spawnData in spawnDatas)
+            WaveData waveData = stageData[waveCount];
+            List<int> spawnCounts = waveData.spawnMonsterCount;
+
+            for (int i = 0; i < spawnCounts.Count; i++) 
             {
-                for (int i = 0; i < spawnData.spawnCount; i++)
+                for (int j = 0; j < spawnCounts[i]; j++) 
                 {
-                    SpawnMonster(spawnData.id, Random.Range(0, _spawnPointLimt));
+                    SpawnMonster(i + 600, Random.Range(0, _spawnPointLimt));
                 }
             }
 
-            yield return Helper_Coroutine.WaitSeconds(waveData.waitTime);
+            yield return Helper_Coroutine.WaitSeconds(waveData.summonDelay);
             waveCount++;
         }
 
