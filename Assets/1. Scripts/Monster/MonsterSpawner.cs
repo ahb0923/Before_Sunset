@@ -4,28 +4,17 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
+    private const int MONSTER_ID = 600;
+    private const int STAGE_ID = 999;
+
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
-    [SerializeField] private float _spawnTime;
     [SerializeField] private Transform _monsterParent;
-    [SerializeField] private List<WaveData> _waveData;
-    private Dictionary<int, List<WaveData>> _stageDict;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
 
-    private void Awake()
-    {
-        _stageDict = new Dictionary<int, List<WaveData>>();
-
-        foreach (WaveData waveData in _waveData)
-        {
-            int stage = waveData.stageId;
-            if(!_stageDict.ContainsKey(stage)) _stageDict[stage] = new List<WaveData>();
-
-            _stageDict[stage].Add(waveData);
-        }
-    }
+    private List<WaveData> _waveDatas;
 
     /// <summary>
     /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
@@ -63,7 +52,16 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
-        List<WaveData> data = _stageDict[TimeManager.Instance.Stage];
+        // 모든 스테이지 데이터를 처음에 받아오면 좋겠는데 이건 생각해봐야 할 듯
+        // _waveData = DataManager.Instance.WaveData.GetById();
+
+        if(_waveDatas == null)
+        {
+            Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
+            return;
+        }
+
+        List<WaveData> data = _waveDatas;
         StartCoroutine(C_SpawnMonsters(data));
     }
 
@@ -85,7 +83,7 @@ public class MonsterSpawner : MonoBehaviour
             {
                 for (int j = 0; j < spawnCounts[i]; j++) 
                 {
-                    SpawnMonster(i + 600, Random.Range(0, _spawnPointLimt));
+                    SpawnMonster(i + MONSTER_ID, Random.Range(0, _spawnPointLimt));
                 }
             }
 
