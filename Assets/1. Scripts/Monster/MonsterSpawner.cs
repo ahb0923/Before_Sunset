@@ -7,6 +7,9 @@ public class MonsterSpawner : MonoBehaviour
     private const int MONSTER_ID = 600;
     private const int STAGE_ID = 999;
 
+    // 스폰 시작할 때 JSON에서 스폰 데이터를 받아옴
+    private List<WaveData> _waveDatas;
+
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
@@ -14,7 +17,8 @@ public class MonsterSpawner : MonoBehaviour
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
 
-    private List<WaveData> _waveDatas;
+    [Header("# Test")]
+    [SerializeField] List<WaveData> _testWaveDatas;
 
     /// <summary>
     /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
@@ -52,13 +56,17 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
-        // 모든 스테이지 데이터를 처음에 받아오면 좋겠는데 이건 생각해봐야 할 듯
         // _waveData = DataManager.Instance.WaveData.GetById();
 
         if(_waveDatas == null)
         {
-            Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
-            return;
+            if(_testWaveDatas == null)
+            {
+                Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
+                return;
+            }
+
+            _waveDatas = _testWaveDatas;
         }
 
         List<WaveData> data = _waveDatas;
