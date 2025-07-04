@@ -16,6 +16,11 @@ public class PlayerInputHandler : MonoBehaviour
     public event Action OnBuildMode;
     public event Action OnUnBuildMode;
 
+    private bool isReturnKeyHeld = false;
+    private float returnKeyHeldTime = 0f;
+    private bool isRecallStarted = false;
+    [SerializeField] private float holdTimeToTriggerRecall = 2f;
+
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
@@ -35,6 +40,12 @@ public class PlayerInputHandler : MonoBehaviour
         _inputActions.Player.Inventory.performed += OnInventoryPerformed;
         _inputActions.Player.Build.performed += OnBuildPerformed;
         _inputActions.Player.UnBuild.performed += OnUnBuildPerformed;
+
+        _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
+        _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
+
+        if (RecallUIHandler.Instance != null)
+            RecallUIHandler.Instance.OnCountdownFinished += OnRecallCountdownFinished;
     }
 
     private void OnDisable()
@@ -49,7 +60,93 @@ public class PlayerInputHandler : MonoBehaviour
         _inputActions.Player.Build.performed -= OnBuildPerformed;
         _inputActions.Player.UnBuild.performed -= OnUnBuildPerformed;
 
+        _inputActions.Player.ReturnHome.performed -= OnReturnHomePerformed;
+        _inputActions.Player.ReturnHome.canceled -= OnReturnHomeCanceled;
+
+        if (RecallUIHandler.Instance != null)
+            RecallUIHandler.Instance.OnCountdownFinished -= OnRecallCountdownFinished;
+
         _inputActions.Player.Disable();
+    }
+
+    private void Update()
+    {
+        if (isRecallStarted) return;
+
+        if (isReturnKeyHeld)
+        {
+            returnKeyHeldTime += Time.deltaTime;
+            if (RecallUIHandler.Instance != null)
+                RecallUIHandler.Instance.UpdateHoldProgress(returnKeyHeldTime / holdTimeToTriggerRecall);
+
+            if (returnKeyHeldTime >= holdTimeToTriggerRecall)
+            {
+                StartRecall();
+            }
+        }
+    }
+
+    private void StartRecall()
+    {
+        isRecallStarted = true;
+        isReturnKeyHeld = false;
+
+        if (AuraHandler.Instance != null)
+            AuraHandler.Instance.Show();
+
+        if (RecallUIHandler.Instance != null)
+            RecallUIHandler.Instance.StartRecallCountdown();
+    }
+
+    private IEnumerator DelayedRecall()
+    {
+        yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
+        {
+            MapManager.Instance.ReturnToHomeMap();
+        }));
+
+        isRecallStarted = false;
+        returnKeyHeldTime = 0f;
+
+        if (RecallUIHandler.Instance != null)
+            RecallUIHandler.Instance.ResetUI();
+
+        if (AuraHandler.Instance != null)
+            AuraHandler.Instance.Hide();
+
+        if (_stateHandler != null)
+            _stateHandler.ExitMiningArea();
+    }
+
+    private void OnReturnHomePerformed(InputAction.CallbackContext context)
+    {
+        if (isRecallStarted) return;
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            if (IsOnMiningTrigger())
+            {
+                Debug.Log("광산 트리거 위에서는 귀환할 수 없습니다.");
+                return;
+            }
+
+            isReturnKeyHeld = true;
+            returnKeyHeldTime = 0f;
+
+            if (RecallUIHandler.Instance != null)
+                RecallUIHandler.Instance.ShowRecallIcon();
+        }
+    }
+
+    private void OnReturnHomeCanceled(InputAction.CallbackContext context)
+    {
+        if (isRecallStarted) return;
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            isReturnKeyHeld = false;
+            returnKeyHeldTime = 0f;
+            if (RecallUIHandler.Instance != null)
+                RecallUIHandler.Instance.HideRecallIcon();
+        }
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -92,5 +189,28 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnUnBuildPerformed(InputAction.CallbackContext context)
     {
         OnUnBuildMode?.Invoke();
+    }
+
+    private void OnRecallCountdownFinished()
+    {
+        StartCoroutine(DelayedRecall());
+    }
+
+    public bool IsRecallInProgress()
+    {
+        return isRecallStarted;
+    }
+
+    private bool IsOnMiningTrigger()
+    {
+        Collider2D[] results = Physics2D.OverlapCircleAll(transform.position, 0.1f);
+        foreach (var col in results)
+        {
+            if (col.TryGetComponent<MiningHandler>(out var handler))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

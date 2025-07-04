@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ReturnHome",
+                    "type": "Button",
+                    "id": "819cb2b9-9fe4-46c8-8346-87524b72af8e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -159,6 +168,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "UnBuild",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1e6dddb-a2e4-4c0f-bb46-83a9e8c6637c",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReturnHome",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

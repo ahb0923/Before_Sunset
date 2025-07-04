@@ -28,6 +28,13 @@ public class MiningHandler : MonoBehaviour
     {
         if (other.CompareTag("Player") && _triggerCoroutine == null)
         {
+            var inputHandler = other.GetComponent<PlayerInputHandler>();
+            if (inputHandler != null && inputHandler.IsRecallInProgress())
+            {
+                Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+                return;
+            }
+
             _triggerCoroutine = StartCoroutine(WaitAndTrigger(other));
         }
     }
