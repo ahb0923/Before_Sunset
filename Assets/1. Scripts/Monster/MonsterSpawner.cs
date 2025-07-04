@@ -2,20 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class SpawnData
-{
-    public int id;
-    public int spawnCount;
-}
-
-[System.Serializable]
-public class StageData
-{
-    public int stage;
-    public List<SpawnData> spawnDatas;
-}
-
 public class MonsterSpawner : MonoBehaviour
 {
     [Header("# Spawn Setting")]
@@ -84,21 +70,24 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     private IEnumerator C_SpawnMonsters(StageData stageData)
     {
-        int monsterCount = 0;
-        while(monsterCount < stageData.spawnDatas.Count)
+        int waveCount = 0;
+        while(waveCount < stageData.waveDatas.Count)
         {
-            SpawnData spawnData = stageData.spawnDatas[monsterCount];
-            for (int i = 0; i < spawnData.spawnCount; i++)
+            while (TimeManager.Instance.IsGamePause)
+                yield return null;
+
+            WaveData waveData = stageData.waveDatas[waveCount];
+            List<SpawnData> spawnDatas = waveData.spawnDatas;
+            foreach (SpawnData spawnData in spawnDatas)
             {
-                // 일시 정지 시에는 스폰 중지
-                while (TimeManager.Instance.IsGamePause)
-                    yield return null;
-                
-                SpawnMonster(spawnData.id, Random.Range(0, _spawnPointLimt));
-                yield return Helper_Coroutine.WaitSeconds(_spawnTime);
+                for (int i = 0; i < spawnData.spawnCount; i++)
+                {
+                    SpawnMonster(spawnData.id, Random.Range(0, _spawnPointLimt));
+                }
             }
 
-            monsterCount++;
+            yield return Helper_Coroutine.WaitSeconds(waveData.waitTime);
+            waveCount++;
         }
 
         TimeManager.Instance.OnSpawnOver();
