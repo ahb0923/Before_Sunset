@@ -29,24 +29,13 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 코어나 타워가 부서졌을 때에 모든 몬스터의 상태를 탐색 상태로 전환
+    /// 맵 장애물에 변경이 있을 때, 모든 몬스터의 상태를 탐색 상태로 전환
     /// </summary>
-    public void OnObstacleDestroyed()
+    public void OnObstacleChanged()
     {
         foreach (BaseMonster monster in _aliveMonsterSet)
         {
             monster.Ai.ChangeState(MONSTER_STATE.Explore);
-        }
-    }
-
-    /// <summary>
-    /// 게임 오버 시에 모든 몬스터 못 움직이게 상태 전환
-    /// </summary>
-    public void OnGameOver()
-    {
-        foreach (BaseMonster monster in _aliveMonsterSet)
-        {
-            monster.Ai.ChangeState(MONSTER_STATE.Invalid);
         }
     }
 
@@ -92,6 +81,7 @@ public class MonsterSpawner : MonoBehaviour
                 for (int j = 0; j < spawnCounts[i]; j++) 
                 {
                     SpawnMonster(i + MONSTER_ID, Random.Range(0, _spawnPointLimt));
+                    yield return null;
                 }
             }
 
@@ -107,7 +97,14 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnMonster(int monsterId, int posIndex)
     {
-        Vector3 pos = _spawnPoints[posIndex].position;
+        float rand = Random.Range(-2f, 2f);
+        Vector3 randOffset;
+        if (posIndex % 2 == 0)
+            randOffset = new Vector3(rand, 0);
+        else
+            randOffset = new Vector3(0, rand);
+
+        Vector3 pos = _spawnPoints[posIndex].position + randOffset;
         GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
         _aliveMonsterSet.Add(obj.GetComponent<BaseMonster>());
     }

@@ -302,7 +302,7 @@ public static class AstarAlgorithm
         path.Add(startNode.ActualNode);
         path.Reverse();
 
-        return new NodePath(grid, startNode.ActualNode, endNode.ActualNode, path);
+        return new NodePath(startNode.ActualNode, endNode.ActualNode, path);
     }
 
     /// <summary>
@@ -362,6 +362,7 @@ public class Node
 {
     public Vector3 WorldPos { get; private set; }
     public int walkableIndex;
+    //public bool hasMonster;
 
     public Node(Vector3 worldPos)
     {
@@ -369,14 +370,11 @@ public class Node
         walkableIndex = -1;
     }
 
-    public Node(Vector3 worldPos, int index)
-    {
-        WorldPos = worldPos;
-        walkableIndex = index;
-    }
-
     public bool IsWalkable(int index)
     {
+        // 몬스터가 있으므로, false
+        //if (hasMonster) return false;
+
         // -1 : 무조건 walkable
         if (walkableIndex == -1) return true;
 
@@ -453,7 +451,7 @@ public class NodeGrid
 
     /// <summary>
     /// 월드 포지션에서 가장 가까운 노드 반환<br/>
-    /// ※ 맵을 벗어나는 위치 값에 경우 null 반환
+    /// ※ 맵을 벗어나는 위치 값에 경우, 가장 가까운 노드 반환
     /// </summary>
     /// <param name="worldPos">월드 포지션</param>
     public Node GetNode(Vector3 worldPos)
@@ -461,9 +459,31 @@ public class NodeGrid
         Vector2Int gridIndex = GetGridIndex(worldPos);
 
         if (gridIndex.x == -1)
-            return null;
+            return GetNearestNode(worldPos);
         else
             return Nodes[gridIndex.x, gridIndex.y];
+    }
+
+    /// <summary>
+    /// 맵을 벗어나면, 해당 위치에서 가장 가까운 노드를 반환
+    /// </summary>
+    /// <param name="worldPos">월드 포지션</param>
+    private Node GetNearestNode(Vector3 worldPos)
+    {
+        float minDist = float.MaxValue;
+        Node nearestNode = null;
+
+        foreach (Node node in Nodes)
+        {
+            float dist = Vector2.Distance(worldPos, node.WorldPos);
+            if (minDist > dist)
+            {
+                minDist = dist;
+                nearestNode = node;
+            }
+        }
+
+        return nearestNode;
     }
 
     /// <summary>
@@ -537,10 +557,9 @@ public class NodeGrid
     }
 }
 
-// 경로
+// 경로 : A* 바인딩을 무조건 사용해야 함!
 public class NodePath
 {
-    public NodeGrid Grid { get; private set; }
     public Node StartNode { get; private set; }
     public Node EndNode { get; private set; }
     public List<Node> Path { get; private set; }
@@ -548,9 +567,8 @@ public class NodePath
     public Node CurNode => Path[_index];
     private int _index;
 
-    public NodePath(NodeGrid grid, Node startNode, Node endNode, List<Node> path)
+    public NodePath(Node startNode, Node endNode, List<Node> path)
     {
-        Grid = grid;
         StartNode = startNode;
         EndNode = endNode;
         Path = path;
@@ -560,7 +578,6 @@ public class NodePath
 
     public NodePath(NodePath nodePath)
     {
-        Grid = nodePath.Grid;
         StartNode = nodePath.StartNode;
         EndNode = nodePath.EndNode;
         Path = nodePath.Path;
@@ -589,7 +606,7 @@ public class NodePath
     {
         for (int i = _index; i < Path.Count; i++)
         {
-            if (!AstarAlgorithm.IsAreaWalkable(Grid, Path[i], entitySize, targetIndex))
+            if (!AstarAlgorithm.IsAreaWalkable_Bind(Path[i], entitySize, targetIndex))
             {
                 return false;
             }
