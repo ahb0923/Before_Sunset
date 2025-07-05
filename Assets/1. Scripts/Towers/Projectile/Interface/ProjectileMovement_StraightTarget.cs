@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileMovement_Straight : IProjectileMovement
+public class ProjectileMovement_StraightTarget : IProjectileMovement
 {
     private Transform _self;
     private GameObject _target;

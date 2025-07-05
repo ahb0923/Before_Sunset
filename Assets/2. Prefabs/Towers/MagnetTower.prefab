@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4551609607560423749}
   - component: {fileID: 8459309262913598922}
   m_Layer: 6
-  m_Name: DiaprismTower
+  m_Name: MagnetTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13f239bd4219a1b48ab1ad0d7ea58c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerType: 2
+  towerType: 0
   icon: {fileID: 1109353221721809788}
   constructionIcon: []
   size: {x: 3, y: 3}
@@ -125,7 +125,7 @@ MonoBehaviour:
   statHandler: {fileID: 8459309262913598922}
   attackSensor: {fileID: 8261416276646684489}
   ui: {fileID: 0}
-  projectile: {fileID: 1135823945734847574, guid: eb29621551b39944b81aa3c3749aeba5, type: 3}
+  projectile: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,7 +364,7 @@ GameObject:
   - component: {fileID: 7556676893509196285}
   - component: {fileID: 4869803506577090178}
   - component: {fileID: 7132922346847372962}
-  - component: {fileID: 4209676816669374325}
+  - component: {fileID: 6760718722463397885}
   m_Layer: 0
   m_Name: InteractArea(Blue)
   m_TagString: Untagged
@@ -449,7 +449,7 @@ MonoBehaviour:
   currType: 1
   rayDirection: 0
   size: {x: 1, y: 3, z: 1}
---- !u!114 &4209676816669374325
+--- !u!114 &6760718722463397885
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -786,7 +786,7 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 20
-  m_Sprite: {fileID: 21300000, guid: 045b6e01f5bcdb04282f0133b56455fb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fa94a26b6f2486843b8b1a9439996de4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -882,7 +882,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 3.5
+  m_Radius: 5.5
 --- !u!114 &8261416276646684489
 MonoBehaviour:
   m_ObjectHideFlags: 0

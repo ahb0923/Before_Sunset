@@ -228,7 +228,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                         moveSpeed = 10f,    //tower 쪽에 발사체 스피드 관련 정보 추가
                     };
 
-                    proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Straight(), new ProjectileAttack_Single());
+                    proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
                     // 여기까지!
 
                     break;

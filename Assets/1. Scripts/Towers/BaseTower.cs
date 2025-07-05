@@ -13,7 +13,9 @@ public enum TOWER_TYPE
 {
     CooperTower,
     IronTower,
-    DiaprismTower
+    DiaprismTower,
+    HealTower,
+    MagnetTower
 }
 public class BaseTower : MonoBehaviour
 {

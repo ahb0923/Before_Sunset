@@ -50,7 +50,7 @@ public class ProjectileAttack_Chaining : IProjectileAttack
     private GameObject FindNextTarget(ProjectileAttackSettings attackSettings)
     {
         Vector2 center = attackSettings.target.transform.position;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(center, attackSettings.chainingRaduis, attackSettings.enemyLayer);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(center, attackSettings.chainingRadius, attackSettings.enemyLayer);
 
         GameObject best = null;
         float highestHp = float.MinValue;

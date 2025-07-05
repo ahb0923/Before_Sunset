@@ -197,7 +197,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                             firePosition = tower.transform.position + new Vector3(0, 2, 0),
                             moveSpeed = 10f,
                         };
-                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Straight(), new ProjectileAttack_Single());
+                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
                     }
                     else if (tower.towerType == TOWER_TYPE.IronTower)
                     {
@@ -225,7 +225,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                             damage = stat.AttackPower,
                             enemyLayer = LayerMask.GetMask("Monster"),
                             chainCount = 2,
-                            chainingRaduis = 2f,
+                            chainingRadius = 2f,
                             previousTarget = null,
                         };
                         ProjectileMovementSettings projMovementSettings = new()
@@ -233,7 +233,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                             firePosition = tower.transform.position + new Vector3(0, 2, 0),
                             duration = 3f,
                         };
-                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Curved(), new ProjectileAttack_Chaining());
+                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_CurvedTarget(), new ProjectileAttack_Chaining());
                     }
                     break;
 

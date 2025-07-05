@@ -6,11 +6,11 @@ public struct ProjectileMovementSettings
 {
     public Vector3 firePosition;
 
-    public float moveSpeed;
+    public float moveSpeed; //데이터로 필요함
      
     //<< 곡사에서 사용 >>
-    public float duration;
-    public float maxHeight;
+    public float duration;  // 데이터로 필요함
+    public float maxHeight; // 데이터로 필요함
 }
 
 public struct ProjectileAttackSettings
@@ -21,11 +21,11 @@ public struct ProjectileAttackSettings
     public LayerMask enemyLayer;
 
     //<< 범위 공격에서 사용 >>
-    public float splashRadius;
+    public float splashRadius;  //데이터로 필요함  스플래쉬 데미지 반경
 
     //<< 연쇄 공격에서 사용 >>
-    public int chainCount;
-    public float chainingRaduis;
+    public int chainCount;     //데이터로 필요함
+    public float chainingRadius; // 데이터로 필요함
     public GameObject previousTarget;
 }
 
