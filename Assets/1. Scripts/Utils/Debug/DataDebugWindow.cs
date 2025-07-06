@@ -43,6 +43,11 @@ public class DataDebugWindow : EditorWindow
         {
             DataManager.Instance.EquipmentData.DebugLogAll();
         }
+
+        if (GUILayout.Button("Log All Waves"))
+        {
+            DataManager.Instance.WaveData.DebugLogAll();
+        }
     }
 }
 #endif

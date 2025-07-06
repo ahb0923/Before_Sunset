@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -15,7 +15,7 @@ using UnityEngine;
     700 ~ 799	    장비 (Equipment)
     800 ~ 899	    스킬 (Skill)
     900 ~ 999	    구조물 (Structure)
-    1000 ~ 1099	    미정
+    1000 ~ 1099	    스테이지
 
     << 타워 ID >>	
     ID 범위	        데이터 타입
@@ -50,11 +50,15 @@ public class DataManager : PlainSingleton<DataManager>
     public OreDataHandler OreData { get; private set; } = new();
 
 
-    public ItemDataHandler ItemData { get; private set; } = new();
+
     // ↓ 인벤토리에 들어가는 아이템 데이터
+    public ItemDataHandler ItemData { get; private set; } = new();
     public MineralDataHandler MineralData { get; private set; } = new();
     public JewelDataHandler JewelData { get; private set; } = new();
     public EquipmentDataHandler EquipmentData { get; private set; } = new();
+
+    // ↓ 시스템 데이터
+    public WaveDataHandler WaveData { get; private set; } = new();
 
     public async Task InitAsync()
     {
@@ -65,7 +69,8 @@ public class DataManager : PlainSingleton<DataManager>
             MonsterData,
             JewelData,
             OreData,
-            EquipmentData
+            EquipmentData,
+            WaveData
         };
 
         foreach (var loader in loaders)
@@ -83,5 +88,6 @@ public class DataManager : PlainSingleton<DataManager>
         //JewelData.DebugLogAll();
         //OreData.DebugLogAll();
         //EquipmentData.DebugLogAll();
+
     }
 }
