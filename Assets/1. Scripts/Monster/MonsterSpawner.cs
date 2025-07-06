@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,10 +61,12 @@ public class MonsterSpawner : MonoBehaviour
             return;
         }
 
-        List<WaveData> data = _waveDatas;
-        StartCoroutine(C_SpawnMonsters(data));
-    }
+        //List<WaveData> data = _waveDatas;
+        //StartCoroutine(C_SpawnMonsters(data));
 
+        StartCoroutine(C_SpawnMonsters(1));
+    }
+    /*
     /// <summary>
     /// 스폰 타임마다 몬스터를 소환하는 코루틴
     /// </summary>
@@ -92,7 +94,46 @@ public class MonsterSpawner : MonoBehaviour
         }
 
         TimeManager.Instance.OnSpawnOver();
+    }*/
+
+    /// <summary>
+    /// C_SpanMonster 기준으로 만들었습니다. 제대로 동작할지는 잘 모르겠어요 테스트 필요합니다.<br/>
+    /// 매개변수로는 stage 값을 받습니다. 1stage 라면 1 받으면 됩니다.
+    /// </summary>
+    /// <param name="stage"></param>
+    /// <returns></returns>
+    private IEnumerator C_SpawnMonsters(int stage)
+    {
+        var waveData = DataManager.Instance.WaveData;
+        var monsterData = DataManager.Instance.MonsterData;
+
+        // 1스테이지라면 매개변수값으로 1 입력!
+        int waveCount = waveData.GetWaveCountByStageId(stage);
+
+        for(int i=1; i<=waveCount; i++)
+        {
+            // 해당 스테이지의 웨이브 값을 매번 가져옴,
+            // stage값은 매개변수로 받은 값으로  고정, wave는 i값으로 가변(최대 waveCount수까지 반복)
+            // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 씩해주기 때문에 실제 index값보다 +1된 값을 넣어야함
+            var currentWaveData = waveData.GetWaveByTupleKey(stage, i);
+
+            foreach (var pair in currentWaveData.waveInfo)
+            {
+                int monsterID = monsterData.GetByName(pair.Key).id;
+                int spawnCount = pair.Value;
+                
+                for(int j=0; j<spawnCount; j++)
+                {
+                    SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt));
+                }
+            }
+
+            yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
+        }
+        TimeManager.Instance.OnSpawnOver();
     }
+
+
 
     /// <summary>
     /// 해당하는 몬스터 ID를 가진 몬스터 소환

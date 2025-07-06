@@ -31,6 +31,18 @@ public class WaveDataHandler : BaseDataHandler<WaveData>
     }
 
     /// <summary>
+    /// 웨이브 아이디 넣어서 웨이브 갯수 받아오기
+    /// </summary>
+    /// <param name="stageId"></param>
+    /// <returns></returns>
+    public int GetWaveCountByStageId(int stageId)
+    {
+        int count = 0;
+
+        return count = _waveDatas.Count(pair => pair.Key.stageIndex == (stageId - 1));
+    }
+
+    /// <summary>
     /// (스테이지, 웨이브) 형식으로 데이터를 찾음<br/>
     /// 1스테이지 1웨이브 이면 1,1 입력하면 됨
     /// </summary>
