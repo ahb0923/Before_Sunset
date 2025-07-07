@@ -1,10 +1,21 @@
 [
   {
-    "ID": "900",
-    "SmelterName": "하급제련소",
-    "SmelterHp": 50,
+    "id": "900",
+    "smelterName": "하급제련소",
+    "hp": "1",
     "buildRequirements": {
       "돌": 50
-    }
+    },
+    "smeltingIdList": [110, 120]
+  },
+  {
+    "id": "901",
+    "smelterName": "중급제련소",
+    "hp": "1",
+    "buildRequirements": {
+      "돌": 60,
+      "구리주괴": 20
+    },
+    "smeltingIdList": [130, 140]
   }
 ]

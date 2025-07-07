@@ -39,10 +39,16 @@ public class DataDebugWindow : EditorWindow
             DataManager.Instance.OreData.DebugLogAll();
         }
 
+        if (GUILayout.Button("Log All Smelters"))
+        {
+            DataManager.Instance.SmelterData.DebugLogAll();
+        }
+
         if (GUILayout.Button("Log All Equipment"))
         {
             DataManager.Instance.EquipmentData.DebugLogAll();
         }
+    
 
         if (GUILayout.Button("Log All Waves"))
         {
