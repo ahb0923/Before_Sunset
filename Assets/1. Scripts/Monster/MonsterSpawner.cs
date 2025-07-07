@@ -7,6 +7,9 @@ public class MonsterSpawner : MonoBehaviour
     private const int MONSTER_ID = 600;
     private const int STAGE_ID = 999;
 
+    // 스폰 시작할 때 JSON에서 스폰 데이터를 받아옴
+    private List<WaveData> _waveDatas;
+
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
@@ -14,7 +17,8 @@ public class MonsterSpawner : MonoBehaviour
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
 
-    private List<WaveData> _waveDatas;
+    [Header("# Test")]
+    [SerializeField] List<WaveData> _testWaveDatas;
 
     /// <summary>
     /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
@@ -25,24 +29,13 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 코어나 타워가 부서졌을 때에 모든 몬스터의 상태를 탐색 상태로 전환
+    /// 맵 장애물에 변경이 있을 때, 모든 몬스터의 상태를 탐색 상태로 전환
     /// </summary>
-    public void OnObstacleDestroyed()
+    public void OnObstacleChanged()
     {
         foreach (BaseMonster monster in _aliveMonsterSet)
         {
             monster.Ai.ChangeState(MONSTER_STATE.Explore);
-        }
-    }
-
-    /// <summary>
-    /// 게임 오버 시에 모든 몬스터 못 움직이게 상태 전환
-    /// </summary>
-    public void OnGameOver()
-    {
-        foreach (BaseMonster monster in _aliveMonsterSet)
-        {
-            monster.Ai.ChangeState(MONSTER_STATE.Invalid);
         }
     }
 
@@ -52,13 +45,17 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
-        // 모든 스테이지 데이터를 처음에 받아오면 좋겠는데 이건 생각해봐야 할 듯
         // _waveData = DataManager.Instance.WaveData.GetById();
 
         if(_waveDatas == null)
         {
-            Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
-            return;
+            if(_testWaveDatas == null)
+            {
+                Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
+                return;
+            }
+
+            _waveDatas = _testWaveDatas;
         }
 
         //List<WaveData> data = _waveDatas;
@@ -86,6 +83,7 @@ public class MonsterSpawner : MonoBehaviour
                 for (int j = 0; j < spawnCounts[i]; j++) 
                 {
                     SpawnMonster(i + MONSTER_ID, Random.Range(0, _spawnPointLimt));
+                    yield return null;
                 }
             }
 
@@ -140,7 +138,14 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnMonster(int monsterId, int posIndex)
     {
-        Vector3 pos = _spawnPoints[posIndex].position;
+        float rand = Random.Range(-2f, 2f);
+        Vector3 randOffset;
+        if (posIndex % 2 == 0)
+            randOffset = new Vector3(rand, 0);
+        else
+            randOffset = new Vector3(0, rand);
+
+        Vector3 pos = _spawnPoints[posIndex].position + randOffset;
         GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
         _aliveMonsterSet.Add(obj.GetComponent<BaseMonster>());
     }

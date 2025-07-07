@@ -136,7 +136,6 @@ public class TimeManager : MonoSingleton<TimeManager>
     /// </summary>
     public void TestGameOver()
     {
-        DefenseManager.Instance.MonsterSpawner.OnGameOver();
     }
 
     /// <summary>

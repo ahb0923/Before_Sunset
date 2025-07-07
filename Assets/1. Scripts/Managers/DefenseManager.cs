@@ -69,6 +69,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>
         int dist = GetChebyshevDistanceFromCore(obstacle.position);
         if (!_distFromCoreDict.ContainsKey(dist)) _distFromCoreDict[dist] = new List<Transform>();
         _distFromCoreDict[dist].Add(obstacle);
+
+        MonsterSpawner.OnObstacleChanged();
     }
 
     /// <summary>
@@ -85,7 +87,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
 
         _distFromCoreDict[GetChebyshevDistanceFromCore(obstacle.position)].Remove(obstacle);
 
-        MonsterSpawner.OnObstacleDestroyed();
+        MonsterSpawner.OnObstacleChanged();
     }
 
     /// <summary>
@@ -93,7 +95,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     /// </summary>
     public List<Transform> GetTargetList(int dist)
     {
-        int defaultDist = Core.Size / 2 + 1;
+        int defaultDist = Core.Size / 2 + 2;
 
         if (_distFromCoreDict.ContainsKey(defaultDist + dist))
             return _distFromCoreDict[defaultDist + dist];
@@ -146,28 +148,5 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(_mapCenter, _mapSize);
-
-        if (_grid != null)
-        {
-            Vector3 nodeQuarterSize = new Vector3(_nodeSize * 0.25f, _nodeSize * 0.25f);
-            foreach (Node node in _grid.Nodes)
-            {
-                switch (node.walkableIndex)
-                {
-                    case -1:
-                        Gizmos.color = Color.green;
-                        break;
-
-                    case 0:
-                        Gizmos.color = Color.black;
-                        break;
-
-                    default:
-                        Gizmos.color = Color.red;
-                        break;
-                }
-                Gizmos.DrawCube(node.WorldPos, nodeQuarterSize);
-            }
-        }
     }
 }
