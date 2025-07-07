@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public enum BUILDING_TYPE
 {
     Normal,
-    Slow
+    Upgrade
 }
 public enum TOWER_TYPE
 {

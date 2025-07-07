@@ -1,8 +1,9 @@
-public enum MONSTER_TYPE
+﻿public enum MONSTER_TYPE
 {
     Melee,
     Ranged,
     Tank,
+    Flying
 }
 
 [System.Serializable]

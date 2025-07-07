@@ -40,7 +40,7 @@ public class Projectile : MonoBehaviour
 
     private GameObject _target;
     private float _damage;
-    private float _lifeTime = 5f;
+    private float _lifeTime = 10f;
     private float _timer;
 
     private ProjectileAttackSettings _attackSettings;
@@ -53,29 +53,35 @@ public class Projectile : MonoBehaviour
         _movement = movement;
         _attack = attack;
 
+
+        transform.position = _movementSettings.firePosition;
         _target = _attackSettings.target;
         _damage = _attackSettings.damage;
-        transform.position = _movementSettings.firePosition;
         _movement.Init(_attackSettings, _movementSettings);
         _timer = 0f;
     }
     private void Update()
     {
         _timer += Time.deltaTime;
-        if (_timer > _lifeTime || _movement.Movement())
+
+        bool hasArrived = _movement.Movement(); // 1회만 호출하여 캐싱
+
+        if (_timer > _lifeTime)
         {
             _attack.Hit(_attackSettings);
             StartCoroutine(C_ReleaseAfterFx());
+            return;
         }
 
-        if (_movement.Movement())
+        if (hasArrived)
         {
-            // 체인 공격일 경우 Hit() 내부에서 다시 Init 될 수 있으므로
-            // ReleaseAfterFx는 "체인 종료 시에만" 실행되어야 함
             _attack.Hit(_attackSettings);
 
+            // 체인 공격은 재사용될 수 있으므로 Release는 마지막에만
             if (!(_attack is ProjectileAttack_Chaining))
+            {
                 StartCoroutine(C_ReleaseAfterFx());
+            }
         }
     }
     private IEnumerator C_ReleaseAfterFx()
