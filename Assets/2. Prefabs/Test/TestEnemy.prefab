@@ -13,8 +13,7 @@ GameObject:
   - component: {fileID: 7190222485786055797}
   - component: {fileID: 1168830408109567836}
   - component: {fileID: 1949160447524294257}
-  - component: {fileID: 8616437057662549082}
-  - component: {fileID: 2675891217571816277}
+  - component: {fileID: 6125893698327576572}
   m_Layer: 7
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -141,9 +140,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
---- !u!114 &8616437057662549082
+--- !u!114 &6125893698327576572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,31 +151,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 217026726916637240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 889229f314d849a41a9a5c117a9dcdc7, type: 3}
+  m_Script: {fileID: 11500000, guid: 13802cc7f1903fb46b47f6f12dd6c3bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _data:
-    id: 0
-    monsterName: 
-    monsterType: 0
-    hp: 0
-    damage: 0
-    aps: 0
-    speed: 0
-    range: 0
-    size: 0
-    context: 
---- !u!114 &2675891217571816277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 217026726916637240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1e9dd189854c75499f01dee4e284305, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: 0
-  <Projectile>k__BackingField: {fileID: 0}
+  maxHp: 100
+  curHp: 0
