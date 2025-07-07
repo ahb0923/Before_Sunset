@@ -114,7 +114,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         Node startNode = _grid.GetNode(startPos);
         Node targetNode = _grid.GetNode(target.position);
-        return AstarAlgorithm.FindPathToTarget_Bind(startNode, size, targetNode, _walkableIdDict[target], _obstacleSizeDict[target]);
+        return AstarAlgorithm.FindPathToTarget(startNode, size, targetNode, _walkableIdDict[target], _obstacleSizeDict[target]);
     }
 
     /// <summary>

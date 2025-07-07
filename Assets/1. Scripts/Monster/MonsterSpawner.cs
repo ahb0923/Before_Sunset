@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    private const int MONSTER_ID = 600;
-    private const int STAGE_ID = 999;
-
-    // 스폰 시작할 때 JSON에서 스폰 데이터를 받아옴
-    private List<WaveData> _waveDatas;
-
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
@@ -71,7 +65,10 @@ public class MonsterSpawner : MonoBehaviour
 
                 for (int j = 0; j < spawnCount; j++)
                 {
+                    // 게임 오버 시에 코루틴 탈출 필요
+
                     SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt));
+                    yield return null;
                 }
             }
         }
@@ -85,7 +82,7 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnMonster(int monsterId, int posIndex)
     {
-        float rand = Random.Range(-2f, 2f);
+        float rand = Random.Range(-1f, 1f);
         Vector3 randOffset;
         if (posIndex % 2 == 0)
             randOffset = new Vector3(rand, 0);
