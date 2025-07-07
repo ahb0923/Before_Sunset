@@ -20,8 +20,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     private Dictionary<Transform, int> _obstacleSizeDict = new Dictionary<Transform, int>();
     private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
-    [field: SerializeField] public MonsterSpawner MonsterSpawner { get; private set; }
     public Core Core { get; private set; }
+    public MonsterSpawner MonsterSpawner { get; private set; }
     public Tilemap GroundTile { get; private set; }
     public BuildPreview BuildPreview { get; private set; }
     public DragIcon DragIcon { get; private set; }

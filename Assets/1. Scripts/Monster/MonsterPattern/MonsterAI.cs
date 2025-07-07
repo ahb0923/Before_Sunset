@@ -179,7 +179,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 타겟에 대한 1회 공격
+    /// 타겟에 대한 공격
     /// </summary>
     private IEnumerator C_Attack()
     {
