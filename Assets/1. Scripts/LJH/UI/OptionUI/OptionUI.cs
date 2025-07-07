@@ -8,7 +8,7 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private Slider _wholeSoundSlider;
     [SerializeField] private Slider _bGSoundSlider;
     [SerializeField] private Slider _effectSoundSlider;
-
+    
     private string _quitText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 종료하시겠습니까?";
     private string _mainMenuText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 메인메뉴로 나가시겠습니까?";
     
@@ -44,6 +44,8 @@ public class OptionUI : MonoBehaviour
         quitGameButton.onClick.AddListener(OnClickQuitButton);
         saveLoadButton.onClick.AddListener(OnClickSaveLoadButton);
         mainMenuButton.onClick.AddListener(OnClickMainMenuButton);
+        
+        
         
         Close();
     }

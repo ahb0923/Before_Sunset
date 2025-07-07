@@ -25,7 +25,7 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
-        Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
+        Button sortButton = Helper_Component.FindChildComponent<Button>(this.transform, SORT_BUTTON);
         sortButton.onClick.AddListener(Sort);
         _inventoryButton.onClick.AddListener(Toggle);
         //Pickaxe

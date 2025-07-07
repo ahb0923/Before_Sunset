@@ -47,6 +47,25 @@ public class CraftMaterialArea : MonoBehaviour
             }
         }
     }
+    
+    public void SetMaterialSlot(SmelterData data)
+    {
+        List<KeyValuePair<string, int>> dataList = data.buildRequirements.ToList();
+        List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
+    
+        foreach (var slot in _materialSlots)
+        {
+            slot.ClearSlot();
+
+            if (slot.Index < dataList.Count)
+            {
+                var dataName = dataList[slot.Index].Key;
+                var dataAmount = dataList[slot.Index].Value;
+            
+                slot.SetSlot(dataName, dataAmount, items);
+            }
+        }
+    }
 
     public void Open()
     {

@@ -53,6 +53,11 @@ public class BuildingMaterialSlot : MonoBehaviour
 
         foreach (var item in items)
         {
+            if (item == null)
+            {
+                continue;
+            }
+            
             if (item.Data.itemName == dataName)
             {
                 count += item.stack;

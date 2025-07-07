@@ -26,10 +26,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     
     private void Reset()
     {
-        _itemImage = UtilityLJH.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
-        _highlightImage = UtilityLJH.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
-        _highlight = UtilityLJH.FindChildInChild(this.transform, HIGHLIGHT_IMAGE).gameObject;
-        _itemAmountText = UtilityLJH.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT_TEXT);
+        _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
+        _highlightImage = Helper_Component.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
+        _highlight = Helper_Component.FindChildGameObjectByName(this.gameObject, HIGHLIGHT_IMAGE);
+        _itemAmountText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT_TEXT);
     }
 
     public void InitIndex(int index)

@@ -14,7 +14,7 @@ public class CraftArea : MonoBehaviour
     [SerializeField] private GameObject _buildingSlotPrefab;
     [SerializeField] private List<BuildingSlot> _buildSlots = new List<BuildingSlot>();
     [SerializeField] private List<TowerData> _baseTowerData = new List<TowerData>();
-    // [SerializeField] private List<SmelterData> _smelterData;
+    [SerializeField] private List<SmelterData> _smelterData;
     
     private const string BUILD_BUTTON = "BuildButton";
     private const string TOWER_BUTTON = "TowerButton";
@@ -34,13 +34,13 @@ public class CraftArea : MonoBehaviour
     private void Awake()
     {
         _buildButton.onClick.AddListener(Toggle);
-        // _towerButton.onClick.AddListener(TowerButton);
-        // _smelterButton.onClick.AddListener(SmelterButton);
-        // GetBaseTowerList();
-        // GetSmelterList();
-        // InitSlots();
-        // TowerButton();
-        // this.gameObject.SetActive(false);
+        _towerButton.onClick.AddListener(TowerButton);
+        _smelterButton.onClick.AddListener(SmelterButton);
+        GetBaseTowerList();
+        GetSmelterList();
+        InitSlots();
+        TowerButton();
+        this.gameObject.SetActive(false);
     }
 
     private void TowerButton()
@@ -55,17 +55,17 @@ public class CraftArea : MonoBehaviour
         }
     }
     
-    // private void SmelterButton()
-    // {
-    //     _smelterButton.interactable = false;
-    //     _towerButton.interactable = true;
-    //
-    //     for (int i = 0; i < _buildSlots.Count; i++)
-    //     {
-    //         SmelterData data = i < _smelterData.Count ? _smelterData[i] : null;
-    //         _buildSlots[i].SetSmelterSlot(data);
-    //     }
-    // }
+    private void SmelterButton()
+    {
+        _smelterButton.interactable = false;
+        _towerButton.interactable = true;
+    
+        for (int i = 0; i < _buildSlots.Count; i++)
+        {
+            SmelterData data = i < _smelterData.Count ? _smelterData[i] : null;
+            _buildSlots[i].SetSmelterSlot(data);
+        }
+    }
 
     public void GetBaseTowerList()
     {
@@ -81,24 +81,24 @@ public class CraftArea : MonoBehaviour
         }
     }
     
-    // public void GetSmelterList()
-    // {
-    //     _smelterData = DataManager.Instance.SmelterData.GetAllItems();
-    //     Debug.Log(_smelterData.Count + "개 로드 성공");
-    // }
+    public void GetSmelterList()
+    {
+        _smelterData = DataManager.Instance.SmelterData.GetAllItems();
+        Debug.Log(_smelterData.Count + "개 로드 성공");
+    }
 
-    // private void InitSlots()
-    // {
-    //     int requiredSlot = Math.Max(_baseTowerData.Count, _smelterData.Count);
-    //
-    //     for (int i = 0; i < requiredSlot; i++)
-    //     {
-    //         var slot = Instantiate(_buildingSlotPrefab, _buildingSlotArea.transform);
-    //         var buildingSlot = slot.GetComponent<BuildingSlot>();
-    //         _buildSlot.Add(buildingSlot);
-    //         slot.InitIndex(i);
-    //     }
-    // }
+    private void InitSlots()
+    {
+        int requiredSlot = Math.Max(_baseTowerData.Count, _smelterData.Count);
+    
+        for (int i = 0; i < requiredSlot; i++)
+        {
+            var slot = Instantiate(_buildingSlotPrefab, _buildingSlotArea.transform);
+            var buildingSlot = slot.GetComponent<BuildingSlot>();
+            _buildSlots.Add(buildingSlot);
+            buildingSlot.InitIndex(i);
+        }
+    }
     
     public void ToggleCraftArea()
     {
