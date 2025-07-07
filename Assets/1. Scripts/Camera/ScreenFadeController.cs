@@ -21,7 +21,7 @@ public class ScreenFadeController : MonoBehaviour
 
         onMiddleAction?.Invoke();
 
-        yield return StartCoroutine(Fade(1f, 0f, 1f));
+        yield return StartCoroutine(Fade(1f, 0f, 2f));
     }
 
     private IEnumerator Fade(float fromAlpha, float toAlpha, float waittime)

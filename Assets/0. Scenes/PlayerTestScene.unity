@@ -1671,7 +1671,7 @@ GameObject:
   - component: {fileID: 134947116}
   - component: {fileID: 134947117}
   - component: {fileID: 134947118}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2880,6 +2880,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170773842}
   m_CullTransparentMesh: 1
+--- !u!1 &175997583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 175997584}
+  m_Layer: 0
+  m_Name: JewelContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &175997584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 175997583}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 910939529}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &189512043
 GameObject:
   m_ObjectHideFlags: 0
@@ -42889,17 +42920,13 @@ MonoBehaviour:
   spawnAreaCenter: {x: 64.5, y: 36.5}
   spawnAreaSize: {x: 57, y: 31}
   spawnCount: 100
-  orePrefabs:
-  - {fileID: 4102517613622959670, guid: d9f00bedccdd5f64eb928ed888e41d64, type: 3}
-  - {fileID: 4102517613622959670, guid: cb231ed4a0031754a90744fc16fe8fa8, type: 3}
-  - {fileID: 4102517613622959670, guid: 7e9cefe036d7b7549bbb34b86d92cf1f, type: 3}
-  - {fileID: 4102517613622959670, guid: 7d63393c489a2fb4fb522eb1c7c31f6d, type: 3}
-  - {fileID: 4102517613622959670, guid: 049ec4f4e74fd154190cc27c6b746fa1, type: 3}
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 1280
-  oreParent: {fileID: 1666354505}
+  parent: {fileID: 0}
+  prefabFolder: Prefabs/Ore
+  prefabPrefix: Ore
 --- !u!1 &482922675
 GameObject:
   m_ObjectHideFlags: 0
@@ -53273,17 +53300,13 @@ MonoBehaviour:
   spawnAreaCenter: {x: -66.7, y: 36.5}
   spawnAreaSize: {x: 57, y: 31}
   spawnCount: 100
-  orePrefabs:
-  - {fileID: 4102517613622959670, guid: d9f00bedccdd5f64eb928ed888e41d64, type: 3}
-  - {fileID: 4102517613622959670, guid: cb231ed4a0031754a90744fc16fe8fa8, type: 3}
-  - {fileID: 4102517613622959670, guid: 7e9cefe036d7b7549bbb34b86d92cf1f, type: 3}
-  - {fileID: 4102517613622959670, guid: 7d63393c489a2fb4fb522eb1c7c31f6d, type: 3}
-  - {fileID: 4102517613622959670, guid: 049ec4f4e74fd154190cc27c6b746fa1, type: 3}
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 1280
-  oreParent: {fileID: 86203377}
+  parent: {fileID: 0}
+  prefabFolder: Prefabs/Ore
+  prefabPrefix: Ore
 --- !u!1 &724992249
 GameObject:
   m_ObjectHideFlags: 0
@@ -54336,7 +54359,7 @@ GameObject:
   - component: {fileID: 862981050}
   - component: {fileID: 862981049}
   - component: {fileID: 862981051}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Obstacles01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56935,7 +56958,7 @@ GameObject:
   - component: {fileID: 896046526}
   - component: {fileID: 896046525}
   - component: {fileID: 896046527}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64196,17 +64219,13 @@ MonoBehaviour:
   spawnAreaCenter: {x: -1, y: 36.5}
   spawnAreaSize: {x: 57, y: 31}
   spawnCount: 100
-  orePrefabs:
-  - {fileID: 4102517613622959670, guid: d9f00bedccdd5f64eb928ed888e41d64, type: 3}
-  - {fileID: 4102517613622959670, guid: cb231ed4a0031754a90744fc16fe8fa8, type: 3}
-  - {fileID: 4102517613622959670, guid: 7e9cefe036d7b7549bbb34b86d92cf1f, type: 3}
-  - {fileID: 4102517613622959670, guid: 7d63393c489a2fb4fb522eb1c7c31f6d, type: 3}
-  - {fileID: 4102517613622959670, guid: 049ec4f4e74fd154190cc27c6b746fa1, type: 3}
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 1280
-  oreParent: {fileID: 1788859979}
+  parent: {fileID: 1788859979}
+  prefabFolder: Prefabs/Ore
+  prefabPrefix: Ore
 --- !u!1 &910939528
 GameObject:
   m_ObjectHideFlags: 0
@@ -64246,6 +64265,8 @@ Transform:
   - {fileID: 313577346}
   - {fileID: 1143736599}
   - {fileID: 838895254}
+  - {fileID: 1429409672}
+  - {fileID: 175997584}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &930547188
@@ -89645,7 +89666,7 @@ GameObject:
   - component: {fileID: 1111792396}
   - component: {fileID: 1111792395}
   - component: {fileID: 1111792397}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Obstacles00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97767,18 +97788,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnAreaCenter: {x: -1, y: 1}
   spawnAreaSize: {x: 57, y: 31}
-  spawnCount: 0
-  orePrefabs:
-  - {fileID: 4102517613622959670, guid: d9f00bedccdd5f64eb928ed888e41d64, type: 3}
-  - {fileID: 4102517613622959670, guid: cb231ed4a0031754a90744fc16fe8fa8, type: 3}
-  - {fileID: 4102517613622959670, guid: 7e9cefe036d7b7549bbb34b86d92cf1f, type: 3}
-  - {fileID: 4102517613622959670, guid: 7d63393c489a2fb4fb522eb1c7c31f6d, type: 3}
-  - {fileID: 4102517613622959670, guid: 049ec4f4e74fd154190cc27c6b746fa1, type: 3}
+  spawnCount: 20
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
     m_Bits: 1280
-  oreParent: {fileID: 838895254}
+  parent: {fileID: 838895254}
+  prefabFolder: Prefabs/Ore
+  prefabPrefix: Ore
 --- !u!1 &1152012362
 GameObject:
   m_ObjectHideFlags: 0
@@ -97902,7 +97919,7 @@ GameObject:
   - component: {fileID: 1162573732}
   - component: {fileID: 1162573731}
   - component: {fileID: 1162573733}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Cave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107190,6 +107207,60 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!1 &1429409670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1429409672}
+  - component: {fileID: 1429409671}
+  m_Layer: 0
+  m_Name: JewelSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1429409671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429409670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98a558c43d714574a91dd08eddb8e3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnAreaCenter: {x: -1, y: 1}
+  spawnAreaSize: {x: 57, y: 31}
+  spawnCount: 20
+  overlapRadius: 1
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  parent: {fileID: 175997584}
+  prefabFolder: Prefabs/Jewel
+  prefabPrefix: Jewel
+--- !u!4 &1429409672
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1429409670}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 910939529}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1436511567
 GameObject:
   m_ObjectHideFlags: 3
@@ -126972,6 +127043,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1566821137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1566821139}
+  - component: {fileID: 1566821138}
+  m_Layer: 0
+  m_Name: ResourceSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1566821138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566821137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e2c27b238c83643854f5d6d563f322, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oreSpawner: {fileID: 1143736600}
+  jewelSpawner: {fileID: 1429409671}
+  oreDataList:
+  - id: 0
+    itemName: 
+    dropMineralId: 100
+    hp: 0
+    def: 0
+    spawnProbability: 65
+    spawnStage: 1
+    context: 
+  jewelDataList:
+  - id: 200
+    itemName: 
+    context: 
+    spawnProbability: 10
+  currentStage: 1
+--- !u!4 &1566821139
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566821137}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1597909542
 GameObject:
   m_ObjectHideFlags: 0
@@ -132822,7 +132954,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2142180609}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Map (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133477,3 +133609,4 @@ SceneRoots:
   - {fileID: 300905273}
   - {fileID: 1561787018}
   - {fileID: 1835238083}
+  - {fileID: 1566821139}

@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OreSpawner : ResourceSpawner<OreData>
+public class JewelSpawner : ResourceSpawner<JewelData>
 {
     private void Awake()
     {
         GetId = data => data.id;
-        GetSpawnStage = data => data.spawnStage;
+        GetSpawnStage = data => 1;
         GetProbability = data => data.spawnProbability;
 
-        prefabFolder = "Prefabs/Ore";
-        prefabPrefix = "Ore";
+        prefabFolder = "Prefabs/Jewel";
+        prefabPrefix = "Jewel";
     }
 }
