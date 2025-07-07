@@ -57,6 +57,9 @@ public class DataManager : PlainSingleton<DataManager>
     public JewelDataHandler JewelData { get; private set; } = new();
     public EquipmentDataHandler EquipmentData { get; private set; } = new();
 
+    public SmelterDataHandler SmelterData { get; private set; } = new();    
+
+
     // ↓ 시스템 데이터
     public WaveDataHandler WaveData { get; private set; } = new();
 
@@ -70,6 +73,7 @@ public class DataManager : PlainSingleton<DataManager>
             JewelData,
             OreData,
             EquipmentData,
+            SmelterData,
             WaveData
         };
 
