@@ -15,7 +15,7 @@ public class CurvedProjectile : BaseProjectile
         duration = 0.5f;
         maxHeight = 2f;
 
-        attackType = PROJECTILE_TYPE.Defalut;
+        attackType = PROJECTILE_ATTACK_TYPE.Defalut;
     }
 
     protected override void UpdateMovement()
