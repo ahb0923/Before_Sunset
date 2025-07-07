@@ -2,21 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PROJECTILE_TYPE
+public enum PROJECTILE_MOVE_TYPE
 {
-    Defalut,
+    Straight,
+    Curved
+}
+public enum PROJECTILE_ATTACK_TYPE
+{
+    Defalut, 
     Splash,
     Chaining
 }
 
 public abstract class BaseProjectile : MonoBehaviour
 {
+    [Header("[ 에디터 할당 - 데이터 생기면 교체 ]")]
     [SerializeField] private ParticleSystem _damageEffect;
     [SerializeField] private SpriteRenderer _icon;
+
+
+    public PROJECTILE_ATTACK_TYPE attackType;
+    public PROJECTILE_MOVE_TYPE moveType;
     public GameObject Target { get; set; }
     public float Speed { get; set; }
     public float Damage { get; set; }
     public float LifeTime { get; set; } = 5f;
+
+
+
+
+    //refactoring 완료 ↑
+
+
 
 
     // << 곡선 타워만 사용하는 정보>>
@@ -39,7 +56,6 @@ public abstract class BaseProjectile : MonoBehaviour
     public bool isSentDamaged = false;
     private float _timer;
 
-    public PROJECTILE_TYPE attackType;
 
     public virtual void Init(GameObject target, float speed, float damage, Vector3 spawnPosition, int chainCount = 0, GameObject fromTarget = null)
     {
@@ -75,22 +91,25 @@ public abstract class BaseProjectile : MonoBehaviour
     protected virtual void OnHit()
     {
         if (isSentDamaged) return;
+        isSentDamaged = true;
+
 
         switch (attackType)
         {
-            case PROJECTILE_TYPE.Defalut:
+            case PROJECTILE_ATTACK_TYPE.Defalut:
                 DefaultAttack();
+                StartCoroutine(C_ReleaseAfterDelay());
                 break;
-            case PROJECTILE_TYPE.Splash:
-                SplashAttack(); 
+
+            case PROJECTILE_ATTACK_TYPE.Splash:
+                SplashAttack();
+                StartCoroutine(C_ReleaseAfterDelay());
                 break;
-            case PROJECTILE_TYPE.Chaining:
+
+            case PROJECTILE_ATTACK_TYPE.Chaining:
                 ChaingAttack();
                 break;
         }
-
-        isSentDamaged = true;
-        StartCoroutine(C_ReleaseAfterDelay());
     }
 
     public void DefaultAttack()
@@ -122,15 +141,37 @@ public abstract class BaseProjectile : MonoBehaviour
 
     public void ChaingAttack()
     {
-        if (currentChainCount < maxChains)
+        DefaultAttack();
+
+        if (currentChainCount >= maxChains)
         {
-            GameObject nextTarget = FindNextTarget();
-            if (nextTarget != null)
-            {
-                var newProjectile = Instantiate(gameObject).GetComponent<CurvedChainProjectile>();
-                newProjectile.Init(nextTarget, Speed, Damage, transform.position, currentChainCount + 1, Target);
-            }
+            StartCoroutine(C_ReleaseAfterDelay());
+            return;
         }
+
+        GameObject nextTarget = FindNextTarget();
+        Debug.Log($"다음 타겟 : {nextTarget}");
+
+        if (nextTarget == null)
+        {
+            StartCoroutine(C_ReleaseAfterDelay());
+            return;
+        }
+
+        // 다음 타겟 이동 전 크기 줄이기
+        var scale = transform.localScale;
+        scale = new Vector3(scale.x * 0.5f, scale.y * 0.5f, scale.z);
+        transform.localScale = scale;
+
+        // 다음 타겟으로 재설정
+        previousTarget = Target;
+        Target = nextTarget;
+        start = transform.position;
+        end = Target.transform.position;
+        elapsed = 0f;
+        currentChainCount++;
+
+        isSentDamaged = false; // 다시 타격 허용
     }
     public IEnumerator C_ReleaseAfterDelay()
     {
@@ -148,17 +189,21 @@ public abstract class BaseProjectile : MonoBehaviour
 
     public GameObject FindNextTarget()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, chainRange, enemyLayer);
+        Vector2 center = Target.transform.position;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(center, chainRange, enemyLayer);
+        Debug.Log($"[체인] {hits.Length}개 감지됨");
 
         GameObject closest = null;
         float minDist = float.MaxValue;
 
         foreach (var hit in hits)
         {
+            if (hit == null) continue;
+
             if (hit.gameObject == Target || hit.gameObject == previousTarget)
                 continue;
 
-            float dist = Vector3.Distance(transform.position, hit.transform.position);
+            float dist = Vector3.Distance(center, hit.transform.position);
             if (dist < minDist)
             {
                 minDist = dist;

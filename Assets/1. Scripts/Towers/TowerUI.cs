@@ -41,7 +41,7 @@ public class TowerUI : MonoBehaviour
     }
     private IEnumerator C_UpdateHpBar(float ratio)
     {
-        yield return Helper_Coroutine.WaitSeconds(1f);
+        yield return Helper_Coroutine.WaitSeconds(0.5f);
 
         float current = hpBar_delay.fillAmount;
 

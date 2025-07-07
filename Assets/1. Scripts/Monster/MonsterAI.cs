@@ -209,8 +209,28 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             {
                 // 원거리 타입은 사거리에 들어오면 원거리 공격
                 case MONSTER_TYPE.Ranged:
+                    /*
                     BaseProjectile proj = Instantiate(_monster.Projectile).GetComponent<BaseProjectile>();
-                    proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);
+                    proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);*/
+
+                    // 코드 수정했습니다-효빈
+                    Projectile proj = Instantiate(_monster.Projectile).GetComponent<Projectile>();
+
+                    ProjectileAttackSettings projAttackSettings = new()
+                    {
+                        attacker = proj.gameObject,
+                        target = Target.gameObject,
+                        damage = _monster.Stat.AttackPower,
+                    };
+                    ProjectileMovementSettings projMovementSettings = new()
+                    {
+                        firePosition = transform.position,
+                        moveSpeed = 10f,    //tower 쪽에 발사체 스피드 관련 정보 추가
+                    };
+
+                    proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
+                    // 여기까지!
+
                     break;
 
                 // 근접과 탱크 타입은 사거리에 들어오면 근접 공격

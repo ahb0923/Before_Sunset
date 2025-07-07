@@ -18,7 +18,7 @@ public class CurvedAoeProjectile : BaseProjectile
         attackCollider = GetComponent<CircleCollider2D>();
         attackCollider.isTrigger = true;
 
-        attackType = PROJECTILE_TYPE.Splash;
+        attackType = PROJECTILE_ATTACK_TYPE.Splash;
     }
 
     protected override void UpdateMovement()
