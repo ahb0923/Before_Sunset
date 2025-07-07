@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +25,6 @@ public class Inventory : MonoBehaviour
 
     private void Awake()
     {
-        InventoryManager.Instance.Init(this);
         Button sortButton = UtilityLJH.FindChildComponent<Button>(this.transform, SORT_BUTTON);
         sortButton.onClick.AddListener(Sort);
         _inventoryButton.onClick.AddListener(Toggle);

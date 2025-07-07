@@ -28,6 +28,16 @@ public class UIDebugWindow : EditorWindow
         {
             InventoryManager.Instance.Inventory.AddItem(700,0);
         }
+        
+        if (GUILayout.Button("베이스 타워 리스트 카운트"))
+        {
+            UIManager.Instance.CraftArea.GetBaseTowerList();
+        }
+        
+        if (GUILayout.Button("빌드 슬롯 만들기"))
+        {
+            // UIManager.Instance.CraftMaterialArea.SetMaterialSlot();
+        }
     }
 }
 #endif
