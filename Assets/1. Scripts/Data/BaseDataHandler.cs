@@ -27,6 +27,18 @@ public abstract class BaseDataHandler<TData> : IDataLoader where TData : class
     // Name으로 데이터 찾기    DataManager.Instance.TowerData.GeyByName("sTonNe");
     public TData GetByName(string name) => dataNameDictionary.TryGetValue(name, out var data) ? data : null;
 
+    // 모든 데이터 찾기
+    public List<TData> GetAllItems()
+    {
+        // 추후에 성능 개선 시에 캐싱 고려
+        return dataIdDictionary.Values.ToList();
+    }
+
+    // 데이터로 ID 찾기
+    protected abstract int GetId(TData data);
+
+    // 데이터로 Name 찾기
+    protected abstract string GetName(TData data);
 
     // web에서 json데이터 받을 때 사용   =>   Local에 정보 있다면 필요없음   
     /*public async Task LoadAsyncWeb()
@@ -72,13 +84,19 @@ public abstract class BaseDataHandler<TData> : IDataLoader where TData : class
 
             if (!string.IsNullOrWhiteSpace(name))
                 dataNameDictionary[name] = item;
+
         }
+        AfterLoaded();
 
         Debug.Log($"[{typeof(TData).Name}Manager] 로드 완료: {dataIdDictionary.Count}개");
         // DebugLogAll();
     }
 
     public void SaveToJson()
+    {
+
+    }
+    protected virtual void AfterLoaded()
     {
 
     }
@@ -92,14 +110,5 @@ public abstract class BaseDataHandler<TData> : IDataLoader where TData : class
             Debug.Log(message);
         }
     }
-
-    public List<TData> GetAllItems()
-    {
-        // 추후에 성능 개선 시에 캐싱 고려
-        return dataIdDictionary.Values.ToList();
-    }
-
-    protected abstract int GetId(TData data);
-    protected abstract string GetName(TData data);
 
 }

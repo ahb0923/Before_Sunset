@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CurvedChainProjectile : BaseProjectile
 {
+    public Collider2D searchCollider;
     public override void Init(GameObject target, float speed, float damage, Vector3 spawnPosition, int chainCount = 0, GameObject fromTarget = null)
     {
         base.Init(target, speed, damage, spawnPosition);
@@ -19,9 +20,9 @@ public class CurvedChainProjectile : BaseProjectile
         previousTarget = fromTarget;
 
         maxChains = 2;
-        chainRange = 3f;
+        chainRange = 2f;
 
-        attackType = PROJECTILE_TYPE.Chaining;
+        attackType = PROJECTILE_ATTACK_TYPE.Chaining;
     }
 
     protected override void UpdateMovement()
