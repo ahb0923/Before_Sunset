@@ -35,11 +35,11 @@ public class WaveDataHandler : BaseDataHandler<WaveData>
     /// </summary>
     /// <param name="stageId"></param>
     /// <returns></returns>
-    public int GetWaveCountByStageId(int stageId)
+    public int GetWaveCountByStageId(int stageIndex)
     {
         int count = 0;
 
-        return count = _waveDatas.Count(pair => pair.Key.stageIndex == (stageId - 1));
+        return count = _waveDatas.Count(pair => pair.Key.stageIndex == (stageIndex - 1));
     }
 
     /// <summary>
