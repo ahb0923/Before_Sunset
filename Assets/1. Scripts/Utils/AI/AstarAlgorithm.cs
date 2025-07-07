@@ -6,8 +6,9 @@ public static class AstarAlgorithm
     // 경로 찾을 때마다 그리드 만들면 성능에 부하가 걸리므로, 스택 사용
     private static Stack<ANode[,]> _aGridStack = new Stack<ANode[,]>();
 
-    // 바인딩된 그리드
+    // 바인딩 변수
     private static NodeGrid _bindGrid;
+    private static int _monsterPenaltyPerUnit = 5;
 
     /// <summary>
     /// 그리드 바인딩<br/>
@@ -18,6 +19,15 @@ public static class AstarAlgorithm
         _bindGrid = grid;
     }
     
+    /// <summary>
+    /// 몬스터 패널티 바인딩<br/>
+    /// ※ 바인딩 안 할 시에는 기본 5로 설정 -> 2마리가 있으면 경로 비용 1칸(10)과 동일
+    /// </summary>
+    public static void BindMonsterPenalty(int monsterPenalty)
+    {
+        _monsterPenaltyPerUnit = monsterPenalty;
+    }
+
     /// <summary>
     /// 엔티티 사이즈에 따른 이동 불가 유무 반환<br/>
     /// ※ 모든 A* 메서드는 바인딩 후에 사용 가능!!!
@@ -119,8 +129,8 @@ public static class AstarAlgorithm
                 // 엔티티 사이즈에 따라 NonWalkable이면 넘김
                 if (!IsAreaWalkable(neighbor.ActualNode, entitySize, targetIndex)) continue;
 
-                // G 코스트 업데이트 : 이전 노드까지 이동 비용 + 1(현재 노드까지 이동 비용) + 해당 노드의 몬스터 수
-                int updatedGCost = curNode.gCost + 1 + neighbor.ActualNode.monsterCount;
+                // G 코스트 업데이트 : 이전 노드까지 이동 비용 + 10(현재 노드까지 이동 비용) + 해당 노드의 몬스터 수 * 가중치
+                int updatedGCost = curNode.gCost + 10 + (neighbor.ActualNode.monsterCount * _monsterPenaltyPerUnit);
                 
                 // 검색해야 할 이웃 노드 오픈 리스트에 추가 & 코스트와 부모 노드 업데이트
                 if (updatedGCost < neighbor.gCost)
@@ -150,7 +160,7 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
-    /// 노드 사이의 휴리스틱 거리를 반환 (상하좌우 이동 비용 = 1)
+    /// 노드 사이의 휴리스틱 거리를 반환 (상하좌우 이동 비용 = 10)
     /// </summary>
     private static int GetHeuristicDistance(Node a, Node b)
     {
@@ -165,7 +175,7 @@ public static class AstarAlgorithm
         int distX = Mathf.Abs(grid.GetGridIndex(a).x - grid.GetGridIndex(b).x);
         int distY = Mathf.Abs(grid.GetGridIndex(a).y - grid.GetGridIndex(b).y);
 
-        return distX + distY;
+        return 10 * (distX + distY);
     }
 
     /// <summary>

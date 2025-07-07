@@ -10,6 +10,9 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     [SerializeField] private int _nodeSize = 1;
     private NodeGrid _grid;
 
+    [Header("# A Star Setting")]
+    [SerializeField] private int _monsterPenalty = 5;
+
     // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
@@ -47,6 +50,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         _grid = new NodeGrid(_mapCenter, _mapSize, _nodeSize);
         AstarAlgorithm.BindGrid(_grid);
+        AstarAlgorithm.BindMonsterPenalty(_monsterPenalty);
 
         _nextId = 0;
         AddObstacle(Core.transform, Core.Size);
