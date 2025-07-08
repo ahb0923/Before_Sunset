@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
 using System;
-using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class ResourceSpawner<TData> : MonoBehaviour
 {
-    [Header("스폰 영역(직사각형)")]
-    [SerializeField] private Vector2 spawnAreaCenter;
-    [SerializeField] private Vector2 spawnAreaSize;
+    private Vector3 spawnAreaCenter3D;
+    private Vector2 spawnAreaSize = new Vector2(57f, 31f);
 
     [Header("스폰 개수")]
     [SerializeField] private int spawnCount = 20;
@@ -22,9 +21,9 @@ public class ResourceSpawner<TData> : MonoBehaviour
     [SerializeField] private Transform parent;
 
     [Header("프리팹 경로")]
-    [SerializeField] protected string prefabFolder = "Prefabs/Ore";  // 또는 "Prefabs/Jewel"
+    [SerializeField] protected string prefabFolder = "Prefabs/Ore";  // "Prefabs/Jewel" 등
 
-    [Header("프리팹 이름 접두사 (예: Ore, Jewel)")]
+    [Header("프리팹 이름 접두사")]
     [SerializeField] protected string prefabPrefix = "Ore";
 
     public Func<TData, int> GetId;
@@ -33,6 +32,31 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
     private List<TData> spawnableList = new();
     private List<Vector3> placedPositions = new();
+
+
+    private void Awake()
+    {
+        if (parent == null)
+        {
+            // "Resources"라는 이름의 자식이 있으면 찾고, 없으면 생성
+            Transform existing = transform.Find("Resources");
+            if (existing != null)
+                parent = existing;
+            else
+            {
+                GameObject go = new GameObject("Resources");
+                go.transform.parent = this.transform;
+                go.transform.localPosition = Vector3.zero;
+                parent = go.transform;
+            }
+        }
+    }
+
+    public void SetSpawnArea(Vector3 center, Vector2 size)
+    {
+        spawnAreaCenter3D = center;
+        spawnAreaSize = size;
+    }
 
     public void SpawnResources(List<TData> dataList, int currentStage)
     {
@@ -81,9 +105,12 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
     private Vector3 GetRandomPositionInArea()
     {
-        float x = UnityEngine.Random.Range(spawnAreaCenter.x - spawnAreaSize.x / 2f, spawnAreaCenter.x + spawnAreaSize.x / 2f);
-        float y = UnityEngine.Random.Range(spawnAreaCenter.y - spawnAreaSize.y / 2f, spawnAreaCenter.y + spawnAreaSize.y / 2f);
-        return new Vector3(x, y, 0f);
+        float x = UnityEngine.Random.Range(spawnAreaCenter3D.x - spawnAreaSize.x / 2f, spawnAreaCenter3D.x + spawnAreaSize.x / 2f);
+        float y = UnityEngine.Random.Range(spawnAreaCenter3D.y - spawnAreaSize.y / 2f, spawnAreaCenter3D.y + spawnAreaSize.y / 2f);
+        float z = spawnAreaCenter3D.z; // z 고정
+
+        Vector3 pos = new Vector3(x, y, z);
+        return pos;
     }
 
     private bool IsTooClose(Vector3 pos)
