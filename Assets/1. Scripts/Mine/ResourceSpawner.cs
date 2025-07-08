@@ -97,6 +97,14 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 }
 
                 GameObject obj = Instantiate(prefab, pos, Quaternion.identity, parent);
+
+                if (typeof(TData) == typeof(OreData))
+                {
+                    var ore = obj.GetComponent<OreController>();
+                    if (ore != null)
+                        ore.Initialize((OreData)(object)selected);
+                }
+
                 placedPositions.Add(pos);
                 placed++;
             }
