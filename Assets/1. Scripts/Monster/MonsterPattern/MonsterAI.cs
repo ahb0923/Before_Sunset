@@ -88,6 +88,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
         }
 
+        // 기존 경로는 이용할 수 없으므로, 현재 몬스터를 노드에서 제외
+        _path?.ReleaseMonsterCount();
+
         // 코어를 향한 경로가 있다면, 이동 상태 전환
         Vector3 startPos = transform.position;
         Target = DefenseManager.Instance.Core.transform;
@@ -134,7 +137,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private IEnumerator C_Move()
     {
         // 다음 노드가 이동 불가능하면, 탐색 상태 전환
-        while (AstarAlgorithm.IsAreaWalkable_Bind(_path.CurNode, _monster.Stat.Size, _targetWalkableId))
+        while (AstarAlgorithm.IsAreaWalkable(_path.CurNode, _monster.Stat.Size, _targetWalkableId))
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
@@ -159,15 +162,14 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
             if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) <= 0.5f)
             {
-                //_path.CurNode.hasMonster = false;
+                // 다음 노드로 이동할 예정이므로 몬스터 카운트 해제
+                _path.CurNode.monsterCount--;
 
                 // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
                 if (!_path.Next())
                 {
                     break;
                 }
-
-                //_path.CurNode.hasMonster = true;
             }
 
             yield return null;
@@ -177,7 +179,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 타겟에 대한 1회 공격
+    /// 타겟에 대한 공격
     /// </summary>
     private IEnumerator C_Attack()
     {
@@ -250,6 +252,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private void Dead()
     {
+        // 몬스터가 사망했으므로, 현재 몬스터를 노드에서 제외
+        _path?.ReleaseMonsterCount();
+
         // 사망 애니메이션 처리
         Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
 
@@ -306,14 +311,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         if(_path != null)
         {
-            Gizmos.color = Color.yellow;
-
-            Vector3 pos = _path.Path[0].WorldPos;
-            for (int i = 1; i < _path.Path.Count; i++)
-            {
-                Gizmos.DrawLine(pos, _path.Path[i].WorldPos);
-                pos = _path.Path[i].WorldPos;
-            }
+            _path.DrawDebugGizmos();
         }
     }
 }

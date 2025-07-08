@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider2D))]
 public class MiningHandler : MonoBehaviour
@@ -10,6 +11,7 @@ public class MiningHandler : MonoBehaviour
 
     [SerializeField] private bool isEntering = true;
     [SerializeField] private float stayTimeToTrigger = 1.5f;
+    [SerializeField] private Image blackScreenImage;
 
     private Coroutine _triggerCoroutine;
 
@@ -22,10 +24,17 @@ public class MiningHandler : MonoBehaviour
         _collider = GetComponent<Collider2D>();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Player") && _triggerCoroutine == null)
         {
+            var inputHandler = other.GetComponent<PlayerInputHandler>();
+            if (inputHandler != null && inputHandler.IsRecallInProgress())
+            {
+                Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+                return;
+            }
+
             _triggerCoroutine = StartCoroutine(WaitAndTrigger(other));
         }
     }
