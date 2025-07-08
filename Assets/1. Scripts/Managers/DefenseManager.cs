@@ -10,6 +10,9 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     [SerializeField] private int _nodeSize = 1;
     private NodeGrid _grid;
 
+    [Header("# A Star Setting")]
+    [SerializeField] private int _monsterPenalty = 5;
+
     // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
@@ -17,8 +20,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     private Dictionary<Transform, int> _obstacleSizeDict = new Dictionary<Transform, int>();
     private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
-    [field: SerializeField] public MonsterSpawner MonsterSpawner { get; private set; }
     public Core Core { get; private set; }
+    public MonsterSpawner MonsterSpawner { get; private set; }
     public Tilemap GroundTile { get; private set; }
     public BuildPreview BuildPreview { get; private set; }
     public DragIcon DragIcon { get; private set; }
@@ -47,6 +50,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         _grid = new NodeGrid(_mapCenter, _mapSize, _nodeSize);
         AstarAlgorithm.BindGrid(_grid);
+        AstarAlgorithm.BindMonsterPenalty(_monsterPenalty);
 
         _nextId = 0;
         AddObstacle(Core.transform, Core.Size);
@@ -114,7 +118,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         Node startNode = _grid.GetNode(startPos);
         Node targetNode = _grid.GetNode(target.position);
-        return AstarAlgorithm.FindPathToTarget_Bind(startNode, size, targetNode, _walkableIdDict[target], _obstacleSizeDict[target]);
+        return AstarAlgorithm.FindPathToTarget(startNode, size, targetNode, _walkableIdDict[target], _obstacleSizeDict[target]);
     }
 
     /// <summary>
