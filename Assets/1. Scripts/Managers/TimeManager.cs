@@ -4,7 +4,7 @@ public class TimeManager : MonoSingleton<TimeManager>
 {
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 12;
-    [SerializeField] private bool _isSec; // test¿ë
+    [SerializeField] private bool _isSec; // testìš©
     private int _realSecDayLength => _realMinDayLength * (_isSec ? 1 : 60);
     [SerializeField] private int _maxDay = 5;
     public int MaxDay => _maxDay;
@@ -25,13 +25,13 @@ public class TimeManager : MonoSingleton<TimeManager>
 
     private void Start()
     {
-        // ÀÏ´Ü start¿¡¼­ ÃÊ±âÈ­ ¡æ ³ªÁß¿¡ °ÔÀÓ ¸Å´ÏÀú¿¡¼­ °ü¸®
+        // ì¼ë‹¨ startì—ì„œ ì´ˆê¸°í™” â†’ ë‚˜ì¤‘ì— ê²Œì„ ë§¤ë‹ˆì €ì—ì„œ ê´€ë¦¬
         InitGameTime();
     }
 
     private void Update()
     {
-        // °ÔÀÓ ¸Å´ÏÀú¿¡¼­ °ÔÀÓÀÌ ½ÃÀÛµÇ¸é Å¸ÀÌ¸Ó µ¹¾Æ°¡µµ·Ï ÇØ¾ß ÇÔ
+        // ê²Œì„ ë§¤ë‹ˆì €ì—ì„œ ê²Œì„ì´ ì‹œì‘ë˜ë©´ íƒ€ì´ë¨¸ ëŒì•„ê°€ë„ë¡ í•´ì•¼ í•¨
         if (IsGamePause) return;
 
         _dailyTimer += Time.deltaTime;
@@ -49,7 +49,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     }
 
     /// <summary>
-    /// °ÔÀÓ ½Ã°£ ÃÊ±âÈ­
+    /// ê²Œì„ ì‹œê°„ ì´ˆê¸°í™”
     /// </summary>
     public void InitGameTime()
     {
@@ -62,7 +62,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     }
 
     /// <summary>
-    /// ´ÙÀ½ ³¯·Î º¯°æ
+    /// ë‹¤ìŒ ë‚ ë¡œ ë³€ê²½
     /// </summary>
     public void NextDay()
     {
@@ -76,7 +76,7 @@ public class TimeManager : MonoSingleton<TimeManager>
             }
             else
             {
-                // ÆĞ¹è ½Ã¿¡ ÀÏ½Ã Á¤Áö & ¿£Æ¼Æ¼ ¿òÁ÷ÀÓ Á¤Áö
+                // íŒ¨ë°° ì‹œì— ì¼ì‹œ ì •ì§€ & ì—”í‹°í‹° ì›€ì§ì„ ì •ì§€
                 TestGameOver();
             }
         }
@@ -89,14 +89,14 @@ public class TimeManager : MonoSingleton<TimeManager>
     }
 
     /// <summary>
-    /// ´ÙÀ½ ½ºÅ×ÀÌÁö·Î º¯°æ
+    /// ë‹¤ìŒ ìŠ¤í…Œì´ì§€ë¡œ ë³€ê²½
     /// </summary>
     private void NextStage()
     {
         if(Stage == _maxStage)
         {
             ControlPause(true);
-            // ½Â¸®
+            // ìŠ¹ë¦¬
         }
         else
         {
@@ -110,7 +110,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     }
 
     /// <summary>
-    /// ¸ğµç ¸ó½ºÅÍ ½ºÆùÀÌ ³¡³µÀ» ¶§ È£Ãâ
+    /// ëª¨ë“  ëª¬ìŠ¤í„° ìŠ¤í°ì´ ëë‚¬ì„ ë•Œ í˜¸ì¶œ
     /// </summary>
     public void OnSpawnOver()
     {
@@ -118,7 +118,7 @@ public class TimeManager : MonoSingleton<TimeManager>
     }
 
     /// <summary>
-    /// °ÔÀÓ ÁøÇà Áß¿¡´Â ÀÏ½ÃÁ¤Áö·Î, ÀÏ½ÃÁ¤Áö Áß¿¡´Â °ÔÀÓ ÁøÇà »óÅÂ·Î º¯°æ
+    /// ê²Œì„ ì§„í–‰ ì¤‘ì—ëŠ” ì¼ì‹œì •ì§€ë¡œ, ì¼ì‹œì •ì§€ ì¤‘ì—ëŠ” ê²Œì„ ì§„í–‰ ìƒíƒœë¡œ ë³€ê²½
     /// </summary>
     public void ControlPause()
     {
@@ -127,20 +127,19 @@ public class TimeManager : MonoSingleton<TimeManager>
     public void ControlPause(bool doPause)
     {
         IsGamePause = doPause;
-        Debug.Log($"°ÔÀÓ ÀÏ½Ã Á¤Áö : {IsGamePause}");
+        Debug.Log($"ê²Œì„ ì¼ì‹œ ì •ì§€ : {IsGamePause}");
     }
 
     /// <summary>
-    /// °ÔÀÓ ¿À¹ö ½Ã ÀÏ´Ü ¸ó½ºÅÍ Á¤Áö<br/>
-    /// ¡Ø ÀÌ°Å´Â ³ªÁß¿¡ °ÔÀÓ ¸Å´ÏÀú¿¡ ¿Å°Üµµ µÉ µí
+    /// ê²Œì„ ì˜¤ë²„ ì‹œ ì¼ë‹¨ ëª¬ìŠ¤í„° ì •ì§€<br/>
+    /// â€» ì´ê±°ëŠ” ë‚˜ì¤‘ì— ê²Œì„ ë§¤ë‹ˆì €ì— ì˜®ê²¨ë„ ë  ë“¯
     /// </summary>
     public void TestGameOver()
     {
-        DefenseManager.Instance.MonsterSpawner.OnGameOver();
     }
 
     /// <summary>
-    /// ¹İ³ªÀı ½ºÅµ : ³· ¡æ ¹ã / ¹ã ¡æ ³·
+    /// ë°˜ë‚˜ì ˆ ìŠ¤í‚µ : ë‚® â†’ ë°¤ / ë°¤ â†’ ë‚®
     /// </summary>
     public void SkipHalfDay()
     {

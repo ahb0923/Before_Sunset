@@ -6,114 +6,35 @@ public static class AstarAlgorithm
     // 경로 찾을 때마다 그리드 만들면 성능에 부하가 걸리므로, 스택 사용
     private static Stack<ANode[,]> _aGridStack = new Stack<ANode[,]>();
 
-    #region Binding Method
+    // 바인딩 변수
     private static NodeGrid _bindGrid;
+    private static int _monsterPenaltyPerUnit = 5;
 
     /// <summary>
-    /// 그리드 바인딩
+    /// 그리드 바인딩<br/>
+    /// ※ 모든 A* 메서드는 바인딩 후에 사용 가능!!!
     /// </summary>
     public static void BindGrid(NodeGrid grid)
     {
         _bindGrid = grid;
     }
-
+    
     /// <summary>
-    /// 시작 노드부터 목표 주변 노드까지의 가장 빠른 경로를 반환<br/>
-    /// ※ 목표 노드가 NonWalkable할 때 사용<br/>
-    /// ※ 그리드가 바인딩되어 있을 때만 사용
+    /// 몬스터 패널티 바인딩<br/>
+    /// ※ 바인딩 안 할 시에는 기본 5로 설정 -> 2마리가 있으면 경로 비용 1칸(10)과 동일
     /// </summary>
-    /// <param name="start">시작 노드</param>
-    /// <param name="entitySize">경로를 따라가는 엔티티 사이즈 (무조건 홀수 : 1x1이면 1)</param>
-    /// <param name="target">타겟 노드</param>
-    /// <param name="targetIndex">타겟 인덱스</param>
-    /// <param name="targetSize">타겟의 사이즈 (무조건 홀수 : 1x1이면 1)</param>
-    /// <param name="canMoveDiagonal">대각선 이동 가능 유무</param>
-    public static NodePath FindPathToTarget_Bind(Node start, int entitySize, Node target, int targetIndex, int targetSize, bool canMoveDiagonal = false)
+    public static void BindMonsterPenalty(int monsterPenalty)
     {
-        if (entitySize % 2 == 0 || targetSize % 2 == 0)
-        {
-            Debug.LogError("[A*] 잘못된 사이즈를 입력했습니다.");
-            return null;
-        }
-
-        if (_bindGrid == null)
-        {
-            Debug.LogError("[A*] 그리드가 바인딩되어 있지 않습니다.");
-            return null;
-        }
-
-        // 초기 세팅 : A* 기반 노드 그리드 생성
-        NodeGrid grid = _bindGrid;
-        ANode[,] aGrid = CloneNodeGridToANodeGrid(grid, start, target, out ANode startNode, out ANode targetNode);
-        startNode.gCost = 0;
-        startNode.hCost = GetHeuristicDistance(grid, start, target);
-
-        // 초기 세팅 : 리스트 & 셋 초기화
-        List<ANode> openList = new List<ANode>();
-        HashSet<ANode> closedSet = new HashSet<ANode>();
-
-        // 초기 세팅 : 오픈 리스트에 시작 노드 추가
-        openList.Add(startNode);
-
-        while (openList.Count > 0)
-        {
-            // F 비용이 가장 낮은 노드 → H 비용이 가장 낮은 노드 순으로 탐색
-            ANode curNode = openList[0];
-            for (int i = 1; i < openList.Count; i++)
-            {
-                if (openList[i].FCost < curNode.FCost ||
-                   (openList[i].FCost == curNode.FCost && openList[i].hCost < curNode.hCost))
-                {
-                    curNode = openList[i];
-                }
-            }
-
-            // F 비용이 가장 낮은 노드는 오픈 리스트에서 제거 & 클로즈 셋에 추가
-            openList.Remove(curNode);
-            closedSet.Add(curNode);
-
-            // 목표 노드에 도달했을 경우, 길을 역추적하여 반환
-            if (curNode.ActualNode == target)
-            {
-                _aGridStack.Push(aGrid);
-                return RetracePath(grid, startNode, targetNode);
-            }
-
-            foreach (ANode neighbor in GetNeighbors(grid, aGrid, curNode.ActualNode, canMoveDiagonal))
-            {
-                // 클로즈 셋에 포함되어 있으면 넘김
-                if (closedSet.Contains(neighbor)) continue;
-
-                // 엔티티 사이즈에 따라 NonWalkable이면 넘김
-                if (!IsAreaWalkable(grid, neighbor.ActualNode, entitySize, targetIndex)) continue;
-
-                // 검색해야 할 이웃 노드 오픈 리스트에 추가 & 코스트와 부모 노드 업데이트
-                int updatedGCost = curNode.gCost + GetHeuristicDistance(grid, curNode.ActualNode, neighbor.ActualNode);
-                if (updatedGCost < neighbor.gCost)
-                {
-                    neighbor.parent = curNode;
-                    neighbor.gCost = updatedGCost;
-                    neighbor.hCost = GetHeuristicDistance(grid, neighbor.ActualNode, target);
-
-                    if (!openList.Contains(neighbor))
-                    {
-                        openList.Add(neighbor);
-                    }
-                }
-            }
-        }
-
-        _aGridStack.Push(aGrid);
-        return null;
+        _monsterPenaltyPerUnit = monsterPenalty;
     }
 
     /// <summary>
     /// 엔티티 사이즈에 따른 이동 불가 유무 반환<br/>
-    /// ※ 그리드가 바인딩되어 있을 때만 사용
+    /// ※ 모든 A* 메서드는 바인딩 후에 사용 가능!!!
     /// </summary>
-    public static bool IsAreaWalkable_Bind(Node center, int entitySize, int targetIndex)
+    public static bool IsAreaWalkable(Node center, int entitySize, int targetIndex)
     {
-        if (_bindGrid == null)
+        if (!IsGridBind())
         {
             Debug.LogError("[A*] 그리드가 바인딩되어 있지 않습니다.");
             return false;
@@ -139,21 +60,24 @@ public static class AstarAlgorithm
 
         return true;
     }
-    #endregion
 
     /// <summary>
     /// 시작 노드부터 목표 주변 노드까지의 가장 빠른 경로를 반환<br/>
-    /// ※ 목표 노드가 NonWalkable할 때 사용
+    /// ※ 모든 A* 메서드는 바인딩 후에 사용 가능!!!
     /// </summary>
-    /// <param name="grid">맵 상의 노드 그리드</param>
     /// <param name="start">시작 노드</param>
     /// <param name="entitySize">경로를 따라가는 엔티티 사이즈 (무조건 홀수 : 1x1이면 1)</param>
     /// <param name="target">타겟 노드</param>
     /// <param name="targetIndex">타겟 인덱스</param>
     /// <param name="targetSize">타겟의 사이즈 (무조건 홀수 : 1x1이면 1)</param>
-    /// <param name="canMoveDiagonal">대각선 이동 가능 유무</param>
-    public static NodePath FindPathToTarget(NodeGrid grid, Node start, int entitySize , Node target, int targetIndex, int targetSize, bool canMoveDiagonal = false)
+    public static NodePath FindPathToTarget(Node start, int entitySize, Node target, int targetIndex, int targetSize)
     {
+        if (!IsGridBind())
+        {
+            Debug.LogError("[A*] 그리드가 바인딩되어 있지 않습니다.");
+            return null;
+        }
+
         if (entitySize % 2 == 0 || targetSize % 2 == 0)
         {
             Debug.LogError("[A*] 잘못된 사이즈를 입력했습니다.");
@@ -161,9 +85,10 @@ public static class AstarAlgorithm
         }
 
         // 초기 세팅 : A* 기반 노드 그리드 생성
-        ANode[,] aGrid = CloneNodeGridToANodeGrid(grid, start, target, out ANode startNode, out ANode targetNode);
+        NodeGrid grid = _bindGrid;
+        ANode[,] aGrid = CloneNodeGridToANodeGrid(start, target, out ANode startNode, out ANode targetNode);
         startNode.gCost = 0;
-        startNode.hCost = GetHeuristicDistance(grid, start, target);
+        startNode.hCost = GetHeuristicDistance(start, target);
 
         // 초기 세팅 : 리스트 & 셋 초기화
         List<ANode> openList = new List<ANode>();
@@ -193,24 +118,26 @@ public static class AstarAlgorithm
             if (curNode.ActualNode == target)
             {
                 _aGridStack.Push(aGrid);
-                return RetracePath(grid, startNode, targetNode);
+                return RetracePath(startNode, targetNode);
             }
 
-            foreach (ANode neighbor in GetNeighbors(grid, aGrid, curNode.ActualNode, canMoveDiagonal))
+            foreach (ANode neighbor in GetNeighbors(aGrid, curNode.ActualNode))
             {
                 // 클로즈 셋에 포함되어 있으면 넘김
                 if (closedSet.Contains(neighbor)) continue;
 
                 // 엔티티 사이즈에 따라 NonWalkable이면 넘김
-                if (!IsAreaWalkable(grid, neighbor.ActualNode, entitySize, targetIndex)) continue;
+                if (!IsAreaWalkable(neighbor.ActualNode, entitySize, targetIndex)) continue;
 
+                // G 코스트 업데이트 : 이전 노드까지 이동 비용 + 10(현재 노드까지 이동 비용) + 해당 노드의 몬스터 수 * 가중치
+                int updatedGCost = curNode.gCost + 10 + (neighbor.ActualNode.monsterCount * _monsterPenaltyPerUnit);
+                
                 // 검색해야 할 이웃 노드 오픈 리스트에 추가 & 코스트와 부모 노드 업데이트
-                int updatedGCost = curNode.gCost + GetHeuristicDistance(grid, curNode.ActualNode, neighbor.ActualNode);
                 if (updatedGCost < neighbor.gCost)
                 {
                     neighbor.parent = curNode;
                     neighbor.gCost = updatedGCost;
-                    neighbor.hCost = GetHeuristicDistance(grid, neighbor.ActualNode, target);
+                    neighbor.hCost = GetHeuristicDistance(neighbor.ActualNode, target);
 
                     if (!openList.Contains(neighbor))
                     {
@@ -225,10 +152,39 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
+    /// 그리드가 바인딩되어 있는지 체크
+    /// </summary>
+    private static bool IsGridBind()
+    {
+        return _bindGrid != null;
+    }
+
+    /// <summary>
+    /// 노드 사이의 휴리스틱 거리를 반환 (상하좌우 이동 비용 = 10)
+    /// </summary>
+    private static int GetHeuristicDistance(Node a, Node b)
+    {
+        NodeGrid grid = _bindGrid;
+
+        if(!grid.HasNode(a) || !grid.HasNode(b))
+        {
+            Debug.LogError("[A*] 노드가 그리드에 포함되어 있지 않습니다.");
+            return -1;
+        }
+
+        int distX = Mathf.Abs(grid.GetGridIndex(a).x - grid.GetGridIndex(b).x);
+        int distY = Mathf.Abs(grid.GetGridIndex(a).y - grid.GetGridIndex(b).y);
+
+        return 10 * (distX + distY);
+    }
+
+    /// <summary>
     /// 실제 노드 그리드 기반으로 A* 노드 그리드를 생성
     /// </summary>
-    private static ANode[,] CloneNodeGridToANodeGrid(NodeGrid grid, Node start, Node target, out ANode startNode, out ANode targetNode)
+    private static ANode[,] CloneNodeGridToANodeGrid(Node start, Node target, out ANode startNode, out ANode targetNode)
     {
+        NodeGrid grid = _bindGrid;
+
         startNode = null;
         targetNode = null;
         int xCount = grid.XCount;
@@ -269,27 +225,9 @@ public static class AstarAlgorithm
     }
 
     /// <summary>
-    /// 노드 사이의 휴리스틱 거리를 반환<br/>
-    /// ※ 상하좌우 10 / 대각선 14
-    /// </summary>
-    private static int GetHeuristicDistance(NodeGrid grid, Node a, Node b)
-    {
-        if(!grid.HasNode(a) || !grid.HasNode(b))
-        {
-            Debug.LogError("[A*] 노드가 그리드에 포함되어 있지 않습니다.");
-            return -1;
-        }
-
-        int distX = Mathf.Abs(grid.GetGridIndex(a).x - grid.GetGridIndex(b).x);
-        int distY = Mathf.Abs(grid.GetGridIndex(a).y - grid.GetGridIndex(b).y);
-
-        return 14 * Mathf.Min(distX, distY) + 10 * Mathf.Abs(distX - distY);
-    }
-
-    /// <summary>
     /// 목표 노드에서 부모 노드를 역추적해서 시작 노드까지의 경로를 반환
     /// </summary>
-    private static NodePath RetracePath(NodeGrid grid, ANode startNode, ANode endNode)
+    private static NodePath RetracePath(ANode startNode, ANode endNode)
     {
         List<Node> path = new List<Node>();
         ANode current = endNode;
@@ -302,15 +240,16 @@ public static class AstarAlgorithm
         path.Add(startNode.ActualNode);
         path.Reverse();
 
-        return new NodePath(grid, startNode.ActualNode, endNode.ActualNode, path);
+        return new NodePath(startNode.ActualNode, endNode.ActualNode, path);
     }
 
     /// <summary>
-    /// 이웃 노드 리스트를 반환<br/>
-    /// ※ containDiagonal : 대각선 포함 유무
+    /// 이웃 노드 리스트를 반환 (대각선 포함 X)
     /// </summary>
-    private static List<ANode> GetNeighbors(NodeGrid grid, ANode[,] aGrid, Node center, bool canMoveDiagonal)
+    private static List<ANode> GetNeighbors(ANode[,] aGrid, Node center)
     {
+        NodeGrid grid = _bindGrid;
+
         if (!grid.HasNode(center)) return null;
 
         Vector2Int gridIndex = grid.GetGridIndex(center);
@@ -322,38 +261,13 @@ public static class AstarAlgorithm
             {
                 if (!grid.IsValidIndex(x, y)) continue; // 범위 밖 제외
                 if (x == gridIndex.x && y == gridIndex.y) continue; // 자기 자신 제외
-                if (!canMoveDiagonal && Mathf.Abs(x - gridIndex.x) == 1 && Mathf.Abs(y - gridIndex.y) == 1) continue; // 대각선 제외
+                if (Mathf.Abs(x - gridIndex.x) == 1 && Mathf.Abs(y - gridIndex.y) == 1) continue; // 대각선 제외
 
                 neighborList.Add(aGrid[x, y]);
             }
         }
 
         return neighborList;
-    }
-
-    /// <summary>
-    /// 엔티티 사이즈에 따른 이동 불가 유무 반환
-    /// </summary>
-    public static bool IsAreaWalkable(NodeGrid grid, Node center, int entitySize, int targetIndex)
-    {
-        if (!grid.HasNode(center)) return false;
-
-        Vector2Int gridIndex = grid.GetGridIndex(center);
-        int boundary = entitySize / 2;
-
-        for (int x = -boundary; x <= boundary; x++)
-        {
-            for (int y = -boundary; y <= boundary; y++)
-            {
-                int gridX = gridIndex.x + x;
-                int gridY = gridIndex.y + y;
-
-                if (!grid.IsValidIndex(gridX, gridY)) continue;
-                if (!grid.Nodes[gridX, gridY].IsWalkable(targetIndex)) return false;
-            }
-        }
-
-        return true;
     }
 }
 
@@ -362,17 +276,13 @@ public class Node
 {
     public Vector3 WorldPos { get; private set; }
     public int walkableIndex;
+    public int monsterCount;
 
     public Node(Vector3 worldPos)
     {
         WorldPos = worldPos;
         walkableIndex = -1;
-    }
-
-    public Node(Vector3 worldPos, int index)
-    {
-        WorldPos = worldPos;
-        walkableIndex = index;
+        monsterCount = 0;
     }
 
     public bool IsWalkable(int index)
@@ -453,7 +363,7 @@ public class NodeGrid
 
     /// <summary>
     /// 월드 포지션에서 가장 가까운 노드 반환<br/>
-    /// ※ 맵을 벗어나는 위치 값에 경우 null 반환
+    /// ※ 맵을 벗어나는 위치 값에 경우, 가장 가까운 노드 반환
     /// </summary>
     /// <param name="worldPos">월드 포지션</param>
     public Node GetNode(Vector3 worldPos)
@@ -461,9 +371,31 @@ public class NodeGrid
         Vector2Int gridIndex = GetGridIndex(worldPos);
 
         if (gridIndex.x == -1)
-            return null;
+            return GetNearestNode(worldPos);
         else
             return Nodes[gridIndex.x, gridIndex.y];
+    }
+
+    /// <summary>
+    /// 맵을 벗어나면, 해당 위치에서 가장 가까운 노드를 반환
+    /// </summary>
+    /// <param name="worldPos">월드 포지션</param>
+    private Node GetNearestNode(Vector3 worldPos)
+    {
+        float minDist = float.MaxValue;
+        Node nearestNode = null;
+
+        foreach (Node node in Nodes)
+        {
+            float dist = Vector2.Distance(worldPos, node.WorldPos);
+            if (minDist > dist)
+            {
+                minDist = dist;
+                nearestNode = node;
+            }
+        }
+
+        return nearestNode;
     }
 
     /// <summary>
@@ -537,35 +469,51 @@ public class NodeGrid
     }
 }
 
-// 경로
+// 경로 : A* 바인딩을 무조건 사용해야 함!
 public class NodePath
 {
-    public NodeGrid Grid { get; private set; }
     public Node StartNode { get; private set; }
     public Node EndNode { get; private set; }
-    public List<Node> Path { get; private set; }
+    private List<Node> _path;
 
-    public Node CurNode => Path[_index];
+    public Node CurNode => _path[_index];
     private int _index;
 
-    public NodePath(NodeGrid grid, Node startNode, Node endNode, List<Node> path)
+    public NodePath(Node startNode, Node endNode, List<Node> path)
     {
-        Grid = grid;
         StartNode = startNode;
         EndNode = endNode;
-        Path = path;
+        _path = path;
+
+        AddMonsterCountOnAllPath();
 
         _index = 0;
     }
 
-    public NodePath(NodePath nodePath)
+    /// <summary>
+    /// 경로 생성 시에 모든 노드의 몬스터 카운트 추가
+    /// </summary>
+    private void AddMonsterCountOnAllPath()
     {
-        Grid = nodePath.Grid;
-        StartNode = nodePath.StartNode;
-        EndNode = nodePath.EndNode;
-        Path = nodePath.Path;
+        if(_path == null ||  _path.Count == 0) return;
 
-        _index = 0;
+        foreach(Node node in _path)
+        {
+            node.monsterCount++;
+        }
+    }
+
+    /// <summary>
+    /// 경로 해제 시에 현재 노드부터 마지막 노드의 몬스터 카운트 해제
+    /// </summary>
+    public void ReleaseMonsterCount()
+    {
+        if (_path == null || _path.Count == 0) return;
+
+        for (int i = _index; i < _path.Count; i++)
+        {
+            _path[i].monsterCount--;
+        }
     }
 
     /// <summary>
@@ -573,7 +521,7 @@ public class NodePath
     /// </summary>
     public bool Next()
     {
-        if (_index + 1 >= Path.Count)
+        if (_index + 1 >= _path.Count)
         {
             return false;
         }
@@ -587,14 +535,32 @@ public class NodePath
     /// </summary>
     public bool IsWalkablePath(int entitySize, int targetIndex)
     {
-        for (int i = _index; i < Path.Count; i++)
+        for (int i = _index; i < _path.Count; i++)
         {
-            if (!AstarAlgorithm.IsAreaWalkable(Grid, Path[i], entitySize, targetIndex))
+            if (!AstarAlgorithm.IsAreaWalkable(_path[i], entitySize, targetIndex))
             {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// 현재 NodePath의 경로를 에디터에서 시각화<br/>
+    /// ※ OnDrawGizmos() 메서드 안 에서 호출되어야 함!!!
+    /// </summary>
+    public void DrawDebugGizmos()
+    {
+        if (_path == null || _path.Count == 0) return;
+
+        Gizmos.color = Color.yellow;
+
+        Vector3 pos = _path[0].WorldPos;
+        for (int i = 1; i < _path.Count; i++)
+        {
+            Gizmos.DrawLine(pos, _path[i].WorldPos);
+            pos = _path[i].WorldPos;
+        }
     }
 }

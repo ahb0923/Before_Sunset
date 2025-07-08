@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class MonsterSpawner : MonoBehaviour
 {
-    private const int MONSTER_ID = 600;
-    private const int STAGE_ID = 999;
-
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
     private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
     [SerializeField] private Transform _monsterParent;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
-
-    private List<WaveData> _waveDatas;
 
     /// <summary>
     /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
@@ -25,24 +20,13 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 코어나 타워가 부서졌을 때에 모든 몬스터의 상태를 탐색 상태로 전환
+    /// 맵 장애물에 변경이 있을 때, 모든 몬스터의 상태를 탐색 상태로 전환
     /// </summary>
-    public void OnObstacleDestroyed()
+    public void OnObstacleChanged()
     {
         foreach (BaseMonster monster in _aliveMonsterSet)
         {
             monster.Ai.ChangeState(MONSTER_STATE.Explore);
-        }
-    }
-
-    /// <summary>
-    /// 게임 오버 시에 모든 몬스터 못 움직이게 상태 전환
-    /// </summary>
-    public void OnGameOver()
-    {
-        foreach (BaseMonster monster in _aliveMonsterSet)
-        {
-            monster.Ai.ChangeState(MONSTER_STATE.Invalid);
         }
     }
 
@@ -52,95 +36,60 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
-        // 모든 스테이지 데이터를 처음에 받아오면 좋겠는데 이건 생각해봐야 할 듯
-        // _waveData = DataManager.Instance.WaveData.GetById();
-
-        if(_waveDatas == null)
-        {
-            Debug.LogWarning("[MonsterSpawner] 웨이브 데이터가 없습니다!");
-            return;
-        }
-
-        //List<WaveData> data = _waveDatas;
-        //StartCoroutine(C_SpawnMonsters(data));
-
-        StartCoroutine(C_SpawnMonsters(1));
+        StartCoroutine(C_SpawnMonsters(TimeManager.Instance.Stage));
     }
-    /*
-    /// <summary>
-    /// 스폰 타임마다 몬스터를 소환하는 코루틴
-    /// </summary>
-    private IEnumerator C_SpawnMonsters(List<WaveData> stageData)
-    {
-        int waveCount = 0;
-        while(waveCount < stageData.Count)
-        {
-            while (TimeManager.Instance.IsGamePause)
-                yield return null;
-
-            WaveData waveData = stageData[waveCount];
-            List<int> spawnCounts = waveData.spawnMonsterCount;
-
-            for (int i = 0; i < spawnCounts.Count; i++) 
-            {
-                for (int j = 0; j < spawnCounts[i]; j++) 
-                {
-                    SpawnMonster(i + MONSTER_ID, Random.Range(0, _spawnPointLimt));
-                }
-            }
-
-            yield return Helper_Coroutine.WaitSeconds(waveData.summonDelay);
-            waveCount++;
-        }
-
-        TimeManager.Instance.OnSpawnOver();
-    }*/
 
     /// <summary>
-    /// C_SpanMonster 기준으로 만들었습니다. 제대로 동작할지는 잘 모르겠어요 테스트 필요합니다.<br/>
-    /// 매개변수로는 stage 값을 받습니다. 1stage 라면 1 받으면 됩니다.
+    /// 웨이브 데이터를 받아와서 스테이지에 따른 웨이브 소환
     /// </summary>
-    /// <param name="stage"></param>
-    /// <returns></returns>
     private IEnumerator C_SpawnMonsters(int stage)
     {
         var waveData = DataManager.Instance.WaveData;
         var monsterData = DataManager.Instance.MonsterData;
 
-        // 1스테이지라면 매개변수값으로 1 입력!
         int waveCount = waveData.GetWaveCountByStageId(stage);
 
-        for(int i=1; i<=waveCount; i++)
+        for (int i = 1; i <= waveCount; i++)
         {
-            // 해당 스테이지의 웨이브 값을 매번 가져옴,
-            // stage값은 매개변수로 받은 값으로  고정, wave는 i값으로 가변(최대 waveCount수까지 반복)
-            // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 씩해주기 때문에 실제 index값보다 +1된 값을 넣어야함
+            // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
             var currentWaveData = waveData.GetWaveByTupleKey(stage, i);
 
+            // 다음 웨이브 기다림
+            yield return Helper_Coroutine.C_WaitIfNotPaused(currentWaveData.summonDelay, () => TimeManager.Instance.IsGamePause);
+
+            // 몬스터 뭉탱이 소환
             foreach (var pair in currentWaveData.waveInfo)
             {
                 int monsterID = monsterData.GetByName(pair.Key).id;
                 int spawnCount = pair.Value;
-                
-                for(int j=0; j<spawnCount; j++)
+
+                for (int j = 0; j < spawnCount; j++)
                 {
+                    // 게임 오버 시에 코루틴 탈출 필요
+
                     SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt));
+                    yield return null;
                 }
             }
-
-            yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
         }
+
+        // 모든 스폰이 끝났음을 알림
         TimeManager.Instance.OnSpawnOver();
     }
-
-
 
     /// <summary>
     /// 해당하는 몬스터 ID를 가진 몬스터 소환
     /// </summary>
     public void SpawnMonster(int monsterId, int posIndex)
     {
-        Vector3 pos = _spawnPoints[posIndex].position;
+        float rand = Random.Range(-1f, 1f);
+        Vector3 randOffset;
+        if (posIndex % 2 == 0)
+            randOffset = new Vector3(rand, 0);
+        else
+            randOffset = new Vector3(0, rand);
+
+        Vector3 pos = _spawnPoints[posIndex].position + randOffset;
         GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
         _aliveMonsterSet.Add(obj.GetComponent<BaseMonster>());
     }
