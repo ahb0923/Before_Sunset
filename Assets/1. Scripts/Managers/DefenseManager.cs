@@ -13,7 +13,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     [Header("# A Star Setting")]
     [SerializeField] private int _monsterPenalty = 5;
 
-    // ¸Ê Àå¾Ö¹°(ÄÚ¾î & Å¸¿ö) ¼³Á¤
+    // ë§µ ì¥ì• ë¬¼(ì½”ì–´ & íƒ€ì›Œ) ì„¤ì •
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
     private Dictionary<Transform, int> _walkableIdDict = new Dictionary<Transform, int>();
@@ -44,7 +44,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ³ëµå ±×¸®µå »ı¼º & ÄÚ¾î À§Ä¡ ¼³Á¤
+    /// ë…¸ë“œ ê·¸ë¦¬ë“œ ìƒì„± & ì½”ì–´ ìœ„ì¹˜ ì„¤ì •
     /// </summary>
     private void InitGridAndWalkableStack()
     {
@@ -57,9 +57,9 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ÄÚ¾î, Å¸¿ö µîÀÇ Àå¾Ö¹° transformÀ» µñ¼Å³Ê¸®¿¡ Ãß°¡
+    /// ì½”ì–´, íƒ€ì›Œ ë“±ì˜ ì¥ì• ë¬¼ transformì„ ë”•ì…”ë„ˆë¦¬ì— ì¶”ê°€
     /// </summary>
-    /// <param name="size">Àå¾Ö¹° »çÀÌÁî (1x1ÀÌ¸é 1)</param>
+    /// <param name="size">ì¥ì• ë¬¼ ì‚¬ì´ì¦ˆ (1x1ì´ë©´ 1)</param>
     public void AddObstacle(Transform obstacle, int size)
     {
         int walkableId;
@@ -78,7 +78,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ÄÚ¾î, Å¸¿ö µîÀÇ Àå¾Ö¹° transformÀ» µñ¼Å³Ê¸®¿¡¼­ Á¦°Å
+    /// ì½”ì–´, íƒ€ì›Œ ë“±ì˜ ì¥ì• ë¬¼ transformì„ ë”•ì…”ë„ˆë¦¬ì—ì„œ ì œê±°
     /// </summary>
     public void RemoveObstacle(Transform obstacle)
     {
@@ -95,7 +95,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ÄÚ¾î¿¡¼­ dist¸¸Å­ ¶³¾îÁø Å¸°Ù ¸®½ºÆ®¸¦ ¹İÈ¯
+    /// ì½”ì–´ì—ì„œ distë§Œí¼ ë–¨ì–´ì§„ íƒ€ê²Ÿ ë¦¬ìŠ¤íŠ¸ë¥¼ ë°˜í™˜
     /// </summary>
     public List<Transform> GetTargetList(int dist)
     {
@@ -108,11 +108,11 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ½ÃÀÛ À§Ä¡¿¡¼­ Å¸°ÙÀ» ÇâÇÑ °æ·Î¸¦ ¹İÈ¯
+    /// ì‹œì‘ ìœ„ì¹˜ì—ì„œ íƒ€ê²Ÿì„ í–¥í•œ ê²½ë¡œë¥¼ ë°˜í™˜
     /// </summary>
-    /// <param name="startPos">½ÃÀÛ À§Ä¡</param>
-    /// <param name="size">¿ÀºêÁ§Æ® »çÀÌÁî (1x1ÀÌ¸é 1)</param>
-    /// <param name="target">Å¸°Ù Æ®·£½ºÆû</param>
+    /// <param name="startPos">ì‹œì‘ ìœ„ì¹˜</param>
+    /// <param name="size">ì˜¤ë¸Œì íŠ¸ ì‚¬ì´ì¦ˆ (1x1ì´ë©´ 1)</param>
+    /// <param name="target">íƒ€ê²Ÿ íŠ¸ëœìŠ¤í¼</param>
     /// <returns></returns>
     public NodePath FindPathToTarget(Vector3 startPos, int size, Transform target)
     {
@@ -122,8 +122,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// Àå¾Ö¹°ÀÇ Walkable Id¸¦ ¹İÈ¯<br/>
-    /// ¸¸¾à, µñ¼Å³Ê¸®¿¡ ¾ø´Ù¸é -1À» ¹İÈ¯
+    /// ì¥ì• ë¬¼ì˜ Walkable Idë¥¼ ë°˜í™˜<br/>
+    /// ë§Œì•½, ë”•ì…”ë„ˆë¦¬ì— ì—†ë‹¤ë©´ -1ì„ ë°˜í™˜
     /// </summary>
     /// <param name="obstacle"></param>
     public int GetWalkableId(Transform obstacle)
@@ -134,8 +134,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ÄÚ¾î·ÎºÎÅÍ Ã¼ºñ¼îÇÁ °Å¸®¸¦ ¹İÈ¯<br/>
-    /// ¡Ø Ã¼ºñ¼îÇÁ °Å¸®´Â »óÇÏÁÂ¿ì³ª ´ë°¢¼±¿¡¼­ 1Å¸ÀÏ ¶³¾îÁ® ÀÖÀ¸¸é ¸ğµÎ 1À» ¹İÈ¯
+    /// ì½”ì–´ë¡œë¶€í„° ì²´ë¹„ì‡¼í”„ ê±°ë¦¬ë¥¼ ë°˜í™˜<br/>
+    /// â€» ì²´ë¹„ì‡¼í”„ ê±°ë¦¬ëŠ” ìƒí•˜ì¢Œìš°ë‚˜ ëŒ€ê°ì„ ì—ì„œ 1íƒ€ì¼ ë–¨ì–´ì ¸ ìˆìœ¼ë©´ ëª¨ë‘ 1ì„ ë°˜í™˜
     /// </summary>
     private int GetChebyshevDistanceFromCore(Vector3 targetPos)
     {
@@ -146,7 +146,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     }
 
     /// <summary>
-    /// ¸Ê »çÀÌÁî & ³ëµå »óÅÂ È®ÀÎ
+    /// ë§µ ì‚¬ì´ì¦ˆ & ë…¸ë“œ ìƒíƒœ í™•ì¸
     /// </summary>
     private void OnDrawGizmos()
     {
