@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -20,8 +20,8 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
     private static readonly EqualityComparer<T> COMPARER = EqualityComparer<T>.Default;
     private readonly Dictionary<T, StateElem> _states = new Dictionary<T, StateElem>();
 
-    private T _curState;
-    private T _prevState;
+    [SerializeField] private T _curState;
+    [SerializeField] private T _prevState;
 
     private Coroutine _runDoingStateCoroutine;
 

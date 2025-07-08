@@ -10,13 +10,13 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
 {
     [Header(" [ Data ] ")]
     [SerializeField] private TowerData _data;
-    [SerializeField] private int _towerID;
 
     private BaseTower _tower;
 
     public event Action<float, float> OnHpChanged;
-    public Coroutine fixCoroutine;
+    //public Coroutine fixCoroutine;
 
+    public int ID { get; private set; }
     public int Level { get; private set; }
     public string TowerName { get; private set; }
 
@@ -24,7 +24,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
 
     public string FlavorText { get; private set; }
 
-    private float _currHp;
+    [SerializeField]private float _currHp;
     public float CurrHp
     {
         get => _currHp;
@@ -44,26 +44,24 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     public float ProjectileSpeed { get; set; }
     //public ResourceRequirement BuildRequirements { get; private set; }
 
-    public SpriteRenderer iconRenderer;
     //private bool isFixingDelay = false;
-
-
 
     /// <summary>
     /// 풀링 사용시 OnGet될때 초기화 호출<br/>
     /// 사실 currHp만 다시 세팅해주면 됨 나머지는 괜찮을듯.
     /// </summary>
     /// <param name="damage">원본 데미지 값</param>
-    public void Init()
+    public void Init(BaseTower baseTower, int towerId)
     {
-        _tower = GetComponent<BaseTower>();
-        _data = DataManager.Instance.TowerData.GetById(_towerID);
+        _tower = baseTower;
+        _data = DataManager.Instance.TowerData.GetById(towerId);
 
         if (_data == null)
         {
             Debug.Log("데이터 세팅 누락");
             return;
         }
+        ID = _data.id;
         Level = _data.level;
         TowerName = _data.towerName;
         FlavorText = _data.flavorText;

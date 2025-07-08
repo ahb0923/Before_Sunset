@@ -115,17 +115,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerType: 0
-  icon: {fileID: 1109353221721809788}
+  icon: {fileID: 0}
   constructionIcon: []
-  size: {x: 3, y: 3}
-  _attackRangeCollider: {fileID: 5111005074308737201}
-  _buildCollider: {fileID: 8130746354129068096}
+  size: {x: 1, y: 1}
   _mainCollider: {fileID: 2988486009109016483}
-  ai: {fileID: 4551609607560423749}
-  statHandler: {fileID: 8459309262913598922}
-  attackSensor: {fileID: 8261416276646684489}
+  _attackCollider: {fileID: 5111005074308737201}
+  _buildCollider: {fileID: 8130746354129068096}
+  _interactCollider: {fileID: 4869803506577090178}
+  ai: {fileID: 0}
+  statHandler: {fileID: 0}
+  attackSensor: {fileID: 0}
   ui: {fileID: 0}
-  projectile: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
+  projectile: {fileID: 0}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,7 +367,7 @@ GameObject:
   - component: {fileID: 7132922346847372962}
   - component: {fileID: 6760718722463397885}
   m_Layer: 0
-  m_Name: InteractArea(Blue)
+  m_Name: InteractArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +479,7 @@ GameObject:
   - component: {fileID: 8130746354129068096}
   - component: {fileID: 8341232226603593089}
   m_Layer: 0
-  m_Name: BuildArea(Red)
+  m_Name: BuildArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -810,7 +811,7 @@ GameObject:
   - component: {fileID: 5111005074308737201}
   - component: {fileID: 8261416276646684489}
   m_Layer: 0
-  m_Name: AttackArea(Purple)
+  m_Name: AttackArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -897,7 +898,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 64
 --- !u!1 &9044240187200664221
 GameObject:
   m_ObjectHideFlags: 0

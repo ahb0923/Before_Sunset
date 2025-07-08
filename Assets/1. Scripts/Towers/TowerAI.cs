@@ -23,16 +23,22 @@ public enum TOWER_ATTACK_TYPE
 
 public class TowerAI : StateBasedAI<TOWER_STATE>
 {
+    private BaseTower _tower;
     private bool _isDestroy = false;
     private bool _isNowBuilding = true;
-    public BaseTower tower;
-    public Vector3 firePosition;
+
 
     protected override TOWER_STATE InvalidState => TOWER_STATE.None;
 
+
+    public void Init(BaseTower baseTower)
+    {
+        _tower = baseTower;
+    }
+    
     protected override void OnAwake()
     {
-        tower = GetComponent<BaseTower>();
+        _tower = GetComponent<BaseTower>();
     }
 
     protected override IEnumerator OnStart()
@@ -84,13 +90,14 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     public IEnumerator C_Construction()
     {
-        var sprites = tower.constructionIcon;
-        var icon = tower.icon;
-        var stat = tower.statHandler;
-        var ui = tower.ui;
+        //var sprites = _tower.constructionIcon;
+        var ui = _tower.ui;
+        var icon = ui.icon;
+        var stat = _tower.statHandler;
+
 
         float totalTime = 1.5f;
-        float interval = totalTime / sprites.Count;
+        //float interval = totalTime / sprites.Count;
         float elapsed = 0f;
 
         //int spriteIndex = 0;
@@ -125,9 +132,9 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         icon.color = ColorExtensions.WithAlpha(icon.color, 1f);
 
         // 건설 직후, 공격 범위 내 적 검색
-        tower.attackSensor.ScanInitialEnemies();
+        _tower.attackSensor.ScanInitialEnemies();
 
-        if (tower.attackSensor.HasDetectedEnemy())
+        if (_tower.attackSensor.HasDetectedEnemy())
             CurState = TOWER_STATE.Attack;
         else
             CurState = TOWER_STATE.Idle;
@@ -139,9 +146,9 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         if (_isNowBuilding)
         {
             _isNowBuilding = false;
-            tower.attackSensor.ScanInitialEnemies();
+            _tower.attackSensor.ScanInitialEnemies();
 
-            if (tower.attackSensor.HasDetectedEnemy())
+            if (_tower.attackSensor.HasDetectedEnemy())
                 CurState = TOWER_STATE.Attack;
             else
                 CurState = TOWER_STATE.Idle;
@@ -158,15 +165,15 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                 yield break;
             }
 
-            var stat = tower.statHandler;
+            var stat = _tower.statHandler;
 
-            switch (tower.statHandler.attackType)
+            switch (_tower.statHandler.attackType)
             {
                 // 투사체 발사 타워
                 case TOWER_ATTACK_TYPE.Projectile:
-                    tower.attackSensor.CheckTargetValid();
+                    _tower.attackSensor.CheckTargetValid();
 
-                    GameObject target = tower.attackSensor.CurrentTarget;
+                    GameObject target = _tower.attackSensor.CurrentTarget;
                     if (target == null)
                     {
                         Debug.Log("타겟 없음, Idle로 전환");
@@ -176,7 +183,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
                     // 화살 발사
                     //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
-                    GameObject projObj = Instantiate(tower.projectile);
+                    GameObject projObj = Instantiate(_tower.projectile);
                     Projectile proj = Helper_Component.GetComponent<Projectile>(projObj);
                     // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
 
@@ -184,7 +191,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
 
                     // 이쪽 추후에 리팩터링
-                    if (tower.towerType == TOWER_TYPE.CooperTower)
+                    if (_tower.towerType == TOWER_TYPE.CooperTower)
                     {
                         ProjectileAttackSettings projAttackSettings = new()
                         {
@@ -194,12 +201,12 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                         };
                         ProjectileMovementSettings projMovementSettings = new()
                         {
-                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
                             moveSpeed = 10f,
                         };
                         proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
                     }
-                    else if (tower.towerType == TOWER_TYPE.IronTower)
+                    else if (_tower.towerType == TOWER_TYPE.IronTower)
                     {
                         ProjectileAttackSettings projAttackSettings = new()
                         {
@@ -211,12 +218,12 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                         };
                         ProjectileMovementSettings projMovementSettings = new()
                         {
-                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
                             duration = 1f,
                         };
                         proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Curved(), new ProjectileAttack_Splash());
                     }
-                    else if (tower.towerType == TOWER_TYPE.DiaprismTower)
+                    else if (_tower.towerType == TOWER_TYPE.DiaprismTower)
                     {
                         ProjectileAttackSettings projAttackSettings = new()
                         {
@@ -230,7 +237,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                         };
                         ProjectileMovementSettings projMovementSettings = new()
                         {
-                            firePosition = tower.transform.position + new Vector3(0, 2, 0),
+                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
                             duration = 3f,
                         };
                         proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_CurvedTarget(), new ProjectileAttack_Chaining());
@@ -255,8 +262,18 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
         _isDestroy = true;
         DefenseManager.Instance.RemoveObstacle(transform);
-        Destroy(tower.gameObject);
+        //Destroy(_tower.gameObject);
+        PoolManager.Instance.ReturnToPool(_tower.statHandler.ID, gameObject);
 
         yield return null;
+    }
+    public void ResetStateMachine()
+    {
+        StopAllCoroutines();
+        _isDestroy = false;
+        _isNowBuilding = true;
+        IsInterrupted = false;
+        CurState = InvalidState;
+        RunDoingState();
     }
 }
