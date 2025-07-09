@@ -4,21 +4,21 @@ using Cinemachine;
 
 public class MapManager : MonoSingleton<MapManager>
 {
-    [Header("맵 관련 설정")]
+    public MiningHandler.PortalDirection? LastEnteredPortalDirection { get; private set; }
+    public int CurrentMapIndex { get; private set; } = 0;
+
     [SerializeField] private GameObject baseMap;
     [SerializeField] private string mapFolder = "Maps";
     [SerializeField] private string mapPrefix = "Map_";
-    [SerializeField] private int prefabCount = 4; // Map_01 ~ Map_04
+    [SerializeField] private int prefabCount = 4;
     [SerializeField] private Transform player;
     [SerializeField] private float mapSpacing = 100f;
 
-    private List<GameObject> prefabPool = new List<GameObject>();           // 프리팹 캐시
-    private Dictionary<int, GameObject> mapInstances = new Dictionary<int, GameObject>(); // 인스턴스 저장
+    private int nextMapIndex = 1;
+    private List<GameObject> prefabPool = new List<GameObject>();
+    private Dictionary<int, GameObject> mapInstances = new Dictionary<int, GameObject>();
     private Stack<int> mapHistory = new Stack<int>();
-    private int currentMapIndex = 0; // 0: baseMap
     private Dictionary<int, int> mapPrefabIndexMap = new Dictionary<int, int>();
-    private int nextMapIndex = 1; // baseMap은 0번이므로 다음은 1부터 시작
-
 
     protected override void Awake()
     {
@@ -33,66 +33,65 @@ public class MapManager : MonoSingleton<MapManager>
         for (int i = 1; i <= prefabCount; i++)
         {
             string path = $"{mapFolder}/{mapPrefix}{i:D2}";
-            GameObject prefab = Resources.Load<GameObject>(path);
-            if (prefab != null)
-            {
-                prefabPool.Add(prefab);
-            }
-            else
-            {
-                Debug.LogWarning($"Map prefab not found at: {path}");
-            }
+            var prefab = Resources.Load<GameObject>(path);
+            if (prefab != null) prefabPool.Add(prefab);
+            else Debug.LogWarning($"Map prefab not found: {path}");
         }
+    }
+
+    public void MoveToMapByDirection(MiningHandler.PortalDirection dir)
+    {
+        LastEnteredPortalDirection = dir;
+        MoveToRandomMap();
     }
 
     public void MoveToRandomMap()
     {
         MoveToMap(nextMapIndex);
-        nextMapIndex++; // 다음 호출 시 새로운 맵 생성되도록 증가
+        nextMapIndex++;
     }
 
     public void MoveToPreviousMap()
     {
         if (mapHistory.Count == 0) return;
+
         int prev = mapHistory.Pop();
         MoveToMap(prev, false);
     }
 
     public void ReturnToHomeMap()
     {
-        if (currentMapIndex == 0) return;
+        if (CurrentMapIndex == 0) return;
         mapHistory.Clear();
         MoveToMap(0, false);
     }
 
     private void MoveToMap(int targetIndex, bool addToHistory = true)
     {
-        if (targetIndex == currentMapIndex) return;
+        if (targetIndex == CurrentMapIndex) return;
 
         // 현재 맵 비활성화
-        if (currentMapIndex == 0)
+        if (CurrentMapIndex == 0)
             baseMap.SetActive(false);
-        else if (mapInstances.TryGetValue(currentMapIndex, out var currentChunk))
+        else if (mapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
             currentChunk.SetActive(false);
 
         var spawnManager = FindObjectOfType<SpawnManager>();
 
-        // 맵 인스턴스가 없으면 생성
         if (targetIndex > 0 && !mapInstances.ContainsKey(targetIndex))
         {
             if (!mapPrefabIndexMap.ContainsKey(targetIndex))
             {
-                int randomPrefabIndex = Random.Range(0, prefabPool.Count);
-                mapPrefabIndexMap[targetIndex] = randomPrefabIndex;
+                int prefabIndex = Random.Range(0, prefabPool.Count);
+                mapPrefabIndexMap[targetIndex] = prefabIndex;
             }
 
-            int prefabIndex = mapPrefabIndexMap[targetIndex];
-            GameObject prefab = prefabPool[prefabIndex];
+            int pIndex = mapPrefabIndexMap[targetIndex];
+            GameObject prefab = prefabPool[pIndex];
             GameObject instance = Instantiate(prefab);
             instance.SetActive(false);
 
-            Vector3 position = baseMap.transform.position + new Vector3(mapSpacing * targetIndex, 0f, 0f);
-            instance.transform.position = position;
+            instance.transform.position = baseMap.transform.position + new Vector3(mapSpacing * targetIndex, 0, 0);
 
             var vcam = instance.GetComponentInChildren<CinemachineVirtualCamera>();
             if (vcam != null)
@@ -104,7 +103,6 @@ public class MapManager : MonoSingleton<MapManager>
             mapInstances[targetIndex] = instance;
         }
 
-        // 맵 활성화 및 플레이어 이동
         if (targetIndex == 0)
         {
             baseMap.SetActive(true);
@@ -114,7 +112,10 @@ public class MapManager : MonoSingleton<MapManager>
         else if (mapInstances.TryGetValue(targetIndex, out var nextMap))
         {
             nextMap.SetActive(true);
-            player.position = nextMap.transform.position;
+
+            // 플레이어 위치를 입장한 포탈 방향의 반대 방향 포탈 위치로 세팅
+            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, LastEnteredPortalDirection);
+            player.position = spawnPos;
 
             Vector2 oreArea = new Vector2(40f, 40f);
             Vector2 jewelArea = new Vector2(25f, 25f);
@@ -123,8 +124,57 @@ public class MapManager : MonoSingleton<MapManager>
         }
 
         if (addToHistory)
-            mapHistory.Push(currentMapIndex);
+            mapHistory.Push(CurrentMapIndex);
 
-        currentMapIndex = targetIndex;
+        CurrentMapIndex = targetIndex;
+    }
+
+    private Vector3 GetSpawnPositionByEnteredPortal(GameObject mapInstance, MiningHandler.PortalDirection? enteredDir)
+    {
+        if (enteredDir == null)
+            return mapInstance.transform.position;
+
+        var exitDir = GetOppositeDirection(enteredDir.Value);
+
+        var portals = mapInstance.GetComponentsInChildren<MiningHandler>();
+
+        foreach (var portal in portals)
+        {
+            if (portal.CurrentPortalDirection == exitDir)
+            {
+                Vector3 pos = portal.transform.position;
+                switch (exitDir)
+                {
+                    case MiningHandler.PortalDirection.North:
+                        pos.y -= 2f;
+                        break;
+                    case MiningHandler.PortalDirection.South:
+                        pos.y += 2f;
+                        break;
+                    case MiningHandler.PortalDirection.East:
+                        pos.x -= 2f;
+                        break;
+                    case MiningHandler.PortalDirection.West:
+                        pos.x += 2f;
+                        break;
+                }
+                return pos;
+            }
+        }
+
+        return mapInstance.transform.position;
+    }
+
+
+    private MiningHandler.PortalDirection GetOppositeDirection(MiningHandler.PortalDirection dir)
+    {
+        return dir switch
+        {
+            MiningHandler.PortalDirection.North => MiningHandler.PortalDirection.South,
+            MiningHandler.PortalDirection.South => MiningHandler.PortalDirection.North,
+            MiningHandler.PortalDirection.East => MiningHandler.PortalDirection.West,
+            MiningHandler.PortalDirection.West => MiningHandler.PortalDirection.East,
+            _ => dir,
+        };
     }
 }
