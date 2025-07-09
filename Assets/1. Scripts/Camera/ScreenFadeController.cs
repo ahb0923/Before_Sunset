@@ -17,15 +17,20 @@ public class ScreenFadeController : MonoBehaviour
 
     public IEnumerator FadeInOut(System.Action onMiddleAction)
     {
-        yield return StartCoroutine(Fade(0f, 1f));
+        yield return StartCoroutine(Fade(0f, 1f, 0f));
 
         onMiddleAction?.Invoke();
 
-        yield return StartCoroutine(Fade(1f, 0f));
+        yield return StartCoroutine(Fade(1f, 0f, 2f));
     }
 
-    private IEnumerator Fade(float fromAlpha, float toAlpha)
+    private IEnumerator Fade(float fromAlpha, float toAlpha, float waittime)
     {
+        if (waittime > 0f)
+            yield return new WaitForSeconds(waittime);
+
+        fadeImage.gameObject.SetActive(true);
+
         float timer = 0f;
         Color color = fadeImage.color;
 
@@ -40,5 +45,8 @@ public class ScreenFadeController : MonoBehaviour
 
         color.a = toAlpha;
         fadeImage.color = color;
+
+        if (toAlpha == 0f)
+            fadeImage.gameObject.SetActive(false);
     }
 }

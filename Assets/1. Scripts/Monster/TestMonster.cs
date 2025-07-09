@@ -9,12 +9,12 @@ public class TestMonster : MonoBehaviour, IDamageable
     {
         curHp = maxHp;
     }
-
+    
     public void OnDamaged(Damaged damaged)
     {
         if (damaged.Attacker == null)
         {
-            Debug.LogWarning("е╦╟щ ╢К╩С ╦Ьцёю╫!");
+            Debug.LogWarning("М┐─Й╡╘ К▄─Л┐│ К╙╩Л╟╬Л²▄!");
             return;
         }
 
@@ -22,11 +22,11 @@ public class TestMonster : MonoBehaviour, IDamageable
         curHp -= realDamage;
         curHp = Mathf.Max(curHp, 0);
 
-        Debug.Log($"ев╫╨ф╝ ╦С╫╨ем : {curHp + realDamage} -> {curHp}");
+        Debug.Log($"М┘▄Л┼╓М┼╦ К╙╛Л┼╓М└╟ : {curHp + realDamage} -> {curHp}");
 
         if (curHp == 0)
         {
-            Debug.Log("ев╫╨ф╝ ╦С╫╨ем ╩Г╦а!");
+            Debug.Log("М┘▄Л┼╓М┼╦ К╙╛Л┼╓М└╟ Л┌╛К╖²!");
         }
     }
 }
