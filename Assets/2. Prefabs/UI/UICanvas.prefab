@@ -5396,6 +5396,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 286814534526898211}
+  - component: {fileID: 1285493781748173034}
   m_Layer: 5
   m_Name: Upgrade
   m_TagString: Untagged
@@ -5423,6 +5424,27 @@ RectTransform:
   m_AnchoredPosition: {x: 6589, y: 2326}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1285493781748173034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2388755145127745944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f72c76e29d8731d4ea58b1722f69d4e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetNameText: {fileID: 2625922768415618990}
+  _targetInfoText: {fileID: 8547270984618629886}
+  _upgradeTargetNameText: {fileID: 6406584857527125330}
+  _targetStatText: {fileID: 6265630415174130617}
+  _upgradeStatText: {fileID: 4360290837259409757}
+  _upgradeButton: {fileID: 2340959826444657984}
+  _slotArea: {fileID: 127723886339884556}
+  _slotPrefab: {fileID: 48196182485893385, guid: 1b17093230a7abd4080a1ad75a6d5f6b, type: 3}
+  _slots: []
 --- !u!1 &2431984544576227919
 GameObject:
   m_ObjectHideFlags: 0
@@ -18859,7 +18881,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000008866191}
+  m_AnchoredPosition: {x: 0, y: -0.000012179837}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &473895671670418753
