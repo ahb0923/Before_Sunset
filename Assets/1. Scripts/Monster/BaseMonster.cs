@@ -4,11 +4,13 @@ public class BaseMonster : MonoBehaviour, IPoolable
 {
     [SerializeField] private int _id;
     public int GetId() => _id;
+    [SerializeField] private LayerMask _obstacleLayer;
+    public LayerMask ObstacleLayer => _obstacleLayer;
 
     public SpriteRenderer Spriter { get; private set; }
     public MonsterAI Ai { get; private set; }
     public MonsterStatHandler Stat { get; private set; }
-    public MonsterAttackSensor Sensor { get; private set; }
+    public TargetDetector Detector { get; private set; }
 
     // 원거리 공격 몬스터만 투사체 받아옴
     [field: SerializeField] public GameObject Projectile { get; private set; }
@@ -27,11 +29,11 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Spriter = GetComponentInChildren<SpriteRenderer>();
         Ai = GetComponent<MonsterAI>();
         Stat = GetComponent<MonsterStatHandler>();
-        Sensor = GetComponentInChildren<MonsterAttackSensor>();
+        Detector = GetComponentInChildren<TargetDetector>();
 
         Ai.Init(this);
         Stat.Init(this, _id);
-        Sensor.Init(this, Stat.Size, Stat.AttackRange);
+        Detector.Init(this);
     }
 
     /// <summary>
@@ -49,6 +51,12 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void OnReturnToPool()
     {
         Ai.ChangeState(MONSTER_STATE.Invalid);
+        Detector.DetectedObstacles.Clear();
         DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(this);
+    }
+
+    public void SetMonsterTargeting(bool isAttackCore)
+    {
+        Detector.SetAttackCore(isAttackCore);
     }
 }

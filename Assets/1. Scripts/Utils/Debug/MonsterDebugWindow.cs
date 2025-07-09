@@ -16,27 +16,17 @@ public class MonsterDebugWindow : EditorWindow
 
         if (GUILayout.Button("몬스터 스폰 : 머프"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(600, 3);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(600, 3, false);
         }
 
         if (GUILayout.Button("몬스터 스폰 : 드리즐"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(601, 3);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(601, 3, false);
         }
 
         if (GUILayout.Button("몬스터 스폰 : 헤비"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(602, 3);
-        }
-
-        if (GUILayout.Button("몬스터 스폰 : 테스트 - 왼쪽에서 소환"))
-        {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(699, 3);
-        }
-
-        if (GUILayout.Button("몬스터 스폰 : 테스트 - 위쪽에서 소환"))
-        {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(699, 0);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(602, 3, false);
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum MONSTER_STATE
@@ -17,7 +18,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
     public Transform Target { get; private set; }
     private bool _isTargetAlive => Target != null && Target.gameObject.activeInHierarchy;
-    private int _targetWalkableId => DefenseManager.Instance.GetWalkableId(Target);
     private NodePath _path;
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
@@ -67,32 +67,49 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 코어를 향한 경로 탐색 → 경로 없으면, 가장 빠른 경로를 방해하는 타워 탐색
+    /// 타겟과 경로에 대한 탐색 진행 
     /// </summary>
     private IEnumerator C_Explore()
     {
         // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
         if(DefenseManager.Instance.Core.IsDead)
         {
-            ChangeState(MONSTER_STATE.Invalid);
+            ChangeState(InvalidState);
             yield break;
         }
 
-        // 경로와 타겟 모두 존재하고 경로가 이동 가능하면, 이동 상태 전환
-        if(_path != null && _isTargetAlive)
-        {
-            if(_path.IsWalkablePath(_monster.Stat.Size, _targetWalkableId))
-            {
-                ChangeState(MONSTER_STATE.Move);
-                yield break;
-            }
-        }
-
-        // 기존 경로는 이용할 수 없으므로, 현재 몬스터를 노드에서 제외
+        // 새로운 경로를 받아올 예정이므로, 현재 경로 노드에서 해당 몬스터 제외
         _path?.ReleaseMonsterCount();
 
-        // 코어를 향한 경로가 있다면, 이동 상태 전환
+        // 1. 탐색 범위 내에 타겟 리스트가 존재하면, 가장 가까운 타겟부터 순차적으로 경로 탐색
         Vector3 startPos = transform.position;
+        HashSet<Transform> closedSet = new HashSet<Transform>();
+        if (_monster.Detector.DetectedObstacles.Count > 0)
+        {
+            do
+            {
+                // 인터럽트 발생하면, 코루틴 탈출
+                if (IsInterrupted)
+                    yield break;
+
+                Target = GetNearestTarget(_monster.Detector.DetectedObstacles, closedSet);
+                if (Target != null)
+                {
+                    closedSet.Add(Target);
+                    _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+                    if(_path != null)
+                    {
+                        // 경로가 있으면, 이동 상태 전환
+                        ChangeState(MONSTER_STATE.Move);
+                        yield break;
+                    }
+                    yield return null;
+                }
+            }
+            while (Target != null);
+        }
+
+        // 2. 코어를 타겟으로 하여, 경로 탐색 진행
         Target = DefenseManager.Instance.Core.transform;
         _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
         if(_path != null)
@@ -100,44 +117,54 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             ChangeState(MONSTER_STATE.Move);
             yield break;
         }
+        yield return null;
 
-        // 해시셋은 이미 탐색을 진행한 타겟인지를 확인하는 용도
-        HashSet<Transform> closedSet = new HashSet<Transform>();
+        // 3. 코어에서 가까운 거리 순으로 정렬된 리스트에서 해당 몬스터에게 가까운 순으로 순차적으로 경로 탐색 진행
         int count = 0;
-        while(_path == null)
+        while(count < 30)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
 
-            // 이후 타겟은 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
+            // 타겟 리스트는 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
             List<Transform> targetList = DefenseManager.Instance.GetTargetList(count);
-            if(targetList != null && targetList.Count > 0)
+            if(targetList == null || targetList.Count == 0)
             {
-                // 타겟 리스트 중에서 현재 몬스터와 가장 가까운 타겟을 탐색
-                Target = GetNearestTarget(targetList, closedSet);
-                if(Target != null)
-                {
-                    closedSet.Add(Target);
-                    _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
-                }
+                count++;
+                continue;
             }
 
-            count++;
+            // 타겟 리스트 중에서 탐색 진행이 안된 타겟 중에서 현재 몬스터와 가장 가까운 타겟을 탐색
+            Target = GetNearestTarget(targetList, closedSet);
+            if (Target == null)
+            {
+                count++;
+                continue;
+            }
+
+            closedSet.Add(Target);
+            _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+            if (_path != null)
+            {
+                // 경로가 있으면, 이동 상태 전환
+                ChangeState(MONSTER_STATE.Move);
+                yield break;
+            }
             yield return null;
         }
 
-        // 경로를 찾으면, 이동 상태 전환
-        ChangeState(MONSTER_STATE.Move);
+        // 4. 모든 타겟에 대한 경로가 존재하지 않으므로, invalid 상태 전환 - 아무것도 안함
+        ChangeState(MONSTER_STATE.Invalid);
     }
 
     /// <summary>
-    /// 현재 위치에서 다음 노드의 위치로 이동
+    /// 목표 노드까지 이동
     /// </summary>
     private IEnumerator C_Move()
     {
-        // 다음 노드가 이동 불가능하면, 탐색 상태 전환
-        while (AstarAlgorithm.IsAreaWalkable(_path.CurNode, _monster.Stat.Size, _targetWalkableId))
+        // 목표 노드까지 도착하지 않았으면, 이동 상태 유지
+        while (Vector2.Distance(transform.position, _path.EndNode.WorldPos) > 0.01f)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
@@ -151,7 +178,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
-            if (_monster.Sensor.DetectedObstacles.Contains(Target))
+            if (IsTargetInAttackRange())
             {
                 ChangeState(MONSTER_STATE.Attack);
                 yield break;
@@ -162,20 +189,16 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
             if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) <= 0.5f)
             {
-                // 다음 노드로 이동할 예정이므로 몬스터 카운트 해제
+                // 다음 노드로 이동할 예정이므로 도착한 노드의 해당 몬스터 해제
                 _path.CurNode.monsterCount--;
-
-                // 마지막 노드 도달하면, 탐색 상태 전환 (아마 무조건 도달 전에 공격 or 죽음 상태로 전환될 듯)
-                if (!_path.Next())
-                {
-                    break;
-                }
+                _path.Next();
             }
 
             yield return null;
         }
 
-        ChangeState(MONSTER_STATE.Explore);
+        // 현재 목표 노드에는 도달할 수 없는데 도달했으므로, invalid 상태 전환 - 아무것도 안함
+        ChangeState(MONSTER_STATE.Invalid);
     }
 
     /// <summary>
@@ -183,29 +206,24 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Attack()
     {
-        // 타겟이 없어지면, 탐색 상태 전환
-        while(_isTargetAlive)
+        // 타겟이 살아있고 타겟이 공격 범위 안에 있으면, 공격 상태 유지
+        while(_isTargetAlive && IsTargetInAttackRange())
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
 
-            // 일시 정지 시에는 공격 중지
-            if (TimeManager.Instance.IsGamePause)
+            // 공격 타입에 따른 원/근거리 공격
+            switch (_monster.Stat.AttackType)
             {
-                yield return null;
-                continue;
-            }
+                case ATTACK_TYPE.Ranged:
+                    // 투사체 프리팹이 없으면, invalid 상태 전환
+                    if(_monster.Projectile == null)
+                    {
+                        ChangeState(MONSTER_STATE.Invalid);
+                        yield break;
+                    }
 
-            switch (_monster.Stat.Type)
-            {
-                // 원거리 타입은 사거리에 들어오면 원거리 공격
-                case MONSTER_TYPE.Ranged:
-                    /*
-                    BaseProjectile proj = Instantiate(_monster.Projectile).GetComponent<BaseProjectile>();
-                    proj.Init(Target.gameObject, 10, _monster.Stat.AttackPower, transform.position);*/
-
-                    // 코드 수정했습니다-효빈
                     Projectile proj = Instantiate(_monster.Projectile).GetComponent<Projectile>();
 
                     ProjectileAttackSettings projAttackSettings = new()
@@ -217,17 +235,14 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                     ProjectileMovementSettings projMovementSettings = new()
                     {
                         firePosition = transform.position,
-                        moveSpeed = 10f,    //tower 쪽에 발사체 스피드 관련 정보 추가
+                        moveSpeed = 10f, //monster 쪽에 발사체 스피드 관련 정보 추가
                     };
 
                     proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
-                    // 여기까지!
 
                     break;
 
-                // 근접과 탱크 타입은 사거리에 들어오면 근접 공격
-                case MONSTER_TYPE.Melee:
-                case MONSTER_TYPE.Tank:
+                case ATTACK_TYPE.Melee:
                     DamagedSystem.Instance.Send(new Damaged
                     {
                         Attacker = gameObject,
@@ -236,14 +251,15 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                         IgnoreDefense = false
                     });
 
-                    Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
+                    Debug.Log($"{Target.name}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
                     break;
             }
 
             // Attack Per Sec 동안 기다림
-            yield return _monster.Stat.WaitAttack;
+            yield return Helper_Coroutine.C_WaitIfNotPaused(_monster.Stat.AttackPerSec, () => TimeManager.Instance.IsGamePause);
         }
 
+        // 타겟이 없어지거나 멀어지면, 다시 탐색 상태 전환
         ChangeState(MONSTER_STATE.Explore);
     }
 
@@ -283,6 +299,30 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         }
 
         return nearest;
+    }
+
+    /// <summary>
+    /// 타겟이 공격 범위 안에 있는지 체크하여 반환
+    /// </summary>
+    private bool IsTargetInAttackRange()
+    {
+        Vector2 direction = Target.position - transform.position;
+        float attackRange = _monster.Stat.Size * 0.5f + _monster.Stat.AttackRange * 0.5f;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, attackRange, _monster.ObstacleLayer);
+
+        if(hits.Length == 0) return false;
+        else
+        {
+            foreach (var hit in hits)
+            {
+                if (hit.transform == Target)
+                {
+                    return true;
+                }
+            }
+        }
+            
+        return false;
     }
 
     /// <summary>

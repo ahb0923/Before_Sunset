@@ -7,14 +7,14 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     [SerializeField] private MonsterData _data;
 
     public string MonsterName { get; private set; }
-    public MONSTER_TYPE Type { get; private set; }
+    public ATTACK_TYPE AttackType { get; private set; }
+    public MOVE_TYPE MoveType { get; private set; }
 
     public int MaxHp { get; private set; }
     public int CurHp { get; private set; }
     
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
-    public WaitForSeconds WaitAttack { get; private set; }
     public float AttackRange { get; private set; }
     public float Speed { get; private set; }
     public int Size { get; private set; }
@@ -33,12 +33,12 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         _monster = monster;
 
         MonsterName = _data.monsterName;
-        Type = _data.monsterType;
+        AttackType = _data.attackType;
+        MoveType = _data.moveType;
         MaxHp = _data.hp;
         CurHp = _data.hp;
         AttackPower = _data.damage;
         AttackPerSec = _data.aps;
-        WaitAttack = new WaitForSeconds(AttackPerSec);
         AttackRange = _data.range;
         Speed = _data.speed;
         Size = _data.size;

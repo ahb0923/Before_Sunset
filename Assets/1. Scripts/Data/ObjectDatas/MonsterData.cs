@@ -1,9 +1,13 @@
-﻿public enum MONSTER_TYPE
+public enum ATTACK_TYPE
 {
     Melee,
     Ranged,
-    Tank,
-    Flying
+}
+
+public enum MOVE_TYPE
+{
+    Ground,
+    Air,
 }
 
 [System.Serializable]
@@ -11,7 +15,8 @@ public class MonsterData
 {
     public int id;
     public string monsterName;
-    public MONSTER_TYPE monsterType;
+    public ATTACK_TYPE attackType;
+    public MOVE_TYPE moveType;
 
     public int hp;
     public int damage;
