@@ -4,18 +4,19 @@ using UnityEngine.UI;
 
 public class SaveLoadUI : MonoBehaviour
 {
+    public RectTransform saveLoadRect;
+    
     private const string EXIT_SAVE_LOAD_BUTTON = "ExitSaveLoadButton";
 
     private void Awake()
     {
         Button exitSaveLoadButton = GetComponentInChildren<Button>();
-        
         exitSaveLoadButton.onClick.AddListener(Close);
-        Close();
+        saveLoadRect = GetComponent<RectTransform>();
     }
 
     private void Close()
     {
-        this.gameObject.SetActive(false);
+        saveLoadRect.CloseAndRestore();
     }
 }

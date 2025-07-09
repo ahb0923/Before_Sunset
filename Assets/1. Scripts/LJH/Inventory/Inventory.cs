@@ -52,7 +52,8 @@ public class Inventory : MonoBehaviour
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드
     /// </summary>
-    /// <param name="item">추가 할 아이템</param>
+    /// <param name="id">추가 할 아이템</param>
+    /// <param name="quantity">아이템 수량</param>
     public void AddItem(int id, int quantity)
     {
         Item item = CreateItem(id);
@@ -195,5 +196,61 @@ public class Inventory : MonoBehaviour
         
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+    }
+
+    /// <summary>
+    /// 아이템 사용 메서드
+    /// </summary>
+    /// <param name="id">사용할 아이템의 아이디</param>
+    /// <param name="quantity">사용할 아이템의 수량</param>
+    /// <returns>사용하면 T 불가능하면 F</returns>
+    public bool UseItem(int id, int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return false;
+        }
+        
+        int total = 0;
+
+        foreach (Item item in Items)
+        {
+            if (item != null && item.Data.id == id)
+            {
+                total += item.stack;
+            }
+        }
+
+        if (total < quantity)
+        {
+            return false;
+        }
+
+        int remain = quantity;
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Item item = Items[i];
+
+            if (item == null || item.Data.id != id)
+            {
+                continue;
+            }
+
+            if (item.stack > remain)
+            {
+                item.stack -= remain;
+                break;
+            }
+            else
+            {
+                remain -= item.stack;
+                Items[i] = null;
+            }
+        }
+        
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+        return true;
     }
 }

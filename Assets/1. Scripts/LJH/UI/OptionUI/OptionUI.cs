@@ -9,6 +9,8 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private Slider _bGSoundSlider;
     [SerializeField] private Slider _effectSoundSlider;
     
+    private RectTransform _optionRect;
+    
     private string _quitText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 종료하시겠습니까?";
     private string _mainMenuText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 메인메뉴로 나가시겠습니까?";
     
@@ -45,9 +47,7 @@ public class OptionUI : MonoBehaviour
         saveLoadButton.onClick.AddListener(OnClickSaveLoadButton);
         mainMenuButton.onClick.AddListener(OnClickMainMenuButton);
         
-        
-        
-        Close();
+        _optionRect = this.GetComponent<RectTransform>();
     }
     
     private void Start()
@@ -66,17 +66,17 @@ public class OptionUI : MonoBehaviour
 
     private void Open()
     {
-        this.gameObject.SetActive(true);
+        _optionRect.OpenAtCenter();
     }
 
     private void Close()
     {
-        this.gameObject.SetActive(false);
+        _optionRect.CloseAndRestore();
     }
 
     private void OnClickSaveLoadButton()
     {
-        _saveLoadGameObject.SetActive(true);
+        UIManager.Instance.SaveLoadUI.saveLoadRect.OpenAtCenter();
     }
 
     private void OnClickMainMenuButton()

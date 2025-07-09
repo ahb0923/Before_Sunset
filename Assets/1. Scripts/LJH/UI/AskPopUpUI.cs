@@ -9,6 +9,8 @@ public class AskPopUpUI : MonoBehaviour
     [SerializeField] private Button _noButton;
     [SerializeField] private TextMeshProUGUI _askText;
     
+    private RectTransform _askRect;
+    
     private Action _onYesAction;
     private Action _onNoAction;
     
@@ -30,8 +32,9 @@ public class AskPopUpUI : MonoBehaviour
     private void Awake()
     {
         _yesButton.onClick.AddListener(OnClickYes);
-        
         _noButton.onClick.AddListener(OnClickNo);
+        
+        _askRect = GetComponent<RectTransform>();
     }
 
     private void OnClickYes()
@@ -52,11 +55,11 @@ public class AskPopUpUI : MonoBehaviour
         _onYesAction = onYesAction;
         _onNoAction = onNoAction;
         
-        this.gameObject.SetActive(true);
+        _askRect.OpenAtCenter();
     }
 
     public void Close()
     {
-        this.gameObject.SetActive(false);
+        _askRect.CloseAndRestore();
     }
 }

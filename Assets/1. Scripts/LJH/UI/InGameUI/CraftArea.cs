@@ -31,16 +31,28 @@ public class CraftArea : MonoBehaviour
         _buildingSlotPrefab = Resources.Load<GameObject>(BUILD_SLOT);
     }
 
-    private void Awake()
+    public void Awake()
     {
         _buildButton.onClick.AddListener(Toggle);
         _towerButton.onClick.AddListener(TowerButton);
         _smelterButton.onClick.AddListener(SmelterButton);
+        
         GetBaseTowerList();
         GetSmelterList();
         InitSlots();
         TowerButton();
-        this.gameObject.SetActive(false);
+    }
+    
+    public void Work()
+    {
+        _buildButton.onClick.AddListener(Toggle);
+        _towerButton.onClick.AddListener(TowerButton);
+        _smelterButton.onClick.AddListener(SmelterButton);
+        
+        GetBaseTowerList();
+        GetSmelterList();
+        InitSlots();
+        TowerButton();
     }
 
     private void TowerButton()
@@ -76,7 +88,6 @@ public class CraftArea : MonoBehaviour
             if (towerData.buildType == TOWER_BUILD_TYPE.Base)
             {
                 _baseTowerData.Add(towerData);
-                Debug.Log(towerData.towerName);
             }
         }
     }
@@ -84,7 +95,6 @@ public class CraftArea : MonoBehaviour
     public void GetSmelterList()
     {
         _smelterData = DataManager.Instance.SmelterData.GetAllItems();
-        Debug.Log(_smelterData.Count + "개 로드 성공");
     }
 
     private void InitSlots()

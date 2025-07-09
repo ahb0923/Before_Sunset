@@ -6,6 +6,7 @@ using DG.Tweening;
 
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
+    [SerializeField] public BaseTower buildingPrefab;
     [SerializeField] private Image _bGImage;
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
@@ -33,10 +34,15 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void SetTowerSlot(TowerData towerData)
     {
+        buildingPrefab = null;
+        
         if (towerData != null)
         {
             _towerData = towerData;
             _smelterData = null;
+            
+            var go = Resources.Load<GameObject>(towerData.id.ToString());
+            buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
             
             // _buildingIcon = towerData.icon;
             _buildingName.text = towerData.towerName;
@@ -57,6 +63,8 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void SetSmelterSlot(SmelterData smelterData)
     {
+        buildingPrefab = null;
+        
         if (smelterData != null)
         {
             _towerData = null;
@@ -103,7 +111,28 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        
+        // 좌클릭시
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            if (buildingPrefab != null)
+            {
+                if (!BuildManager.Instance.IsPlacing)
+                {
+                    BuildManager.Instance.StartPlacing(buildingPrefab);
+                }
+            }
+        }
+        // 우클릭시
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (buildingPrefab != null)
+            {
+                if (BuildManager.Instance.IsPlacing)
+                {
+                    BuildManager.Instance.CancelPlacing();
+                }
+            }
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
