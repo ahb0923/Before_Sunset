@@ -20,7 +20,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
     private void Reset()
     {
         _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);
-        _pickaxeSlot = UtilityLJH.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
+        _pickaxeSlot = Helper_Component.FindChildComponent<PickaxeSlot>(this.transform, PICKAXE_SLOT);
         _slotPrefab = Resources.Load<GameObject>(ITEM_SLOT_PREFAB);
     }
 
