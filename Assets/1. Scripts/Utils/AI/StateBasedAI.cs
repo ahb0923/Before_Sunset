@@ -20,8 +20,8 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
     private static readonly EqualityComparer<T> COMPARER = EqualityComparer<T>.Default;
     private readonly Dictionary<T, StateElem> _states = new Dictionary<T, StateElem>();
 
-    private T _curState;
-    private T _prevState;
+    [SerializeField] private T _curState;
+    [SerializeField] private T _prevState;
 
     private Coroutine _runDoingStateCoroutine;
 
@@ -143,6 +143,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
         // 코루틴 시작
         _runDoingStateCoroutine = StartCoroutine(C_RunDoingState());
+
     }
 
     private IEnumerator C_RunDoingState()
@@ -175,7 +176,20 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
         yield break;
     }
+    private IEnumerator C_RunSingleDoingState()
+    {
+        IsInterrupted = false;
+        yield return StartCoroutine(OnBeforeDoingState());
 
+        var state = _states.Get(CurState, null);
+        if (state != null)
+        {
+            if (state.Doing != null)
+                yield return StartCoroutine(state.Doing());
+        }
+
+        yield return StartCoroutine(OnAfterDoingState());
+    }
     /// <summary>
     /// 상태를 추가합니다.
     /// </summary>

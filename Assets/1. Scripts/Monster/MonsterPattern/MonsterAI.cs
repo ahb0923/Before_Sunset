@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -236,7 +236,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                         IgnoreDefense = false
                     });
 
-                    Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
+                    //Debug.Log($"{Target}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
                     break;
             }
 
