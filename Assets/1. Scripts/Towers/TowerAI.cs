@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Build.Pipeline.Utilities;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -238,21 +239,108 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                         ProjectileMovementSettings projMovementSettings = new()
                         {
                             firePosition = _tower.transform.position + new Vector3(0, 2, 0),
-                            duration = 3f,
+                            duration = 1f,
                         };
                         proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_CurvedTarget(), new ProjectileAttack_Chaining());
                     }
+                    
                     break;
+                    
 
                 // 자신 중심 공격 타워
                 case TOWER_ATTACK_TYPE.Areaofeffect:
 
+                    if (_tower.towerType == TOWER_TYPE.HealTower)
+                    {
+                        float radius = _tower.statHandler.AttackRange;
+                        int healAmount = Mathf.RoundToInt(_tower.statHandler.AttackPower);
+
+                        Collider2D[] hits = Physics2D.OverlapCircleAll(
+                            _tower.transform.position, radius, LayerMask.GetMask("Tower"));
+
+                        Debug.Log($"검색 갯수 : {hits.Length}");
+
+                        // 체력 비율 낮은 순으로 정렬
+                        List<GameObject> healables = new();
+
+                        foreach (var hit in hits)
+                        {
+                            if (hit.gameObject == _tower.gameObject) continue; // 자기 자신 제외
+
+                            var hitStat = hit.GetComponent<TowerStatHandler>();
+                            if (hitStat != null && hitStat.CurrHp < hitStat.MaxHp)
+                            {
+                                healables.Add(hit.gameObject);
+                            }
+                        }
+
+                        healables.Sort((a, b) =>
+                        {
+                            var sa = a.GetComponent<TowerStatHandler>();
+                            var sb = b.GetComponent<TowerStatHandler>();
+                            float ra = sa == null ? float.MaxValue : sa.CurrHp;
+                            float rb = sb == null ? float.MaxValue : sb.CurrHp;
+                            return ra.CompareTo(rb);
+                        });
+
+                        int healCount = Mathf.Min(3, healables.Count);
+                        for (int i = 0; i < healCount; i++)
+                        {
+                            var healbleStat = healables[i].GetComponent<TowerStatHandler>();
+                            healbleStat.CurrHp += healAmount;
+
+                            Debug.Log($"힐타워: {healables[i].name} 체력 {healAmount} 회복");
+                        }
+                    }
+                    else if (_tower.towerType == TOWER_TYPE.MagnetTower)
+                    {
+                        float radius = _tower.statHandler.AttackRange;
+                        //float pullSpeed = _tower.statHandler.AttackPower;
+                        float pullSpeed = 6;
+                        Vector3 centerPos = _tower.transform.position;
+
+
+                        Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
+
+                        List<GameObject> candidates = new();
+                        foreach (var h in hits)
+                        {
+                            if (h == null || !h.gameObject.activeSelf) continue;
+                            candidates.Add(h.gameObject);
+                        }
+
+                        candidates.Sort((a, b) => Vector2.Distance(centerPos, b.transform.position).CompareTo(Vector2.Distance(centerPos, a.transform.position)));
+
+                        int pullCount = Mathf.Min(3, candidates.Count);
+                        for (int i = 0; i < pullCount; i++)
+                        {
+                            GameObject pullTarget = candidates[i];
+                            _tower.StartCoroutine(PullTargetCoroutine(pullTarget, centerPos, pullSpeed));
+                        }
+                    }
                     break;
-
             }
-
             yield return new WaitForSeconds(stat.AttackSpeed);
         }
+    }
+
+    private IEnumerator PullTargetCoroutine(GameObject target, Vector3 center, float speed)
+    {
+        Debug.Log(target);
+        //var ai = target.GetComponent<MonsterAI>();
+        //if (ai != null) ai.enabled = false;
+
+        while (target != null && target.activeSelf)
+        {
+            Vector3 dir = (center - target.transform.position).normalized;
+            target.transform.position += dir * speed * Time.deltaTime;
+
+            if (Vector3.Distance(center, target.transform.position) < 2f)
+                break;
+
+            yield return null;
+        }
+        //if (ai != null) ai.enabled = true;
     }
     private IEnumerator C_Destroy()
     {
@@ -262,7 +350,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
         _isDestroy = true;
         DefenseManager.Instance.RemoveObstacle(transform);
-        //Destroy(_tower.gameObject);
         PoolManager.Instance.ReturnToPool(_tower.statHandler.ID, gameObject);
 
         yield return null;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -143,6 +143,7 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
         // 코루틴 시작
         _runDoingStateCoroutine = StartCoroutine(C_RunDoingState());
+
     }
 
     private IEnumerator C_RunDoingState()
@@ -175,7 +176,20 @@ public abstract class StateBasedAI<T> : MonoBehaviour where T : IConvertible
 
         yield break;
     }
+    private IEnumerator C_RunSingleDoingState()
+    {
+        IsInterrupted = false;
+        yield return StartCoroutine(OnBeforeDoingState());
 
+        var state = _states.Get(CurState, null);
+        if (state != null)
+        {
+            if (state.Doing != null)
+                yield return StartCoroutine(state.Doing());
+        }
+
+        yield return StartCoroutine(OnAfterDoingState());
+    }
     /// <summary>
     /// 상태를 추가합니다.
     /// </summary>

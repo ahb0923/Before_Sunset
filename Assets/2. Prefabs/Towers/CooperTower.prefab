@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 338dd4a7336f4734a87ce571baf6a7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _curState: 0
+  _prevState: 0
 --- !u!114 &8459309262913598922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,12 +157,14 @@ MonoBehaviour:
     towerName: 
     flavorText: 
     buildType: 0
+    attackType: 0
     nextUpgradeId: 0
     level: 0
     towerHp: 0
     damage: 0
     aps: 0
     range: 0
+  _currHp: 0
 --- !u!1 &3037772152855085370
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2a23c4d4c7d0244ad7d56818640340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyLayerMask:
+  targetLayerMask:
     serializedVersion: 2
     m_Bits: 128
 --- !u!1 &9044240187200664221

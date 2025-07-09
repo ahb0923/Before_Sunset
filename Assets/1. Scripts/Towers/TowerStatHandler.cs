@@ -1,4 +1,4 @@
-﻿ using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -64,6 +64,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         ID = _data.id;
         Level = _data.level;
         TowerName = _data.towerName;
+        attackType = _data.attackType;
         FlavorText = _data.flavorText;
         MaxHp = _data.towerHp;
         // C_Construction 최대 HP 비례해서 회복시킬 예정 => 기획변동 없을시 초기화에서 최대값으로
@@ -92,11 +93,15 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         if (CurrHp <= 0)
         {
             CurrHp = 0;
-            _tower.ai.SetState(TOWER_STATE.Destroy, force: true);
+            if (_tower.ai.CurState != TOWER_STATE.Destroy)
+                _tower.ai.SetState(TOWER_STATE.Destroy, force: true);
         }
     }
+    public void OnFixed(float amount)
+    {
+        CurrHp = Mathf.Min(CurrHp + amount, MaxHp);
+    }
 
-    
     /// <summary>
     /// 데미지 테스팅 메서드
     /// </summary>

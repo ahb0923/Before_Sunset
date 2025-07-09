@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ public class TowerAttackSensor : MonoBehaviour
 
 
     [Header("[ 에디터 할당 ]")] 
-    [SerializeField] private LayerMask enemyLayerMask;
+    [SerializeField] private LayerMask targetLayerMask;
 
     public void Init(BaseTower basetower)
     {
@@ -32,7 +32,7 @@ public class TowerAttackSensor : MonoBehaviour
         ContactFilter2D filter = new()
         {
             useLayerMask = true,
-            layerMask = enemyLayerMask,
+            layerMask = targetLayerMask,
             useTriggers = true          //트리거(IsTrigger) Collider도 포함해서 검사할지 여부
         };
 
@@ -192,7 +192,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (_tower.ai.CurState == TOWER_STATE.Destroy)
             return;
 
-        if (((1 << other.gameObject.layer) & enemyLayerMask) != 0)
+        if (((1 << other.gameObject.layer) & targetLayerMask) != 0)
         {
             if (detectedEnemies.Add(other.gameObject))
             {
@@ -210,7 +210,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (_tower.ai.CurState == TOWER_STATE.Destroy)
             return;
 
-        if (((1 << other.gameObject.layer) & enemyLayerMask) != 0)
+        if (((1 << other.gameObject.layer) & targetLayerMask) != 0)
         {
             if (detectedEnemies.Remove(other.gameObject))
             {

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +7,10 @@ public class ProjectileAttack_Chaining : IProjectileAttack
     public void Hit(ProjectileAttackSettings attackSettings)
     {
         if (attackSettings.target == null)
+        {
+            GameObject.Destroy(attackSettings.attacker);
             return;
+        }
 
         DamagedSystem.Instance.Send(new Damaged
         {
@@ -18,15 +21,21 @@ public class ProjectileAttack_Chaining : IProjectileAttack
         });
 
         // 쿠션 횟수 없으면 종료
-        if (attackSettings.chainCount <= 0) return;
+        if (attackSettings.chainCount <= 0)
+        {
+            GameObject.Destroy(attackSettings.attacker);
+            //Debug.Log("쿠션 횟수 종료");
+            return;
+        }
+      
 
         GameObject nextTarget = FindNextTarget(attackSettings);
         if (nextTarget == null)
         {
-            Debug.Log("다음 타겟 물색 실패");
+            GameObject.Destroy(attackSettings.attacker);
+            //Debug.Log("다음 타겟 물색 실패");
             return;
         }
-
 
         var proj = Helper_Component.GetComponent<Projectile>(attackSettings.attacker);
 
@@ -39,7 +48,7 @@ public class ProjectileAttack_Chaining : IProjectileAttack
         ProjectileMovementSettings nextMove = new ProjectileMovementSettings
         {
             firePosition = proj.transform.position,
-            duration = 3f,
+            duration = 1f,
             maxHeight = 2f
         };
 
