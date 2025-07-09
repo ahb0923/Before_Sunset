@@ -39,7 +39,7 @@ public class PickUpItem : MonoBehaviour
 
             if (distance <= 0.1f)
             {
-                //InventoryManager.Instance.Inventory.AddItem(itemId, 1);
+                InventoryManager.Instance.Inventory.AddItem(itemId, 1);
                 Destroy(gameObject);
             }
         }
