@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -14,7 +14,6 @@ public class BuildManager : MonoSingleton<BuildManager>
 
     [SerializeField] private LayerMask _buildingLayer;
     [SerializeField] private bool _isPlacing;
-    [SerializeField] private Transform _towerPool;
     public bool IsPlacing => _isPlacing;
 
 
@@ -32,7 +31,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();
-        DefenseManager.Instance.DragIcon.SetIcon(prefab.ui.icon.sprite);
+        DefenseManager.Instance.DragIcon.SetIcon(prefab.icon.sprite);
     }
 
     public void CancelPlacing()
@@ -112,10 +111,9 @@ public class BuildManager : MonoSingleton<BuildManager>
         }
 
         // 배치 성공
-        //BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
-        BaseTower tower = Helper_Component.GetComponent<BaseTower>(PoolManager.Instance.GetFromPool(prefab.towerId, cellCenter, _towerPool));
+        BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
         DefenseManager.Instance.AddObstacle(tower.transform, 1); // 일단 1x1이니까 1로 두었음
-        RenderUtil.SetSortingOrderByY(tower.ui.icon);
+        RenderUtil.SetSortingOrderByY(tower.icon);
 
         return true;
     }

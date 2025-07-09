@@ -6,40 +6,29 @@ using UnityEngine.UI;
 
 public class TowerUI : MonoBehaviour
 {
-    private const float HPBAR_LERP_SPEED = 0.5f;
+    public const float hpBarLerpSpeed = 0.5f;
 
-    private BaseTower _tower;
-    private Coroutine _hpDelayCoroutine;
+    [SerializeField] private BaseTower _tower;
 
     public Canvas canvas;
-
-    public SpriteRenderer icon;
-    public List<Sprite> constructionIcon;   // 추후에 건설이미지 추가가 된다면 사용, 아닐경우 삭제o
-
     public Image hpBar_delay;
     public Image hpBar_immediate;
- 
 
+    private Coroutine _hpDelayCoroutine;
 
     private void Reset()
     {
+        _tower = Helper_Component.GetComponentInParent<BaseTower>(gameObject,"UI");
         canvas = Helper_Component.GetComponentInChildren<Canvas>(gameObject, "UI");
-        icon = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
-        hpBar_delay = Helper_Component.FindChildComponent<Image>(transform, "HpBar_Delay"); 
-        hpBar_immediate = Helper_Component.FindChildComponent<Image>(transform, "HpBar_Immediate");
+        hpBar_delay = Helper_Component.FindChildByName(transform,"HpBar_Delay").GetComponent<Image>();
+        hpBar_immediate = Helper_Component.FindChildByName(transform, "HpBar_Immediate").GetComponent<Image>();
     }
 
-    public void Init(BaseTower baseTower)
+    public void Init()
     {
-        _tower = baseTower;
         _tower.statHandler.OnHpChanged += UpdateHpBar;
     }
 
-    /// <summary>
-    /// 체력바 업데이트
-    /// </summary>
-    /// <param name="curr">현재 체력</param>
-    /// <param name="max">최대 체력</param>
     public void UpdateHpBar(float curr, float max)
     {
         float ratio = Mathf.Clamp01(curr / max);
@@ -50,12 +39,6 @@ public class TowerUI : MonoBehaviour
 
         _hpDelayCoroutine = StartCoroutine(C_UpdateHpBar(ratio));
     }
-
-    /// <summary>
-    /// 체력바 러프 업데이트
-    /// </summary>
-    /// <param name="ratio"></param>
-    /// <returns></returns>
     private IEnumerator C_UpdateHpBar(float ratio)
     {
         yield return Helper_Coroutine.WaitSeconds(0.5f);
@@ -64,26 +47,13 @@ public class TowerUI : MonoBehaviour
 
         while (current > ratio)
         {
-            current = Mathf.MoveTowards(current, ratio, Time.deltaTime * HPBAR_LERP_SPEED);
+            current = Mathf.MoveTowards(current, ratio, Time.deltaTime * hpBarLerpSpeed);
             hpBar_delay.fillAmount = current;
             yield return null;
         }
 
         hpBar_delay.fillAmount = ratio;
         _hpDelayCoroutine = null;
-    }
-
-    public void ResetHpBar()
-    {
-        float ratio = Mathf.Clamp01(_tower.statHandler.CurrHp / _tower.statHandler.MaxHp);
-        hpBar_immediate.fillAmount = ratio;
-        hpBar_delay.fillAmount = ratio;
-
-        if (_hpDelayCoroutine != null)
-        {
-            StopCoroutine(_hpDelayCoroutine);
-            _hpDelayCoroutine = null;
-        }
     }
 
 }

@@ -1,28 +1,27 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TowerAttackSensor : MonoBehaviour
 {
+    [Header("[ 에디터 할당 ]")]
+    [SerializeField] private LayerMask enemyLayerMask;
     private BaseTower _tower;
 
     private HashSet<GameObject> detectedEnemies = new();
     public HashSet<GameObject> DetectedEnemies { get { return detectedEnemies; } }
 
+    public bool HasDetectedEnemy() => detectedEnemies.Count > 0;
+
     private GameObject _currentTarget;
     public GameObject CurrentTarget => _currentTarget;
 
-
-
-    [Header("[ 에디터 할당 ]")] 
-    [SerializeField] private LayerMask targetLayerMask;
-
-    public void Init(BaseTower basetower)
+    public void Init()
     {
-        _tower = basetower;
+        _tower = GetComponentInParent<BaseTower>();
+        if (_tower == null)
+            Debug.LogError("[TowerAttackSensor] BaseTower 못찾음", this);
     }
-
-    public bool HasDetectedEnemy() => detectedEnemies.Count > 0;
 
     public void ScanInitialEnemies()
     {
@@ -32,7 +31,7 @@ public class TowerAttackSensor : MonoBehaviour
         ContactFilter2D filter = new()
         {
             useLayerMask = true,
-            layerMask = targetLayerMask,
+            layerMask = enemyLayerMask,
             useTriggers = true          //트리거(IsTrigger) Collider도 포함해서 검사할지 여부
         };
 
@@ -49,10 +48,7 @@ public class TowerAttackSensor : MonoBehaviour
             }
         }
     }
-    /// <summary>
-    /// detectedEnemies 해시셋에 적 저장
-    /// </summary>
-    /// <param name="enemy"></param>
+
     public void RegistEnemy(GameObject enemy)
     {
         if (detectedEnemies.Add(enemy))
@@ -63,10 +59,6 @@ public class TowerAttackSensor : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// detectedEnemies 해시셋에서 적 제거
-    /// </summary>
-    /// <param name="enemy"></param>
     public void RemoveEnemy(GameObject enemy)
     {
         if (detectedEnemies.Remove(enemy))
@@ -80,8 +72,8 @@ public class TowerAttackSensor : MonoBehaviour
             if (detectedEnemies.Count == 0)
                 _tower.ai.SetState(TOWER_STATE.Idle);
         }
-    }
 
+    }
     /// <summary>
     /// detectedEnemies 해시셋에 등록된 가장 근접한 적을 찾는 메서드
     /// </summary>
@@ -130,31 +122,6 @@ public class TowerAttackSensor : MonoBehaviour
         }
         return furthest;
     }
-    /// <summary>
-    ///  detectedEnemies 해시셋에 등록된 체력이 가장 높은 적을 찾는 메서드
-    /// </summary>
-    /// <returns></returns>
-    public GameObject HighHpTarget()
-    {
-        GameObject highHp = null;
-        float maxHp = float.MinValue;
-
-        foreach (var enemy in detectedEnemies)
-        {
-            if (enemy == null) continue;
-
-            var stat = enemy.GetComponent<MonsterStatHandler>();
-            if (stat == null || !enemy.activeSelf) continue;
-
-            if (stat.CurHp > maxHp)
-            {
-                maxHp = stat.CurHp;
-                highHp = enemy;
-            }
-        }
-        return highHp;
-    }
-
 
     /// <summary>
     /// 현재 타겟을 새로이 설정할때 쓰는 메서드<br/>
@@ -192,7 +159,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (_tower.ai.CurState == TOWER_STATE.Destroy)
             return;
 
-        if (((1 << other.gameObject.layer) & targetLayerMask) != 0)
+        if (((1 << other.gameObject.layer) & enemyLayerMask) != 0)
         {
             if (detectedEnemies.Add(other.gameObject))
             {
@@ -210,7 +177,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (_tower.ai.CurState == TOWER_STATE.Destroy)
             return;
 
-        if (((1 << other.gameObject.layer) & targetLayerMask) != 0)
+        if (((1 << other.gameObject.layer) & enemyLayerMask) != 0)
         {
             if (detectedEnemies.Remove(other.gameObject))
             {

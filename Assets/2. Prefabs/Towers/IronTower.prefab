@@ -115,16 +115,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerType: 1
-  towerId: 410
+  icon: {fileID: 1109353221721809788}
+  constructionIcon: []
   size: {x: 3, y: 3}
-  mainCollider: {fileID: 2988486009109016483}
-  _attackCollider: {fileID: 5111005074308737201}
+  _attackRangeCollider: {fileID: 5111005074308737201}
   _buildCollider: {fileID: 8130746354129068096}
-  _interactCollider: {fileID: 4869803506577090178}
+  _mainCollider: {fileID: 2988486009109016483}
   ai: {fileID: 4551609607560423749}
   statHandler: {fileID: 8459309262913598922}
   attackSensor: {fileID: 8261416276646684489}
-  ui: {fileID: 6144722833229533621}
+  ui: {fileID: 0}
   projectile: {fileID: 1135823945734847574, guid: 4c7b9bf8cf965064598bc0d7f07d62f1, type: 3}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 338dd4a7336f4734a87ce571baf6a7ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _curState: 0
-  _prevState: 0
+  tower: {fileID: 6044215668753884168}
+  firePosition: {x: 0, y: 0, z: 0}
 --- !u!114 &8459309262913598922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,18 +153,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    id: 0
+    id: 410
     towerName: 
     flavorText: 
     buildType: 0
-    attackType: 0
     nextUpgradeId: 0
     level: 0
     towerHp: 0
     damage: 0
     aps: 0
     range: 0
-  _currHp: 0
+  _towerID: 410
+  iconRenderer: {fileID: 1109353221721809788}
 --- !u!1 &3037772152855085370
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 4869803506577090178}
   - component: {fileID: 7287218683774874684}
   m_Layer: 0
-  m_Name: InteractArea
+  m_Name: InteractArea(Blue)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 8130746354129068096}
   - component: {fileID: 8341232226603593089}
   m_Layer: 0
-  m_Name: BuildArea
+  m_Name: BuildArea(Red)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -607,9 +607,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216623c4161741a4e807e09dc2042c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tower: {fileID: 6044215668753884168}
   canvas: {fileID: 5929348067577404458}
-  icon: {fileID: 1109353221721809788}
-  constructionIcon: []
   hpBar_delay: {fileID: 8564111443121348592}
   hpBar_immediate: {fileID: 2605589461177281388}
 --- !u!1 &7776775333880778643
@@ -811,7 +810,7 @@ GameObject:
   - component: {fileID: 5111005074308737201}
   - component: {fileID: 8261416276646684489}
   m_Layer: 0
-  m_Name: AttackArea
+  m_Name: AttackArea(Purple)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -896,7 +895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2a23c4d4c7d0244ad7d56818640340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetLayerMask:
+  enemyLayerMask:
     serializedVersion: 2
     m_Bits: 128
 --- !u!1 &9044240187200664221

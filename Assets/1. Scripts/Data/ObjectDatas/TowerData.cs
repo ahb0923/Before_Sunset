@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +15,6 @@ public class TowerData
     public string towerName;
     public string flavorText;
     public TOWER_BUILD_TYPE buildType;
-    public TOWER_ATTACK_TYPE attackType;
     public int nextUpgradeId;
 
     public int level;

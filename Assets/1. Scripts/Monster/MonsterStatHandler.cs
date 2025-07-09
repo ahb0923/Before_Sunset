@@ -62,7 +62,6 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
             return;
         }
 
-        Debug.Log($"[{damaged.Attacker}]로부터 『{damaged.Value}』데미지 - {gameObject.name}");
         CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
         CurHp = Mathf.Max(CurHp, 0);
 
