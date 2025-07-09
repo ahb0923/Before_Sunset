@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -132,15 +132,10 @@ public class PlayerController : MonoBehaviour
 
     private void TryMineOre()
     {
-        if (_equippedPickaxe == null)
-        {
-            Debug.LogWarning("장착된 곡괭이가 없습니다.");
-            return;
-        }
+        if (_equippedPickaxe == null) return;
 
         Vector2 playerPos2D = (Vector2)transform.position;
 
-        // 방향 결정
         Vector2 dir = Vector2.right;
         if (animator.GetBool("isUp")) dir = Vector2.up;
         else if (animator.GetBool("isDown")) dir = Vector2.down;
@@ -148,11 +143,10 @@ public class PlayerController : MonoBehaviour
 
         float range = _equippedPickaxe.range;
 
-        // 레이캐스트 (layerMask로 "Ore"만 검사)
-        int oreLayerMask = LayerMask.GetMask("Ore");
+        int oreLayerMask = LayerMask.GetMask("Ore", "Jewel");
         RaycastHit2D hit = Physics2D.Raycast(playerPos2D, dir, range, oreLayerMask);
 
-        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f); // 시각화
+        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f);
 
         if (hit.collider != null)
         {
@@ -168,13 +162,24 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log("곡괭이 파워 부족!");
                 }
+                return;
             }
+
+            JewelController jewel = hit.collider.GetComponent<JewelController>();
+            if (jewel != null)
+            {
+                jewel.OnMined();
+                return;
+            }
+
+            Debug.Log("채굴 대상 없음");
         }
         else
         {
-            Debug.Log("채광 범위 내에 광석 없음");
+            Debug.Log("채광 범위 내에 광석/보석 없음");
         }
     }
+
 
 
     private void ToggleInventory()
