@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInputActions _inputActions;
-    private PlayerStateHandler _stateHandler;
+    public PlayerStateHandler _stateHandler;
 
     public Vector2 MoveInput { get; private set; }
     public bool IsSwing { get; private set; }
@@ -24,7 +24,6 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
-        _stateHandler = GetComponent<PlayerStateHandler>();
     }
 
     private void OnEnable()

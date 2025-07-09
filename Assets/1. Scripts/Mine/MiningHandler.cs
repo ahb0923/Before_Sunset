@@ -11,18 +11,13 @@ public class MiningHandler : MonoBehaviour
     [SerializeField] private bool isEntering;  // 입장/퇴장 자동 결정
     [SerializeField] private float stayTimeToTrigger = 1.5f;
 
-    private PlayerStateHandler _playerState;
+    public PlayerStateHandler _playerState;
     private Coroutine _triggerCoroutine;
     public PortalDirection CurrentPortalDirection => portalDirection;
 
 
     private void Start()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            _playerState = player.GetComponent<PlayerStateHandler>();
-
-        // portalDirection 기반 isEntering 결정은 여기서 하자
         UpdateEnteringState();
     }
 
@@ -31,7 +26,6 @@ public class MiningHandler : MonoBehaviour
         if (MapManager.Instance.CurrentMapIndex == 0)
         {
             isEntering = true;
-            Debug.Log($"[MiningHandler] 기본맵: 모든 포탈 입장용 (isEntering={isEntering}), portalDirection={portalDirection}");
         }
         else
         {
@@ -39,7 +33,6 @@ public class MiningHandler : MonoBehaviour
             var oppositeDir = GetOppositeDirection(lastDir);
 
             isEntering = portalDirection != oppositeDir;
-            Debug.Log($"[MiningHandler] 광산맵: lastEnteredDir={lastDir}, oppositeDir={oppositeDir}, portalDirection={portalDirection}, isEntering={isEntering}");
         }
     }
 
@@ -96,7 +89,6 @@ public class MiningHandler : MonoBehaviour
                 _playerState.EnterMiningArea();
             }
         }));
-
 
         _triggerCoroutine = null;
     }
