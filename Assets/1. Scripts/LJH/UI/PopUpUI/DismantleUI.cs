@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DismantleUI : MonoBehaviour
@@ -10,6 +11,7 @@ public class DismantleUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _builtTimeText;
     
     [SerializeField] private Button _dismantleButton;
+    [SerializeField] private Button _cancelDismantleButton;
     [SerializeField] private Button _cancelButton;
     
     [SerializeField] private GameObject _slotArea;
@@ -21,7 +23,8 @@ public class DismantleUI : MonoBehaviour
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string BUILT_TIME_TEXT = "BuiltTimeText";
     private const string DISMENTLE_BUTTON = "DismantleButton";
-    private const string CANCEL_BUTTON = "CancelDismantleButton";
+    private const string CANCEL_DISMANTLE_BUTTON = "CancelDismantleButton";
+    private const string CANCEL_BUTTON = "BackGroundCancelButton";
     private const string RECOVER_MATERIAL_SLOT_AREA = "RecoverMaterialSlotArea";
     private const string BUILDING_MATERIAL_SLOT = "BuildingMaterialSlot";
 
@@ -30,6 +33,7 @@ public class DismantleUI : MonoBehaviour
         _targetNameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, TARGET_NAME_TEXT);
         _builtTimeText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, BUILT_TIME_TEXT);
         _dismantleButton = Helper_Component.FindChildComponent<Button>(this.transform, DISMENTLE_BUTTON);
+        _cancelDismantleButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_DISMANTLE_BUTTON);
         _cancelButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_BUTTON);
         _slotArea = Helper_Component.FindChildGameObjectByName(this.gameObject, RECOVER_MATERIAL_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(BUILDING_MATERIAL_SLOT);
@@ -39,6 +43,7 @@ public class DismantleUI : MonoBehaviour
     {
         _rect = GetComponent<RectTransform>();
         _dismantleButton.onClick.AddListener(Dismantle);
+        _cancelDismantleButton.onClick.AddListener(Cancel);
         _cancelButton.onClick.AddListener(Cancel);
     }
 
@@ -77,8 +82,10 @@ public class DismantleUI : MonoBehaviour
             int num = data.buildRequirements.Count - _slots.Count;
             for (int i = 0; i < num; i++)
             {
-                Instantiate(_slotPrefab, _slotArea.transform);
-                _slots.Add(_slotArea.GetComponent<BuildingMaterialSlot>());
+                var slot = Instantiate(_slotPrefab, _slotArea.transform);
+                var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
+                _slots.Add(slotComponent);
+                slotComponent.InitIndex(i);
             }
         }
     }

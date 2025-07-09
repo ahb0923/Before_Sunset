@@ -13,6 +13,7 @@ public class UpgradeUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _targetStatText;
     [SerializeField] private TextMeshProUGUI _upgradeStatText;
     [SerializeField] private Button _upgradeButton;
+    [SerializeField] private Button _cancelButton;
 
     [SerializeField] private GameObject _slotArea;
     [SerializeField] private GameObject _slotPrefab;
@@ -26,6 +27,7 @@ public class UpgradeUI : MonoBehaviour
     private const string TARGET_STAT_TEXT = "TargetStatText";
     private const string UPGRADE_STAT_TEXT = "UpgradeStatText";
     private const string UPGRADE_BUTTON = "UpgradeButton";
+    private const string CANCEL_BUTTON = "BackGroundCancelButton";
     private const string UPGRADE_REQUIREMENT_SLOT_AREA = "UpgradeRequirementSlotArea";
     private const string BUILDING_MATERIAL_SLOT = "BuildingMaterialSlot";
 
@@ -37,6 +39,7 @@ public class UpgradeUI : MonoBehaviour
         _targetStatText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, TARGET_STAT_TEXT);
         _upgradeStatText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, UPGRADE_STAT_TEXT);
         _upgradeButton = Helper_Component.FindChildComponent<Button>(this.transform, UPGRADE_BUTTON);
+        _cancelButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_BUTTON);
         _slotArea = Helper_Component.FindChildGameObjectByName(this.gameObject, UPGRADE_REQUIREMENT_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(BUILDING_MATERIAL_SLOT);
     }
@@ -45,6 +48,7 @@ public class UpgradeUI : MonoBehaviour
     {
         _rect = GetComponent<RectTransform>();
         _upgradeButton.onClick.AddListener(Upgrade);
+        _cancelButton.onClick.AddListener(CloseUpgradeUI);
     }
 
     private void Upgrade()
@@ -79,8 +83,10 @@ public class UpgradeUI : MonoBehaviour
             int num = upgradeTowerData.buildRequirements.Count - _slots.Count;
             for (int i = 0; i < num; i++)
             {
-                Instantiate(_slotPrefab, _slotArea.transform);
-                _slots.Add(_slotArea.GetComponent<BuildingMaterialSlot>());
+                var slot = Instantiate(_slotPrefab, _slotArea.transform);
+                var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
+                _slots.Add(slotComponent);
+                slotComponent.InitIndex(i);
             }
         }
     }
@@ -117,10 +123,10 @@ public class UpgradeUI : MonoBehaviour
                                $"공격력 : {data.damage}\n" +
                                $"사거리 : {data.range}\n" +
                                $"쿨타임 : {data.aps}";
-        _upgradeStatText.text = $"MaxHP : {upgradeTowerData.towerHp}\n" +
-                                $"공격력 : {upgradeTowerData.damage}\n" +
-                                $"사거리 : {upgradeTowerData.range}\n" +
-                                $"쿨타임 : {upgradeTowerData.aps}";
+        _upgradeStatText.text = $"MaxHP : {data.towerHp + upgradeTowerData.towerHp}\n" +
+                                $"공격력 : {data.damage + upgradeTowerData.damage}\n" +
+                                $"사거리 : {data.range + upgradeTowerData.range}\n" +
+                                $"쿨타임 : {data.aps + upgradeTowerData.aps}";
     }
 
     private void ClearUI()

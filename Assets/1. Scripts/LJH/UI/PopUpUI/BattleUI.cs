@@ -74,12 +74,12 @@ public class BattleUI : MonoBehaviour
     
     public void ShowReturnUI()
     {
+        Open();
         _returnRoutine = StartCoroutine(C_Return());
     }
 
     public IEnumerator C_Return()
     {
-        Open();
         StartCoroutine(C_WaitSecond());
         _returnText.text = _baseText;
         StartCoroutine(C_DOTextMesh(_returnText, 1f));

@@ -1,18 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TowerInteractSensor : MonoBehaviour
+public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Collider2D _collider;
     [SerializeField] private SpriteRenderer _sprite;
     [SerializeField] private LayerMask _layer;
+    
+    private BaseTower _tower;
 
     private HashSet<GameObject> _inside = new();
-
+    
     private void Start()
     {
+        _tower = Helper_Component.GetComponentInParent<BaseTower>(this.gameObject);
         ScanInitial();
     }
 
@@ -60,4 +64,9 @@ public class TowerInteractSensor : MonoBehaviour
         SetSpriteAlpha(_inside.Count > 0 ? 0.5f : 1f);
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        var data = DataManager.Instance.TowerData.GetByName(_tower.statHandler.TowerName);
+        UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
+    }
 }
