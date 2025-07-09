@@ -2,7 +2,7 @@
   {
     "id": "400",
     "towerName": "구리 발사기",
-    "context": "구리와 기본 부품만으로 만들어낸 최초의 공격 수단.\n단일 표적을 처치하는데 특화되어 있다.",
+    "flavorText": "구리와 기본 부품만으로 만들어낸 최초의 공격 수단.\n단일 표적을 처치하는데 특화되어 있다.",
     "buildType": "Base",
     "nextUpgradeId": 401,
     "attackType": "Projectile",
@@ -18,7 +18,7 @@
   {
     "id": "401",
     "towerName": "구리 발사기+",
-    "context": "성능 향상을 위해 회로를 재정비한 개량형 구리 발사기.\n보다 강하게 단일 표적을 처치한다.",
+    "flavorText": "성능 향상을 위해 회로를 재정비한 개량형 구리 발사기.\n보다 강하게 단일 표적을 처치한다.",
     "buildType": "Upgrade",
     "attackType": "Projectile",
     "level": 2,
@@ -33,7 +33,7 @@
   {
     "id": "410",
     "towerName": "철 캐논",
-    "context": "철을 이용해 만든 광역 공격 수단.\n느리지만 넓은 범위에 피해를 입힌다.",
+    "flavorText": "철을 이용해 만든 광역 공격 수단.\n느리지만 넓은 범위에 피해를 입힌다.",
     "buildType": "Base",
     "nextUpgradeId": 411,
     "attackType": "Projectile",
@@ -50,7 +50,7 @@
   {
     "id": "411",
     "towerName": "철 캐논+",
-    "context": "충격 장치를 덧댄 개량형 철 캐논.\n더 넓고 강한 폭발로 다수의 적을 제압한다.",
+    "flavorText": "충격 장치를 덧댄 개량형 철 캐논.\n더 넓고 강한 폭발로 다수의 적을 제압한다.",
     "buildType": "Upgrade",
     "attackType": "Projectile",
     "level": 2,
@@ -65,7 +65,7 @@
   {
     "id": "420",
     "towerName": "오팔 필드",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Base",
     "nextUpgradeId": 421,
     "attackType": "Areaofeffect",
@@ -82,7 +82,7 @@
   {
     "id": "421",
     "towerName": "오팔 필드+",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Upgrade",
     "attackType": "Areaofeffect",
     "level": 2,
@@ -97,7 +97,7 @@
   {
     "id": "430",
     "towerName": "다이아 프리즘",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Base",
     "nextUpgradeId": 431,
     "attackType": "Projectile",
@@ -115,7 +115,7 @@
   {
     "id": "431",
     "towerName": "다이아 프리즘+",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Upgrade",
     "attackType": "Projectile",
     "level": 2,
@@ -132,7 +132,7 @@
   {
     "id": "440",
     "towerName": "재생 타워",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Base",
     "nextUpgradeId": 441,
     "attackType": "Areaofeffect",
@@ -149,7 +149,7 @@
   {
     "id": "441",
     "towerName": "재생 타워+",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Upgrade",
     "attackType": "Areaofeffect",
     "level": 2,
@@ -164,7 +164,7 @@
   {
     "id": "450",
     "towerName": "자력 타워",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Base",
     "nextUpgradeId": 451,
     "attackType": "Areaofeffect",
@@ -180,7 +180,7 @@
   {
     "id": "451",
     "towerName": "자력 타워+",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Upgrade",
     "attackType": "Areaofeffect",
     "level": 2,
@@ -195,7 +195,7 @@
   {
     "id": "460",
     "towerName": "전깃줄 타워",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Base",
     "nextUpgradeId": 461,
     "attackType": "Areaofeffect",
@@ -212,7 +212,7 @@
   {
     "id": "461",
     "towerName": "전깃줄 타워+",
-    "context": "작성예정",
+    "flavorText": "작성예정",
     "buildType": "Upgrade",
     "attackType": "Areaofeffect",
     "level": 2,
