@@ -9,7 +9,5 @@ public class GameManager : MonoSingleton<GameManager>
     private async void Start()
     {
         await DataManager.Instance.InitAsync();
-
-        PoolManager.Instance.InitPool();
     }
 }

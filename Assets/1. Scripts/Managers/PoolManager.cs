@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public interface IPoolable
 {
@@ -39,7 +38,6 @@ public class PoolManager : MonoSingleton<PoolManager>
             if (!data.prefab.TryGetComponent<IPoolable>(out var poolable)) continue;
 
             _prefabs[poolable.GetId()] = data.prefab;
-            //Debug.Log($"등록할 ID : { poolable.GetId()}");
             
             var queue = new Queue<GameObject>();
             _pools[poolable.GetId()] = queue;
@@ -114,5 +112,4 @@ public class PoolManager : MonoSingleton<PoolManager>
         obj.SetActive(false);
         _pools[id].Enqueue(obj);
     }
-
 }

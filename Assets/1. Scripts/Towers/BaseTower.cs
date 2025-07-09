@@ -17,21 +17,17 @@ public enum TOWER_TYPE
     HealTower,
     MagnetTower
 }
-public class BaseTower : MonoBehaviour, IPoolable 
+public class BaseTower : MonoBehaviour
 {
     [Header(" [에디터 할당] ")]
-    public TOWER_TYPE towerType;
-    public int towerId;
+    [SerializeField] public TOWER_TYPE towerType;
+    [SerializeField] public SpriteRenderer icon;
+    [SerializeField] public List<Sprite> constructionIcon;
+    [SerializeField] public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등
 
-
-    public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등
-
-
-    public Collider2D mainCollider;
-    public Collider2D _attackCollider;
-    public Collider2D _buildCollider;
-    public Collider2D _interactCollider;
-
+    [SerializeField] private Collider2D _attackRangeCollider;
+    [SerializeField] private Collider2D _buildCollider;
+    [SerializeField] private Collider2D _mainCollider;
 
     // state 는 ai로 접근
     public TowerAI ai;
@@ -47,67 +43,50 @@ public class BaseTower : MonoBehaviour, IPoolable
 
     private void Reset()
     {
-        mainCollider = Helper_Component.GetComponent<Collider2D>(gameObject);
+        if (ai == null)
+            ai = GetComponent<TowerAI>();
 
-        // 이동 필요
-        _attackCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "AttackArea");
+        if (statHandler == null)
+            statHandler = new TowerStatHandler();
+        statHandler.Init();
 
-        // 이동 필요
-        _interactCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "InteractArea");
+        if (attackSensor == null)
+            attackSensor = GetComponentInChildren<TowerAttackSensor>();
+        attackSensor.Init();
 
-        // 이동 필요?
-        _buildCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "BuildArea");
+        if (ui == null)
+            ui = GetComponentInChildren<TowerUI>();
+        ui.Init();
 
-        ai = Helper_Component.GetComponent<TowerAI>(gameObject);
-        statHandler = Helper_Component.GetComponent<TowerStatHandler>(gameObject);
-        attackSensor = Helper_Component.GetComponentInChildren<TowerAttackSensor>(gameObject);
-        ui = Helper_Component.GetComponentInChildren<TowerUI>(gameObject);
+        if (icon == null)
+            icon = GetComponentInChildren<SpriteRenderer>();
+
+        if (_mainCollider == null)
+            _mainCollider = GetComponent<Collider2D>();
     }
     
 
-    public void Init()
+    private void Awake()
     {
-        statHandler.Init(this, towerId);
-        ui.Init(this);
-        ai.Init(this);
-        attackSensor.Init(this);
+        if (ai == null)
+            ai = GetComponent<TowerAI>();
+
+        if (statHandler == null)
+            statHandler = new TowerStatHandler();
+        statHandler.Init();
+
+        if (attackSensor == null)
+            attackSensor = GetComponentInChildren<TowerAttackSensor>();
+        attackSensor.Init();
+
+        if (ui == null)
+             ui = GetComponentInChildren<TowerUI>();
+        ui.Init();
+
+        if (icon == null)
+            icon = GetComponentInChildren<SpriteRenderer>();
+
+        if (_mainCollider == null)
+            _mainCollider = GetComponent<Collider2D>();
     }
-
-
-    // ============<< IPoolable >>============
-
-    public int GetId()
-    {
-        return towerId;
-    }
-
-    /// <summary>
-    /// 풀링에서 오브젝트 생성 시 단 1번 실행
-    /// </summary>
-    public void OnInstantiate()
-    {
-        Init();
-    }
-
-    /// <summary>
-    /// 풀링에서 가져올 때 호출
-    /// </summary>
-    public void OnGetFromPool()
-    {
-        gameObject.SetActive(true);
-        ai.ResetStateMachine();
-        ai.SetState(TOWER_STATE.Construction, true);
-        ui.ResetHpBar();
-    }
-
-    /// <summary>
-    /// 풀링으로 반환할 때 호출
-    /// </summary>
-    public void OnReturnToPool()
-    {
-        ai.SetState(TOWER_STATE.None, true);
-        gameObject.SetActive(false);
-    }
-    // =======================================
-
 }
