@@ -11,7 +11,6 @@ public class GameTimeUI : MonoBehaviour
     [SerializeField] private Transform _clockHand;
 
     [Header("# Buttons")]
-    [SerializeField] private Button _pauseBtn;
     [SerializeField] private Button _halfDaySkipBtn;
     [SerializeField] private Button _daySkipBtn;
 
@@ -19,7 +18,6 @@ public class GameTimeUI : MonoBehaviour
     {
         _dayPieceList = _dayPieceParent.GetComponentsInChildren<Transform>();
 
-        _pauseBtn.onClick.AddListener(TimeManager.Instance.ControlPause);
         _halfDaySkipBtn.onClick.AddListener(TimeManager.Instance.SkipHalfDay);
         _daySkipBtn.onClick.AddListener(TimeManager.Instance.NextDay);
     }
@@ -31,7 +29,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ½Ã°è ¹Ù´Ã µ¹¾Æ°¡µµ·Ï ¾÷µ¥ÀÌÆ®
+    /// ï¿½Ã°ï¿½ ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     /// </summary>
     private void UpdateClockHand()
     {
@@ -39,18 +37,18 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ³¯Â¥¿Í ½Ã°£¿¡ µû¸¥ ½ºÅµ ¹öÆ° »óÈ£ÀÛ¿ë °¡´É À¯¹« ¾÷µ¥ÀÌÆ®
+    /// ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ ï¿½ï¿½Æ° ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     /// </summary>
     private void UpdateSkipButtonState()
     {
-        // ÀÏ½Ã Á¤Áö ½Ã¿¡´Â ºñÈ°¼ºÈ­
+        // ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         if (TimeManager.Instance.IsGamePause)
         {
             _daySkipBtn.interactable = false;
             _halfDaySkipBtn.interactable = false;
         }
 
-        // 3ÀÏÂ÷ ±îÁö´Â È°¼ºÈ­
+        // 3ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­
         if(TimeManager.Instance.Day <= TimeManager.Instance.MaxDay - 2)
         {
             _daySkipBtn.interactable = true;
@@ -58,7 +56,7 @@ public class GameTimeUI : MonoBehaviour
         }
         else
         {
-            // 4ÀÏÂ÷ ³·¿¡´Â ÇÏÇÁ µ¥ÀÌ ½ºÅµ¸¸ °¡´É
+            // 4ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && !TimeManager.Instance.IsNight)
             {
                 _halfDaySkipBtn.interactable = true;
@@ -66,7 +64,7 @@ public class GameTimeUI : MonoBehaviour
             }
             else
             {
-                // ¸ó½ºÅÍ ½ºÆù ÀÌÈÄ¿¡´Â ¸ðµç ¸ó½ºÅÍ°¡ Á×¾úÀ» ¶§¸¸ ½ºÅµ °¡´É
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í°ï¿½ ï¿½×¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Åµ ï¿½ï¿½ï¿½ï¿½
                 if (TimeManager.Instance.IsStageClear)
                 {
                     _halfDaySkipBtn.interactable = true;
@@ -82,7 +80,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ³¯Â¥¿¡ µû¶ó¼­ ³¯Â¥ ÇÇ½º È°¼ºÈ­
+    /// ï¿½ï¿½Â¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â¥ ï¿½Ç½ï¿½ È°ï¿½ï¿½È­
     /// </summary>
     public void SetDayPieces()
     {
@@ -93,7 +91,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     /// </summary>
     public void SetStageText()
     {

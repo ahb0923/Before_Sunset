@@ -25,4 +25,3 @@ public class TowerData
 
     public Dictionary<string, int> buildRequirements;
 }
-

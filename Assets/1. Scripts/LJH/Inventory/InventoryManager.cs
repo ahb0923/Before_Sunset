@@ -4,8 +4,10 @@ public class InventoryManager : MonoSingleton<InventoryManager>
 {
     public Inventory Inventory { get; private set; }
 
-    public void Init(Inventory inventory)
+    protected override void Awake()
     {
-        this.Inventory = inventory;
+        base.Awake();
+        
+        Inventory = Helper_Component.FindChildComponent<Inventory>(this.transform, "InventoryContainer");
     }
 }

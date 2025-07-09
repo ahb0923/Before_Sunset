@@ -23,9 +23,9 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     
     private void Reset()
     {
-        _itemImage = UtilityLJH.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
-        _highlightImage = UtilityLJH.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
-        _highlight = UtilityLJH.FindChildInChild(this.transform, HIGHLIGHT_IMAGE).gameObject;
+        _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
+        _highlightImage = Helper_Component.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
+        _highlight = Helper_Component.FindChildGameObjectByName(this.gameObject, HIGHLIGHT_IMAGE);
     }
     
     /// <summary>
