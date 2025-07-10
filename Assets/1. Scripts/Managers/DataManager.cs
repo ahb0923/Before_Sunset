@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -83,6 +83,7 @@ public class DataManager : PlainSingleton<DataManager>
         }
 
         ItemData.Init(MineralData, JewelData, EquipmentData);
+        TowerData.SettingTowerImages();
 
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
 

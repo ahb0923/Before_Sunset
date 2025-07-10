@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum TOWER_BUILD_TYPE
 {
@@ -23,6 +24,8 @@ public class TowerData
     public float damage;
     public float aps;
     public float range;
+
+    public string prefabName;
 
     public Dictionary<string, int> buildRequirements;
 }

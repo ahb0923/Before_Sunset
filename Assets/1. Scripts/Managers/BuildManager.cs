@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -24,11 +24,15 @@ public class BuildManager : MonoSingleton<BuildManager>
             _groundTilemap = DefenseManager.Instance.GroundTile;
     }
 
+    /// <summary>
+    /// 버튼 클릭했을때 아이콘이 마우스 포인터따라오게 해당되는 prefab.Image
+    /// </summary>
+    /// <param name="prefab"></param>
     public void StartPlacing(BaseTower prefab)
     {
         _towerPrefab = prefab;
-        _towerMainCollider = prefab.GetComponent<Collider2D>();
-        Debug.Log(_towerMainCollider);
+       // _towerMainCollider = prefab.GetComponent<Collider2D>();
+        //Debug.Log(_towerMainCollider);
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();

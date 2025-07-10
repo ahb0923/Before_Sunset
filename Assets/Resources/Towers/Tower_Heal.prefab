@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4551609607560423749}
   - component: {fileID: 8459309262913598922}
   m_Layer: 6
-  m_Name: MagenetTower
+  m_Name: Tower_Heal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,8 +114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13f239bd4219a1b48ab1ad0d7ea58c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerType: 4
-  towerId: 450
+  towerType: 3
+  towerId: 440
   size: {x: 3, y: 3}
   mainCollider: {fileID: 2988486009109016483}
   _attackCollider: {fileID: 5111005074308737201}
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    id: 0
+    id: 400
     towerName: 
     flavorText: 
     buildType: 0
@@ -787,12 +787,12 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 20
-  m_Sprite: {fileID: 21300000, guid: 81101a52685c90f47844107fcd6d9ea9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e929b2feb3add43409d36493533bdbb8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 3}
+  m_Size: {x: 2.1875, y: 4.0625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -899,7 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetLayerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 64
 --- !u!1 &9044240187200664221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,7 +1049,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 10
   m_Sprite: {fileID: -2413806693520163455, guid: 9a4eda41d73af5b4d9daab8b9597bcaa, type: 3}
-  m_Color: {r: 0.72207546, g: 0, b: 1, a: 0.039215688}
+  m_Color: {r: 0.11748052, g: 1, b: 0, a: 0.039215688}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

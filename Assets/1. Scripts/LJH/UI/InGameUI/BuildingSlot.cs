@@ -40,11 +40,11 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             _towerData = towerData;
             _smelterData = null;
-            
-            var go = Resources.Load<GameObject>(towerData.id.ToString());
+
+            var go = DataManager.Instance.TowerData.GetTowerPrefabById(towerData.id);
             buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
-            
-            // _buildingIcon = towerData.icon;
+
+            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(go.transform,"Image").sprite;
             _buildingName.text = towerData.towerName;
             
             this.gameObject.SetActive(true);

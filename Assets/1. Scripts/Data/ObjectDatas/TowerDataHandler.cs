@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.U2D;
+using UnityEngine.UI;
 
 public class TowerDataHandler : BaseDataHandler<TowerData>
 {
@@ -13,7 +15,32 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
     protected override int GetId(TowerData data) => data.id;
     protected override string GetName(TowerData data) => data.towerName;
 
+    private Dictionary<int,GameObject> _towerPrefabs = new();
+    public Dictionary<int, GameObject> TowerImages => _towerPrefabs;
+    public GameObject GetTowerPrefabById(int id) => _towerPrefabs[id];
 
+    /// <summary>
+    /// 타워 이미지 데이터 초기화
+    /// </summary>
+    public void SettingTowerImages()
+    {
+        foreach(var tower in dataIdDictionary.Values)
+        {
+            if(tower.buildType == TOWER_BUILD_TYPE.Base)
+            {
+                GameObject towerPrefab = Resources.Load<GameObject>($"Towers/{tower.prefabName}");
+                if (towerPrefab != null)
+                {
+                    _towerPrefabs.Add(tower.id, towerPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning($"[SettingTowerImages] 이미지 로드 실패: {tower.towerName} / {tower.prefabName}");
+                }
+            }
+        }
+        Debug.Log($"[Setting Tower Images] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
+    }
 
     [ContextMenu ("Debug all Log")]
     public override void DebugLogAll(Func<TowerData, string> formatter = null)
@@ -43,6 +70,7 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
             {
                 Debug.Log($"└ 스탯 - HP: {tower.towerHp}, 공격력: {tower.damage}, 공속: {tower.aps}, 사거리: {tower.range}");
                 Debug.Log($"└ 제작 자원: {buildReqs}");
+                Debug.Log($"└ 타워 프리팹파일 : {tower.prefabName}");
             }
             else
             {

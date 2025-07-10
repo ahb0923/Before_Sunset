@@ -11,6 +11,7 @@
     "damage": 5,
     "aps": 1,
     "range": 3,
+    "prefabName": "Tower_Cooper",
     "buildRequirements": {
       "구리주괴": 15
     }
@@ -42,6 +43,7 @@
     "damage": 8,
     "aps": 2,
     "range": 5,
+    "prefabName": "Tower_Iron",
     "buildRequirements": {
       "구리주괴": 10,
       "철주괴": 30
@@ -66,7 +68,7 @@
     "id": "420",
     "towerName": "오팔 필드",
     "flavorText": "작성예정",
-    "buildType": "Base",
+    "buildType": "Upgrade",
     "nextUpgradeId": 421,
     "attackType": "Areaofeffect",
     "level": 1,
@@ -107,6 +109,7 @@
     "reflectionDamage": 4,
     "aps": 1.5,
     "range": 4,
+    "prefabName": "Tower_Diaprism",
     "buildRequirements": {
       "탄자나이트": 4,
       "다이아몬드": 3
@@ -141,6 +144,7 @@
     "damage": 7,
     "aps": 3,
     "range": 6,
+    "prefabName": "Tower_Heal",
     "buildRequirements": {
       "철주괴": 20,
       "옥": 3
@@ -172,6 +176,7 @@
     "towerHp": 100,
     "aps": 3,
     "range": 6,
+    "prefabName": "Tower_Magnet",
     "buildRequirements": {
       "금주괴": 20,
       "자수정": 4
@@ -196,7 +201,7 @@
     "id": "460",
     "towerName": "전깃줄 타워",
     "flavorText": "작성예정",
-    "buildType": "Base",
+    "buildType": "Upgrade",
     "nextUpgradeId": 461,
     "attackType": "Areaofeffect",
     "level": 1,
