@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DismantleUI : MonoBehaviour
@@ -63,6 +62,7 @@ public class DismantleUI : MonoBehaviour
     {
         _rect.OpenAtCenter();
         InitSlots(data);
+        SetSlot(data);
         SetDismantleUI(data);
     }
 
@@ -86,6 +86,27 @@ public class DismantleUI : MonoBehaviour
                 var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
                 _slots.Add(slotComponent);
                 slotComponent.InitIndex(i);
+            }
+        }
+    }
+    
+    private void SetSlot(TowerData data)
+    {
+        var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
+        
+        List<KeyValuePair<string, int>> dataList = upgradeTowerData.buildRequirements.ToList();
+        List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
+        
+        foreach (var slot in _slots)
+        {
+            slot.ClearSlot();
+
+            if (slot.Index < dataList.Count)
+            {
+                var dataName = dataList[slot.Index].Key;
+                var dataAmount = dataList[slot.Index].Value;
+                
+                slot.SetSlot(dataName, dataAmount, items);
             }
         }
     }
