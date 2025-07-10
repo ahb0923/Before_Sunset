@@ -115,6 +115,9 @@ public class BuildManager : MonoSingleton<BuildManager>
             return false;
         }
 
+        // 인벤토리 재화 체크
+
+
         // 배치 성공
         //BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
         BaseTower tower = Helper_Component.GetComponent<BaseTower>(PoolManager.Instance.GetFromPool(prefab.towerId, cellCenter, _towerPool));
