@@ -10,6 +10,8 @@ public class UIManager : MonoSingleton<UIManager>
     public CraftMaterialArea CraftMaterialArea { get; private set; }
     public SaveLoadUI SaveLoadUI { get; private set; }
     public BattleUI BattleUI { get; private set; }
+    public UpgradeUI UpgradeUI { get; private set; }
+    public DismantleUI DismantleUI { get; private set; }
 
     protected override void Awake()
     {
@@ -21,6 +23,8 @@ public class UIManager : MonoSingleton<UIManager>
         CraftMaterialArea = Helper_Component.FindChildComponent<CraftMaterialArea>(this.transform, "CraftMaterialArea");
         SaveLoadUI = Helper_Component.FindChildComponent<SaveLoadUI>(this.transform, "SaveLoadBG");
         BattleUI = Helper_Component.FindChildComponent<BattleUI>(this.transform, "BattleUI");
+        UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
+        DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         
         CraftArea.gameObject.SetActive(false);
         CraftMaterialArea.gameObject.SetActive(false);

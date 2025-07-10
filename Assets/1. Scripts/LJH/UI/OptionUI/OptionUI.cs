@@ -8,6 +8,7 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private Slider _wholeSoundSlider;
     [SerializeField] private Slider _bGSoundSlider;
     [SerializeField] private Slider _effectSoundSlider;
+    [SerializeField] private Button _cancelButton;
     
     private RectTransform _optionRect;
     
@@ -24,6 +25,7 @@ public class OptionUI : MonoBehaviour
     private const string QUIT_GAME_BUTTON = "QuitGameButton";
     private const string SAVE_LOAD_OPTION_BUTTON = "SaveLoadOptionButton";
     private const string MAIN_MENU_OPTION_BUTTON = "MainMenuOptionButton";
+    private const string CANCEL_BUTTON = "BackGroundCancelButton";
 
     private void Reset()
     {
@@ -31,6 +33,7 @@ public class OptionUI : MonoBehaviour
         _wholeSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, WHOLE_SOUND_SLIDER);
         _bGSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, BG_SOUND_SLIDER);
         _effectSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, EFFECT_SOUND_SLIDER);
+        _cancelButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_BUTTON);
     }
 
     private void Awake()
@@ -46,6 +49,7 @@ public class OptionUI : MonoBehaviour
         quitGameButton.onClick.AddListener(OnClickQuitButton);
         saveLoadButton.onClick.AddListener(OnClickSaveLoadButton);
         mainMenuButton.onClick.AddListener(OnClickMainMenuButton);
+        _cancelButton.onClick.AddListener(Close);
         
         _optionRect = this.GetComponent<RectTransform>();
     }
@@ -71,6 +75,7 @@ public class OptionUI : MonoBehaviour
 
     private void Close()
     {
+        UIManager.Instance.SaveLoadUI.saveLoadRect.CloseAndRestore();
         _optionRect.CloseAndRestore();
     }
 
