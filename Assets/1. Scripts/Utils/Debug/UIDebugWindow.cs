@@ -59,8 +59,7 @@ public class UIDebugWindow : EditorWindow
         
         if (GUILayout.Button("하급제련소강제주입"))
         {
-            UIManager.Instance.SmelterUI.smelterInputSlot.TestCode();
-            UIManager.Instance.SmelterUI.smelterOutputSlot.TestCode();
+            UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
         }
     }
 }

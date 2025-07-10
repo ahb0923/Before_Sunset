@@ -98,12 +98,12 @@ public class QuickSlotInventoryUI : MonoBehaviour
         }
     }
     
-    private void Open()
+    public void Open()
     {
         this.gameObject.SetActive(true);
     }
 
-    private void Close()
+    public void Close()
     {
         this.gameObject.SetActive(false);
     }

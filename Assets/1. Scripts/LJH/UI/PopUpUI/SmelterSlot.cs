@@ -21,12 +21,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private const string ITEM_ICON = "IconImage";
     private const string ITEM_AMOUNT = "AmountText";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
-
-    public void TestCode()
-    {
-        _currentData = DataManager.Instance.SmelterData.GetById(900);
-    }
-
+    
     private void Reset()
     {
         _itemIcon = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_ICON);
@@ -50,6 +45,49 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             IsInputSlot = false;
         }
+    }
+    
+    public void SetSmelterSlot(SmelterData data)
+    {
+        _currentData = data;
+    }
+
+    public bool IsOutputEmpty()
+    {
+        if (CurrentItem == null)
+            return true;
+        else return false;
+    }
+    
+    public void GetSmelterItem(Item item, int amount)
+    {
+        if (CurrentItem == null)
+        {
+            CurrentItem = item;
+            CurrentItem.stack += amount;
+        }
+        else
+        {
+            CurrentItem.stack += amount;
+        }
+    }
+
+    public void ReceiveItem()
+    {
+        if (CurrentItem == null)
+        {
+            return;
+        }
+        
+        int id = CurrentItem.Data.id;
+        int quantity = CurrentItem.stack;
+        
+        var inventory = InventoryManager.Instance.Inventory;
+        inventory.AddItem(id, quantity);
+        
+        CurrentItem = null;
+        RefreshUI();
+        inventory.RefreshInventories();
     }
 
     public void ClearSlot()

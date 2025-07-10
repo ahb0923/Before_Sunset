@@ -42,6 +42,12 @@ public class Inventory : MonoBehaviour
         Item item = new Item(DataManager.Instance.ItemData.GetId(id));
         return item;
     }
+
+    public void RefreshInventories()
+    {
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+    }
     
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드

@@ -1,24 +1,28 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SmelterUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _smelterNameText;
     [SerializeField] public SmelterSlot smelterInputSlot;
     [SerializeField] public SmelterSlot smelterOutputSlot;
+    [SerializeField] private Button _receiveButton;
     
     private RectTransform _rect;
 
     private const string SMELTER_NAME_TEXT = "SmelterNameText";
     private const string SMELTER_INPUT_SLOT = "SmelterInputSlot";
     private const string SMELTER_OUTPUT_SLOT = "SmelterOutputSlot";
+    private const string RECEIVE_BUTTON = "ReceiveButton";
 
     private void Reset()
     {
         _smelterNameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, SMELTER_NAME_TEXT);
         smelterInputSlot = Helper_Component.FindChildComponent<SmelterSlot>(this.transform, SMELTER_INPUT_SLOT);
         smelterOutputSlot = Helper_Component.FindChildComponent<SmelterSlot>(this.transform, SMELTER_OUTPUT_SLOT);
+        _receiveButton = Helper_Component.FindChildComponent<Button>(this.transform, RECEIVE_BUTTON);
     }
 
     private void Awake()
@@ -26,15 +30,37 @@ public class SmelterUI : MonoBehaviour
         _rect = GetComponent<RectTransform>();
         smelterInputSlot.InitInputSlot(true);
         smelterOutputSlot.InitInputSlot(false);
+        _receiveButton.onClick.AddListener(ReceiveItem);
+    }
+
+    private void Start()
+    {
+        CloseSmelter();
     }
 
     public void OpenSmelter()
     {
         _rect.OpenAtCenter();
+        InventoryManager.Instance.Inventory.InventoryUI.Open();
+        InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Close();
     }
 
     public void CloseSmelter()
     {
         _rect.CloseAndRestore();
+        InventoryManager.Instance.Inventory.InventoryUI.Close();
+        InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Open();
+    }
+
+    public void SetSmelterUI(SmelterData data)
+    {
+        _smelterNameText.text = data.smelterName;
+        smelterInputSlot.SetSmelterSlot(data);
+        smelterOutputSlot.SetSmelterSlot(data);
+    }
+
+    private void ReceiveItem()
+    {
+        smelterOutputSlot.ReceiveItem();
     }
 }
