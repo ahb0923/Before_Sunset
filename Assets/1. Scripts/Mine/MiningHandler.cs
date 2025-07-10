@@ -11,7 +11,7 @@ public class MiningHandler : MonoBehaviour
     [SerializeField] private bool isEntering;  // 입장/퇴장 자동 결정
     [SerializeField] private float stayTimeToTrigger = 1.5f;
 
-    public PlayerStateHandler _playerState;
+    private PlayerStateHandler _playerState;
     private Coroutine _triggerCoroutine;
     public PortalDirection CurrentPortalDirection => portalDirection;
 
@@ -39,17 +39,27 @@ public class MiningHandler : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && _triggerCoroutine == null)
+        if (!other.CompareTag("Player")) return;
+
+        if (_playerState == null)
         {
-            var inputHandler = other.GetComponent<PlayerInputHandler>();
-            if (inputHandler != null && inputHandler.IsRecallInProgress())
+            _playerState = other.GetComponentInChildren<PlayerStateHandler>();
+            if (_playerState == null)
             {
-                Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+                Debug.LogWarning("PlayerStateHandler를 찾지 못했습니다.");
                 return;
             }
-
-            _triggerCoroutine = StartCoroutine(WaitAndTrigger());
         }
+
+        var inputHandler = other.GetComponent<PlayerInputHandler>();
+        if (inputHandler != null && inputHandler.IsRecallInProgress())
+        {
+            Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+            return;
+        }
+
+        if (_triggerCoroutine == null)
+            _triggerCoroutine = StartCoroutine(WaitAndTrigger());
     }
 
     private void OnTriggerExit2D(Collider2D other)
