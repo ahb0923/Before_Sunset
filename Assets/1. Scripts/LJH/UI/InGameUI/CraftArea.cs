@@ -60,6 +60,11 @@ public class CraftArea : MonoBehaviour
         _towerButton.interactable = false;
         _smelterButton.interactable = true;
 
+        foreach (var slot in _buildSlots)
+        {
+            slot.ClearSlot();
+        }
+
         for (int i = 0; i < _buildSlots.Count; i++)
         {
             TowerData data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
@@ -71,6 +76,11 @@ public class CraftArea : MonoBehaviour
     {
         _smelterButton.interactable = false;
         _towerButton.interactable = true;
+        
+        foreach (var slot in _buildSlots)
+        {
+            slot.ClearSlot();
+        }
     
         for (int i = 0; i < _buildSlots.Count; i++)
         {

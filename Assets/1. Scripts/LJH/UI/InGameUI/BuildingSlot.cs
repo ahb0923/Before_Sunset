@@ -49,16 +49,6 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             
             this.gameObject.SetActive(true);
         }
-        else
-        {
-            _towerData = null;
-            _smelterData = null;
-            
-            _buildingIcon = null;
-            _buildingName.text = "";
-            
-            this.gameObject.SetActive(false);
-        }
     }
 
     public void SetSmelterSlot(SmelterData smelterData)
@@ -75,16 +65,15 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             
             this.gameObject.SetActive(true);
         }
-        else
-        {
-            _towerData = null;
-            _smelterData = null;
-            
-            _buildingIcon = null;
-            _buildingName.text = "";
-            
-            this.gameObject.SetActive(false);
-        }
+    }
+    
+    public void ClearSlot()
+    {
+        _towerData = null;
+        _smelterData = null;
+        _buildingIcon.sprite = null;
+        _buildingName.text = "";
+        gameObject.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
