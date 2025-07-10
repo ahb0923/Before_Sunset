@@ -519,15 +519,13 @@ public class NodePath
     /// <summary>
     /// CurNode를 경로의 다음 노드로 이동
     /// </summary>
-    public bool Next()
+    public void Next()
     {
         if (_index + 1 >= _path.Count)
         {
-            return false;
+            return;
         }
-
         _index++;
-        return true;
     }
 
     /// <summary>
