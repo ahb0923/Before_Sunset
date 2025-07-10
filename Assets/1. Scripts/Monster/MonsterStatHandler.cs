@@ -56,6 +56,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     /// <param name="damaged">받은 데미지 정보</param>
     public void OnDamaged(Damaged damaged)
     {
+        if (_monster.IsDead) return;
+
         if (damaged.Attacker == null)
         {
             Debug.LogWarning("타격 대상 못찾음!");
@@ -64,6 +66,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
         CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
         CurHp = Mathf.Max(CurHp, 0);
+        _monster.HpBar.UpdateHpBar(CurHp);
 
         if (CurHp == 0)
         {

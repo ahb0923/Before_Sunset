@@ -18,9 +18,12 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public SpriteRenderer Spriter { get; private set; }
     public Animator Animator { get; private set; }
     public TargetDetector Detector { get; private set; }
+    public EntityHpBar HpBar { get; private set; }
 
     // 원거리 공격 몬스터만 투사체 받아옴
     [field: SerializeField] public GameObject Projectile { get; private set; }
+
+    public bool IsDead => Ai.CurState == MONSTER_STATE.Dead;
 
     private void LateUpdate()
     {
@@ -39,10 +42,12 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Spriter = GetComponentInChildren<SpriteRenderer>();
         Animator = GetComponentInChildren<Animator>();
         Detector = GetComponentInChildren<TargetDetector>();
+        HpBar = GetComponentInChildren<EntityHpBar>();
 
         Ai.Init(this, Animator);
         Stat.Init(this, _id);
         Detector.Init(this);
+        HpBar.Init(Stat.MaxHp);
     }
 
     /// <summary>
@@ -51,6 +56,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void OnGetFromPool()
     {
         Stat.SetFullHp();
+        HpBar.SetFullHpBar();
         Ai.InitExploreState();
     }
 
