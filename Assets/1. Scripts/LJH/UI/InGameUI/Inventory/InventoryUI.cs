@@ -82,19 +82,16 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void ToggleInventory()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            bool isOpen = this.gameObject.activeSelf;
-            this.gameObject.SetActive(!isOpen);
+        bool isOpen = this.gameObject.activeSelf;
+        this.gameObject.SetActive(!isOpen);
 
-            if (!isOpen)
-            {
-                Open();
-            }
-            else
-            {
-                Close();
-            }
+        if (!isOpen)
+        {
+            Open();
+        }
+        else
+        {
+            Close();
         }
     }
 

@@ -1,42 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider2D))]
 public class MiningHandler : MonoBehaviour
 {
-    private PlayerStateHandler _playerState;
-    private Collider2D _collider;
+    public enum PortalDirection { North, East, South, West }
 
-    [SerializeField] private bool isEntering = true;
+    [SerializeField] private PortalDirection portalDirection;
+    [SerializeField] private bool isEntering;  // 입장/퇴장 자동 결정
     [SerializeField] private float stayTimeToTrigger = 1.5f;
-    [SerializeField] private Image blackScreenImage;
 
+    private PlayerStateHandler _playerState;
     private Coroutine _triggerCoroutine;
+    public PortalDirection CurrentPortalDirection => portalDirection;
+
 
     private void Start()
     {
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            _playerState = player.GetComponent<PlayerStateHandler>();
-
-        _collider = GetComponent<Collider2D>();
+        UpdateEnteringState();
     }
+
+    private void UpdateEnteringState()
+    {
+        if (MapManager.Instance.CurrentMapIndex == 0)
+        {
+            isEntering = true;
+        }
+        else
+        {
+            var lastDir = MapManager.Instance.LastEnteredPortalDirection ?? PortalDirection.North;
+            var oppositeDir = GetOppositeDirection(lastDir);
+
+            isEntering = portalDirection != oppositeDir;
+        }
+    }
+
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && _triggerCoroutine == null)
+        if (!other.CompareTag("Player")) return;
+
+        if (_playerState == null)
         {
-            var inputHandler = other.GetComponent<PlayerInputHandler>();
-            if (inputHandler != null && inputHandler.IsRecallInProgress())
+            _playerState = other.GetComponentInChildren<PlayerStateHandler>();
+            if (_playerState == null)
             {
-                Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+                Debug.LogWarning("PlayerStateHandler를 찾지 못했습니다.");
                 return;
             }
-
-            _triggerCoroutine = StartCoroutine(WaitAndTrigger(other));
         }
+
+        var inputHandler = other.GetComponent<PlayerInputHandler>();
+        if (inputHandler != null && inputHandler.IsRecallInProgress())
+        {
+            Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+            return;
+        }
+
+        if (_triggerCoroutine == null)
+            _triggerCoroutine = StartCoroutine(WaitAndTrigger());
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -48,7 +71,7 @@ public class MiningHandler : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitAndTrigger(Collider2D player)
+    private IEnumerator WaitAndTrigger()
     {
         yield return new WaitForSeconds(stayTimeToTrigger);
 
@@ -58,18 +81,37 @@ public class MiningHandler : MonoBehaviour
         {
             if (isEntering)
             {
-                _playerState.EnterMiningArea();
-                MapManager.Instance.MoveToRandomMap();
-                Debug.Log("광산 입장");
+                MapManager.Instance.MoveToMapByDirection(portalDirection);
             }
             else
             {
-                _playerState.ExitMiningArea();
                 MapManager.Instance.MoveToPreviousMap();
-                Debug.Log("광산 퇴장");
+            }
+
+            bool isBaseMapAfterMove = MapManager.Instance.CurrentMapIndex == 0;
+
+            if (isBaseMapAfterMove)
+            {
+                _playerState.ExitMiningArea();
+            }
+            else
+            {
+                _playerState.EnterMiningArea();
             }
         }));
 
         _triggerCoroutine = null;
+    }
+
+    private PortalDirection GetOppositeDirection(PortalDirection dir)
+    {
+        return dir switch
+        {
+            PortalDirection.North => PortalDirection.South,
+            PortalDirection.South => PortalDirection.North,
+            PortalDirection.East => PortalDirection.West,
+            PortalDirection.West => PortalDirection.East,
+            _ => dir,
+        };
     }
 }

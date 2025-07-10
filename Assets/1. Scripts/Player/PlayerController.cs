@@ -1,9 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer), typeof(PlayerInputHandler))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 2.0f;
@@ -11,25 +10,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameObject buildModeUI;
     [SerializeField] private GameObject unbuildModeUI;
+    [SerializeField] private InventoryUI inventoryUI;
+    [SerializeField] private Rigidbody2D _rigidbody;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private PlayerInputHandler _input;
 
-    // DataHandler를 에디터에서 연결하거나 코드에서 할당
     private EquipmentDataHandler equipmentDataHandler;
-
-    private Rigidbody2D _rigidbody;
-    private SpriteRenderer _spriteRenderer;
-    private PlayerInputHandler _input;
 
     private bool _isSwinging = false;
 
     // 현재 장착 곡괭이 데이터 (초기값은 null)
     private EquipmentData _equippedPickaxe;
-
-    private void Awake()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _input = GetComponent<PlayerInputHandler>();
-    }
 
     private async void Start()
     {
@@ -78,7 +69,7 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(lookDir.x) > Mathf.Abs(lookDir.y))
         {
             isSide = true;
-            _spriteRenderer.flipX = lookDir.x > 0;
+            _spriteRenderer.flipX = lookDir.x < 0;
         }
         else
         {
@@ -132,27 +123,21 @@ public class PlayerController : MonoBehaviour
 
     private void TryMineOre()
     {
-        if (_equippedPickaxe == null)
-        {
-            Debug.LogWarning("장착된 곡괭이가 없습니다.");
-            return;
-        }
+        if (_equippedPickaxe == null) return;
 
         Vector2 playerPos2D = (Vector2)transform.position;
 
-        // 방향 결정
         Vector2 dir = Vector2.right;
         if (animator.GetBool("isUp")) dir = Vector2.up;
         else if (animator.GetBool("isDown")) dir = Vector2.down;
-        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.right : Vector2.left;
+        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.left : Vector2.right;
 
         float range = _equippedPickaxe.range;
 
-        // 레이캐스트 (layerMask로 "Ore"만 검사)
-        int oreLayerMask = LayerMask.GetMask("Ore");
+        int oreLayerMask = LayerMask.GetMask("Ore", "Jewel");
         RaycastHit2D hit = Physics2D.Raycast(playerPos2D, dir, range, oreLayerMask);
 
-        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f); // 시각화
+        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f);
 
         if (hit.collider != null)
         {
@@ -168,18 +153,37 @@ public class PlayerController : MonoBehaviour
                 {
                     Debug.Log("곡괭이 파워 부족!");
                 }
+                return;
             }
+
+            JewelController jewel = hit.collider.GetComponent<JewelController>();
+            if (jewel != null)
+            {
+                jewel.OnMined();
+                return;
+            }
+
+            Debug.Log("채굴 대상 없음");
         }
         else
         {
-            Debug.Log("채광 범위 내에 광석 없음");
+            Debug.Log("채광 범위 내에 광석/보석 없음");
         }
     }
 
 
+
     private void ToggleInventory()
     {
-        Debug.Log("인벤토리 열기/닫기");
+        if (inventoryUI != null)
+        {
+            inventoryUI.ToggleInventory();
+            Debug.Log("인벤토리 토글 실행");
+        }
+        else
+        {
+            Debug.LogWarning("InventoryUI가 연결되지 않았습니다!");
+        }
     }
 
     private void EnterBuildMode()

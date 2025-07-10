@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,10 +39,9 @@ public class PickUpItem : MonoBehaviour
 
             if (distance <= 0.1f)
             {
-                //InventoryManager.Instance.Inventory.AddItem(itemId);
+                InventoryManager.Instance.Inventory.AddItem(itemId, 1);
                 Destroy(gameObject);
             }
         }
     }
 }
-
