@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public enum MONSTER_STATE
@@ -15,16 +14,20 @@ public enum MONSTER_STATE
 public class MonsterAI : StateBasedAI<MONSTER_STATE>
 {
     private BaseMonster _monster;
+    private Animator _animator;
 
     public Transform Target { get; private set; }
     private bool _isTargetAlive => Target != null && Target.gameObject.activeInHierarchy;
     private NodePath _path;
+    private Vector2 _moveDir;
+    private WaitForFixedUpdate _waitFixedDeltaTime = new WaitForFixedUpdate();
 
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
-    public void Init(BaseMonster monster)
+    public void Init(BaseMonster monster, Animator animator)
     {
         _monster = monster;
+        _animator = animator;
     }
 
     protected override void DefineStates()
@@ -38,9 +41,17 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         AddState(MONSTER_STATE.Move, new StateElem
         {
-            Entered = () => Debug.Log("이동 시작"),
+            Entered = () => 
+            {
+                _animator?.SetBool(BaseMonster.MOVE, true);
+                Debug.Log("이동 시작");
+            },
             Doing = C_Move,
-            Exited = () => Debug.Log("이동 종료")
+            Exited = () =>
+            {
+                _animator?.SetBool(BaseMonster.MOVE, false);
+                Debug.Log("이동 종료");
+            },
         });
 
         AddState(MONSTER_STATE.Attack, new StateElem
@@ -78,11 +89,18 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             yield break;
         }
 
-        // 새로운 경로를 받아올 예정이므로, 현재 경로 노드에서 해당 몬스터 제외
-        _path?.ReleaseMonsterCount();
-
         // 1. 탐색 범위 내에 타겟 리스트가 존재하면, 가장 가까운 타겟부터 순차적으로 경로 탐색
         Vector3 startPos = transform.position;
+        if(_path != null)
+        {
+            // 새로운 경로를 받아올 예정이므로, 현재 경로 노드에서 해당 몬스터 제외
+            _path.ReleaseMonsterCount();
+
+            // 다음 노드가 이동 가능하면 시작 지점을 다음 노드로 설정
+            _path.Next();
+            if(_path.CurNode.IsWalkable(-1)) startPos = _path.CurNode.WorldPos;
+        }
+
         HashSet<Transform> closedSet = new HashSet<Transform>();
         if (_monster.Detector.DetectedObstacles.Count > 0)
         {
@@ -166,14 +184,23 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 목표 노드까지 도착하지 않았으면, 이동 상태 유지
         while (Vector2.Distance(transform.position, _path.EndNode.WorldPos) > 0.01f)
         {
+            // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
+            if (DefenseManager.Instance.Core.IsDead)
+            {
+                ChangeState(InvalidState);
+                yield break;
+            }
+
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
+            {
                 yield break;
+            }
 
             // 일시 정지 시에는 이동 중지
             if (TimeManager.Instance.IsGamePause)
             {
-                yield return null;
+                yield return _waitFixedDeltaTime;
                 continue;
             }
 
@@ -185,16 +212,17 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // 실제 오브젝트 이동
-            transform.position = Vector2.MoveTowards(transform.position, _path.CurNode.WorldPos, _monster.Stat.Speed * Time.deltaTime);
+            SetMonsterDirection(_path.CurNode.WorldPos);
+            _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
 
-            if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) <= 0.5f)
+            if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.25f)
             {
                 // 다음 노드로 이동할 예정이므로 도착한 노드의 해당 몬스터 해제
                 _path.CurNode.monsterCount--;
                 _path.Next();
             }
 
-            yield return null;
+            yield return _waitFixedDeltaTime;
         }
 
         // 현재 목표 노드에는 도달할 수 없는데 도달했으므로, invalid 상태 전환 - 아무것도 안함
@@ -209,9 +237,20 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 타겟이 살아있고 타겟이 공격 범위 안에 있으면, 공격 상태 유지
         while(_isTargetAlive && IsTargetInAttackRange())
         {
+            // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
+            if (DefenseManager.Instance.Core.IsDead)
+            {
+                ChangeState(InvalidState);
+                yield break;
+            }
+
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
                 yield break;
+
+            // 공격 애니메이션 실행
+            SetMonsterDirection(Target.position);
+            _animator?.SetTrigger(BaseMonster.ATTACK);
 
             // 공격 타입에 따른 원/근거리 공격
             switch (_monster.Stat.AttackType)
@@ -326,6 +365,16 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
+    /// 몬스터가 바라보는 방향 세팅
+    /// </summary>
+    private void SetMonsterDirection(Vector3 targetPos)
+    {
+        _moveDir = (targetPos - transform.position).normalized;
+        _animator?.SetFloat(BaseMonster.X, _moveDir.x);
+        _animator?.SetFloat(BaseMonster.Y, _moveDir.y);
+    }
+
+    /// <summary>
     /// 스폰되었을 때 상태 초기화
     /// </summary>
     public void InitExploreState()
@@ -347,7 +396,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// <summary>
     /// 경로 시각화
     /// </summary>
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         if(_path != null)
         {

@@ -60,7 +60,11 @@ public class MonsterSpawner : MonoBehaviour
 
                 for (int j = 0; j < spawnCount; j++)
                 {
-                    // 게임 오버 시에 코루틴 탈출 필요
+                    // 코어가 부서지면, 스폰 중지
+                    if (DefenseManager.Instance.Core.IsDead)
+                    {
+                        yield break;
+                    }
 
                     SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt), currentWaveData.isAttackCore);
                     yield return null;
