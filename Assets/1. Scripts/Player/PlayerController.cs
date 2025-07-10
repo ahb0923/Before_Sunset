@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
         HandleSwing();
     }
 
+    private void LateUpdate()
+    {
+        RenderUtil.SetSortingOrderByY(_spriteRenderer);
+    }
+
     private void HandleLookAndFlip()
     {
         if (mainCamera == null) return;
