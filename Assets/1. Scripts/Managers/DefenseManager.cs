@@ -66,7 +66,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
         if (_walkableIdStack.Count > 0) walkableId = _walkableIdStack.Pop();
         else walkableId = _nextId++;
 
-        _walkableIdDict[obstacle] = walkableId;
+        _walkableIdDict[obstacle] = walkableId; Debug.Log($"생성된 walkableId : {walkableId}");
         _obstacleSizeDict[obstacle] = size;
         _grid.SetWalkableIndex(walkableId, obstacle.position, size);
 

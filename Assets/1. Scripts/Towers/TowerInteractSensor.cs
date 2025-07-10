@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -66,7 +66,12 @@ public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var data = DataManager.Instance.TowerData.GetByName(_tower.statHandler.TowerName);
-        UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (BuildManager.Instance.IsPlacing) return;
+
+            var data = DataManager.Instance.TowerData.GetByName(_tower.statHandler.TowerName);
+            UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
+        }
     }
 }

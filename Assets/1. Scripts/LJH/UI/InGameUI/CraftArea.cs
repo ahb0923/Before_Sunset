@@ -45,10 +45,6 @@ public class CraftArea : MonoBehaviour
     
     public void Work()
     {
-        _buildButton.onClick.AddListener(Toggle);
-        _towerButton.onClick.AddListener(TowerButton);
-        _smelterButton.onClick.AddListener(SmelterButton);
-        
         GetBaseTowerList();
         GetSmelterList();
         InitSlots();
@@ -132,15 +128,6 @@ public class CraftArea : MonoBehaviour
     {
         bool isOpen = this.gameObject.activeSelf;
         this.gameObject.SetActive(!isOpen);
-
-        if (!isOpen)
-        {
-            Open();
-        }
-        else
-        {
-            Close();
-        }
     }
 
     private void Open()
