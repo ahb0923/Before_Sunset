@@ -326,6 +326,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25350fbf127cca043b2461be1c37b312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _curState: 0
+  _prevState: 0
 --- !u!114 &8189292471688351104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,11 +390,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 140
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 120
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_LocalPosition.x
