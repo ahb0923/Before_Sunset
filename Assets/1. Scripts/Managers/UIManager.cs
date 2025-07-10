@@ -12,6 +12,7 @@ public class UIManager : MonoSingleton<UIManager>
     public BattleUI BattleUI { get; private set; }
     public UpgradeUI UpgradeUI { get; private set; }
     public DismantleUI DismantleUI { get; private set; }
+    public RecallUI RecallUI { get; private set; }
 
     protected override void Awake()
     {
@@ -25,6 +26,7 @@ public class UIManager : MonoSingleton<UIManager>
         BattleUI = Helper_Component.FindChildComponent<BattleUI>(this.transform, "BattleUI");
         UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
+        RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
         
         CraftArea.gameObject.SetActive(false);
         CraftMaterialArea.gameObject.SetActive(false);
