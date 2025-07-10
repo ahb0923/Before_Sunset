@@ -31,7 +31,7 @@ public class Inventory : MonoBehaviour
         //Pickaxe
     }
 
-    private void Toggle()
+    public void Toggle()
     {
         InventoryUI.Toggle();
         QuickSlotInventoryUI.Toggle();

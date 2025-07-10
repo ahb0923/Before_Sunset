@@ -19,6 +19,16 @@ public class UIDebugWindow : EditorWindow
             InventoryManager.Instance.Inventory.AddItem(100,7);
         }
         
+        if (GUILayout.Button("110번 아이템 추가"))
+        {
+            InventoryManager.Instance.Inventory.AddItem(110,9);
+        }
+        
+        if (GUILayout.Button("120번 아이템 추가"))
+        {
+            InventoryManager.Instance.Inventory.AddItem(120,9);
+        }
+        
         if (GUILayout.Button("110번 아이템 15개 사용"))
         {
             bool used = InventoryManager.Instance.Inventory.UseItem(110,15);
@@ -35,16 +45,6 @@ public class UIDebugWindow : EditorWindow
         if (GUILayout.Button("200번 아이템 추가"))
         {
             InventoryManager.Instance.Inventory.AddItem(200,3);
-        }
-        
-        if (GUILayout.Button("110번 아이템 추가"))
-        {
-            InventoryManager.Instance.Inventory.AddItem(110,9);
-        }
-        
-        if (GUILayout.Button("120번 아이템 추가"))
-        {
-            InventoryManager.Instance.Inventory.AddItem(120,9);
         }
         
         if (GUILayout.Button("빌드 슬롯 만들기"))
