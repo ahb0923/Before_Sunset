@@ -97,13 +97,13 @@ public class PlayerInputHandler : MonoBehaviour
     {
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
+            UIManager.Instance.RecallUI.CloseRecall();
             MapManager.Instance.ReturnToHomeMap();
         }));
 
         isRecallStarted = false;
         returnKeyHeldTime = 0f;
 
-        UIManager.Instance.RecallUI.ResetUI();
 
         if (AuraHandler.Instance != null)
             AuraHandler.Instance.Hide();
@@ -137,7 +137,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             isReturnKeyHeld = false;
             returnKeyHeldTime = 0f;
-            // UIManager.Instance.RecallUI.HideRecallIcon();
+            UIManager.Instance.RecallUI.ShowRecallIcon();
         }
     }
 

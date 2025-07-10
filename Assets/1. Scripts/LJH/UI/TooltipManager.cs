@@ -46,6 +46,13 @@ public class TooltipManager : MonoSingleton<TooltipManager>
         }
     }
 
+    public void UpdateTooltip(string objectName, string description)
+    {
+        _objectName.text = objectName;
+        _tooltipText.text = description;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_tooltipObject.GetComponent<RectTransform>());
+    }
+
     public void HideTooltip()
     {
         if (_tooltipObject.activeSelf)
