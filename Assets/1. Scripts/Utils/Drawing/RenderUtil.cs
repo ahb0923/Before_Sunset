@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,5 +10,9 @@ public static class RenderUtil
     public static void SetSortingOrderByY(SpriteRenderer renderer)
     {
         renderer.sortingOrder = (int)(renderer.transform.position.y * -100);
+    }
+    public static void SetSortingOrderByY(SpriteRenderer renderer, float y)
+    {
+        renderer.sortingOrder = (int)(y * -100);
     }
 }
