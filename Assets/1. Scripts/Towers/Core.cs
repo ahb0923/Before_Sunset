@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Core : MonoBehaviour, IDamageable
+public class Core : MonoBehaviour, IDamageable, ISaveable
 {
     [SerializeField] private int _size;
     public int Size => _size;
@@ -58,5 +58,13 @@ public class Core : MonoBehaviour, IDamageable
     {
         _curHp = hp;
         _hpBar.fillAmount = (float)_curHp / _maxHp;
+    }
+
+    /// <summary>
+    /// 코어 체력 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        data.coreCurHp = _curHp;
     }
 }

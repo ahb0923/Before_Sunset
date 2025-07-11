@@ -2,7 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class DefenseManager : MonoSingleton<DefenseManager>
+public struct ObstacleData
+{
+    public int walkableId;
+    public int obstacleSize;
+
+    public ObstacleData(int walkableId, int obstacleSize)
+    {
+        this.walkableId = walkableId;
+        this.obstacleSize = obstacleSize;
+    }
+}
+
+public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
 {
     [Header("# Map Setting")]
     [SerializeField] private Vector3 _mapCenter;
@@ -16,8 +28,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
-    private Dictionary<Transform, int> _walkableIdDict = new Dictionary<Transform, int>();
-    private Dictionary<Transform, int> _obstacleSizeDict = new Dictionary<Transform, int>();
+    private Dictionary<Transform, ObstacleData> _obstacleDict = new Dictionary<Transform, ObstacleData>();
     private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
     public Core Core { get; private set; }
@@ -62,18 +73,22 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     /// <param name="size">장애물 사이즈 (1x1이면 1)</param>
     public void AddObstacle(Transform obstacle, int size)
     {
+        // walkabla ID 생성
         int walkableId;
         if (_walkableIdStack.Count > 0) walkableId = _walkableIdStack.Pop();
         else walkableId = _nextId++;
 
-        _walkableIdDict[obstacle] = walkableId; Debug.Log($"생성된 walkableId : {walkableId}");
-        _obstacleSizeDict[obstacle] = size;
-        _grid.SetWalkableIndex(walkableId, obstacle.position, size);
+        // 노드 그리드에 사이즈에 따른 walkable ID 부여
+        ObstacleData data = new ObstacleData(walkableId, size);
+        _obstacleDict[obstacle] = data;
+        _grid.SetWalkableIndex(obstacle.position, data);
 
+        // 코어와 떨어진 거리 관련 타워 리스트에 추가
         int dist = GetChebyshevDistanceFromCore(obstacle.position);
         if (!_distFromCoreDict.ContainsKey(dist)) _distFromCoreDict[dist] = new List<Transform>();
         _distFromCoreDict[dist].Add(obstacle);
 
+        // 몬스터 경로 재탐색 이벤트 호출
         MonsterSpawner.OnObstacleChanged();
     }
 
@@ -82,15 +97,18 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     /// </summary>
     public void RemoveObstacle(Transform obstacle)
     {
-        int walkableId = _walkableIdDict[obstacle];
+        // walkabla ID 반환
+        int walkableId = _obstacleDict[obstacle].walkableId;
         if (!_walkableIdStack.Contains(walkableId)) _walkableIdStack.Push(walkableId);
 
-        _grid.SetWalkableIndex(-1, obstacle.position, _obstacleSizeDict[obstacle]);
-        _walkableIdDict.Remove(obstacle);
-        _obstacleSizeDict.Remove(obstacle);
+        // 노드 그리드에서 해당 타워의 walkable ID 제거
+        _grid.SetWalkableIndex(obstacle.position, _obstacleDict[obstacle].obstacleSize);
 
+        // 딕셔너리에 해당 타워 정보 제거
+        _obstacleDict.Remove(obstacle);
         _distFromCoreDict[GetChebyshevDistanceFromCore(obstacle.position)].Remove(obstacle);
 
+        // 몬스터 경로 재탐색 이벤트 호출
         MonsterSpawner.OnObstacleChanged();
     }
 
@@ -118,7 +136,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     {
         Node startNode = _grid.GetNode(startPos);
         Node targetNode = _grid.GetNode(target.position);
-        return AstarAlgorithm.FindPathToTarget(startNode, size, targetNode, _walkableIdDict[target], _obstacleSizeDict[target]);
+        return AstarAlgorithm.FindPathToTarget(startNode, size, targetNode, _obstacleDict[target].walkableId, _obstacleDict[target].obstacleSize);
     }
 
     /// <summary>
@@ -128,9 +146,25 @@ public class DefenseManager : MonoSingleton<DefenseManager>
     /// <param name="obstacle"></param>
     public int GetWalkableId(Transform obstacle)
     {
-        if (!_walkableIdDict.ContainsKey(obstacle)) return -1;
+        if (!_obstacleDict.ContainsKey(obstacle)) return -1;
 
-        return _walkableIdDict[obstacle];
+        return _obstacleDict[obstacle].walkableId;
+    }
+
+    /// <summary>
+    /// 타워 데이터 정보 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        foreach (Transform towerObj in _obstacleDict.Keys)
+        {
+            if (towerObj.TryGetComponent<TowerStatHandler>(out var tower))
+            {
+                // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
+                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
+                data.constructedTowers.Add(towerData);
+            }
+        }
     }
 
     /// <summary>
