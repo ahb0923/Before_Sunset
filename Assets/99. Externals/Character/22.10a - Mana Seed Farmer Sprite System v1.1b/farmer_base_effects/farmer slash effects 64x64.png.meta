@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -134,7 +134,868 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_0
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 477
+        width: 68
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ed672295e5b0fb48b9478d40c226f97
+      internalID: -1098793087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_1
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 406
+        width: 16
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 00a6dab84fe8f264395be58230c57284
+      internalID: 1878899208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_2
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 476
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c456f5803c952954fb8f3fc936ec0436
+      internalID: 1754306527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_3
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 476
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60ec1949da6ad454a9fa94be09426308
+      internalID: -648506903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_4
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 475
+        width: 10
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7946a08780043a44bb347ab08d04c07d
+      internalID: -102016748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_5
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 473
+        width: 82
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d252d23b47d42544a5f26c18c7dbd1a
+      internalID: 974700922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_6
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 411
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0e7c3cd9dd05c445ba2242567eb52e3
+      internalID: 209989273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_7
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 412
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 313ef9dd30358ca4dbb17d0501dcc8cc
+      internalID: -196073963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_8
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 407
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b518ad03528da54ea134dfc90dec45d
+      internalID: -525827620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_9
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 407
+        width: 9
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 761ce92f2d739ed418737595b1710045
+      internalID: -1634298017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_10
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 405
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74ca4ba2e8e488043bba46e1368e3198
+      internalID: -1345002663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_11
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 406
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ddce93c14af86c42b066dab397a2492
+      internalID: -1712335851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_12
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 404
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3438e45e4c34f5a449f9db2ec672fe10
+      internalID: -1761353637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_13
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 340
+        width: 13
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e898931d5c73b124cab6943b66d726ff
+      internalID: 471718617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_14
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 339
+        width: 12
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f610d6ac34ecabb40a21607b9cfee5ba
+      internalID: -1814830199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_15
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 341
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92b1cfd72fd59314dae05f0a0ca52bc2
+      internalID: -1670688546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_16
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 341
+        width: 25
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 908acef562520244daf0a7359a6bb96c
+      internalID: 736391291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_17
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 340
+        width: 26
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef1a3b742defd4847ad6fff29f4dfa1a
+      internalID: -1053736610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_18
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 343
+        width: 25
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbb6b259543a6cc4aaefee2321309e44
+      internalID: -1468790948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_19
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 341
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0b22e73a89076a4681c2e8da42b4052
+      internalID: 136854621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_20
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 340
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5e6bbfc351b7a9479a3718dd999a746
+      internalID: 1529501193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_21
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 273
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b047ad32e68d6e44daa5987a51da5e5d
+      internalID: 2077837269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_22
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 278
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e8b6572f2ed2ed46a82bfa0c9c9f429
+      internalID: -1527448922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_23
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 278
+        width: 6
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42d91ea3f8423034a961a35268ecda9e
+      internalID: 1004234695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_24
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 277
+        width: 9
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27f7b8cc137da494db88eed4c39d1a17
+      internalID: 1024421798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_25
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 275
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c36aeef7fbb863c46bedfb877567d0c6
+      internalID: 1411429498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_26
+      rect:
+        serializedVersion: 2
+        x: 350
+        y: 273
+        width: 8
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b68653ec409de84f8e68fdd67c53482
+      internalID: 1925547383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_27
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 269
+        width: 10
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01eb9b640cd38524789bdf048471f991
+      internalID: 1197228963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_28
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 269
+        width: 15
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61f9bfa4e4154b44bb9c456e29da62d9
+      internalID: 519447485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_29
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 202
+        width: 16
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f2d65ed7ea57784181fccf65f471341
+      internalID: 874207466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_30
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 207
+        width: 16
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 129129974954c1b408bd092a788d32ab
+      internalID: 1899708454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_31
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 206
+        width: 24
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d388e689cc7a5444d9e9d598a13c25bd
+      internalID: -1120450362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_32
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 202
+        width: 25
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56e0a601242c0be44b02390028ecdbef
+      internalID: 2021829397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_33
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 200
+        width: 24
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84c56d5dde2bded41a12efd02105b387
+      internalID: 891942194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_34
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 205
+        width: 27
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ac5361870f479b4b84b3bf854cb64d2
+      internalID: -659146321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_35
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 205
+        width: 21
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4298d848eb8fe84bb01bbb09000edee
+      internalID: -1573205431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_36
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 207
+        width: 41
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf513d85d4853184bb4bbd634adff386
+      internalID: 1711632538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_37
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 138
+        width: 47
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4e0c66de5a6aac4d9a8ade940fc29c9
+      internalID: 1390293817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_38
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 137
+        width: 48
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ab85d0562c3b2b48bdf5bdcd65be9ca
+      internalID: 77549280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_39
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 133
+        width: 47
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ddfb4992dfe0054597327aa40454b9a
+      internalID: -448467317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_40
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 131
+        width: 54
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26dbb69726b3dff4fab94397850775ef
+      internalID: -1904910093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +1006,48 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      farmer slash effects 64x64_0: -1098793087
+      farmer slash effects 64x64_1: 1878899208
+      farmer slash effects 64x64_10: -1345002663
+      farmer slash effects 64x64_11: -1712335851
+      farmer slash effects 64x64_12: -1761353637
+      farmer slash effects 64x64_13: 471718617
+      farmer slash effects 64x64_14: -1814830199
+      farmer slash effects 64x64_15: -1670688546
+      farmer slash effects 64x64_16: 736391291
+      farmer slash effects 64x64_17: -1053736610
+      farmer slash effects 64x64_18: -1468790948
+      farmer slash effects 64x64_19: 136854621
+      farmer slash effects 64x64_2: 1754306527
+      farmer slash effects 64x64_20: 1529501193
+      farmer slash effects 64x64_21: 2077837269
+      farmer slash effects 64x64_22: -1527448922
+      farmer slash effects 64x64_23: 1004234695
+      farmer slash effects 64x64_24: 1024421798
+      farmer slash effects 64x64_25: 1411429498
+      farmer slash effects 64x64_26: 1925547383
+      farmer slash effects 64x64_27: 1197228963
+      farmer slash effects 64x64_28: 519447485
+      farmer slash effects 64x64_29: 874207466
+      farmer slash effects 64x64_3: -648506903
+      farmer slash effects 64x64_30: 1899708454
+      farmer slash effects 64x64_31: -1120450362
+      farmer slash effects 64x64_32: 2021829397
+      farmer slash effects 64x64_33: 891942194
+      farmer slash effects 64x64_34: -659146321
+      farmer slash effects 64x64_35: -1573205431
+      farmer slash effects 64x64_36: 1711632538
+      farmer slash effects 64x64_37: 1390293817
+      farmer slash effects 64x64_38: 77549280
+      farmer slash effects 64x64_39: -448467317
+      farmer slash effects 64x64_4: -102016748
+      farmer slash effects 64x64_40: -1904910093
+      farmer slash effects 64x64_5: 974700922
+      farmer slash effects 64x64_6: 209989273
+      farmer slash effects 64x64_7: -196073963
+      farmer slash effects 64x64_8: -525827620
+      farmer slash effects 64x64_9: -1634298017
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
