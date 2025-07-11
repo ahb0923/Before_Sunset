@@ -313,7 +313,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 320
-  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
+  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 6c71c107345ebbd419077d3c30215279, type: 3}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -345,6 +345,7 @@ MonoBehaviour:
     monsterName: 
     attackType: 0
     moveType: 0
+    prefabName: 
     hp: 0
     damage: 0
     aps: 0

@@ -21,8 +21,6 @@ public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
 
-    [SerializeField] private GameObject _projectilePool;
-
     private bool _isSet;
 
     private Dictionary<int, GameObject> _prefabs;
