@@ -33,8 +33,16 @@ public class Inventory : MonoBehaviour
 
     public void Toggle()
     {
-        InventoryUI.Toggle();
-        QuickSlotInventoryUI.Toggle();
+        if (InventoryUI.gameObject.activeSelf)
+        {
+            InventoryUI.gameObject.SetActive(false);
+            QuickSlotInventoryUI.gameObject.SetActive(true);
+        }
+        else
+        {
+            InventoryUI.gameObject.SetActive(true);
+            QuickSlotInventoryUI.gameObject.SetActive(false);
+        }
     }
 
     public Item CreateItem(int id)

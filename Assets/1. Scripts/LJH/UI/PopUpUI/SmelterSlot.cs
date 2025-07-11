@@ -47,11 +47,15 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
     
-    public void SetSmelterSlot(SmelterData data)
+    public void SetSmelterData(SmelterData data)
     {
         _currentData = data;
     }
 
+    /// <summary>
+    /// 제련소 널체크 메서드
+    /// </summary>
+    /// <returns></returns>
     public bool IsOutputEmpty()
     {
         if (CurrentItem == null)
@@ -59,7 +63,12 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         else return false;
     }
     
-    public void GetSmelterItem(Item item, int amount)
+    /// <summary>
+    /// 제련된 아이템을 제련소 슬롯에 넣어줄때 사용 메서드
+    /// </summary>
+    /// <param name="item">만들어진 주괴</param>
+    /// <param name="amount">만들어진 수량</param>
+    public void AddToSmelterItem(Item item, int amount)
     {
         if (CurrentItem == null)
         {
@@ -72,6 +81,9 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
+    /// <summary>
+    /// 슬롯에 담겨있는 아이템을 인벤토리에 넣어주는 메서드
+    /// </summary>
     public void ReceiveItem()
     {
         if (CurrentItem == null)

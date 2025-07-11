@@ -9,6 +9,7 @@ public class SmelterUI : MonoBehaviour
     [SerializeField] public SmelterSlot smelterInputSlot;
     [SerializeField] public SmelterSlot smelterOutputSlot;
     [SerializeField] private Button _receiveButton;
+    [SerializeField] private Button _closeButton;
     
     private RectTransform _rect;
 
@@ -16,6 +17,7 @@ public class SmelterUI : MonoBehaviour
     private const string SMELTER_INPUT_SLOT = "SmelterInputSlot";
     private const string SMELTER_OUTPUT_SLOT = "SmelterOutputSlot";
     private const string RECEIVE_BUTTON = "ReceiveButton";
+    private const string CLOSE_BUTTON = "CloseSmelterButton";
 
     private void Reset()
     {
@@ -23,6 +25,7 @@ public class SmelterUI : MonoBehaviour
         smelterInputSlot = Helper_Component.FindChildComponent<SmelterSlot>(this.transform, SMELTER_INPUT_SLOT);
         smelterOutputSlot = Helper_Component.FindChildComponent<SmelterSlot>(this.transform, SMELTER_OUTPUT_SLOT);
         _receiveButton = Helper_Component.FindChildComponent<Button>(this.transform, RECEIVE_BUTTON);
+        _closeButton = Helper_Component.FindChildComponent<Button>(this.transform, CLOSE_BUTTON);
     }
 
     private void Awake()
@@ -31,11 +34,13 @@ public class SmelterUI : MonoBehaviour
         smelterInputSlot.InitInputSlot(true);
         smelterOutputSlot.InitInputSlot(false);
         _receiveButton.onClick.AddListener(ReceiveItem);
+        _closeButton.onClick.AddListener(CloseSmelter);
+        _receiveButton.interactable = false;
     }
 
     private void Start()
     {
-        CloseSmelter();
+        _rect.CloseAndRestore();
     }
 
     public void OpenSmelter()
@@ -55,12 +60,19 @@ public class SmelterUI : MonoBehaviour
     public void SetSmelterUI(SmelterData data)
     {
         _smelterNameText.text = data.smelterName;
-        smelterInputSlot.SetSmelterSlot(data);
-        smelterOutputSlot.SetSmelterSlot(data);
+        smelterInputSlot.SetSmelterData(data);
+        smelterOutputSlot.SetSmelterData(data);
     }
 
+    public void AddItemToSmelter(Item item, int amount)
+    {
+        smelterOutputSlot.AddToSmelterItem(item, amount);
+        _receiveButton.interactable = true;
+    }
+    
     private void ReceiveItem()
     {
         smelterOutputSlot.ReceiveItem();
+        _receiveButton.interactable = false;
     }
 }

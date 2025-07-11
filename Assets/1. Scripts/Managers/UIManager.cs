@@ -19,7 +19,7 @@ public class UIManager : MonoSingleton<UIManager>
     {
         base.Awake();
 
-        AskPopUpUI = GetComponentInChildren<AskPopUpUI>();
+        AskPopUpUI = Helper_Component.FindChildComponent<AskPopUpUI>(this.transform, "AskPopUpUI");
         GameTimeUI = Helper_Component.FindChildComponent<GameTimeUI>(this.transform, "GameTimeUI");
         CraftArea = Helper_Component.FindChildComponent<CraftArea>(this.transform, "CraftArea");
         CraftMaterialArea = Helper_Component.FindChildComponent<CraftMaterialArea>(this.transform, "CraftMaterialArea");

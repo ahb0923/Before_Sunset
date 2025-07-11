@@ -32,20 +32,6 @@ public class InventoryUI : MonoBehaviour
     
     private void Start()
     {
-        
-        
-        if (this.gameObject == null)
-        {
-            Debug.Log("Inventory is empty");
-        }
-        else
-        {
-            if (this.gameObject.activeSelf)
-            {
-                this.gameObject.SetActive(false);
-            }
-        }
-        
         InitSlots();
         
         _pickaxeSlot.RefreshUI();
@@ -53,6 +39,11 @@ public class InventoryUI : MonoBehaviour
         foreach (var itemSlot in itemSlots)
         {
             itemSlot.RefreshUI();
+        }
+
+        if (this.gameObject.activeSelf)
+        {
+            this.gameObject.SetActive(false);
         }
     }
 
@@ -75,39 +66,11 @@ public class InventoryUI : MonoBehaviour
             itemSlots[i].InitIndex(i);
         }
     }
-    
-    
-    /// <summary>
-    /// 인벤토리UI 활성화 / 비활성화 스위치 메서드
-    /// </summary>
-    public void ToggleInventory()
-    {
-        bool isOpen = this.gameObject.activeSelf;
-        this.gameObject.SetActive(!isOpen);
-
-        if (!isOpen)
-        {
-            Open();
-        }
-        else
-        {
-            Close();
-        }
-    }
 
     public void Toggle()
     {
-        bool isOpen = this.gameObject.activeSelf;
-        this.gameObject.SetActive(!isOpen);
-
-        if (!isOpen)
-        {
-            Open();
-        }
-        else
-        {
-            Close();
-        }
+        bool isActiveSelf = this.gameObject.activeSelf;
+        this.gameObject.SetActive(!isActiveSelf);
     }
     
     public void Open()

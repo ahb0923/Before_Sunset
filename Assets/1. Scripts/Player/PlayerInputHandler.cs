@@ -24,6 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
+        
     }
 
     private void OnEnable()
@@ -43,7 +44,12 @@ public class PlayerInputHandler : MonoBehaviour
         _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
         _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
         
-        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
+        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
+            UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
+    }
+
+    private void Start()
+    {
     }
 
     private void OnDisable()
@@ -60,10 +66,15 @@ public class PlayerInputHandler : MonoBehaviour
 
         _inputActions.Player.ReturnHome.performed -= OnReturnHomePerformed;
         _inputActions.Player.ReturnHome.canceled -= OnReturnHomeCanceled;
-
-        UIManager.Instance.RecallUI.OnCountdownFinished -= OnRecallCountdownFinished;
-
+        
+        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
+            UIManager.Instance.RecallUI.OnCountdownFinished -= OnRecallCountdownFinished;
+        
         _inputActions.Player.Disable();
+    }
+
+    private void OnDestroy()
+    {
     }
 
     private void Update()

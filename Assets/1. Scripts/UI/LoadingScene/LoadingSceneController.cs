@@ -1,0 +1,128 @@
+using DG.Tweening;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class LoadingSceneController : MonoBehaviour
+{
+    private static string NEXT_SCENE;
+    
+    [SerializeField] private Image _loadingBar;
+    [SerializeField] private Image _fadeImage;
+    [SerializeField] private TextMeshProUGUI _loadingPercent;
+    //[SerializeField] private Animator _loadingAnimator;
+    [SerializeField] private string[] _anims =
+    {
+        "LoadingGoblin",
+        "LoadingWolf",
+        "LoadingBee",
+    };
+    [SerializeField] private TextMeshProUGUI _tipText;
+    [SerializeField] private string[] _tips =
+    {
+        "팁: (당근을 흔드는 중입니다.)",
+        "팁: UI개발자를 제외한 인원들은 가짜 스탠다드!",
+        "팁: 이쁘게 봐주세요. 이것은 강요입니다.",
+    };
+    
+    private const string LOADING_SCENE = "LoadingScene";
+    private const string LOADING_BAR = "LoadingBar";
+    //private const string LOADING_ANIMATOR = "LoadingAnimation";
+    private const string FADE_IMAGE = "FadeImage";
+    private const string LOADING_PERCENT = "LoadingPercent";
+    private const string TIP_TEXT = "Tip";
+
+    private void Reset()
+    {
+        _loadingBar = Helper_Component.FindChildComponent<Image>(this.transform, LOADING_BAR);
+        _fadeImage = Helper_Component.FindChildComponent<Image>(this.transform, FADE_IMAGE);
+        //_loadingAnimator = Helper_Component.FindChildComponent<Animator>(this.transform, LOADING_ANIMATOR);
+        _loadingPercent = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, LOADING_PERCENT);
+        _tipText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, TIP_TEXT);
+    }
+
+    private void Start()
+    {
+        _fadeImage.color = new Color(0, 0, 0, 0);
+        _fadeImage.gameObject.SetActive(false);
+        
+        StartCoroutine(C_LoadSceneProcess());
+        ShowRandomTip();
+        PlayRandomAnimation();
+    }
+
+    public static void LoadScene(string sceneName)
+    {
+        NEXT_SCENE = sceneName;
+        SceneManager.LoadScene(LOADING_SCENE);
+    }
+
+    private IEnumerator C_LoadSceneProcess()
+    {
+        yield return GameManager.Instance.InitAsync().AsCoroutine();
+        
+        AsyncOperation op = SceneManager.LoadSceneAsync(NEXT_SCENE);
+        op.allowSceneActivation = false;
+
+        float timer = 0f;
+        float minLoadingTime = 3f;
+        
+        while (!op.isDone)
+        {
+            yield return null;
+
+            ShowPercentage();
+            
+            if (op.progress < 0.9f)
+            {
+                _loadingBar.fillAmount = op.progress;
+            }
+            else
+            {
+                timer += Time.unscaledDeltaTime;
+                _loadingBar.fillAmount = Mathf.Lerp(0.9f, 1f, timer / minLoadingTime);
+
+                if (_loadingBar.fillAmount >= 1f)
+                {
+                    yield return new WaitForSecondsRealtime(0.5f);
+                    StartCoroutine(C_FadeOutBeforeScene(op));
+                    yield break;
+                }
+            }
+        }
+    }
+
+    private IEnumerator C_FadeOutBeforeScene(AsyncOperation op)
+    {
+        float fadeDuration = 1f;
+
+        _fadeImage.gameObject.SetActive(true);
+        
+        Tween fade = _fadeImage.DOFade(1f, fadeDuration);
+
+        yield return fade.WaitForCompletion();
+
+        op.allowSceneActivation = true;
+    }
+    
+    private void ShowPercentage()
+    {
+        string percent = (_loadingBar.fillAmount * 100f).ToString("N2");
+        _loadingPercent.text = $"{percent}%";
+    }
+    
+    private void ShowRandomTip() 
+    {
+        string randomTip = _tips[Random.Range(0, _tips.Length)];
+        _tipText.text = randomTip;
+    }
+
+    private void PlayRandomAnimation()
+    {
+        int randomAnimation = Random.Range(0, _anims.Length);
+        //Debug.Log(randomAnimation);
+        // _loadingAnimator.Play(_anims[randomAnimation]);
+    }
+}

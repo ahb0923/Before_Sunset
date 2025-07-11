@@ -47,9 +47,9 @@ public class UIDebugWindow : EditorWindow
             InventoryManager.Instance.Inventory.AddItem(200,3);
         }
         
-        if (GUILayout.Button("빌드 슬롯 만들기"))
+        if (GUILayout.Button("제련소 열기"))
         {
-            UIManager.Instance.CraftArea.Work();
+            UIManager.Instance.SmelterUI.OpenSmelter();
         }
         
         if (GUILayout.Button("코루틴 테스트"))
