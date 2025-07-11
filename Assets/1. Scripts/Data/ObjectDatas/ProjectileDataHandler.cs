@@ -13,8 +13,16 @@ public class ProjectileDataHandler : BaseDataHandler<ProjectileDatabase>
 
     private Dictionary<int, GameObject> _projectilePrefabs = new();
     public Dictionary<int, GameObject> TowerImages => _projectilePrefabs;
-    public GameObject GetPrefabById(int id) => _projectilePrefabs[id];
+    public GameObject GetPrefabById(int id)
+    {
+        if (_projectilePrefabs.TryGetValue(id, out var prefab))
+        {
+            return prefab;
+        }
 
+        Debug.LogWarning($"[ProjectileDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        return null;
+    }
     /// <summary>
     /// 타워 이미지 데이터 초기화
     /// </summary>

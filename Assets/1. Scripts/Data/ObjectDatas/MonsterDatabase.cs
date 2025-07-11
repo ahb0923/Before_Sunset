@@ -17,6 +17,8 @@ public class MonsterDatabase
     public string monsterName;
     public ATTACK_TYPE attackType;
     public MOVE_TYPE moveType;
+    public string prefabName;
+
 
     public int hp;
     public int damage;

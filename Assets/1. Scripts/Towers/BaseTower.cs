@@ -91,6 +91,12 @@ public class BaseTower : MonoBehaviour, IPoolable
             case TOWER_TYPE.DiaprismTower:
                 attackStrategy = new AttackStrategy_DiaprismTower();
                 break;
+            case TOWER_TYPE.HealTower:
+                attackStrategy = new AttackStrategy_HealTower();
+                break;
+            case TOWER_TYPE.MagnetTower:
+                attackStrategy = new AttackStrategy_MagnetTower();
+                break;
         }
     }
 

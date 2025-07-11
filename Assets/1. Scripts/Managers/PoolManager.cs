@@ -28,6 +28,7 @@ public class PoolManager : MonoSingleton<PoolManager>
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
+
     /// <summary>
     /// 오브젝트 풀링 세팅
     /// </summary>
@@ -57,7 +58,46 @@ public class PoolManager : MonoSingleton<PoolManager>
 
         _isSet = true;
     }
-
+    public void SettingPrefab()
+    {
+        _objectPoolDatas.Clear();
+        foreach (var data in DataManager.Instance.MonsterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MonsterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 20
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.TowerData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.TowerData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 5
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.ProjectileData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.ProjectileData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+    }
     /// <summary>
     /// 해당 타입의 오브젝트를 풀에서 가져와서 반환, 없으면 새로 생성해서 반환
     /// </summary>
