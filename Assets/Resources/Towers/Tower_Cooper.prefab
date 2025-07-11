@@ -125,7 +125,7 @@ MonoBehaviour:
   statHandler: {fileID: 8459309262913598922}
   attackSensor: {fileID: 8261416276646684489}
   ui: {fileID: 6144722833229533621}
-  projectile: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
+  projectile: {fileID: 1135823945734847574, guid: 6c71c107345ebbd419077d3c30215279, type: 3}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +159,7 @@ MonoBehaviour:
     buildType: 0
     attackType: 0
     nextUpgradeId: 0
+    projectileId: 0
     level: 0
     towerHp: 0
     damage: 0

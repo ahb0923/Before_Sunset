@@ -47,7 +47,7 @@ public class MonsterSpawner : MonoBehaviour
         for (int i = 1; i <= waveCount; i++)
         {
             // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
-            WaveData currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
+            WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
 
             // 다음 웨이브 기다림
             yield return Helper_Coroutine.C_WaitIfNotPaused(currentWaveData.summonDelay, () => TimeManager.Instance.IsGamePause);

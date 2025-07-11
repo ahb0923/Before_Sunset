@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -44,6 +44,10 @@ public class BaseTower : MonoBehaviour, IPoolable
     // 발사체
     public GameObject projectile;
 
+    // 공격 전략
+    public IAttackStrategy attackStrategy;
+
+
 
     private void Reset()
     {
@@ -71,6 +75,23 @@ public class BaseTower : MonoBehaviour, IPoolable
         ui.Init(this);
         ai.Init(this);
         attackSensor.Init(this);
+        InitAttackStrategy();
+    }
+
+    public void InitAttackStrategy()
+    {
+        switch (towerType)
+        {
+            case TOWER_TYPE.CooperTower:
+                attackStrategy = new AttackStrategy_CooperTower();
+                break;
+            case TOWER_TYPE.IronTower:
+                attackStrategy = new AttackStrategy_IronTower();
+                break;
+            case TOWER_TYPE.DiaprismTower:
+                attackStrategy = new AttackStrategy_DiaprismTower();
+                break;
+        }
     }
 
 

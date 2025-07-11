@@ -1,29 +1,29 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WaveDataHandler : BaseDataHandler<WaveData>
+public class WaveDataHandler : BaseDataHandler<WaveDatabase>
 {
     //protected override string DataUrl => "https://script.google.com/macros/s/your-tower-sheet-id/exec"; (링크 수정 필요)
 
     private const int STAGE_ID = 1000;
     private const int GROUP_SIZE = 10;
 
-    private Dictionary<(int stageIndex, int waveIndex), WaveData> _waveDatas = new();
+    private Dictionary<(int stageIndex, int waveIndex), WaveDatabase> _waveDatas = new();
 
 
     protected override string FileName => "WaveData_JSON.json";
-    protected override int GetId(WaveData data) => data.stageID;
-    protected override string GetName(WaveData data) => null;
+    protected override int GetId(WaveDatabase data) => data.stageID;
+    protected override string GetName(WaveDatabase data) => null;
 
     /// <summary>
     /// 데이터 베이스의 stageId를 이용하여 데이터를 찾음
     /// </summary>
     /// <param name="stageId"></param>
     /// <returns></returns>
-    public WaveData GetWaveByStageId(int stageId)
+    public WaveDatabase GetWaveByStageId(int stageId)
     {
         var key = GetTupleKey(stageId);
         return _waveDatas.TryGetValue(key, out var data) ? data : null;
@@ -47,7 +47,7 @@ public class WaveDataHandler : BaseDataHandler<WaveData>
     /// 1스테이지 1웨이브 이면 1,1 입력하면 됨
     /// </summary>
     /// <returns></returns>
-    public WaveData GetWaveByTupleKey(int stageIndex, int waveIndex)
+    public WaveDatabase GetWaveByTupleKey(int stageIndex, int waveIndex)
     {
         return _waveDatas.TryGetValue((stageIndex-1, waveIndex-1), out var data) ? data : null;
     }
@@ -77,7 +77,7 @@ public class WaveDataHandler : BaseDataHandler<WaveData>
     }
 
     [ContextMenu("Debug all Log")]
-    public override void DebugLogAll(Func<WaveData, string> formatter = null)
+    public override void DebugLogAll(Func<WaveDatabase, string> formatter = null)
     {
         if (dataIdDictionary.Count == 0)
         {

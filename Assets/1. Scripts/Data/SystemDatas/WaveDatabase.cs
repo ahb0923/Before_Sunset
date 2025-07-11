@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WaveData
+public class WaveDatabase
 {
     public int stageID;
     public int summonDelay;

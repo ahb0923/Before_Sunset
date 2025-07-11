@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Item
 {
-    public ItemData Data { get; private set; }
+    public ItemDatabase Data { get; private set; }
 
     public bool Stackable => (Data.id >= 100 && Data.id <= 399);
     public int stack;
@@ -12,7 +12,7 @@ public class Item
 
     public int quantity;
 
-    public Item(ItemData data) => Data = data;
+    public Item(ItemDatabase data) => Data = data;
 
     public Item Clone()
     {

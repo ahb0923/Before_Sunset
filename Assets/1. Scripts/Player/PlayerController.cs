@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool _isSwinging = false;
 
     // 현재 장착 곡괭이 데이터 (초기값은 null)
-    private EquipmentData _equippedPickaxe;
+    private EquipmentDatabase _equippedPickaxe;
 
     private async void Start()
     {

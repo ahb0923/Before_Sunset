@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JewelSpawner : ResourceSpawner<JewelData>
+public class JewelSpawner : ResourceSpawner<JewelDatabase>
 {
     private void Awake()
     {

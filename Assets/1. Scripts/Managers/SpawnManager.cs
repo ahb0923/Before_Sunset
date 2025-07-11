@@ -110,8 +110,8 @@ public class SpawnManager : MonoBehaviour
 
         List<GameObject> spawnedObjects = new List<GameObject>();
 
-        List<OreData> oreList = oreHandler.GetAllItems();
-        List<JewelData> jewelList = jewelHandler.GetAllItems();
+        List<OreDatabase> oreList = oreHandler.GetAllItems();
+        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
 
         if (oreSpawner != null && oreList != null)
         {
@@ -160,8 +160,8 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        List<OreData> oreList = oreHandler.GetAllItems();
-        List<JewelData> jewelList = jewelHandler.GetAllItems();
+        List<OreDatabase> oreList = oreHandler.GetAllItems();
+        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
 
         if (oreSpawner != null && oreList != null)
         {

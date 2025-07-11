@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 [System.Serializable]
-public class EquipmentData : ItemData
+public class EquipmentDatabase : ItemDatabase
 {
     public int nextUpgradeId;
     public int damage;

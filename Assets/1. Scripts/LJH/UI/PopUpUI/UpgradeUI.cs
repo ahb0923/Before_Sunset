@@ -56,7 +56,7 @@ public class UpgradeUI : MonoBehaviour
         // 타워업그레이드 메서드
     }
 
-    public void OpenUpgradeUI(TowerData data)
+    public void OpenUpgradeUI(TowerDatabase data)
     {
         _rect.OpenAtCenter();
         InitSlots(data);
@@ -70,7 +70,7 @@ public class UpgradeUI : MonoBehaviour
         _rect.CloseAndRestore();
     }
 
-    private void InitSlots(TowerData data)
+    private void InitSlots(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
         
@@ -91,7 +91,7 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    private void SetSlot(TowerData data)
+    private void SetSlot(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
         
@@ -112,7 +112,7 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    private void SetUpgradeUI(TowerData data)
+    private void SetUpgradeUI(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
             

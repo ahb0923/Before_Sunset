@@ -34,9 +34,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         AddState(MONSTER_STATE.Explore, new StateElem
         {
-            Entered = () => Debug.Log("탐색 시작"),
+            //Entered = () => Debug.Log("탐색 시작"),
             Doing = C_Explore,
-            Exited = () => Debug.Log("탐색 종료")
+            //Exited = () => Debug.Log("탐색 종료")
         });
 
         AddState(MONSTER_STATE.Move, new StateElem
@@ -44,21 +44,21 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             Entered = () => 
             {
                 _animator?.SetBool(BaseMonster.MOVE, true);
-                Debug.Log("이동 시작");
+                //Debug.Log("이동 시작");
             },
             Doing = C_Move,
             Exited = () =>
             {
                 _animator?.SetBool(BaseMonster.MOVE, false);
-                Debug.Log("이동 종료");
+                //Debug.Log("이동 종료");
             },
         });
 
         AddState(MONSTER_STATE.Attack, new StateElem
         {
-            Entered = () => Debug.Log("공격 시작"),
+           // Entered = () => Debug.Log("공격 시작"),
             Doing = C_Attack,
-            Exited = () => Debug.Log("공격 종료")
+            //Exited = () => Debug.Log("공격 종료")
         });
 
         AddState(MONSTER_STATE.Dead, new StateElem

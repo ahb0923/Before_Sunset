@@ -11,8 +11,8 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
     
-    private TowerData _towerData;
-    private SmelterData _smelterData;
+    private TowerDatabase _towerData;
+    private SmelterDatabase _smelterData;
     private Tween _tween;
     
     public int Index { get; private set; }
@@ -32,7 +32,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         Index = index;
     }
 
-    public void SetTowerSlot(TowerData towerData)
+    public void SetTowerSlot(TowerDatabase towerData)
     {
         buildingPrefab = null;
         
@@ -41,7 +41,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _towerData = towerData;
             _smelterData = null;
 
-            var go = DataManager.Instance.TowerData.GetTowerPrefabById(towerData.id);
+            var go = DataManager.Instance.TowerData.GetPrefabById(towerData.id);
             buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
 
             _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(go.transform,"Image").sprite;
@@ -51,7 +51,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         }
     }
 
-    public void SetSmelterSlot(SmelterData smelterData)
+    public void SetSmelterSlot(SmelterDatabase smelterData)
     {
         buildingPrefab = null;
         

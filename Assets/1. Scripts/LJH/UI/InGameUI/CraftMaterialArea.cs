@@ -29,7 +29,7 @@ public class CraftMaterialArea : MonoBehaviour
         }
     }
     
-    public void SetMaterialSlot(TowerData data)
+    public void SetMaterialSlot(TowerDatabase data)
     {
         List<KeyValuePair<string, int>> dataList = data.buildRequirements.ToList();
         List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
@@ -48,7 +48,7 @@ public class CraftMaterialArea : MonoBehaviour
         }
     }
     
-    public void SetMaterialSlot(SmelterData data)
+    public void SetMaterialSlot(SmelterDatabase data)
     {
         List<KeyValuePair<string, int>> dataList = data.buildRequirements.ToList();
         List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();

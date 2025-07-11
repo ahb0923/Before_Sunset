@@ -10,7 +10,7 @@ public enum TOWER_BUILD_TYPE
 }
 
 [System.Serializable]
-public class TowerData
+public class TowerDatabase
 {
     public int id;
     public string towerName;
@@ -18,6 +18,7 @@ public class TowerData
     public TOWER_BUILD_TYPE buildType;
     public TOWER_ATTACK_TYPE attackType;
     public int nextUpgradeId;
+    public int projectileId;
 
     public int level;
     public float towerHp;

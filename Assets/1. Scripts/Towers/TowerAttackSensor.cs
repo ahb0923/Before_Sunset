@@ -58,7 +58,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (detectedEnemies.Add(enemy))
         {
             Debug.Log($"적 진입: {enemy.name} | 총 {detectedEnemies.Count}명 감지됨");
-            if (detectedEnemies.Count == 1)
+            if (_tower.ai.CurState != TOWER_STATE.Construction && detectedEnemies.Count == 1)
                 _tower.ai.SetState(TOWER_STATE.Attack);
         }
     }
@@ -162,6 +162,11 @@ public class TowerAttackSensor : MonoBehaviour
     /// </summary>
     public void RefreshTarget()
     {
+        if (_tower.ai.CurState == TOWER_STATE.Construction)
+        {
+            Debug.Log("[센서] 건설 중이라 타겟 설정 안함");
+            return;
+        }
         _currentTarget = NearestTarget();
 
         if (_currentTarget != null)
@@ -189,7 +194,7 @@ public class TowerAttackSensor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_tower.ai.CurState == TOWER_STATE.Destroy)
+        if (_tower.ai.CurState == TOWER_STATE.Destroy || _tower.ai.CurState == TOWER_STATE.Construction)
             return;
 
         if (((1 << other.gameObject.layer) & targetLayerMask) != 0)

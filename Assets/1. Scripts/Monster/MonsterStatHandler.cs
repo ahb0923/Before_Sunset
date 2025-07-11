@@ -4,7 +4,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 {
     private BaseMonster _monster;
 
-    [SerializeField] private MonsterData _data;
+    [SerializeField] private MonsterDatabase _data;
 
     public string MonsterName { get; private set; }
     public ATTACK_TYPE AttackType { get; private set; }

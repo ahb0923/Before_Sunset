@@ -13,8 +13,8 @@ public class CraftArea : MonoBehaviour
     [SerializeField] private GameObject _buildingSlotArea;
     [SerializeField] private GameObject _buildingSlotPrefab;
     [SerializeField] private List<BuildingSlot> _buildSlots = new List<BuildingSlot>();
-    [SerializeField] private List<TowerData> _baseTowerData = new List<TowerData>();
-    [SerializeField] private List<SmelterData> _smelterData;
+    [SerializeField] private List<TowerDatabase> _baseTowerData = new List<TowerDatabase>();
+    [SerializeField] private List<SmelterDatabase> _smelterData;
     
     private const string BUILD_BUTTON = "BuildButton";
     private const string TOWER_BUTTON = "TowerButton";
@@ -63,7 +63,7 @@ public class CraftArea : MonoBehaviour
 
         for (int i = 0; i < _buildSlots.Count; i++)
         {
-            TowerData data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
+            TowerDatabase data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
             _buildSlots[i].SetTowerSlot(data);
         }
     }
@@ -80,7 +80,7 @@ public class CraftArea : MonoBehaviour
     
         for (int i = 0; i < _buildSlots.Count; i++)
         {
-            SmelterData data = i < _smelterData.Count ? _smelterData[i] : null;
+            SmelterDatabase data = i < _smelterData.Count ? _smelterData[i] : null;
             _buildSlots[i].SetSmelterSlot(data);
         }
     }

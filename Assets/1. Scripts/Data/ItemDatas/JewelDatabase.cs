@@ -1,9 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class JewelData : ItemData
+public class JewelDatabase : ItemDatabase
 {
     public int spawnProbability;
 }

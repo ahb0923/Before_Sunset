@@ -58,7 +58,7 @@ public class DismantleUI : MonoBehaviour
         Close();
     }
 
-    public void OpenDismantleUI(TowerData data)
+    public void OpenDismantleUI(TowerDatabase data)
     {
         _rect.OpenAtCenter();
         InitSlots(data);
@@ -71,7 +71,7 @@ public class DismantleUI : MonoBehaviour
         _rect.CloseAndRestore();
     }
 
-    private void InitSlots(TowerData data)
+    private void InitSlots(TowerDatabase data)
     {
         if (_slots.Count >= data.buildRequirements.Count)
         {
@@ -90,7 +90,7 @@ public class DismantleUI : MonoBehaviour
         }
     }
     
-    private void SetSlot(TowerData data)
+    private void SetSlot(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
         
@@ -111,7 +111,7 @@ public class DismantleUI : MonoBehaviour
         }
     }
     
-    public void SetDismantleUI(TowerData data)
+    public void SetDismantleUI(TowerDatabase data)
     {
         _targetNameText.text = data.towerName;
     }

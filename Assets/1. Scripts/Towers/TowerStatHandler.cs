@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 public class TowerStatHandler : MonoBehaviour, IDamageable
 {
     [Header(" [ Data ] ")]
-    [SerializeField] private TowerData _data;
+    [SerializeField] private TowerDatabase _data;
 
     private BaseTower _tower;
 
@@ -17,6 +17,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     //public Coroutine fixCoroutine;
 
     public int ID { get; private set; }
+    public int ProjectileID { get; private set; }
     public int Level { get; private set; }
     public string TowerName { get; private set; }
 
@@ -62,6 +63,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             return;
         }
         ID = _data.id;
+        ProjectileID = _data.projectileId;
         Level = _data.level;
         TowerName = _data.towerName;
         attackType = _data.attackType;

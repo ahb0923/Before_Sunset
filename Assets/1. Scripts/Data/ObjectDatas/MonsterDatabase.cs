@@ -11,7 +11,7 @@ public enum MOVE_TYPE
 }
 
 [System.Serializable]
-public class MonsterData
+public class MonsterDatabase
 {
     public int id;
     public string monsterName;

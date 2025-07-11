@@ -1,8 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemData
+public class ItemDatabase
 {
     public int id;
     public string itemName;

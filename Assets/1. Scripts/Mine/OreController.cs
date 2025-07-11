@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class OreController : MonoBehaviour
 {
-    public OreData Data { get; private set; }
+    public OreDatabase Data { get; private set; }
 
     private int _currentHP;
 
@@ -31,7 +31,7 @@ public class OreController : MonoBehaviour
         }
     }
 
-    public void Initialize(OreData oreData)
+    public void Initialize(OreDatabase oreData)
     {
         Data = oreData;
         _currentHP = Data.hp;

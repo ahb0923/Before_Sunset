@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 
@@ -20,6 +20,8 @@ public class ObjectPoolData
 public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
+
+    [SerializeField] private GameObject _projectilePool;
 
     private bool _isSet;
 
