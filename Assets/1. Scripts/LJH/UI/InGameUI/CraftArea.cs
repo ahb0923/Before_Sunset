@@ -36,7 +36,6 @@ public class CraftArea : MonoBehaviour
         _buildButton.onClick.AddListener(Toggle);
         _towerButton.onClick.AddListener(TowerButton);
         _smelterButton.onClick.AddListener(SmelterButton);
-        
         GetBaseTowerList();
         GetSmelterList();
         InitSlots();
@@ -45,10 +44,6 @@ public class CraftArea : MonoBehaviour
     
     public void Work()
     {
-        GetBaseTowerList();
-        GetSmelterList();
-        InitSlots();
-        TowerButton();
     }
 
     private void TowerButton()

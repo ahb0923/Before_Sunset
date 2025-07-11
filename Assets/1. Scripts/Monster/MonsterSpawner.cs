@@ -35,6 +35,7 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public void SpawnAllMonsters()
     {
+        UIManager.Instance.BattleUI.StartWarning();
         StartCoroutine(C_SpawnMonsters(TimeManager.Instance.Stage));
     }
 

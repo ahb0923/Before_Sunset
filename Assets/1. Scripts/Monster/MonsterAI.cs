@@ -212,7 +212,16 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // 실제 오브젝트 이동
-            SetMonsterDirection(_path.CurNode.WorldPos);
+            switch (_monster.Stat.MoveType)
+            {
+                case MOVE_TYPE.Ground:
+                    SetMonsterDirection(_path.CurNode.WorldPos);
+                    break;
+
+                case MOVE_TYPE.Air:
+                    SetMonsterDirection(Target.position);
+                    break;
+            }
             _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
 
             if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.25f)

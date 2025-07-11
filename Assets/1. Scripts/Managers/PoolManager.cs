@@ -26,6 +26,13 @@ public class PoolManager : MonoSingleton<PoolManager>
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        if(Instance != null)
+            DontDestroyOnLoad(this.gameObject);
+    }
+
     /// <summary>
     /// 오브젝트 풀링 세팅
     /// </summary>

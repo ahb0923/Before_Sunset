@@ -87,13 +87,18 @@ public class OptionUI : MonoBehaviour
     private void OnClickMainMenuButton()
     {
         var popUpUI = UIManager.Instance.AskPopUpUI;
-        popUpUI.Open(_mainMenuText, null, null);
+        popUpUI.Open(_mainMenuText, MainMenu, null);
     }
 
     private void OnClickQuitButton()
     {
         var popUpUI = UIManager.Instance.AskPopUpUI;
         popUpUI.Open(_quitText, Quit, null);
+    }
+
+    private void MainMenu()
+    {
+        LoadingSceneController.LoadScene("StartScene");
     }
     
     private void Quit()
