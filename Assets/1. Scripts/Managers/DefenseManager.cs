@@ -161,9 +161,10 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
             if (towerObj.TryGetComponent<TowerStatHandler>(out var tower))
             {
                 // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
-                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
+                BuildingSaveData towerData = new BuildingSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
                 data.constructedTowers.Add(towerData);
             }
+            // 여기에 제련소도 추가해야 할 듯
         }
     }
 

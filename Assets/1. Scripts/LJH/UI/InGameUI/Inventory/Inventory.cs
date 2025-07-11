@@ -3,8 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, ISaveable
 {
     public Item Pickaxe { get; private set; }
     public Item[] Items { get; private set; } = new Item[29];
@@ -246,5 +245,20 @@ public class Inventory : MonoBehaviour
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
         return true;
+    }
+
+    /// <summary>
+    /// 인벤토리 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        InventorySaveData invenData = data.inventory;
+        foreach(Item item in Items)
+        {
+            if (item == null) continue;
+
+            ItemSaveData itemData = new ItemSaveData(item.Data.id, item.quantity);
+            invenData.items.Add(itemData);
+        }
     }
 }
