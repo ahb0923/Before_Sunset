@@ -13,7 +13,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject _highlight;
     [SerializeField] private Image _highlightImage;
 
-    private SmelterData _currentData;
+    private SmelterDatabase _currentData;
     private Tween _tween;
     public bool IsInputSlot { get; private set; }
     public Item CurrentItem { get; private set; }

@@ -13,7 +13,7 @@ public class InventoryManager : MonoSingleton<InventoryManager>
         Inventory = Helper_Component.FindChildComponent<Inventory>(this.transform, "InventoryContainer");
     }
     
-    public bool IsEnoughMaterial(TowerData data)
+    public bool IsEnoughMaterial(TowerDatabase data)
     {
         List<KeyValuePair<string, int>> dataList = data.buildRequirements.ToList();
         List<Item> items = Inventory.Items.ToList();
