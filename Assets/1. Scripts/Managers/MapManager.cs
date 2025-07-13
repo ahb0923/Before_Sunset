@@ -20,6 +20,18 @@ public class MapManager : MonoSingleton<MapManager>
     private Stack<int> mapHistory = new Stack<int>();
     private Dictionary<int, int> mapPrefabIndexMap = new Dictionary<int, int>();
 
+    private Vector2[] smallSpawnAreas = new Vector2[]
+    {
+        new Vector2(60f, 30f),
+        new Vector2(60f, 30f)
+    };
+
+    private Vector2[] largeSpawnAreas = new Vector2[]
+    {
+        new Vector2(80f, 50f),
+        new Vector2(80f, 50f)
+    };
+
     protected override void Awake()
     {
         base.Awake();
@@ -42,12 +54,13 @@ public class MapManager : MonoSingleton<MapManager>
     public void MoveToMapByDirection(MiningHandler.PortalDirection dir)
     {
         LastEnteredPortalDirection = dir;
+        mapHistory.Push(CurrentMapIndex);
         MoveToRandomMap();
     }
 
     public void MoveToRandomMap()
     {
-        MoveToMap(nextMapIndex);
+        MoveToMap(nextMapIndex, false);
         nextMapIndex++;
     }
 
@@ -56,6 +69,10 @@ public class MapManager : MonoSingleton<MapManager>
         if (mapHistory.Count == 0) return;
 
         int prev = mapHistory.Pop();
+
+        if (LastEnteredPortalDirection.HasValue)
+            LastEnteredPortalDirection = GetOppositeDirection(LastEnteredPortalDirection.Value);
+
         MoveToMap(prev, false);
     }
 
@@ -70,14 +87,20 @@ public class MapManager : MonoSingleton<MapManager>
     {
         if (targetIndex == CurrentMapIndex) return;
 
+        var spawnManager = FindObjectOfType<SpawnManager>();
+
+        if (CurrentMapIndex != 0)
+        {
+            spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);
+        }
+
         // 현재 맵 비활성화
         if (CurrentMapIndex == 0)
             baseMap.SetActive(false);
         else if (mapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
             currentChunk.SetActive(false);
 
-        var spawnManager = FindObjectOfType<SpawnManager>();
-
+        // 타겟 맵 생성 혹은 존재 여부 확인
         if (targetIndex > 0 && !mapInstances.ContainsKey(targetIndex))
         {
             if (!mapPrefabIndexMap.ContainsKey(targetIndex))
@@ -103,24 +126,37 @@ public class MapManager : MonoSingleton<MapManager>
             mapInstances[targetIndex] = instance;
         }
 
+        // 새 맵 활성화 및 플레이어 위치 조정
         if (targetIndex == 0)
         {
             baseMap.SetActive(true);
             player.position = baseMap.transform.position;
-            spawnManager?.OnMapChanged(baseMap.transform.position, 0);
+
+            // 기본 맵은 스폰 안 함
+            spawnManager?.OnMapChanged(baseMap.transform.position, 0, smallSpawnAreas);
         }
         else if (mapInstances.TryGetValue(targetIndex, out var nextMap))
         {
             nextMap.SetActive(true);
 
-            // 플레이어 위치를 입장한 포탈 방향의 반대 방향 포탈 위치로 세팅
             Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, LastEnteredPortalDirection);
             player.position = spawnPos;
 
-            Vector2 oreArea = new Vector2(40f, 40f);
-            Vector2 jewelArea = new Vector2(25f, 25f);
-            spawnManager?.SetMapPositionAndArea(nextMap.transform.position, oreArea, jewelArea);
-            spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex);
+            Vector2[] spawnAreasToUse;
+
+            string prefabName = nextMap.name.ToLower();
+
+            if (prefabName.Contains("01") || prefabName.Contains("02") || prefabName.Contains("03"))
+            {
+                spawnAreasToUse = smallSpawnAreas;
+            }
+            else
+            {
+                spawnAreasToUse = largeSpawnAreas;
+            }
+
+            spawnManager?.SetMapPositionAndArea(nextMap.transform.position, spawnAreasToUse[0], spawnAreasToUse[1]);
+            spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex, spawnAreasToUse);
         }
 
         if (addToHistory)
@@ -164,7 +200,6 @@ public class MapManager : MonoSingleton<MapManager>
 
         return mapInstance.transform.position;
     }
-
 
     private MiningHandler.PortalDirection GetOppositeDirection(MiningHandler.PortalDirection dir)
     {
