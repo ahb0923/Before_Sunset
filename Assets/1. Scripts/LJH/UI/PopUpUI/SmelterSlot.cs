@@ -21,12 +21,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private const string ITEM_ICON = "IconImage";
     private const string ITEM_AMOUNT = "AmountText";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
-
-    public void TestCode()
-    {
-        _currentData = DataManager.Instance.SmelterData.GetById(900);
-    }
-
+    
     private void Reset()
     {
         _itemIcon = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_ICON);
@@ -50,6 +45,61 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             IsInputSlot = false;
         }
+    }
+    
+    public void SetSmelterData(SmelterData data)
+    {
+        _currentData = data;
+    }
+
+    /// <summary>
+    /// 제련소 널체크 메서드
+    /// </summary>
+    /// <returns></returns>
+    public bool IsOutputEmpty()
+    {
+        if (CurrentItem == null)
+            return true;
+        else return false;
+    }
+    
+    /// <summary>
+    /// 제련된 아이템을 제련소 슬롯에 넣어줄때 사용 메서드
+    /// </summary>
+    /// <param name="item">만들어진 주괴</param>
+    /// <param name="amount">만들어진 수량</param>
+    public void AddToSmelterItem(Item item, int amount)
+    {
+        if (CurrentItem == null)
+        {
+            CurrentItem = item;
+            CurrentItem.stack += amount;
+        }
+        else
+        {
+            CurrentItem.stack += amount;
+        }
+    }
+
+    /// <summary>
+    /// 슬롯에 담겨있는 아이템을 인벤토리에 넣어주는 메서드
+    /// </summary>
+    public void ReceiveItem()
+    {
+        if (CurrentItem == null)
+        {
+            return;
+        }
+        
+        int id = CurrentItem.Data.id;
+        int quantity = CurrentItem.stack;
+        
+        var inventory = InventoryManager.Instance.Inventory;
+        inventory.AddItem(id, quantity);
+        
+        CurrentItem = null;
+        RefreshUI();
+        inventory.RefreshInventories();
     }
 
     public void ClearSlot()

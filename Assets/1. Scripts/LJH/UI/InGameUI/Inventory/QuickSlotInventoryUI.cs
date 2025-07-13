@@ -61,49 +61,19 @@ public class QuickSlotInventoryUI : MonoBehaviour
             _quickSlots[i].InitIndex(i);
         }
     }
-    
-    /// <summary>
-    /// 인벤토리UI 활성화 / 비활성화 스위치 메서드
-    /// </summary>
-    public void ToggleInventory()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I))
-        {
-            bool isOpen = this.gameObject.activeSelf;
-            this.gameObject.SetActive(!isOpen);
-
-            if (!isOpen)
-            {
-                Open();
-            }
-            else
-            {
-                Close();
-            }
-        }
-    }
 
     public void Toggle()
     {
         bool isOpen = this.gameObject.activeSelf;
         this.gameObject.SetActive(!isOpen);
-
-        if (!isOpen)
-        {
-            Open();
-        }
-        else
-        {
-            Close();
-        }
     }
     
-    private void Open()
+    public void Open()
     {
         this.gameObject.SetActive(true);
     }
 
-    private void Close()
+    public void Close()
     {
         this.gameObject.SetActive(false);
     }

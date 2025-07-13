@@ -61,8 +61,23 @@ public class DataManager : PlainSingleton<DataManager>
     // ↓ 시스템 데이터
     public WaveDataHandler WaveData { get; private set; } = new();
 
+    private Task _initTask;
+    private bool _isInitialized;
+
+    public Task InitCheck()
+    {
+        if (_initTask != null)
+            return _initTask;
+
+        _initTask = InitAsync();
+        return _initTask;
+    }
+
     public async Task InitAsync()
     {
+        if (_isInitialized)
+            return;
+        
         List<IDataLoader> loaders = new()
         {
             TowerData,
@@ -87,6 +102,7 @@ public class DataManager : PlainSingleton<DataManager>
         MonsterData.SettingPrefab();
 
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
+        _isInitialized = true;
 
         //MineralData.DebugLogAll();
         //TowerData.DebugLogAll();

@@ -43,38 +43,37 @@ public class BattleUI : MonoBehaviour
     {
         _returnRect = GetComponent<RectTransform>();
         _warningRect = _warningGameObject.GetComponent<RectTransform>();
+        _returnGameObject.SetActive(false);
+        CloseWarning();
     }
 
-    public void Open()
+    public void OpenReturn()
     {
         _returnRect.OpenAtCenter();
         _returnGameObject.SetActive(true);
     }
 
-    public void Close()
-    {
-        _returnRect.CloseAndRestore();
-        CloseWarning();
-    }
-
-    private void CloseReturn()
+    public void CloseReturn()
     {
         _returnGameObject.SetActive(false);
+        _returnRect.CloseAndRestore();
     }
 
     public void OpenWarning()
     {
+        _returnRect.OpenAtCenter();
         _warningRect.OpenAtCenter();
     }
 
     public void CloseWarning()
     {
         _warningRect.CloseAndRestore();
+        _returnRect.CloseAndRestore();
     }
     
     public void ShowReturnUI()
     {
-        Open();
+        OpenReturn();
         _returnRoutine = StartCoroutine(C_Return());
     }
 
@@ -90,7 +89,6 @@ public class BattleUI : MonoBehaviour
         StartDotRoutine();
         yield return new WaitUntil(() => _returnRoutine == null);
         CloseReturn();
-        StartBlink();
     }
     
     private IEnumerator C_DotRoutine()
@@ -141,7 +139,7 @@ public class BattleUI : MonoBehaviour
         isRoutineDone = true;
     }
 
-    public void StartBlink()
+    public void StartWarning()
     {
         if (_textTween != null && _textTween.IsPlaying())
         {
@@ -149,11 +147,10 @@ public class BattleUI : MonoBehaviour
         }
         
         OpenWarning();
-        _textTween = _warningText.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(11, LoopType.Yoyo).OnComplete(StopBlink);
-        
+        _textTween = _warningText.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(11, LoopType.Yoyo).OnComplete(StopWarning);
     }
 
-    public void StopBlink()
+    public void StopWarning()
     {
         if (_textTween != null)
         {
@@ -162,7 +159,7 @@ public class BattleUI : MonoBehaviour
             Color color = _warningText.color;
             color.a = 1f;
             _warningText.color = color;
-            Close();
+            CloseWarning();
         }
     }
 }
