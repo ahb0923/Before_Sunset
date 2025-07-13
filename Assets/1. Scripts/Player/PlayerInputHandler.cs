@@ -42,9 +42,8 @@ public class PlayerInputHandler : MonoBehaviour
 
         _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
         _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
-
-        if (RecallUIHandler.Instance != null)
-            RecallUIHandler.Instance.OnCountdownFinished += OnRecallCountdownFinished;
+        
+        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
     }
 
     private void OnDisable()
@@ -62,8 +61,7 @@ public class PlayerInputHandler : MonoBehaviour
         _inputActions.Player.ReturnHome.performed -= OnReturnHomePerformed;
         _inputActions.Player.ReturnHome.canceled -= OnReturnHomeCanceled;
 
-        if (RecallUIHandler.Instance != null)
-            RecallUIHandler.Instance.OnCountdownFinished -= OnRecallCountdownFinished;
+        UIManager.Instance.RecallUI.OnCountdownFinished -= OnRecallCountdownFinished;
 
         _inputActions.Player.Disable();
     }
@@ -75,8 +73,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (isReturnKeyHeld)
         {
             returnKeyHeldTime += Time.deltaTime;
-            if (RecallUIHandler.Instance != null)
-                RecallUIHandler.Instance.UpdateHoldProgress(returnKeyHeldTime / holdTimeToTriggerRecall);
+            UIManager.Instance.RecallUI.UpdateHoldProgress(returnKeyHeldTime / holdTimeToTriggerRecall);
 
             if (returnKeyHeldTime >= holdTimeToTriggerRecall)
             {
@@ -93,22 +90,20 @@ public class PlayerInputHandler : MonoBehaviour
         if (AuraHandler.Instance != null)
             AuraHandler.Instance.Show();
 
-        if (RecallUIHandler.Instance != null)
-            RecallUIHandler.Instance.StartRecallCountdown();
+        UIManager.Instance.RecallUI.StartRecallCountdown();
     }
 
     private IEnumerator DelayedRecall()
     {
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
+            UIManager.Instance.RecallUI.CloseRecall();
             MapManager.Instance.ReturnToHomeMap();
         }));
 
         isRecallStarted = false;
         returnKeyHeldTime = 0f;
 
-        if (RecallUIHandler.Instance != null)
-            RecallUIHandler.Instance.ResetUI();
 
         if (AuraHandler.Instance != null)
             AuraHandler.Instance.Hide();
@@ -131,8 +126,7 @@ public class PlayerInputHandler : MonoBehaviour
             isReturnKeyHeld = true;
             returnKeyHeldTime = 0f;
 
-            if (RecallUIHandler.Instance != null)
-                RecallUIHandler.Instance.ShowRecallIcon();
+            UIManager.Instance.RecallUI.ShowRecallIcon();
         }
     }
 
@@ -143,8 +137,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             isReturnKeyHeld = false;
             returnKeyHeldTime = 0f;
-            if (RecallUIHandler.Instance != null)
-                RecallUIHandler.Instance.HideRecallIcon();
+            UIManager.Instance.RecallUI.ShowRecallIcon();
         }
     }
 

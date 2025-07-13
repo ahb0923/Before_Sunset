@@ -175,15 +175,7 @@ public class PlayerController : MonoBehaviour
 
     private void ToggleInventory()
     {
-        if (inventoryUI != null)
-        {
-            inventoryUI.ToggleInventory();
-            Debug.Log("인벤토리 토글 실행");
-        }
-        else
-        {
-            Debug.LogWarning("InventoryUI가 연결되지 않았습니다!");
-        }
+        InventoryManager.Instance.Inventory.Toggle();
     }
 
     private void EnterBuildMode()

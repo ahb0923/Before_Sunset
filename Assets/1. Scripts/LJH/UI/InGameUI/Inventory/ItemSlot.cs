@@ -114,11 +114,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         _tween = _highlightImage.DOFade(0f, 0.2f).OnComplete(() => _highlight.SetActive(false));
         
-        var item = InventoryManager.Instance.Inventory.Items[SlotIndex];
-        if (item != null)
-        {
-            TooltipManager.Instance.HideTooltip();
-        }
+        TooltipManager.Instance.HideTooltip();
     }
     
     public void OnPointerDown(PointerEventData eventData)
@@ -137,20 +133,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
         
         //드래그가 시작될 때, 해당 아이템 슬롯을 기억하고, 그 슬롯의 Item을 임시 저장.
-        _draggingOriginSlot = this;
-        _draggingItem = item;
+        DragManager.OriginItemSlot = this;
+        DragManager.DraggingItem = item;
         
         //드래그가 시작될 때, 마우스 포인터에 드래그 될 이미지를 표시.
-        _draggingItemIcon = new GameObject("Dragging Icon");
-        _draggingItemIcon.transform.SetParent(transform.root);
-        var image = _draggingItemIcon.AddComponent<Image>();
+        DragManager.DraggingIcon = new GameObject("Dragging Icon");
+        DragManager.DraggingIcon.transform.SetParent(transform.root);
+        var image = DragManager.DraggingIcon.AddComponent<Image>();
         
         
         /*image.sprite = item.Data.icon;*/
         
         
         image.raycastTarget = false;
-        _draggingItemIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
+        DragManager.DraggingIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
         
         //해당 슬롯을 비워서, 드래그 하는것을 더 명시적으로 보여줌.
         InventoryManager.Instance.Inventory.Items[SlotIndex] = null;
@@ -175,81 +171,134 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnDrag(PointerEventData eventData)
     {
         //드래그 하는 동안 마우스 위치에 아이템 이미지를 고정 시킴.
-        if (_draggingItemIcon != null)
+        if (DragManager.DraggingIcon != null)
         {
-            _draggingItemIcon.transform.position = Input.mousePosition;
+            DragManager.DraggingIcon.transform.position = Input.mousePosition;
         }
     }
-    
+
     public void OnEndDrag(PointerEventData eventData)
     {
         //끌고 다니던 아이템 이미지를 제거.
-        if (_draggingItemIcon != null)
+        if (DragManager.DraggingIcon != null)
         {
-            Destroy(_draggingItemIcon);
-            _draggingItemIcon = null;
-        }
-        
-        //아이템을 다시 원래 자리로 복구 시킴.
-        if (_draggingItem != null && eventData.pointerEnter?.GetComponent<ItemSlot>() == null)
-        {
-            InventoryManager.Instance.Inventory.Items[_draggingOriginSlot.SlotIndex] = _draggingItem;
-            _draggingOriginSlot.RefreshUI();
+            Destroy(DragManager.DraggingIcon);
+            DragManager.DraggingIcon = null;
         }
 
-        _draggingItem = null;
-        _draggingOriginSlot = null;
+        //아이템을 다시 원래 자리로 복구 시킴.
+        if (DragManager.DraggingItem != null)
+        {
+            if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
+                && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
+            {
+                InventoryManager.Instance.Inventory.Items[DragManager.OriginItemSlot.SlotIndex] = DragManager.DraggingItem;
+                DragManager.OriginItemSlot.RefreshUI();
+            }
+        }
+
+        DragManager.DraggingItem = null;
+        DragManager.OriginItemSlot = null;
     }
     
     public void OnDrop(PointerEventData eventData)
     {
         //드래그 중이던 아이템이 없으면, 작동 X.
-        if (_draggingItem == null)
+        if (DragManager.DraggingItem == null)
         {
             return;
         }
         
         var inventory = InventoryManager.Instance.Inventory;
         var targetItem = inventory.Items[SlotIndex];
-
-        //해당칸이 비어있다면, 드래그 중인 아이템으로 넣어줌.
-        if (targetItem == null)
-        {
-            if (SlotIndex != _draggingOriginSlot.SlotIndex)
-            {
-                inventory.Items[SlotIndex] = _draggingItem;
-                inventory.Items[_draggingOriginSlot.SlotIndex] = null;
-            }
-            else
-            {
-                inventory.Items[SlotIndex] = _draggingItem;
-            }
-        }
-        //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
-        else if (targetItem.Data.itemName == _draggingItem.Data.itemName && targetItem.Stackable)
-        {
-            if (targetItem.IsMaxStack || _draggingItem.IsMaxStack)
-            {
-                inventory.Items[_draggingOriginSlot.SlotIndex] = targetItem;
-                inventory.Items[SlotIndex] = _draggingItem;
-            }
-            else
-            {
-                MergeItem(targetItem);
-            }
-        }
-        //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
-        else
-        {
-            inventory.Items[_draggingOriginSlot.SlotIndex] = targetItem;
-            inventory.Items[SlotIndex] = _draggingItem;
-        }
+        var smelterSlot = UIManager.Instance.SmelterUI.smelterInputSlot;
         
+        // 드래그 중인 아이템이 아이템슬롯에서 왔을 경우
+        if (DragManager.OriginItemSlot != null)
+        {
+            //해당칸이 비어있다면, 드래그 중인 아이템으로 넣어줌.
+            if (targetItem == null)
+            {
+                if (SlotIndex != DragManager.OriginItemSlot.SlotIndex)
+                {
+                    inventory.Items[SlotIndex] = DragManager.DraggingItem;
+                    inventory.Items[DragManager.OriginItemSlot.SlotIndex] = null;
+                }
+                else
+                {
+                    inventory.Items[SlotIndex] = DragManager.DraggingItem;
+                }
+            }
+            //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
+            else if (targetItem.Data.itemName == DragManager.DraggingItem.Data.itemName && targetItem.Stackable)
+            {
+                if (targetItem.IsMaxStack || DragManager.DraggingItem.IsMaxStack)
+                {
+                    inventory.Items[DragManager.OriginItemSlot.SlotIndex] = targetItem;
+                    inventory.Items[SlotIndex] = DragManager.DraggingItem;
+                }
+                else
+                {
+                    MergeItem(targetItem);
+                }
+            }
+            //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
+            else
+            {
+                inventory.Items[DragManager.OriginItemSlot.SlotIndex] = targetItem;
+                inventory.Items[SlotIndex] = DragManager.DraggingItem;
+            }
+        }
+        else if (DragManager.OriginSmelterSlot != null)
+        {
+            if (!smelterSlot.CanInputItem(targetItem))
+            {
+                smelterSlot.SetItem(DragManager.DraggingItem);
+                inventory.InventoryUI.RefreshUI(inventory.Items);
+                inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
+                smelterSlot.RefreshUI();
+
+                DragManager.Clear();
+                return;
+            }
+
+            if (targetItem == null)
+            {
+                inventory.Items[SlotIndex] = DragManager.DraggingItem;
+                smelterSlot.SetItem(null);
+            }
+            //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
+            else if (targetItem.Data.itemName == DragManager.DraggingItem.Data.itemName && targetItem.Stackable)
+            {
+                if (targetItem.IsMaxStack || DragManager.DraggingItem.IsMaxStack)
+                {
+                    smelterSlot.SetItem(targetItem);
+                    inventory.Items[SlotIndex] = DragManager.DraggingItem;
+                }
+                else
+                {
+                    MergeItem(inventory.Items[SlotIndex]);
+                    if (DragManager.DraggingItem != null)
+                    {
+                        smelterSlot.SetItem(DragManager.DraggingItem);
+                    }
+                }
+            }
+            //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
+            else
+            {
+                smelterSlot.SetItem(targetItem);
+                inventory.Items[SlotIndex] = DragManager.DraggingItem;
+            }
+        }
+
         inventory.InventoryUI.RefreshUI(inventory.Items);
         inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
+        smelterSlot.RefreshUI();
+        
+        TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
 
-        _draggingItem = null;
-        _draggingOriginSlot = null;
+        DragManager.Clear();
     }
     
     /// <summary>
@@ -259,17 +308,17 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private void MergeItem(Item item)
     {
         var max = item.MaxStack;
-        var total = _draggingItem.stack + item.stack;
+        var total = DragManager.DraggingItem.stack + item.stack;
 
         if (total <= max)
         {
             item.stack = total;
-            _draggingItem = null;
+            DragManager.DraggingItem = null;
         }
         else
         {
             item.stack = max;
-            _draggingItem.stack = total - max;
+            DragManager.DraggingItem.stack = total - max;
         }
     }
 

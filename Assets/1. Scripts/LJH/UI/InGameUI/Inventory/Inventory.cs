@@ -31,7 +31,7 @@ public class Inventory : MonoBehaviour
         //Pickaxe
     }
 
-    private void Toggle()
+    public void Toggle()
     {
         InventoryUI.Toggle();
         QuickSlotInventoryUI.Toggle();
@@ -227,6 +227,56 @@ public class Inventory : MonoBehaviour
             Item item = Items[i];
 
             if (item == null || item.Data.id != id)
+            {
+                continue;
+            }
+
+            if (item.stack > remain)
+            {
+                item.stack -= remain;
+                break;
+            }
+            else
+            {
+                remain -= item.stack;
+                Items[i] = null;
+            }
+        }
+        
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+        return true;
+    }
+    
+    public bool UseItem(string itemName, int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return false;
+        }
+        
+        int total = 0;
+
+        foreach (Item item in Items)
+        {
+            if (item != null && item.Data.itemName == itemName)
+            {
+                total += item.stack;
+            }
+        }
+
+        if (total < quantity)
+        {
+            return false;
+        }
+
+        int remain = quantity;
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Item item = Items[i];
+
+            if (item == null || item.Data.itemName != itemName)
             {
                 continue;
             }
