@@ -43,6 +43,9 @@ public class Inventory : MonoBehaviour
             InventoryUI.gameObject.SetActive(true);
             QuickSlotInventoryUI.gameObject.SetActive(false);
         }
+        
+        if (TooltipManager.Instance != null)
+            TooltipManager.Instance.HideTooltip();
     }
 
     public void SetPickaxe(EquipmentDatabase data)
