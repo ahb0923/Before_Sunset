@@ -69,21 +69,16 @@ public class SmelterUI : MonoBehaviour
         _smelterNameText.text = data.smelterName;
         smelterInputSlot.SetSmelterData(data);
         smelterOutputSlot.SetSmelterData(data);
-        // SetSmelterMaterialSlot(data);
+        SetSmelterMaterialSlot(data);
     }
 
-    // private void SetSmelterMaterialSlot(SmelterData data)
-    // {
-    //     List<Image> slotIcons = new List<Image>();
-    //     slotIcons.Add(_smelterMaterialSlot1);
-    //     slotIcons.Add(_smelterMaterialSlot2);
-    //     
-    //     for (int i = 0; i < data.smeltingIdList.Count; i++)
-    //     {
-    //         var image = DataManager.Instance.ItemData.GetId(data.smeltingIdList[i]).sprite;
-    //         slotIcons[i] = image;
-    //     }
-    // }
+    private void SetSmelterMaterialSlot(SmelterDatabase data)
+    {
+        var image1 = DataManager.Instance.MineralData.GetSpriteById(data.smeltingIdList[0]);
+        _smelterMaterialSlot1.sprite = image1;
+        var image2 = DataManager.Instance.MineralData.GetSpriteById(data.smeltingIdList[1]);
+        _smelterMaterialSlot2.sprite = image2;
+    }
 
     public void AddItemToSmelter(Item item, int amount)
     {

@@ -97,7 +97,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentCursor != cursor)
         {
-            Vector2 hotspot = new Vector2(6, 6);
+            Vector2 hotspot = Vector2.zero;
             Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
             currentCursor = cursor;
         }
