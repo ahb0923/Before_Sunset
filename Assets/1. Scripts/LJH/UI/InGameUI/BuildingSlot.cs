@@ -45,6 +45,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
 
             _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(go.transform,"Image").sprite;
+            _buildingIcon.preserveAspect = true;
             _buildingName.text = towerData.towerName;
             
             this.gameObject.SetActive(true);
@@ -61,6 +62,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _smelterData = smelterData;
             
             // _buildingIcon = smelterData.icon;
+            // _buildingIcon.preserveAspect = true;
             _buildingName.text = smelterData.smelterName;
             
             this.gameObject.SetActive(true);
@@ -74,6 +76,13 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         _buildingIcon.sprite = null;
         _buildingName.text = "";
         gameObject.SetActive(false);
+    }
+
+    private string SetSmelt(SmelterData data)
+    {
+        return $"제련 가능 광물\n" +
+                    $"{DataManager.Instance.ItemData.GetId(data.smeltingIdList[0]).itemName}, " +
+                    $"{DataManager.Instance.ItemData.GetId(data.smeltingIdList[1]).itemName}";
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -95,6 +104,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         else if (_smelterData != null)
         {
             UIManager.Instance.CraftMaterialArea.SetMaterialSlot(_smelterData);
+            TooltipManager.Instance.ShowTooltip(_smelterData.smelterName, SetSmelt(_smelterData));
         }
     }
 
@@ -133,6 +143,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         
         _tween = _bGImage.DOColor(Color.white, 0.2f);
         
+        TooltipManager.Instance.HideTooltip();
         UIManager.Instance.CraftMaterialArea.Close();
     }
 }

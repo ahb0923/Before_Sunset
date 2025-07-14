@@ -36,14 +36,11 @@ public class CraftArea : MonoBehaviour
         _buildButton.onClick.AddListener(Toggle);
         _towerButton.onClick.AddListener(TowerButton);
         _smelterButton.onClick.AddListener(SmelterButton);
+        
         GetBaseTowerList();
         GetSmelterList();
         InitSlots();
         TowerButton();
-    }
-    
-    public void Work()
-    {
     }
 
     private void TowerButton()
@@ -121,17 +118,14 @@ public class CraftArea : MonoBehaviour
 
     private void Toggle()
     {
-        bool isOpen = this.gameObject.activeSelf;
-        this.gameObject.SetActive(!isOpen);
-    }
-
-    private void Open()
-    {
-        this.gameObject.SetActive(true);
-    }
-
-    private void Close()
-    {
-        this.gameObject.SetActive(false);
+        if (this.gameObject.activeSelf)
+        {
+            this.gameObject.SetActive(false);
+            UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.gameObject.SetActive(true);
+        }
     }
 }
