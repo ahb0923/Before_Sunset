@@ -29,7 +29,7 @@ public class UpgradeUI : MonoBehaviour
     private const string UPGRADE_BUTTON = "UpgradeButton";
     private const string CANCEL_BUTTON = "BackGroundCancelButton";
     private const string UPGRADE_REQUIREMENT_SLOT_AREA = "UpgradeRequirementSlotArea";
-    private const string BUILDING_MATERIAL_SLOT = "BuildingMaterialSlot";
+    private const string BUILDING_MATERIAL_SLOT = "Slots/BuildingMaterialSlot";
 
     private void Reset()
     {

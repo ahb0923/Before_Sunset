@@ -18,7 +18,7 @@ public class InventoryUI : MonoBehaviour
     
     private const string QUICK_SLOT_AREA = "QuickSlotArea";
     private const string ITEM_SLOT_AREA = "ItemSlotArea";
-    private const string ITEM_SLOT_PREFAB = "ItemSlot";
+    private const string ITEM_SLOT_PREFAB = "Slots/ItemSlot";
     private const string PICKAXE_SLOT = "PickaxeSlot";
     
     
