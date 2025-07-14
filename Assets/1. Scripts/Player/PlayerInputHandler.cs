@@ -95,6 +95,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void StartRecall()
     {
+        Debug.Log("StartRecall() 호출됨");
         isRecallStarted = true;
         isReturnKeyHeld = false;
 
@@ -103,6 +104,7 @@ public class PlayerInputHandler : MonoBehaviour
 
         UIManager.Instance.RecallUI.StartRecallCountdown();
     }
+
 
     private IEnumerator DelayedRecall()
     {
