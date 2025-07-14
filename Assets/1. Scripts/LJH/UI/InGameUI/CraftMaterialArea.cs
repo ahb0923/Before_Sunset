@@ -8,7 +8,7 @@ public class CraftMaterialArea : MonoBehaviour
     [SerializeField] private GameObject _materialSlotPrefab;
     [SerializeField] private GameObject _materialSlotArea;
 
-    private const string BUILDING_MATERIAL_SLOT = "BuildingMaterialSlot";
+    private const string BUILDING_MATERIAL_SLOT = "Slots/BuildingMaterialSlot";
     private const string BUILDING_MATERIAL_SLOT_AREA = "BuildingMaterialSlotArea";
     
     private void Reset()

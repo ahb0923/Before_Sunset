@@ -13,7 +13,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
     private List<ItemSlot> _quickSlots = new List<ItemSlot>();
     
     private const string ITEM_SLOT_AREA = "QuickSlotArea";
-    private const string ITEM_SLOT_PREFAB = "ItemSlot";
+    private const string ITEM_SLOT_PREFAB = "Slots/ItemSlot";
     private const string PICKAXE_SLOT = "PickaxeSlot";
     
     
@@ -84,5 +84,10 @@ public class QuickSlotInventoryUI : MonoBehaviour
         {
             _quickSlots[i].RefreshUI();
         }
+    }
+    
+    public void RefreshPickaxe()
+    {
+        _pickaxeSlot.RefreshUI();
     }
 }

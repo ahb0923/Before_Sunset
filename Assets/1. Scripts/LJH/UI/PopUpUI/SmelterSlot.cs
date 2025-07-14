@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 using UnityEditor;
+using UnityEngine.Serialization;
 
 public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    [SerializeField] private Image _itemIcon;
+    [SerializeField] private Image _itemImage;
     [SerializeField] private TextMeshProUGUI _itemAmount;
     [SerializeField] private GameObject _highlight;
     [SerializeField] private Image _highlightImage;
@@ -24,7 +25,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     
     private void Reset()
     {
-        _itemIcon = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_ICON);
+        _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_ICON);
         _itemAmount = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, ITEM_AMOUNT);
         _highlight = Helper_Component.FindChildGameObjectByName(this.gameObject, HIGHLIGHT_IMAGE);
         _highlightImage = Helper_Component.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
@@ -112,14 +113,22 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (CurrentItem == null)
         {
-            _itemIcon.sprite = null;
+            _itemImage.sprite = null;
             _itemAmount.text = "";
         }
         else
         {
-            // _itemIcon.sprite = CurrentItem.Data.sprite;
+            SetImage(CurrentItem);
             _itemAmount.text = CurrentItem.stack.ToString();
         }
+    }
+
+    private void SetImage(Item item)
+    {
+        if (item.Data.id >= 100 && item.Data.id < 200)
+            _itemImage.sprite = DataManager.Instance.MineralData.GetSpriteById(item.Data.id);
+        else if (item.Data.id >= 200 && item.Data.id < 300)
+            _itemImage.sprite = DataManager.Instance.JewelData.GetSpriteById(item.Data.id);
     }
 
     public bool CanInputItem(Item item)
@@ -195,7 +204,10 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         DragManager.DraggingIcon.transform.SetParent(transform.root);
         var image = DragManager.DraggingIcon.AddComponent<Image>();
         
-        /*image.sprite = item.Data.icon;*/
+        if (CurrentItem.Data.id >= 100 && CurrentItem.Data.id < 200)
+            image.sprite = DataManager.Instance.MineralData.GetSpriteById(CurrentItem.Data.id);
+        else if (CurrentItem.Data.id >= 200 && CurrentItem.Data.id < 300)
+            image.sprite = DataManager.Instance.JewelData.GetSpriteById(CurrentItem.Data.id);
         
         image.raycastTarget = false;
         DragManager.DraggingIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
@@ -208,7 +220,8 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (DragManager.DraggingIcon != null)
         {
-            DragManager.DraggingIcon.transform.position = Input.mousePosition;
+            Vector2 pos = new Vector2(-10, 10);
+            DragManager.DraggingIcon.transform.position = (Vector2)Input.mousePosition + pos;
         }
     }
 

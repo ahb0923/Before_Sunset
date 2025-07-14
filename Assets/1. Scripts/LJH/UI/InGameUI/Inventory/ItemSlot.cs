@@ -18,7 +18,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private const string ITEM_IMAGE = "IconImage";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
-    //private const string DRAGGING_ICON = "DraggingIcon";
+    private const string DRAGGING_ICON = "DraggingIcon";
     
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
@@ -54,14 +54,18 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         else
         {
             _itemImage.enabled = true;
-            
-            
-            /*_itemImage.sprite = item.Data.icon;*/
-            
-            
+            SetImage(item);
         }
         
         SetAmount(item);
+    }
+
+    private void SetImage(Item item)
+    {
+        if (item.Data.id >= 100 && item.Data.id < 200)
+            _itemImage.sprite = DataManager.Instance.MineralData.GetSpriteById(item.Data.id);
+        else if (item.Data.id >= 200 && item.Data.id < 300)
+            _itemImage.sprite = DataManager.Instance.JewelData.GetSpriteById(item.Data.id);
     }
 
     /// <summary>
@@ -141,9 +145,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         DragManager.DraggingIcon.transform.SetParent(transform.root);
         var image = DragManager.DraggingIcon.AddComponent<Image>();
         
-        
-        /*image.sprite = item.Data.icon;*/
-        
+        if (item.Data.id >= 100 && item.Data.id < 200)
+            image.sprite = DataManager.Instance.MineralData.GetSpriteById(item.Data.id);
+        else if (item.Data.id >= 200 && item.Data.id < 300)
+            image.sprite = DataManager.Instance.JewelData.GetSpriteById(item.Data.id);
         
         image.raycastTarget = false;
         DragManager.DraggingIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
@@ -173,7 +178,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //드래그 하는 동안 마우스 위치에 아이템 이미지를 고정 시킴.
         if (DragManager.DraggingIcon != null)
         {
-            DragManager.DraggingIcon.transform.position = Input.mousePosition;
+            Vector2 pos = new Vector2(-10, 10);
+            DragManager.DraggingIcon.transform.position = (Vector2)Input.mousePosition + pos;
         }
     }
 

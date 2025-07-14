@@ -25,7 +25,7 @@ public class DismantleUI : MonoBehaviour
     private const string CANCEL_DISMANTLE_BUTTON = "CancelDismantleButton";
     private const string CANCEL_BUTTON = "BackGroundCancelButton";
     private const string RECOVER_MATERIAL_SLOT_AREA = "RecoverMaterialSlotArea";
-    private const string BUILDING_MATERIAL_SLOT = "BuildingMaterialSlot";
+    private const string BUILDING_MATERIAL_SLOT = "Slots/BuildingMaterialSlot";
 
     private void Reset()
     {

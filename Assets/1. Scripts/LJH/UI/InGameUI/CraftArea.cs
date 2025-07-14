@@ -19,7 +19,7 @@ public class CraftArea : MonoBehaviour
     private const string BUILD_BUTTON = "BuildButton";
     private const string TOWER_BUTTON = "TowerButton";
     private const string SMELTER_BUTTON = "SmelterButton";
-    private const string BUILD_SLOT = "BuildingSlot";
+    private const string BUILD_SLOT = "Slots/BuildingSlot";
     private const string BUILD_SLOT_AREA = "BuildingSlotArea";
 
     private void Reset()
