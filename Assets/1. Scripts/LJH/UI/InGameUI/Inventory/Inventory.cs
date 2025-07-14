@@ -45,6 +45,13 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public void SetPickaxe(EquipmentDatabase data)
+    {
+        Pickaxe = new Item(data);
+        InventoryUI.RefreshPickaxe();
+        QuickSlotInventoryUI.RefreshPickaxe();
+    }
+
     public Item CreateItem(int id)
     {
         Item item = new Item(DataManager.Instance.ItemData.GetId(id));

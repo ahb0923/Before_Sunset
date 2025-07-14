@@ -85,4 +85,9 @@ public class QuickSlotInventoryUI : MonoBehaviour
             _quickSlots[i].RefreshUI();
         }
     }
+    
+    public void RefreshPickaxe()
+    {
+        _pickaxeSlot.RefreshUI();
+    }
 }

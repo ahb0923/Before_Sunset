@@ -93,4 +93,9 @@ public class InventoryUI : MonoBehaviour
             itemSlots[i].RefreshUI();
         }
     }
+
+    public void RefreshPickaxe()
+    {
+        _pickaxeSlot.RefreshUI();
+    }
 }

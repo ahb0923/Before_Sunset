@@ -7,7 +7,7 @@ public class Item
 
     public bool Stackable => (Data.id >= 100 && Data.id <= 399);
     public int stack;
-    public int MaxStack => Stackable ? 20 : 0;
+    public int MaxStack => Stackable ? 99 : 0;
     public bool IsMaxStack => stack >= MaxStack;
 
     public int quantity;

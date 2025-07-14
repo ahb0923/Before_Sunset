@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -9,15 +10,11 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _highlightImage;
     [SerializeField] private GameObject _highlight;
-    
-    private float _highlightDuration = 0.1f;
-    private float _highlightAlpha = 0.4f;
-    
-    public Coroutine highlightCoroutine;
+
+    private Tween _tween;
     
     private const string ITEM_IMAGE = "IconImage";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
-    //private const string DRAGGING_ICON = "DraggingIcon";
 
     private static PickaxeSlot _highlightPickaxeSlot;
     
@@ -53,72 +50,35 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (highlightCoroutine != null)
+        if (_tween != null)
         {
-            StopCoroutine(highlightCoroutine);
+            _tween.Kill();
         }
         
-        _highlightPickaxeSlot = this;
-        highlightCoroutine = StartCoroutine(C_HighlightFadeIn());
+        _highlight.SetActive(true);
+        _highlightImage.color = new Color(1f, 1f, 0f, 0f);
+
+        _tween = _highlightImage.DOFade(0.3f, 0.2f);
+        
+        var item = InventoryManager.Instance.Inventory.Pickaxe;
+        if (item != null)
+        {
+            TooltipManager.Instance.ShowTooltip(item.Data.itemName, item.Data.context);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (highlightCoroutine != null)
+        if (_tween != null)
         {
-            StopCoroutine(highlightCoroutine);
+            _tween.Kill();
         }
 
-        _highlightPickaxeSlot = null;
-        highlightCoroutine = StartCoroutine(C_HighlightFadeOut());
+        _tween = _highlightImage.DOFade(0f, 0.2f).OnComplete(() => _highlight.SetActive(false));
+        
+        TooltipManager.Instance.HideTooltip();
     }
 
-    private IEnumerator C_HighlightFadeIn()
-    {
-        _highlight.SetActive(true);
-
-        float time = 0f;
-        
-        Color color = Color.yellow;
-        color.a = 0f;
-        _highlightImage.color = color;
-
-        while (time < _highlightDuration)
-        {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / _highlightDuration);
-            color.a = Mathf.Lerp(0f, _highlightAlpha, t);
-            _highlightImage.color = color;
-            yield return null;
-        }
-        
-        color.a = _highlightAlpha;
-        _highlightImage.color = color;
-    }
-
-    private IEnumerator C_HighlightFadeOut()
-    {
-        float time = 0f;
-        
-        Color color = Color.yellow;
-        color.a = _highlightAlpha;
-        _highlightImage.color = color;
-
-        while (time < _highlightDuration)
-        {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / _highlightDuration);
-            color.a = Mathf.Lerp(_highlightAlpha, 0f, t);
-            _highlightImage.color = color;
-            yield return null;
-        }
-        
-        color.a = 0f;
-        _highlightImage.color = color;
-        
-        _highlight.SetActive(false);
-    }
-    
     private void OnDisable()
     {
         _highlight.SetActive(false);
