@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0f4c767d08334f045b1f45b1cc057318
+guid: a1e90f38d41d99e4aacfe06b0fc27dba
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -136,13 +136,76 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tower_export_0
+      name: blacksmithing 32x16_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 49
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e7f3df37b5752f4d91c724302f8fe6e
+      internalID: 2079421636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blacksmithing 32x16_1
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 32
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d19ceeb73c2bcee4fb280a9a8930da78
+      internalID: -692722959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blacksmithing 32x16_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 17
+        width: 31
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0e797b18ba7ad142977b7fe007fb722
+      internalID: 2086027337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blacksmithing 32x16_3
       rect:
         serializedVersion: 2
         x: 2
-        y: 117
-        width: 28
-        height: 86
+        y: 23
+        width: 27
+        height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,20 +213,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2064da20b2c7d37438e07d7349d993e6
-      internalID: -1410643726
+      spriteID: 2005942161b8d1941943bb289dd14970
+      internalID: -1335760912
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tower_export_1
+      name: blacksmithing 32x16_4
       rect:
         serializedVersion: 2
-        x: 34
-        y: 117
-        width: 28
-        height: 86
+        x: 5
+        y: 0
+        width: 22
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -171,218 +234,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1eb03f549bff10647814dcee9278f8b3
-      internalID: -1317417394
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_2
-      rect:
-        serializedVersion: 2
-        x: 66
-        y: 117
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b891c76ff2e929d4cb7f920764aadea0
-      internalID: -1112426326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_3
-      rect:
-        serializedVersion: 2
-        x: 98
-        y: 117
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b0f1157226c88c44f95c67c605f2989c
-      internalID: 1675781070
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_4
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 117
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5fb86846b8e2f7c449f6dec94b74e53f
-      internalID: 1411227866
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_5
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 117
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bcd64dccb3c60694db0d9ca46630360d
-      internalID: 1626602211
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_6
-      rect:
-        serializedVersion: 2
-        x: 2
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 88a363eb2065ee944abafcb54ff4e4e1
-      internalID: 450171002
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_7
-      rect:
-        serializedVersion: 2
-        x: 34
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5af1d42ac8639d24fa94d12c8babb491
-      internalID: 1159733206
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_8
-      rect:
-        serializedVersion: 2
-        x: 66
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 74cc91eebc1955c4288c6510dbb21c85
-      internalID: 1853561687
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_9
-      rect:
-        serializedVersion: 2
-        x: 98
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: dbe9256d6d2576749b93b5ecf8a43463
-      internalID: 87407101
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_10
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: abb52e742630ba744a737bb12507776f
-      internalID: 2070043318
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tower_export_11
-      rect:
-        serializedVersion: 2
-        x: 162
-        y: 5
-        width: 28
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6a315b1da8af8894ea9a5ea89b6f4e34
-      internalID: 865826123
+      spriteID: 22e7df74c27a879479d3b721a36a633c
+      internalID: 146620367
       vertices: []
       indices: 
       edges: []
@@ -398,18 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      tower_export_0: -1410643726
-      tower_export_1: -1317417394
-      tower_export_10: 2070043318
-      tower_export_11: 865826123
-      tower_export_2: -1112426326
-      tower_export_3: 1675781070
-      tower_export_4: 1411227866
-      tower_export_5: 1626602211
-      tower_export_6: 450171002
-      tower_export_7: 1159733206
-      tower_export_8: 1853561687
-      tower_export_9: 87407101
+      blacksmithing 32x16_0: 2079421636
+      blacksmithing 32x16_1: -692722959
+      blacksmithing 32x16_2: 2086027337
+      blacksmithing 32x16_3: -1335760912
+      blacksmithing 32x16_4: 146620367
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
