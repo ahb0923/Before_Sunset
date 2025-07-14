@@ -57,7 +57,7 @@ public class SmelterUI : MonoBehaviour
         InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Open();
     }
 
-    public void SetSmelterUI(SmelterData data)
+    public void SetSmelterUI(SmelterDatabase data)
     {
         _smelterNameText.text = data.smelterName;
         smelterInputSlot.SetSmelterData(data);

@@ -47,7 +47,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
     
-    public void SetSmelterData(SmelterData data)
+    public void SetSmelterData(SmelterDatabase data)
     {
         _currentData = data;
     }
