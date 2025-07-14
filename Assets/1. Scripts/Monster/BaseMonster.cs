@@ -13,6 +13,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public LayerMask ObstacleLayer => _obstacleLayer;
 
     public Rigidbody2D Rigid { get; private set; }
+    public BoxCollider2D Collider { get; private set; }
     public MonsterAI Ai { get; private set; }
     public MonsterStatHandler Stat { get; private set; }
     public SpriteRenderer Spriter { get; private set; }
@@ -27,8 +28,10 @@ public class BaseMonster : MonoBehaviour, IPoolable
 
     private void LateUpdate()
     {
-        if (Spriter == null) return;
-        RenderUtil.SetSortingOrderByY(Spriter);
+        if (Spriter == null || Collider == null) return;
+
+        float yPos = Collider.offset.y - Collider.size.y / 2;
+        RenderUtil.SetSortingOrderByY(Spriter, yPos);
     }
 
     /// <summary>
@@ -37,6 +40,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void OnInstantiate()
     {
         Rigid = GetComponent<Rigidbody2D>();
+        Collider = GetComponent<BoxCollider2D>();
         Ai = GetComponent<MonsterAI>();
         Stat = GetComponent<MonsterStatHandler>();
         Spriter = GetComponentInChildren<SpriteRenderer>();
