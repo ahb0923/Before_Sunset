@@ -1471,6 +1471,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefenseManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6146733977845925959, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_Size.x
+      value: 10.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146733977845925959, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_Size.y
+      value: 10.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 6146733977845925959, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 323fbd956c844244388bef9bea9b73da, type: 3}
+    - target: {fileID: 6146733977845925959, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6330539489808714407, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1510,6 +1526,14 @@ PrefabInstance:
     - target: {fileID: 6330539489808714407, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7939790324726272939, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 7939790324726272939, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
