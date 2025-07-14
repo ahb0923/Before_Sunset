@@ -8,7 +8,7 @@ public class ProjectileAttack_Chaining : IProjectileAttack
     {
         if (attackSettings.target == null)
         {
-            GameObject.Destroy(attackSettings.attacker);
+            TryReleaseProjectile(attackSettings.attacker);
             return;
         }
 
@@ -20,23 +20,22 @@ public class ProjectileAttack_Chaining : IProjectileAttack
             IgnoreDefense = false
         });
 
-        // 쿠션 횟수 없으면 종료
+        // 체인 종료 조건 1: 남은 체인 횟수 없음
         if (attackSettings.chainCount <= 0)
         {
-            GameObject.Destroy(attackSettings.attacker);
-            //Debug.Log("쿠션 횟수 종료");
+            TryReleaseProjectile(attackSettings.attacker);
             return;
         }
-      
 
+        // 체인 종료 조건 2: 다음 대상 없음
         GameObject nextTarget = FindNextTarget(attackSettings);
         if (nextTarget == null)
         {
-            GameObject.Destroy(attackSettings.attacker);
-            //Debug.Log("다음 타겟 물색 실패");
+            TryReleaseProjectile(attackSettings.attacker);
             return;
         }
 
+        // 체인 진행
         var proj = Helper_Component.GetComponent<Projectile>(attackSettings.attacker);
 
         ProjectileAttackSettings nextAtk = attackSettings;
@@ -56,6 +55,19 @@ public class ProjectileAttack_Chaining : IProjectileAttack
         proj.Init(nextAtk, nextMove, new ProjectileMovement_Curved(), this);
     }
 
+    private void TryReleaseProjectile(GameObject projectileGO)
+    {
+        var proj = Helper_Component.GetComponent<Projectile>(projectileGO);
+        if (proj != null)
+        {
+            proj.StartCoroutine(proj.ReleaseAfterChainEnd());
+        }
+        else
+        {
+            GameObject.Destroy(projectileGO); // 예외 케이스 방지
+        }
+    }
+
     private GameObject FindNextTarget(ProjectileAttackSettings attackSettings)
     {
         Vector2 center = attackSettings.target.transform.position;
@@ -66,8 +78,7 @@ public class ProjectileAttack_Chaining : IProjectileAttack
 
         foreach (var h in hits)
         {
-            if (h == null)
-                continue;
+            if (h == null) continue;
 
             GameObject cand = h.gameObject;
             if (cand == attackSettings.target || cand == attackSettings.previousTarget)
@@ -86,5 +97,4 @@ public class ProjectileAttack_Chaining : IProjectileAttack
 
         return best;
     }
-
 }

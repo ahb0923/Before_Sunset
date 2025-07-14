@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e22d690a4ec5c3d4f99b1e8c4b130c14
+guid: a1e90f38d41d99e4aacfe06b0fc27dba
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,10 +45,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -95,19 +95,6 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: iPhone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -149,85 +136,106 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 3_0
+      name: blacksmithing 32x16_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 49
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e7f3df37b5752f4d91c724302f8fe6e
+      internalID: 2079421636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blacksmithing 32x16_1
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 32
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d19ceeb73c2bcee4fb280a9a8930da78
+      internalID: -692722959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blacksmithing 32x16_2
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 70
-        height: 130
+        y: 17
+        width: 31
+        height: 7
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1f61d6bc0792cb345af2ba502e4608a7
-      internalID: -1638362818
+      spriteID: f0e797b18ba7ad142977b7fe007fb722
+      internalID: 2086027337
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3_1
+      name: blacksmithing 32x16_3
       rect:
         serializedVersion: 2
-        x: 70
-        y: 0
-        width: 70
-        height: 130
+        x: 2
+        y: 23
+        width: 27
+        height: 8
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3862cf1965993b348b661078361e44d1
-      internalID: 91193890
+      spriteID: 2005942161b8d1941943bb289dd14970
+      internalID: -1335760912
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: 3_2
+      name: blacksmithing 32x16_4
       rect:
         serializedVersion: 2
-        x: 140
+        x: 5
         y: 0
-        width: 70
-        height: 130
+        width: 22
+        height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1c5112ace49426040b22faae0d4baac8
-      internalID: -1641072005
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: 3_3
-      rect:
-        serializedVersion: 2
-        x: 210
-        y: 0
-        width: 70
-        height: 130
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9acce6b4f6a40ca4fb26b2898be15c39
-      internalID: -1798517999
+      spriteID: 22e7df74c27a879479d3b721a36a633c
+      internalID: 146620367
       vertices: []
       indices: 
       edges: []
@@ -243,10 +251,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      3_0: -1638362818
-      3_1: 91193890
-      3_2: -1641072005
-      3_3: -1798517999
+      blacksmithing 32x16_0: 2079421636
+      blacksmithing 32x16_1: -692722959
+      blacksmithing 32x16_2: 2086027337
+      blacksmithing 32x16_3: -1335760912
+      blacksmithing 32x16_4: 146620367
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
