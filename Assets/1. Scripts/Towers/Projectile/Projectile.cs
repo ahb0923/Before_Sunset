@@ -37,6 +37,7 @@ public class Projectile : MonoBehaviour, IPoolable
     //[SerializeField] private SpriteRenderer _icon;
     [SerializeField] private GameObject _slashTestImage;
     [SerializeField] private Animator _animator;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private ProjectileDatabase _data;
 
