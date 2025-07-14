@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
         HandleSwing();
     }
 
+    private void LateUpdate()
+    {
+        RenderUtil.SetSortingOrderByY(_spriteRenderer);
+    }
+
     private void HandleLookAndFlip()
     {
         if (mainCamera == null) return;
@@ -125,7 +130,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_equippedPickaxe == null) return;
 
-        Vector2 playerPos2D = (Vector2)transform.position;
+        Vector2 playerPos2D = (Vector2)transform.position + Vector2.down * 0.1f;
 
         Vector2 dir = Vector2.right;
         if (animator.GetBool("isUp")) dir = Vector2.up;

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -97,7 +97,8 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentCursor != cursor)
         {
-            Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
+            Vector2 hotspot = new Vector2(6, 6);
+            Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
             currentCursor = cursor;
         }
     }
