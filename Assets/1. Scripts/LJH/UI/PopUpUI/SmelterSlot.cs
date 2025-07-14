@@ -14,6 +14,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject _highlight;
     [SerializeField] private Image _highlightImage;
 
+    public SmelterController smelterController;
     private SmelterDatabase _currentData;
     private Tween _tween;
     public bool IsInputSlot { get; private set; }
@@ -63,7 +64,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             return true;
         else return false;
     }
-    
+
     /// <summary>
     /// 제련된 아이템을 제련소 슬롯에 넣어줄때 사용 메서드
     /// </summary>
@@ -73,14 +74,16 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         if (CurrentItem == null)
         {
-            CurrentItem = item;
-            CurrentItem.stack += amount;
+            CurrentItem = new Item(item.Data) { stack = amount };
         }
         else
         {
             CurrentItem.stack += amount;
         }
+
+        RefreshUI();
     }
+
 
     /// <summary>
     /// 슬롯에 담겨있는 아이템을 인벤토리에 넣어주는 메서드
@@ -319,6 +322,22 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             {
                 CurrentItem = DragManager.DraggingItem;
             }
+        }
+
+        if (IsInputSlot && smelterController != null)
+        {
+            Item copiedItem = new Item(DragManager.DraggingItem.Data)
+            {
+                stack = DragManager.DraggingItem.stack
+            };
+
+            CurrentItem = copiedItem;
+            RefreshUI();
+
+            smelterController.StartSmelting(copiedItem);
+
+            DragManager.Clear();
+            return;
         }
 
 
