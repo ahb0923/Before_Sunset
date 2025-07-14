@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -132,9 +132,148 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: boomer_explosiont_0
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 24
+        width: 61
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3260a731b3041aa49ac815d5fb085013
+      internalID: -1593132130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boomer_explosiont_2
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 25
+        width: 66
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd19419a37179db41b36adc0694a572d
+      internalID: -499119039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boomer_explosiont_4
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 26
+        width: 71
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 886873b2bf4273d439eb3e889bc7eb78
+      internalID: -1985808339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boomer_explosiont_8
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 30
+        width: 62
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 328cde63131f2ec4d91bfc5daaa94da3
+      internalID: -1408779475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boomer_explosiont_9
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 25
+        width: 31
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5c475ad17e37e34cb4bdba32dd5c216
+      internalID: 223983062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: boomer_explosiont_26
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 28
+        width: 60
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d77f50e153c94b48a03e481880230b9
+      internalID: -222999151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +284,34 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      boomer_explosiont_0: -1593132130
+      boomer_explosiont_1: 1317127416
+      boomer_explosiont_10: 1156776945
+      boomer_explosiont_11: 929022901
+      boomer_explosiont_12: 186513294
+      boomer_explosiont_13: 1620218124
+      boomer_explosiont_14: -1223506849
+      boomer_explosiont_15: 288889744
+      boomer_explosiont_16: 414008473
+      boomer_explosiont_17: -1064893931
+      boomer_explosiont_18: 1197300516
+      boomer_explosiont_19: -2011012237
+      boomer_explosiont_2: -499119039
+      boomer_explosiont_20: 1656320160
+      boomer_explosiont_21: -1685958394
+      boomer_explosiont_22: -434931998
+      boomer_explosiont_23: -728588527
+      boomer_explosiont_24: -1197985116
+      boomer_explosiont_25: 744065622
+      boomer_explosiont_26: -222999151
+      boomer_explosiont_3: -1897179083
+      boomer_explosiont_4: -1985808339
+      boomer_explosiont_5: -2017372227
+      boomer_explosiont_6: -1455566604
+      boomer_explosiont_7: -306741658
+      boomer_explosiont_8: -1408779475
+      boomer_explosiont_9: 223983062
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

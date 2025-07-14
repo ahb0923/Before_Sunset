@@ -34,8 +34,9 @@ public class Projectile : MonoBehaviour, IPoolable
     [Header("[ 에디터 할당 - 데이터 생기면 교체 ]")]
     [SerializeField] private int _ID;
     [SerializeField] private ParticleSystem _damageEffect;
-    [SerializeField] private SpriteRenderer _icon;
+    //[SerializeField] private SpriteRenderer _icon;
     [SerializeField] private GameObject _slashTestImage;
+    [SerializeField] private Animator _animator;
 
     private ProjectileDatabase _data;
 
@@ -76,7 +77,7 @@ public class Projectile : MonoBehaviour, IPoolable
     }
     private void Update()
     {
-        if (_isInit)
+        if (_isInit && this.isActiveAndEnabled)
         {
             _timer += Time.deltaTime;
             if (_hasHit) return;
@@ -104,6 +105,7 @@ public class Projectile : MonoBehaviour, IPoolable
             }
         }
     }
+    
     private IEnumerator C_ReleaseAfterFx()
     {
         // 테스트용 이미지코드 
@@ -112,18 +114,32 @@ public class Projectile : MonoBehaviour, IPoolable
             _slashTestImage.SetActive(true);
             yield return new WaitForSeconds(0.5f);
         }
-        //Debug.Log("지연시간"+_damageEffect.main.duration);
-        _icon.gameObject.SetActive(false);
 
+        // 회전 초기화
+        transform.rotation = Quaternion.identity;
+
+        //Debug.Log("지연시간"+_damageEffect.main.duration);
+        //_icon.gameObject.SetActive(false);
+        _animator?.SetBool("IsMove", false);
+        yield return new WaitForSeconds(0.4f);
+        
         if (_damageEffect != null)
             yield return new WaitForSeconds(_damageEffect.main.duration);
 
-        _icon.gameObject.SetActive(true);
+        //_icon.gameObject.SetActive(true);
 
         //Destroy(gameObject);
+        transform.localScale = Vector3.one;
         PoolManager.Instance.ReturnToPool(_ID, gameObject);
+
     }
 
+    public IEnumerator ReleaseAfterChainEnd()
+    {
+        transform.localScale = Vector3.one * 2;
+        _animator?.SetBool("IsMove", false);
+        yield return C_ReleaseAfterFx();
+    }
     public int GetId()
     {
         return _ID;
@@ -135,6 +151,7 @@ public class Projectile : MonoBehaviour, IPoolable
 
     public void OnGetFromPool()
     {
+        _animator?.SetBool("IsMove", true);
     }
 
     public void OnReturnToPool()
