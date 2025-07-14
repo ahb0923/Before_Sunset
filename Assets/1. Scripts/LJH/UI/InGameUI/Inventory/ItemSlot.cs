@@ -331,5 +331,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private void OnDisable()
     {
         _highlight.SetActive(false);
+        TooltipManager.Instance.HideTooltip();
     }
 }

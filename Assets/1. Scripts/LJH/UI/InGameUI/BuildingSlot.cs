@@ -3,11 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     [SerializeField] public BaseTower buildingPrefab;
-    [SerializeField] private Image _bGImage;
+    [SerializeField] public Image bGImage;
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
     
@@ -22,7 +23,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     
     private void Reset()
     {
-        _bGImage = GetComponent<Image>();
+        bGImage = GetComponent<Image>();
         _buildingIcon = Helper_Component.FindChildComponent<Image>(this.transform, BUILDING_ICON);
         _buildingName = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, BUILDING_NAME);
     }
@@ -92,8 +93,8 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        _bGImage.color = Color.white;
-        _tween = _bGImage.DOColor(Color.yellow, 0.2f);
+        bGImage.color = Color.white;
+        _tween = bGImage.DOColor(Color.yellow, 0.2f);
         
         UIManager.Instance.CraftMaterialArea.Open();
         
@@ -141,7 +142,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        _tween = _bGImage.DOColor(Color.white, 0.2f);
+        _tween = bGImage.DOColor(Color.white, 0.2f);
         
         TooltipManager.Instance.HideTooltip();
         UIManager.Instance.CraftMaterialArea.Close();

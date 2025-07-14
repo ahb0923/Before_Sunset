@@ -9,6 +9,8 @@ public class TooltipManager : MonoSingleton<TooltipManager>
     [SerializeField] private TextMeshProUGUI _objectName;
     [SerializeField] private TextMeshProUGUI _tooltipText;
     
+    public bool isOpen = false;
+    
     private const string TOOLTIP_CONTAINER = "TooltipContainer";
     private const string OBJECT_NAME = "ObjectName";
     private const string TOOLTIP_TEXT = "TooltipText";
@@ -36,7 +38,7 @@ public class TooltipManager : MonoSingleton<TooltipManager>
         if (!_tooltipObject.activeSelf)
         {
             _tooltipObject.SetActive(true);
-            
+            isOpen = true;
             _objectName.text = objectName;
             _tooltipText.text = description;
             
@@ -59,6 +61,7 @@ public class TooltipManager : MonoSingleton<TooltipManager>
         {
             _objectName.text = "";
             _tooltipText.text = "";
+            isOpen = false;
             _tooltipObject.SetActive(false);
             
             _tooltipObject.transform.position = new Vector3(20000, 20000, 0);

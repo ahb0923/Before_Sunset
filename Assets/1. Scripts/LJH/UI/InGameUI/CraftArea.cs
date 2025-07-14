@@ -128,4 +128,18 @@ public class CraftArea : MonoBehaviour
             this.gameObject.SetActive(true);
         }
     }
+
+    private void OnDisable()
+    {
+        if (_buildSlots.Count != 0)
+        {
+            foreach (var slot in _buildSlots)
+            {
+                slot.bGImage.color = Color.white;
+            }
+
+            if (TooltipManager.Instance.isOpen)
+                TooltipManager.Instance.HideTooltip();
+        }
+    }
 }
