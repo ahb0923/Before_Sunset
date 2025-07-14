@@ -51,7 +51,7 @@ public class MiningHandler : MonoBehaviour
             }
         }
 
-        var inputHandler = other.GetComponent<PlayerInputHandler>();
+        var inputHandler = other.GetComponentInChildren<PlayerInputHandler>();
         if (inputHandler != null && inputHandler.IsRecallInProgress())
         {
             Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
