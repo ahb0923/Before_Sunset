@@ -1302,6 +1302,7 @@ MonoBehaviour:
   _itemAmount: {fileID: 8199215986246949627}
   _highlight: {fileID: 134636038018811636}
   _highlightImage: {fileID: 8707125487079433708}
+  smelterController: {fileID: 0}
 --- !u!222 &3429172026492667648
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9374,7 +9375,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 55.005, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6914946177090361215
@@ -11403,7 +11404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 79.005, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9132067432433055833
@@ -20605,6 +20606,7 @@ MonoBehaviour:
   _smelterMaterialSlot2: {fileID: 3367377523431322475}
   _receiveButton: {fileID: 8032055438617634985}
   _closeButton: {fileID: 7785314875109438402}
+  smelterController: {fileID: 0}
 --- !u!1 &7719470701932728047
 GameObject:
   m_ObjectHideFlags: 0
@@ -20760,7 +20762,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000018425286}
+  m_AnchoredPosition: {x: 0, y: 0.000022649765}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &473895671670418753
@@ -21422,6 +21424,7 @@ MonoBehaviour:
   _itemAmount: {fileID: 4330013458030926807}
   _highlight: {fileID: 8907170948345176818}
   _highlightImage: {fileID: 4314959684900860018}
+  smelterController: {fileID: 0}
 --- !u!222 &5180314692668330791
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -21913,7 +21916,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 79.005, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2966517396490973009

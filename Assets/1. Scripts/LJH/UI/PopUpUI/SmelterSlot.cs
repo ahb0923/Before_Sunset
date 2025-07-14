@@ -189,6 +189,11 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         TooltipManager.Instance.HideTooltip();
     }
 
+    private void OnDisable()
+    {
+        TooltipManager.Instance.HideTooltip();
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
     }
