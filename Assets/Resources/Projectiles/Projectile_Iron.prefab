@@ -69,6 +69,7 @@ MonoBehaviour:
   _damageEffect: {fileID: 0}
   _slashTestImage: {fileID: 4911955682982310774}
   _animator: {fileID: 2968189348198296130}
+  _spriteRenderer: {fileID: 1193975403150739850}
 --- !u!95 &2968189348198296130
 Animator:
   serializedVersion: 5
@@ -128,9 +129,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -535966705
+  m_SortingLayer: 4
+  m_SortingOrder: 40
   m_Sprite: {fileID: -1593132130, guid: 87146bf5d4937da408d1517c9bc35b21, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

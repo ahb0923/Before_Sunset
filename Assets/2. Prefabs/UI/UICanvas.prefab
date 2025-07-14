@@ -1298,7 +1298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e278d83bdf85fa419a5780b8931fc01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemIcon: {fileID: 991785096447039631}
+  _itemImage: {fileID: 991785096447039631}
   _itemAmount: {fileID: 8199215986246949627}
   _highlight: {fileID: 134636038018811636}
   _highlightImage: {fileID: 8707125487079433708}
@@ -5909,7 +5909,7 @@ GameObject:
   - component: {fileID: 2667645118996355990}
   - component: {fileID: 3368912135327193497}
   m_Layer: 5
-  m_Name: ImageIcon
+  m_Name: SmelterMaterialSlot1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9374,7 +9374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 55.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6914946177090361215
@@ -11403,7 +11403,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 79.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9132067432433055833
@@ -14703,7 +14703,7 @@ GameObject:
   - component: {fileID: 1290992717163499656}
   - component: {fileID: 6102058782339879586}
   m_Layer: 5
-  m_Name: AskPopUpContainer
+  m_Name: AskPopUpUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17168,7 +17168,7 @@ GameObject:
   - component: {fileID: 2116967536377979563}
   - component: {fileID: 3367377523431322475}
   m_Layer: 5
-  m_Name: ImageIcon
+  m_Name: SmelterMaterialSlot2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17684,7 +17684,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -10, y: -10}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &2070193481328305033
@@ -20601,6 +20601,8 @@ MonoBehaviour:
   _smelterNameText: {fileID: 5436131602702351133}
   smelterInputSlot: {fileID: 4982977355291250376}
   smelterOutputSlot: {fileID: 2437907239668636334}
+  _smelterMaterialSlot1: {fileID: 3368912135327193497}
+  _smelterMaterialSlot2: {fileID: 3367377523431322475}
   _receiveButton: {fileID: 8032055438617634985}
   _closeButton: {fileID: 7785314875109438402}
 --- !u!1 &7719470701932728047
@@ -20758,7 +20760,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000004529953}
+  m_AnchoredPosition: {x: 0, y: 0.000018425286}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &473895671670418753
@@ -21179,7 +21181,7 @@ GameObject:
   - component: {fileID: 7211760873684767421}
   - component: {fileID: 7083399449499205264}
   m_Layer: 5
-  m_Name: SmelterMaterialSlot (1)
+  m_Name: SmelterMaterialSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21416,7 +21418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e278d83bdf85fa419a5780b8931fc01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemIcon: {fileID: 5236186150887568744}
+  _itemImage: {fileID: 5236186150887568744}
   _itemAmount: {fileID: 4330013458030926807}
   _highlight: {fileID: 8907170948345176818}
   _highlightImage: {fileID: 4314959684900860018}
@@ -21911,7 +21913,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 79.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2966517396490973009

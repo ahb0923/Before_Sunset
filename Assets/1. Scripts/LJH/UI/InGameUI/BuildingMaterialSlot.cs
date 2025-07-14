@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BuildingMaterialSlot : MonoBehaviour
 {
     public int Index { get; private set; }
     
-    [SerializeField] private Image _iconImage;
+    [SerializeField] private Image _itemImage;
     [SerializeField] private TextMeshProUGUI _amountText;
     [SerializeField] private TextMeshProUGUI _materialName;
     
@@ -15,7 +16,7 @@ public class BuildingMaterialSlot : MonoBehaviour
     
     private void Reset()
     {
-        _iconImage = GetComponentInChildren<Image>();
+        _itemImage = GetComponentInChildren<Image>();
         _amountText = GetComponentInChildren<TextMeshProUGUI>();
         _materialName = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, MATERIAL_NAME);
     }
@@ -32,7 +33,7 @@ public class BuildingMaterialSlot : MonoBehaviour
         
         _materialName.text = dataName;
         _amountText.text = $"{amount}/{requiredAmount}";
-        // _iconImage.sprite = data.icon;
+        SetImage(data);
 
         if (amount < requiredAmount)
         {
@@ -45,6 +46,14 @@ public class BuildingMaterialSlot : MonoBehaviour
         }
         
         gameObject.SetActive(true);
+    }
+    
+    private void SetImage(ItemDatabase data)
+    {
+        if (data.id >= 100 && data.id < 200)
+            _itemImage.sprite = DataManager.Instance.MineralData.GetSpriteById(data.id);
+        else if (data.id >= 200 && data.id < 300)
+            _itemImage.sprite = DataManager.Instance.JewelData.GetSpriteById(data.id);
     }
 
     private int CountMaterial(string dataName, List<Item> items)
@@ -69,7 +78,7 @@ public class BuildingMaterialSlot : MonoBehaviour
     
     public void ClearSlot()
     {
-        _iconImage.sprite = null;
+        _itemImage.sprite = null;
         _amountText.text = "";
         _materialName.text = "";
         gameObject.SetActive(false);
