@@ -78,7 +78,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         gameObject.SetActive(false);
     }
 
-    private string SetSmelt(SmelterData data)
+    private string SetSmelt(SmelterDatabase data)
     {
         return $"제련 가능 광물\n" +
                     $"{DataManager.Instance.ItemData.GetId(data.smeltingIdList[0]).itemName}, " +
