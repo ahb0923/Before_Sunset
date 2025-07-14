@@ -101,6 +101,9 @@ public class DataManager : PlainSingleton<DataManager>
         ProjectileData.SettingPrefab();
         MonsterData.SettingPrefab();
 
+        JewelData.SettingImage();
+        MineralData.SettingImage();
+
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
         _isInitialized = true;
 
