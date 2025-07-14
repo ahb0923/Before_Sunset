@@ -614,6 +614,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
   m_PrefabInstance: {fileID: 1143093276}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1175458734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1175458739}
+  - component: {fileID: 1175458736}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1175458736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175458734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95f075cca1c908e44a672296ac5f33c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smelterUI: {fileID: 1728414979}
+--- !u!4 &1175458739
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175458734}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8, y: 1.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1200815642 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5907299548850227921, guid: 77c22645ff1152141853b782277d3133, type: 3}
@@ -919,6 +964,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2437907239668636334, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: smelterController
+      value: 
+      objectReference: {fileID: 1175458736}
     - target: {fileID: 2650811011501266253, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -975,6 +1024,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3619848775587594044, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: smelterController
+      value: 
+      objectReference: {fileID: 1175458736}
     - target: {fileID: 3619848775587594044, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: _smelterMaterialSlot1
       value: 
@@ -1043,6 +1096,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4982977355291250376, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: smelterController
+      value: 
+      objectReference: {fileID: 1175458736}
     - target: {fileID: 5252348917535951669, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1300,6 +1357,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1728414979 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3619848775587594044, guid: 77c22645ff1152141853b782277d3133, type: 3}
+  m_PrefabInstance: {fileID: 1728414976}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab748576cf340084a836f9b7dd7b6e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1874937631
@@ -1671,3 +1739,4 @@ SceneRoots:
   - {fileID: 843140048}
   - {fileID: 1143093276}
   - {fileID: 1291920049}
+  - {fileID: 1175458739}

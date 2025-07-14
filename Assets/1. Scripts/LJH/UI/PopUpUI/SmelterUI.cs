@@ -13,7 +13,8 @@ public class SmelterUI : MonoBehaviour
     [SerializeField] private Image _smelterMaterialSlot2;
     [SerializeField] private Button _receiveButton;
     [SerializeField] private Button _closeButton;
-    
+
+    public SmelterController smelterController;
     private RectTransform _rect;
 
     private const string SMELTER_NAME_TEXT = "SmelterNameText";
@@ -67,8 +68,14 @@ public class SmelterUI : MonoBehaviour
     public void SetSmelterUI(SmelterDatabase data)
     {
         _smelterNameText.text = data.smelterName;
+
         smelterInputSlot.SetSmelterData(data);
         smelterOutputSlot.SetSmelterData(data);
+
+        smelterController.smelterData = data;
+
+        smelterInputSlot.smelterController = smelterController;
+        smelterOutputSlot.smelterController = smelterController;
         // SetSmelterMaterialSlot(data);
     }
 
