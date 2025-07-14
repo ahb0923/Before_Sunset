@@ -112,6 +112,7 @@ public class SmelterController : MonoBehaviour
                 stack = 1
             };
             smelterUI.smelterOutputSlot.SetItem(outputItem);
+            smelterUI.GetComponent<SmelterUI>().EnableReceiveButton();
         }
         else if (outputItem.Data.id == ingotId)
         {

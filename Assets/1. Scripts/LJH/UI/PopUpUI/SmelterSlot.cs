@@ -202,8 +202,12 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         
         image.raycastTarget = false;
         DragManager.DraggingIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
-        
-        CurrentItem = null;
+
+        if (IsInputSlot)
+        {
+            CurrentItem = null;
+            RefreshUI();
+        }
         RefreshUI();
     }
 

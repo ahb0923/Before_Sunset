@@ -103,4 +103,9 @@ public class SmelterUI : MonoBehaviour
         smelterOutputSlot.ReceiveItem();
         _receiveButton.interactable = false;
     }
+
+    public void EnableReceiveButton()
+    {
+        _receiveButton.interactable = true;
+    }
 }
