@@ -109,11 +109,12 @@ public class Projectile : MonoBehaviour, IPoolable
     private IEnumerator C_ReleaseAfterFx()
     {
         // 테스트용 이미지코드 
+        /*
         if (_slashTestImage != null)
         {
             _slashTestImage.SetActive(true);
             yield return new WaitForSeconds(0.5f);
-        }
+        }*/
 
         // 회전 초기화
         transform.rotation = Quaternion.identity;
