@@ -71,12 +71,12 @@ public class SmelterUI : MonoBehaviour
 
         smelterInputSlot.SetSmelterData(data);
         smelterOutputSlot.SetSmelterData(data);
+        SetSmelterMaterialSlot(data);
 
         smelterController.smelterData = data;
 
         smelterInputSlot.smelterController = smelterController;
         smelterOutputSlot.smelterController = smelterController;
-        SetSmelterMaterialSlot(data);
     }
 
     private void SetSmelterMaterialSlot(SmelterDatabase data)
@@ -97,10 +97,5 @@ public class SmelterUI : MonoBehaviour
     {
         smelterOutputSlot.ReceiveItem();
         _receiveButton.interactable = false;
-    }
-
-    public void EnableReceiveButton()
-    {
-        _receiveButton.interactable = true;
     }
 }
