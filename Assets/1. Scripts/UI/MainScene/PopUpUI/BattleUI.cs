@@ -127,7 +127,8 @@ public class BattleUI : MonoBehaviour
     {
         textMesh.maxVisibleCharacters = 0;
 
-        Tween tween = DOTween.To(x => textMesh.maxVisibleCharacters = (int)x, 0f, textMesh.text.Length, duration);
+        Tween tween = DOTween.To(x => textMesh.maxVisibleCharacters = (int)x,
+            0f, textMesh.text.Length, duration).SetEase(Ease.Linear);
         yield return tween.WaitForCompletion();
         
         textMesh.maxVisibleCharacters = int.MaxValue;

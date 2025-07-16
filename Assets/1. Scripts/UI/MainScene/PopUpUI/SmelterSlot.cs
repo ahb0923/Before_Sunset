@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
-using System;
-using UnityEditor;
-using UnityEngine.Serialization;
 
 public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -14,11 +11,9 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject _highlight;
     [SerializeField] private Image _highlightImage;
 
-    public SmelterController smelterController;
-    private SmelterDatabase _currentData;
+    private Smelter _currentSmelter;
     private Tween _tween;
     public bool IsInputSlot { get; private set; }
-    public Item CurrentItem { get; private set; }
 
     private const string ITEM_ICON = "IconImage";
     private const string ITEM_AMOUNT = "AmountText";
@@ -32,11 +27,10 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _highlightImage = Helper_Component.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
     }
 
-    private void Awake()
-    {
-        ClearSlot();
-    }
-
+    /// <summary>
+    /// 제련소 슬롯 용도 초기화 메서드
+    /// </summary>
+    /// <param name="isInputSlot">재료 넣는 칸이라면 true</param>
     public void InitInputSlot(bool isInputSlot)
     {
         if (isInputSlot)
@@ -49,91 +43,111 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
     
-    public void SetSmelterData(SmelterDatabase data)
-    {
-        _currentData = data;
-    }
-
     /// <summary>
-    /// 제련소 널체크 메서드
+    /// 제련소 정보를 참조해올때 사용하는 메서드
     /// </summary>
-    /// <returns></returns>
-    public bool IsOutputEmpty()
+    /// <param name="smelter"></param>
+    public void SetSmelterData(Smelter smelter)
     {
-        if (CurrentItem == null)
-            return true;
-        else return false;
-    }
-
-    /// <summary>
-    /// 제련된 아이템을 제련소 슬롯에 넣어줄때 사용 메서드
-    /// </summary>
-    /// <param name="item">만들어진 주괴</param>
-    /// <param name="amount">만들어진 수량</param>
-    public void AddToSmelterItem(Item item, int amount)
-    {
-        if (CurrentItem == null)
-        {
-            CurrentItem = new Item(item.Data) { stack = amount };
-        }
-        else
-        {
-            CurrentItem.stack += amount;
-        }
-
+        _currentSmelter = smelter;
         RefreshUI();
     }
-
-
+    
     /// <summary>
     /// 슬롯에 담겨있는 아이템을 인벤토리에 넣어주는 메서드
     /// </summary>
     public void ReceiveItem()
     {
-        if (CurrentItem == null)
+        var item = _currentSmelter.OutputItem;
+        
+        if (item == null)
         {
             return;
         }
         
-        int id = CurrentItem.Data.id;
-        int quantity = CurrentItem.stack;
+        int id = item.Data.id;
+        int quantity = item.stack;
         
         var inventory = InventoryManager.Instance.Inventory;
         inventory.AddItem(id, quantity);
-        
-        CurrentItem = null;
+
+        _currentSmelter.SetOutputItem(null);
         RefreshUI();
         inventory.RefreshInventories();
     }
 
+    /// <summary>
+    /// 제련소 정보 비워주는 메서드
+    /// </summary>
     public void ClearSlot()
     {
-        CurrentItem = null;
-        RefreshUI();
+        _currentSmelter = null;
     }
 
+    /// <summary>
+    /// 슬롯 UI 새로고침 메서드
+    /// </summary>
     public void RefreshUI()
     {
-        if (CurrentItem == null)
+        if (_currentSmelter == null)
         {
+            return;
+        }
+        
+        if (IsInputSlot && _currentSmelter.InputItem == null)
+        {
+            _itemImage.enabled = false;
             _itemImage.sprite = null;
             _itemAmount.text = "";
+            return;
         }
-        else
+        else if (!IsInputSlot && _currentSmelter.OutputItem == null)
         {
-            SetImage(CurrentItem);
-            _itemAmount.text = CurrentItem.stack.ToString();
+            _itemImage.enabled = false;
+            _itemImage.sprite = null;
+            _itemAmount.text = "";
+            return;
+        }
+
+
+        if (IsInputSlot && _currentSmelter.InputItem != null)
+        {
+            _itemImage.enabled = true;
+            SetImage(_currentSmelter.InputItem);
+            _itemAmount.text = _currentSmelter.InputItem.stack.ToString();
+            return;
+        }
+        else if (!IsInputSlot && _currentSmelter.OutputItem != null)
+        {
+            _itemImage.enabled = true;
+            SetImage(_currentSmelter.OutputItem);
+            _itemAmount.text = _currentSmelter.OutputItem.stack.ToString();
+            return;
         }
     }
 
+    /// <summary>
+    /// 슬롯 UI 의 재료칸 이미지 설정 메서드
+    /// </summary>
+    /// <param name="item"></param>
     private void SetImage(Item item)
     {
+        if (item == null)
+        {
+            return;
+        }
+        
         if (item.Data.id >= 100 && item.Data.id < 200)
             _itemImage.sprite = DataManager.Instance.MineralData.GetSpriteById(item.Data.id);
         else if (item.Data.id >= 200 && item.Data.id < 300)
             _itemImage.sprite = DataManager.Instance.JewelData.GetSpriteById(item.Data.id);
     }
 
+    /// <summary>
+    /// 제련소 슬롯에 넣을수 있는 아이템인지 체크하는 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>가능하다면 true 반환</returns>
     public bool CanInputItem(Item item)
     {
         if (item == null)
@@ -141,9 +155,9 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             return true;
         }
         
-        var canInputItems = _currentData.smeltingIdList;
+        var canInputItems = _currentSmelter.smelterData.smeltingIdList;
         
-        for (int i = 0; i < _currentData.smeltingIdList.Count; i++)
+        for (int i = 0; i < canInputItems.Count; i++)
         {
             if (canInputItems[i] == item.Data.id)
             {
@@ -153,14 +167,17 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         return false;
     }
 
+    /// <summary>
+    /// 제련소의 아이템 설정 메서드
+    /// </summary>
+    /// <param name="item"></param>
     public void SetItem(Item item)
     {
-        CurrentItem = item;
+        _currentSmelter.SetInputItem(item);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log($"PointerEnter Object: {eventData.pointerEnter.name}");
         if (_tween != null)
         {
             _tween.Kill();
@@ -170,10 +187,18 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _highlightImage.color = new Color(1f, 1f, 0f, 0f);
 
         _tween = _highlightImage.DOFade(0.3f, 0.2f);
-        
-        if (CurrentItem != null)
+
+        if (IsInputSlot)
         {
-            TooltipManager.Instance.ShowTooltip(CurrentItem.Data.itemName, CurrentItem.Data.context);
+            if (_currentSmelter.InputItem != null)
+                TooltipManager.Instance.ShowTooltip(
+                    _currentSmelter.InputItem.Data.itemName, _currentSmelter.InputItem.Data.context);
+        }
+        else
+        {
+            if (_currentSmelter.OutputItem != null)
+                TooltipManager.Instance.ShowTooltip(
+                    _currentSmelter.OutputItem.Data.itemName, _currentSmelter.OutputItem.Data.context);
         }
     }
 
@@ -189,38 +214,37 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         TooltipManager.Instance.HideTooltip();
     }
 
-    private void OnDisable()
-    {
-        TooltipManager.Instance.HideTooltip();
-    }
-
     public void OnPointerDown(PointerEventData eventData)
     {
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (CurrentItem == null)
+        if (!IsInputSlot)
+            return;
+
+        var item = _currentSmelter.InputItem;
+        if (item == null)
         {
             return;
         }
         
         DragManager.OriginSmelterSlot = this;
-        DragManager.DraggingItem = CurrentItem;
+        DragManager.DraggingItem = item;
         
         DragManager.DraggingIcon = new GameObject("Dragging Icon");
         DragManager.DraggingIcon.transform.SetParent(transform.root);
         var image = DragManager.DraggingIcon.AddComponent<Image>();
         
-        if (CurrentItem.Data.id >= 100 && CurrentItem.Data.id < 200)
-            image.sprite = DataManager.Instance.MineralData.GetSpriteById(CurrentItem.Data.id);
-        else if (CurrentItem.Data.id >= 200 && CurrentItem.Data.id < 300)
-            image.sprite = DataManager.Instance.JewelData.GetSpriteById(CurrentItem.Data.id);
+        if (item.Data.id >= 100 && item.Data.id < 200)
+            image.sprite = DataManager.Instance.MineralData.GetSpriteById(item.Data.id);
+        else if (item.Data.id >= 200 && item.Data.id < 300)
+            image.sprite = DataManager.Instance.JewelData.GetSpriteById(item.Data.id);
         
         image.raycastTarget = false;
         DragManager.DraggingIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
         
-        CurrentItem = null;
+        _currentSmelter.SetInputItem(null);
         RefreshUI();
     }
 
@@ -245,7 +269,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
                 && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
             {
-                CurrentItem = DragManager.DraggingItem;
+                _currentSmelter.SetInputItem(DragManager.DraggingItem);
                 DragManager.OriginSmelterSlot.RefreshUI();
             }
 
@@ -261,6 +285,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
         
         var inventory = InventoryManager.Instance.Inventory;
+        var smelterItem = _currentSmelter.InputItem;
         
         if (!CanInputItem(DragManager.DraggingItem) || IsInputSlot == false)
         {
@@ -281,21 +306,21 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (DragManager.OriginItemSlot != null)
         {
             //해당칸이 비어있다면, 드래그 중인 아이템으로 넣어줌.
-            if (CurrentItem == null)
+            if (smelterItem == null)
             {
-                CurrentItem = DragManager.DraggingItem;
+                _currentSmelter.SetInputItem(DragManager.DraggingItem);
             }
             //해당칸의 아이템이 겹칠 수 있다면, 겹치기.
-            else if (CurrentItem.Data.itemName == DragManager.DraggingItem.Data.itemName && CurrentItem.Stackable)
+            else if (smelterItem.Data.itemName == DragManager.DraggingItem.Data.itemName && smelterItem.Stackable)
             {
-                if (CurrentItem.IsMaxStack || DragManager.DraggingItem.IsMaxStack)
+                if (smelterItem.IsMaxStack || DragManager.DraggingItem.IsMaxStack)
                 {
-                    inventory.Items[DragManager.OriginItemSlot.SlotIndex] = CurrentItem;
-                    CurrentItem = DragManager.DraggingItem;
+                    inventory.Items[DragManager.OriginItemSlot.SlotIndex] = smelterItem;
+                    _currentSmelter.SetInputItem(DragManager.DraggingItem);
                 }
                 else
                 {
-                    MergeItem(CurrentItem);
+                    MergeItem(smelterItem);
                     if (DragManager.DraggingItem != null)
                     {
                         inventory.Items[DragManager.OriginItemSlot.SlotIndex] = DragManager.DraggingItem;
@@ -305,15 +330,14 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             //해당칸의 아이템이 겹칠 수 없다면, 서로 칸을 바꿔줌.
             else
             {
-                inventory.Items[DragManager.OriginItemSlot.SlotIndex] = CurrentItem;
-                CurrentItem = DragManager.DraggingItem;
+                inventory.Items[DragManager.OriginItemSlot.SlotIndex] = smelterItem;
+                _currentSmelter.SetInputItem(DragManager.DraggingItem);
             }
         }
         else if (DragManager.OriginSmelterSlot != null)
         {
             if (IsInputSlot == false)
             {
-                CurrentItem = null;
                 DragManager.OriginSmelterSlot.SetItem(DragManager.DraggingItem);
                 
                 RefreshUI();
@@ -323,26 +347,10 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 return;
             }
             
-            if (CurrentItem == null)
+            if (smelterItem == null)
             {
-                CurrentItem = DragManager.DraggingItem;
+                _currentSmelter.SetInputItem(DragManager.DraggingItem);
             }
-        }
-
-        if (IsInputSlot && smelterController != null)
-        {
-            Item copiedItem = new Item(DragManager.DraggingItem.Data)
-            {
-                stack = DragManager.DraggingItem.stack
-            };
-
-            CurrentItem = copiedItem;
-            RefreshUI();
-
-            smelterController.StartSmelting(copiedItem);
-
-            DragManager.Clear();
-            return;
         }
 
 
@@ -367,11 +375,13 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (total <= max)
         {
             item.stack = total;
+            _currentSmelter.SetInputItem(item);
             DragManager.DraggingItem = null;
         }
         else
         {
             item.stack = max;
+            _currentSmelter.SetInputItem(item);
             DragManager.DraggingItem.stack = total - max;
         }
     }

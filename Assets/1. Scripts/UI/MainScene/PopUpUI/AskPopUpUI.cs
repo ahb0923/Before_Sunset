@@ -58,7 +58,7 @@ public class AskPopUpUI : MonoBehaviour
         _askRect.OpenAtCenter();
     }
 
-    public void Close()
+    private void Close()
     {
         _askRect.CloseAndRestore();
     }
