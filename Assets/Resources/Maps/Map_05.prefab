@@ -70975,9 +70975,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 2
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &5789311737179944838
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -71102,13 +71102,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 27.344862, y: 21.09737}
-      - {x: -19.933847, y: 20.932018}
-      - {x: -19.753782, y: -20.029884}
-      - {x: 20.358427, y: -19.989853}
-      - {x: 47.46211, y: -19.945564}
-      - {x: 65.13483, y: -19.852364}
-      - {x: 64.97412, y: 20.91668}
+    - - {x: 67, y: -22}
+      - {x: -22, y: -22}
+      - {x: -22, y: 23}
+      - {x: 67, y: 23}
   m_UseDelaunayMesh: 0
 --- !u!1 &3744453799518128411
 GameObject:
@@ -72951,7 +72948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &3299362632914526681
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -74972,9 +74969,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 3
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &3784867619647589593
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -78959,9 +78956,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 1
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &455578149653575256
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

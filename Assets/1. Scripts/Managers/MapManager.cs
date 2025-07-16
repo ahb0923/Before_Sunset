@@ -27,14 +27,14 @@ public class MapManager : MonoSingleton<MapManager>
 
     private Vector2[] smallSpawnAreas = new Vector2[]
     {
-        new Vector2(60f, 30f),
-        new Vector2(60f, 30f)
+        new Vector2(60f, 32f),
+        new Vector2(60f, 32f)
     };
 
     private Vector2[] largeSpawnAreas = new Vector2[]
     {
-        new Vector2(80f, 50f),
-        new Vector2(80f, 50f)
+        new Vector2(85f, 50f),
+        new Vector2(85f, 50f)
     };
 
     protected override void Awake()

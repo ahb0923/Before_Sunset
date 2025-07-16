@@ -1647,9 +1647,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 2
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &6319283115011359831
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5758,14 +5758,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 9.027567, y: 20.93237}
-      - {x: -18.588152, y: 20.56204}
-      - {x: -19.367336, y: -20.184952}
-      - {x: 9.061994, y: -20.21262}
-      - {x: 31.049078, y: -20.133013}
-      - {x: 51.831158, y: -20.038668}
-      - {x: 64.960464, y: -19.978825}
-      - {x: 65.187874, y: 21.07072}
+    - - {x: 68, y: 23}
+      - {x: -22, y: 23}
+      - {x: -22, y: -23}
+      - {x: 68, y: -23}
   m_UseDelaunayMesh: 0
 --- !u!1 &5269790026861529608
 GameObject:
@@ -6648,7 +6644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &7396578421447892952
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6847,7 +6843,7 @@ Transform:
   m_GameObject: {fileID: 6722121047977443954}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23, y: 0, z: 0}
+  m_LocalPosition: {x: -21, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6901,9 +6897,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 3
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &8342266182598556388
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6977,7 +6973,7 @@ Transform:
   m_GameObject: {fileID: 6932027519541001557}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23, y: 0, z: 0}
+  m_LocalPosition: {x: -21, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -80766,9 +80762,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 1
+  portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &6383059652989578166
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

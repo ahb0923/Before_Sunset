@@ -9,7 +9,7 @@ public class MiningHandler : MonoBehaviour
 
     [SerializeField] private PortalDirection portalDirection;
     [SerializeField] private bool isEntering;  // 입장/퇴장 자동 결정
-    [SerializeField] private float stayTimeToTrigger = 1.5f;
+    [SerializeField] private float stayTimeToTrigger = 0.5f;
 
     private PlayerStateHandler _playerState;
     private Coroutine _triggerCoroutine;

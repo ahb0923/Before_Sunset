@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OreController : MonoBehaviour
+public class OreController : MonoBehaviour, IPoolable
 {
-    public OreDatabase Data { get; private set; }
+    public OreDatabase _data { get; private set; }
 
     private int _currentHP;
 
@@ -19,8 +19,13 @@ public class OreController : MonoBehaviour
 
     private Dictionary<int, GameObject> _dropPrefabDict;
 
-    private void Awake()
+    [SerializeField] private int _id;
+    public int GetId() => _id;
+
+    public void OnInstantiate()
     {
+        _data = DataManager.Instance.OreData.GetById(_id);
+
         _dropPrefabDict = new Dictionary<int, GameObject>();
         foreach (var entry in dropPrefabs)
         {
@@ -31,16 +36,20 @@ public class OreController : MonoBehaviour
         }
     }
 
-    public void Initialize(OreDatabase oreData)
+    public void OnGetFromPool()
     {
-        Data = oreData;
-        _currentHP = Data.hp;
+        _currentHP = _data.hp;
+    }
+
+    public void OnReturnToPool()
+    {
+        //
     }
 
     public bool CanBeMined(int pickaxePower)
     {
-        if (Data == null) return false;
-        return pickaxePower >= Data.def;
+        if (_data == null) return false;
+        return pickaxePower >= _data.def;
     }
 
     public bool Mine(int damage)
@@ -50,7 +59,7 @@ public class OreController : MonoBehaviour
         if (_currentHP <= 0)
         {
             DropItem();
-            Destroy(gameObject);
+            PoolManager.Instance.ReturnToPool(_id, gameObject);
             return true;
         }
 
@@ -59,7 +68,7 @@ public class OreController : MonoBehaviour
 
     private void DropItem()
     {
-        int dropId = Data.dropMineralId;
+        int dropId = _data.dropMineralId;
 
         if (_dropPrefabDict != null && _dropPrefabDict.TryGetValue(dropId, out var prefab) && prefab != null)
         {

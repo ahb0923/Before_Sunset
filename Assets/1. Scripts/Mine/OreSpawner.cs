@@ -9,8 +9,5 @@ public class OreSpawner : ResourceSpawner<OreDatabase>
         GetId = data => data.id;
         GetSpawnStage = data => data.spawnStage;
         GetProbability = data => data.spawnProbability;
-
-        prefabFolder = "Prefabs/Ore";
-        prefabPrefix = "Ore";
     }
 }
