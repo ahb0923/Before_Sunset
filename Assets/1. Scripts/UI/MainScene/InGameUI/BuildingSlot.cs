@@ -14,6 +14,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     
     private TowerDatabase _towerData;
     private SmelterDatabase _smelterData;
+    private Color _originalColor;
     private Tween _tween;
     
     public int Index { get; private set; }
@@ -31,6 +32,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     public void InitIndex(int index)
     {
         Index = index;
+        _originalColor = bGImage.color;
     }
 
     public void SetTowerSlot(TowerDatabase towerData)
@@ -93,7 +95,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        bGImage.color = Color.white;
+        bGImage.color = _originalColor;
         _tween = bGImage.DOColor(Color.yellow, 0.2f);
         
         UIManager.Instance.CraftMaterialArea.Open();
@@ -142,7 +144,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        _tween = bGImage.DOColor(Color.white, 0.2f);
+        _tween = bGImage.DOColor(_originalColor, 0.2f);
         
         TooltipManager.Instance.HideTooltip();
         UIManager.Instance.CraftMaterialArea.Close();

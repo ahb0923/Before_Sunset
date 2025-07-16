@@ -27,6 +27,4 @@ public class ResultUI : MonoBehaviour
         _slotArea = Helper_Component.FindChildGameObjectByName(this.gameObject, SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(SLOT_PREFAB);
     }
-    
-    
 }

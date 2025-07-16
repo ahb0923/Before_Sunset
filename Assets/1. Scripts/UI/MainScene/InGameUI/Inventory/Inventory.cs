@@ -31,6 +31,9 @@ public class Inventory : MonoBehaviour
         //Pickaxe
     }
 
+    /// <summary>
+    /// 인벤토리와 퀵슬롯 토글 메서드
+    /// </summary>
     public void Toggle()
     {
         if (InventoryUI.gameObject.activeSelf)
@@ -43,8 +46,15 @@ public class Inventory : MonoBehaviour
             InventoryUI.gameObject.SetActive(true);
             QuickSlotInventoryUI.gameObject.SetActive(false);
         }
+        
+        if (TooltipManager.Instance != null)
+            TooltipManager.Instance.HideTooltip();
     }
 
+    /// <summary>
+    /// 곡괭이 초기화 메서드
+    /// </summary>
+    /// <param name="data"></param>
     public void SetPickaxe(EquipmentDatabase data)
     {
         Pickaxe = new Item(data);
@@ -52,12 +62,20 @@ public class Inventory : MonoBehaviour
         QuickSlotInventoryUI.RefreshPickaxe();
     }
 
-    public Item CreateItem(int id)
+    /// <summary>
+    /// 아이템의 id 값으로 아이템 만드는 메서드
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private Item CreateItem(int id)
     {
         Item item = new Item(DataManager.Instance.ItemData.GetId(id));
         return item;
     }
 
+    /// <summary>
+    /// 인벤토리UI 새로고침 메서드
+    /// </summary>
     public void RefreshInventories()
     {
         InventoryUI.RefreshUI(Items);
@@ -86,6 +104,11 @@ public class Inventory : MonoBehaviour
         QuickSlotInventoryUI.RefreshUI(Items);
     }
 
+    /// <summary>
+    /// 겹칠 수 있는 아이템을 인벤토리에 추가하는 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="quantity"></param>
     private void AddStackableItem(Item item, int quantity)
     {
         Item savedItem = null;
@@ -130,6 +153,10 @@ public class Inventory : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 겹칠 수 없는 아이템을 인벤토리에 추가하는 메서드
+    /// </summary>
+    /// <param name="item"></param>
     private void AddNotStackableItem(Item item)
     {
         int emptyIndex = GetEmptySlotIndex();
@@ -143,6 +170,10 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 인벤토리에서 첫번째 빈 슬롯을 찾아주는 메서드
+    /// </summary>
+    /// <returns></returns>
     private int GetEmptySlotIndex()
     {
         for (int i = 0; i < Items.Length; i++)
@@ -154,6 +185,9 @@ public class Inventory : MonoBehaviour
         return -1;
     }
 
+    /// <summary>
+    /// 아이템 정렬 메서드
+    /// </summary>
     public void Sort()
     {
         List<Item> items = Items.Where(item => item != null).ToList();
@@ -269,6 +303,12 @@ public class Inventory : MonoBehaviour
         return true;
     }
     
+    /// <summary>
+    /// 아이템 사용 메서드
+    /// </summary>
+    /// <param name="itemName">사용할 아이템의 이름</param>
+    /// <param name="quantity">사용할 아이템의 수량</param>
+    /// <returns>사용하면 T 불가능하면 F</returns>
     public bool UseItem(string itemName, int quantity)
     {
         if (quantity <= 0)

@@ -122,6 +122,8 @@ public class CraftArea : MonoBehaviour
         {
             this.gameObject.SetActive(false);
             UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
+            
+            ResetUI();
         }
         else
         {
@@ -129,7 +131,7 @@ public class CraftArea : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void ResetUI()
     {
         if (_buildSlots.Count != 0)
         {
