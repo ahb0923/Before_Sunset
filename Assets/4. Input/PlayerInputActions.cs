@@ -140,7 +140,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UnBuild"",
+                    ""name"": ""DestroyMode"",
                     ""type"": ""Button"",
                     ""id"": ""d090edda-ce0c-461f-b253-63bee8ad550d"",
                     ""expectedControlType"": ""Button"",
@@ -197,7 +197,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UnBuild"",
+                    ""action"": ""DestroyMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -224,7 +224,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_ReturnHome = m_Interaction.FindAction("ReturnHome", throwIfNotFound: true);
-        m_Interaction_UnBuild = m_Interaction.FindAction("UnBuild", throwIfNotFound: true);
+        m_Interaction_DestroyMode = m_Interaction.FindAction("DestroyMode", throwIfNotFound: true);
         m_Interaction_Build = m_Interaction.FindAction("Build", throwIfNotFound: true);
         m_Interaction_Inventory = m_Interaction.FindAction("Inventory", throwIfNotFound: true);
     }
@@ -343,7 +343,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Interaction;
     private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
     private readonly InputAction m_Interaction_ReturnHome;
-    private readonly InputAction m_Interaction_UnBuild;
+    private readonly InputAction m_Interaction_DestroyMode;
     private readonly InputAction m_Interaction_Build;
     private readonly InputAction m_Interaction_Inventory;
     public struct InteractionActions
@@ -351,7 +351,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         private @PlayerInputActions m_Wrapper;
         public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @ReturnHome => m_Wrapper.m_Interaction_ReturnHome;
-        public InputAction @UnBuild => m_Wrapper.m_Interaction_UnBuild;
+        public InputAction @DestroyMode => m_Wrapper.m_Interaction_DestroyMode;
         public InputAction @Build => m_Wrapper.m_Interaction_Build;
         public InputAction @Inventory => m_Wrapper.m_Interaction_Inventory;
         public InputActionMap Get() { return m_Wrapper.m_Interaction; }
@@ -366,9 +366,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ReturnHome.started += instance.OnReturnHome;
             @ReturnHome.performed += instance.OnReturnHome;
             @ReturnHome.canceled += instance.OnReturnHome;
-            @UnBuild.started += instance.OnUnBuild;
-            @UnBuild.performed += instance.OnUnBuild;
-            @UnBuild.canceled += instance.OnUnBuild;
+            @DestroyMode.started += instance.OnDestroyMode;
+            @DestroyMode.performed += instance.OnDestroyMode;
+            @DestroyMode.canceled += instance.OnDestroyMode;
             @Build.started += instance.OnBuild;
             @Build.performed += instance.OnBuild;
             @Build.canceled += instance.OnBuild;
@@ -382,9 +382,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ReturnHome.started -= instance.OnReturnHome;
             @ReturnHome.performed -= instance.OnReturnHome;
             @ReturnHome.canceled -= instance.OnReturnHome;
-            @UnBuild.started -= instance.OnUnBuild;
-            @UnBuild.performed -= instance.OnUnBuild;
-            @UnBuild.canceled -= instance.OnUnBuild;
+            @DestroyMode.started -= instance.OnDestroyMode;
+            @DestroyMode.performed -= instance.OnDestroyMode;
+            @DestroyMode.canceled -= instance.OnDestroyMode;
             @Build.started -= instance.OnBuild;
             @Build.performed -= instance.OnBuild;
             @Build.canceled -= instance.OnBuild;
@@ -416,7 +416,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IInteractionActions
     {
         void OnReturnHome(InputAction.CallbackContext context);
-        void OnUnBuild(InputAction.CallbackContext context);
+        void OnDestroyMode(InputAction.CallbackContext context);
         void OnBuild(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
     }

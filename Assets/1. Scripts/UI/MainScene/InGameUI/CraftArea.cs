@@ -112,11 +112,11 @@ public class CraftArea : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Toggle();
+            //Toggle();
         }
     }
 
-    private void Toggle()
+    public void Toggle()
     {
         if (this.gameObject.activeSelf)
         {

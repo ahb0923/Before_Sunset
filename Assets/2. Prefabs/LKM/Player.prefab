@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 8818597207547077950}
   - component: {fileID: 4535794330837854882}
   - component: {fileID: 728856486868643156}
+  - component: {fileID: 7180197995015105084}
   - component: {fileID: 6686093153861780179}
   m_Layer: 3
   m_Name: Player
@@ -447,6 +448,18 @@ MonoBehaviour:
   _miningLayer:
     serializedVersion: 2
     m_Bits: 3145728
+--- !u!114 &7180197995015105084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7508487163038984533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5076ded452c5ab4d81b086a3cd98375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6686093153861780179
 MonoBehaviour:
   m_ObjectHideFlags: 0

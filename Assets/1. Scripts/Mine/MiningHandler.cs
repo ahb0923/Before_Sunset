@@ -51,12 +51,12 @@ public class MiningHandler : MonoBehaviour
             }
         }
 
-        var inputHandler = other.GetComponentInChildren<PlayerInputHandler>();
-        if (inputHandler != null)
-        {
-            Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
-            return;
-        }
+        //var inputHandler = other.GetComponentInChildren<PlayerInputHandler>();
+        //if (inputHandler != null)
+        //{
+        //    Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+        //    return;
+        //}
 
         if (_triggerCoroutine == null)
             _triggerCoroutine = StartCoroutine(WaitAndTrigger());
@@ -92,11 +92,11 @@ public class MiningHandler : MonoBehaviour
 
             if (isBaseMapAfterMove)
             {
-                _player.SetHomeOnPlayer(true);
+                _player.SetPlayerInBase(true);
             }
             else
             {
-                _player.SetHomeOnPlayer(false);
+                _player.SetPlayerInBase(false);
             }
         }));
 

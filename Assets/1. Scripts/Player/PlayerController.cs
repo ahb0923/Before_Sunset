@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     #region Swing Event
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_player.IsInHome || IsSwing) return;
+        if (_player.IsInBase || IsSwing) return;
 
         _swingCoroutine = StartCoroutine(C_Swing());
     }
