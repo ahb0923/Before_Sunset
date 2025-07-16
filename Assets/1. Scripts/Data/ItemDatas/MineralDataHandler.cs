@@ -14,6 +14,8 @@ public class MineralDataHandler : BaseDataHandler<MineralDatabase>
     private Dictionary<int, Sprite> _mineralSprites = new();
     public Dictionary<int, Sprite> MineralSprites => _mineralSprites;
 
+    private Dictionary<int, GameObject> _mineralPrefabs = new();
+    public Dictionary<int, GameObject> MinerlaPrefabs => _mineralPrefabs;
 
     public Sprite GetSpriteById(int id)
     {
@@ -25,33 +27,52 @@ public class MineralDataHandler : BaseDataHandler<MineralDatabase>
         Debug.LogWarning($"[MineralDataHandler] ID {id}에 해당하는 이미지가 존재하지 않습니다.");
         return null;
     }
-    public void SettingImage()
+
+    public GameObject GetPrefabById(int id)
+    {
+        if (_mineralPrefabs.TryGetValue(id, out var prefab))
+        {
+            return prefab;
+        }
+
+        Debug.LogWarning($"[MineralDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        return null;
+    }
+    
+    public void SettingPrefab()
     {
         foreach (var mineral in dataIdDictionary.Values)
         {
             Sprite mineralSprite;
+            GameObject mineralPrefab;
 
             if (mineral.itemType == MINERAL_TYPE.Mineral)
             {
                 mineralSprite = Resources.Load<Sprite>($"Items/Minerals/{mineral.itemName}");
+                mineralPrefab = Resources.Load<GameObject>($"Items/Minerals/{mineral.prefabName}");
             }
             else if (mineral.itemType == MINERAL_TYPE.Ingot)
             {
                 mineralSprite = Resources.Load<Sprite>($"Items/Ingots/{mineral.itemName}");
-            }
-            else mineralSprite = null;
-
-
-            if (mineralSprite != null)
-            {
-                _mineralSprites.Add(mineral.id, mineralSprite);
+                mineralPrefab = Resources.Load<GameObject>($"Items/Ingots/{mineral.prefabName}");
             }
             else
             {
-                Debug.LogWarning($"[Setting Sprite] 이미지 로드 실패: {mineral.id} / {mineral.itemName}");
+                mineralSprite = null;
+                mineralPrefab = null;
+            }
+
+            if (mineralSprite != null && mineralPrefab != null)
+            {
+                _mineralSprites.Add(mineral.id, mineralSprite);
+                _mineralPrefabs.Add(mineral.id, mineralPrefab);
+            }
+            else
+            {
+                Debug.LogWarning($"[Setting Sprite & Prefab] 이미지 & 프리팹 로드 실패: {mineral.id} / {mineral.itemName} / {mineral.prefabName}");
             }
         }
-        Debug.Log($"[Setting Sprite] 전체 광물&주괴 이미지 데이터 ({_mineralSprites.Count}개):");
+        Debug.Log($"[Setting Sprite & Prefab] 전체 광물&주괴 이미지 & 프리팹 데이터 ({_mineralSprites.Count}개 / {_mineralPrefabs.Count}개):");
     }
 
 }

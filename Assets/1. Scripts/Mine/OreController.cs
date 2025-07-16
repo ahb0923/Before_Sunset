@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OreController : MonoBehaviour
+public class OreController : MonoBehaviour,IPoolable
 {
+    public int ID;
     public OreDatabase Data { get; private set; }
 
     private int _currentHP;
@@ -69,5 +70,24 @@ public class OreController : MonoBehaviour
         {
             Debug.LogWarning($"[OreController] 드롭 프리팹이 존재하지 않거나 null입니다. ID: {dropId}");
         }
+    }
+
+    public int GetId()
+    {
+        return ID;
+    }
+
+    public void OnInstantiate()
+    {
+    }
+
+    public void OnGetFromPool()
+    {
+        _currentHP = Data.hp;
+    }
+
+    public void OnReturnToPool()
+    {
+        throw new System.NotImplementedException();
     }
 }

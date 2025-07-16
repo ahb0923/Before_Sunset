@@ -16,7 +16,7 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
     protected override string GetName(TowerDatabase data) => data.towerName;
 
     private Dictionary<int,GameObject> _towerPrefabs = new();
-    public Dictionary<int, GameObject> TowerImages => _towerPrefabs;
+    public Dictionary<int, GameObject> TowerPrefabs => _towerPrefabs;
     public GameObject GetPrefabById(int id)
     {
         if (_towerPrefabs.TryGetValue(id, out var prefab))

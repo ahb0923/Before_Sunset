@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
-    [SerializeField] public BaseTower buildingPrefab;
+    [SerializeField] public GameObject buildingPrefab;
     [SerializeField] public Image bGImage;
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
@@ -35,26 +35,45 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         _originalColor = bGImage.color;
     }
 
-    public void SetTowerSlot(TowerDatabase towerData)
+    public void SetSlot(TowerDatabase data)
     {
         buildingPrefab = null;
         
-        if (towerData != null)
+        if (data != null)
         {
-            _towerData = towerData;
+            _towerData = data;
             _smelterData = null;
 
-            var go = DataManager.Instance.TowerData.GetPrefabById(towerData.id);
-            buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
+            //var go = DataManager.Instance.TowerData.GetPrefabById(data.id);
+            //buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
+            buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(data.id);
 
-            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(go.transform,"Image").sprite;
+            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform,"Image").sprite;
             _buildingIcon.preserveAspect = true;
-            _buildingName.text = towerData.towerName;
+            _buildingName.text = data.towerName;
             
             this.gameObject.SetActive(true);
         }
     }
+    public void SetSlot(SmelterDatabase data)
+    {
+        buildingPrefab = null;
 
+        if (data != null)
+        {
+            _towerData = null;
+            _smelterData = data;
+
+            buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(_smelterData.id);
+
+            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform, "Image").sprite;
+            _buildingIcon.preserveAspect = true;
+            _buildingName.text = data.smelterName;
+
+            this.gameObject.SetActive(true);
+        }
+    }
+    /*
     public void SetSmelterSlot(SmelterDatabase smelterData)
     {
         buildingPrefab = null;
@@ -70,7 +89,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             
             this.gameObject.SetActive(true);
         }
-    }
+    }*/
     
     public void ClearSlot()
     {

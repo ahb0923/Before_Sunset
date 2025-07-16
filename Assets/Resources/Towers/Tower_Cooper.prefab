@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6044215668753884168}
   - component: {fileID: 4551609607560423749}
   - component: {fileID: 8459309262913598922}
+  - component: {fileID: 3451703433450433546}
   m_Layer: 6
   m_Name: Tower_Cooper
   m_TagString: Untagged
@@ -126,6 +127,7 @@ MonoBehaviour:
   statHandler: {fileID: 8459309262913598922}
   attackSensor: {fileID: 8261416276646684489}
   ui: {fileID: 6144722833229533621}
+  buildInfo: {fileID: 3451703433450433546}
   projectile: {fileID: 1135823945734847574, guid: 6c71c107345ebbd419077d3c30215279, type: 3}
 --- !u!114 &4551609607560423749
 MonoBehaviour:
@@ -168,6 +170,21 @@ MonoBehaviour:
     range: 0
     prefabName: 
   _currHp: 0
+--- !u!114 &3451703433450433546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2832587575862710668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d4d8ebb0b1a62840b2fef8044c1aac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 400
+  size: {x: 3, y: 3}
+  spriteRenderer: {fileID: 1109353221721809788}
 --- !u!1 &3037772152855085370
 GameObject:
   m_ObjectHideFlags: 0

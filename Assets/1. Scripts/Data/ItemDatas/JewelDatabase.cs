@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class JewelDatabase : ItemDatabase
 {
+    public string prefabName;
     public int spawnProbability;
 }
 

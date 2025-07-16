@@ -103,29 +103,53 @@ public class PoolManager : MonoSingleton<PoolManager>
                 });
             }
         }
+        foreach (var data in DataManager.Instance.SmelterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.SmelterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
         foreach (var data in DataManager.Instance.OreData.GetAllItems())
         {
-            //var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
-            //if (prefab != null)
-            //{
-            //    _objectPoolDatas.Add(new ObjectPoolData
-            //    {
-            //        prefab = prefab,
-            //        count = 10
-            //    });
-            //}
+            var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MineralData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
         }
         foreach (var data in DataManager.Instance.JewelData.GetAllItems())
         {
-            //var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
-            //if (prefab != null)
-            //{
-            //    _objectPoolDatas.Add(new ObjectPoolData
-            //    {
-            //        prefab = prefab,
-            //        count = 10
-            //    });
-            //}
+            var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
         }
     }
     /// <summary>
