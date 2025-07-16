@@ -12,18 +12,23 @@ public class BuildingMaterialSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _amountText;
     [SerializeField] private TextMeshProUGUI _materialName;
     
+    private Color _originalColor;
+
+    private const string MATERIAL_ICON = "BuildingMaterialIcon";
+    private const string MATERIAL_AMOUNT = "BuildingMaterialAmount";
     private const string MATERIAL_NAME = "BuildingMaterialName";
     
     private void Reset()
     {
-        _itemImage = GetComponentInChildren<Image>();
-        _amountText = GetComponentInChildren<TextMeshProUGUI>();
+        _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, MATERIAL_ICON);
+        _amountText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, MATERIAL_AMOUNT);
         _materialName = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, MATERIAL_NAME);
     }
 
     public void InitIndex(int index)
     {
         Index = index;
+        _originalColor = _amountText.color;
     }
     
     public void SetSlot(string dataName, int requiredAmount, List<Item> items)
@@ -42,7 +47,7 @@ public class BuildingMaterialSlot : MonoBehaviour
         }
         else
         {
-            _amountText.color = Color.black;
+            _amountText.color = _originalColor;
         }
         
         gameObject.SetActive(true);

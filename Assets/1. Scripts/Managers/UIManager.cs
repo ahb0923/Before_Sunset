@@ -29,7 +29,10 @@ public class UIManager : MonoSingleton<UIManager>
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
-        
+    }
+
+    private void Start()
+    {
         CraftArea.gameObject.SetActive(false);
         CraftMaterialArea.gameObject.SetActive(false);
     }

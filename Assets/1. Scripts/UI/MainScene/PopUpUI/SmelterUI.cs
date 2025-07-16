@@ -1,20 +1,19 @@
-using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SmelterUI : MonoBehaviour
 {
+    [SerializeField] private Smelter _currentSmelter;
     [SerializeField] private TextMeshProUGUI _smelterNameText;
     [SerializeField] public SmelterSlot smelterInputSlot;
     [SerializeField] public SmelterSlot smelterOutputSlot;
     [SerializeField] private Image _smelterMaterialSlot1;
     [SerializeField] private Image _smelterMaterialSlot2;
+    [SerializeField] private Image _smeltProgressBar;
     [SerializeField] private Button _receiveButton;
     [SerializeField] private Button _closeButton;
 
-    public SmelterController smelterController;
     private RectTransform _rect;
 
     private const string SMELTER_NAME_TEXT = "SmelterNameText";
@@ -22,6 +21,7 @@ public class SmelterUI : MonoBehaviour
     private const string SMELTER_OUTPUT_SLOT = "SmelterOutputSlot";
     private const string SMELTER_MATERIAL_SLOT1 = "SmelterMaterialSlot1";
     private const string SMELTER_MATERIAL_SLOT2 = "SmelterMaterialSlot2";
+    private const string SMELT_PROGRESS_BAR = "SmeltProgressBar";
     private const string RECEIVE_BUTTON = "ReceiveButton";
     private const string CLOSE_BUTTON = "CloseSmelterButton";
 
@@ -32,6 +32,7 @@ public class SmelterUI : MonoBehaviour
         smelterOutputSlot = Helper_Component.FindChildComponent<SmelterSlot>(this.transform, SMELTER_OUTPUT_SLOT);
         _smelterMaterialSlot1 = Helper_Component.FindChildComponent<Image>(this.transform, SMELTER_MATERIAL_SLOT1);
         _smelterMaterialSlot2 = Helper_Component.FindChildComponent<Image>(this.transform, SMELTER_MATERIAL_SLOT2);
+        _smeltProgressBar = Helper_Component.FindChildComponent<Image>(this.transform, SMELT_PROGRESS_BAR);
         _receiveButton = Helper_Component.FindChildComponent<Button>(this.transform, RECEIVE_BUTTON);
         _closeButton = Helper_Component.FindChildComponent<Button>(this.transform, CLOSE_BUTTON);
     }
@@ -43,7 +44,8 @@ public class SmelterUI : MonoBehaviour
         smelterOutputSlot.InitInputSlot(false);
         _receiveButton.onClick.AddListener(ReceiveItem);
         _closeButton.onClick.AddListener(CloseSmelter);
-        _receiveButton.interactable = false;
+        _smeltProgressBar.fillAmount = 0f;
+        DeactivateReceiveButton();
     }
 
     private void Start()
@@ -51,34 +53,76 @@ public class SmelterUI : MonoBehaviour
         _rect.CloseAndRestore();
     }
 
-    public void OpenSmelter()
+    /// <summary>
+    /// 제련소 열때 사용하는 메서드
+    /// </summary>
+    /// <param name="smelter"></param>
+    public void OpenSmelter(Smelter smelter)
     {
+        if (_currentSmelter != null)
+        {
+            _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
+        }
+        
         _rect.OpenAtCenter();
+        _currentSmelter = smelter;
+        SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();
         InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Close();
+        
+        _currentSmelter.OnSmeltingProgress += UpdateProgressBar;
+
+        if (!_currentSmelter.isSmelting)
+        {
+            _smeltProgressBar.fillAmount = 0f;
+        }
+
+        if (_currentSmelter.OutputItem != null)
+        {
+            ActivateReceiveButton();
+        }
     }
 
-    public void CloseSmelter()
+    /// <summary>
+    /// 제련소 닫을때 사용하는 메서드
+    /// </summary>
+    private void CloseSmelter()
     {
-        _rect.CloseAndRestore();
+        smelterInputSlot.ClearSlot();
+        smelterOutputSlot.ClearSlot();
+        DeactivateReceiveButton();
         InventoryManager.Instance.Inventory.InventoryUI.Close();
         InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Open();
+        
+        _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
+        
+        _currentSmelter = null;
+        _rect.CloseAndRestore();
     }
 
-    public void SetSmelterUI(SmelterDatabase data)
+    private void UpdateProgressBar(float progress)
     {
-        _smelterNameText.text = data.smelterName;
+        _smeltProgressBar.fillAmount = progress;
+    }
 
-        smelterInputSlot.SetSmelterData(data);
-        smelterOutputSlot.SetSmelterData(data);
+    /// <summary>
+    /// 제련소 UI 설정 메서드 및 슬롯에 현재 제련소를 참조시키는 메서드
+    /// </summary>
+    public void SetSmelterUI()
+    {
+        var data = _currentSmelter.smelterData;
+        
+        _smelterNameText.text = data.smelterName;
         SetSmelterMaterialSlot(data);
 
-        smelterController.smelterData = data;
-
-        smelterInputSlot.smelterController = smelterController;
-        smelterOutputSlot.smelterController = smelterController;
+        smelterInputSlot.SetSmelterData(_currentSmelter);
+        smelterOutputSlot.SetSmelterData(_currentSmelter);
     }
 
+    /// <summary>
+    /// 제련가능한 재료 표시해주는 메서드
+    /// </summary>
+    /// <param name="data"></param>
     private void SetSmelterMaterialSlot(SmelterDatabase data)
     {
         var image1 = DataManager.Instance.MineralData.GetSpriteById(data.smeltingIdList[0]);
@@ -87,15 +131,44 @@ public class SmelterUI : MonoBehaviour
         _smelterMaterialSlot2.sprite = image2;
     }
 
-    public void AddItemToSmelter(Item item, int amount)
+    /// <summary>
+    /// 받기 버튼 활성화 메서드
+    /// </summary>
+    private void ActivateReceiveButton()
     {
-        smelterOutputSlot.AddToSmelterItem(item, amount);
         _receiveButton.interactable = true;
     }
+
+    /// <summary>
+    /// 받기 버튼 비활성화 메서드
+    /// </summary>
+    private void DeactivateReceiveButton()
+    {
+        _receiveButton.interactable = false;
+    }
     
+    /// <summary>
+    /// 제련소 결과물슬롯의 아이템을 받을때 사용하는 메서드
+    /// </summary>
     private void ReceiveItem()
     {
         smelterOutputSlot.ReceiveItem();
-        _receiveButton.interactable = false;
+        DeactivateReceiveButton();
+        _currentSmelter.TrySmelt();
+    }
+
+    /// <summary>
+    /// 제련소 슬롯들의 UI 새로고침 메서드
+    /// </summary>
+    public void RefreshSlots()
+    {
+        smelterInputSlot.RefreshUI();
+        smelterOutputSlot.RefreshUI();
+
+        if (this.gameObject.activeSelf)
+        {
+            if (_currentSmelter.OutputItem != null)
+                ActivateReceiveButton();
+        }
     }
 }

@@ -10,7 +10,7 @@ public class Item
     public int MaxStack => Stackable ? 99 : 0;
     public bool IsMaxStack => stack >= MaxStack;
 
-    public int quantity;
+    // public int quantity;
 
     public Item(ItemDatabase data) => Data = data;
 

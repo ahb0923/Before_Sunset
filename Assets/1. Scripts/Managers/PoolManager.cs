@@ -38,6 +38,8 @@ public class PoolManager : MonoSingleton<PoolManager>
     /// </summary>
     public void InitPool()
     {
+        SettingPrefab();
+
         _prefabs = new Dictionary<int, GameObject>();
         _pools = new Dictionary<int, Queue<GameObject>>();
 
@@ -100,6 +102,30 @@ public class PoolManager : MonoSingleton<PoolManager>
                     count = 10
                 });
             }
+        }
+        foreach (var data in DataManager.Instance.OreData.GetAllItems())
+        {
+            //var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
+            //if (prefab != null)
+            //{
+            //    _objectPoolDatas.Add(new ObjectPoolData
+            //    {
+            //        prefab = prefab,
+            //        count = 10
+            //    });
+            //}
+        }
+        foreach (var data in DataManager.Instance.JewelData.GetAllItems())
+        {
+            //var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
+            //if (prefab != null)
+            //{
+            //    _objectPoolDatas.Add(new ObjectPoolData
+            //    {
+            //        prefab = prefab,
+            //        count = 10
+            //    });
+            //}
         }
     }
     /// <summary>
