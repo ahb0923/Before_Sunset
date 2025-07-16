@@ -12,4 +12,5 @@ public class MineralDatabase : ItemDatabase
 {
     public MINERAL_TYPE itemType;
     public int ingotId;
+    public int smeltingTime;
 }

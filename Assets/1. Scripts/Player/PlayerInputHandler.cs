@@ -43,13 +43,20 @@ public class PlayerInputHandler : MonoBehaviour
 
         _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
         _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
-        
+
+        /*
         if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
             UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
+        */
+
+        StartCoroutine(WaitAndSubscribe());
     }
 
-    private void Start()
+    private IEnumerator WaitAndSubscribe()
     {
+        yield return new WaitUntil(() => UIManager.Instance != null && UIManager.Instance.RecallUI != null);
+
+        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
     }
 
     private void OnDisable()

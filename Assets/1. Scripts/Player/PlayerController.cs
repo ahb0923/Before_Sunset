@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         await equipmentDataHandler.LoadAsyncLocal();
 
         _equippedPickaxe = equipmentDataHandler.GetById(700);
+        InventoryManager.Instance.Inventory.SetPickaxe(_equippedPickaxe);
 
         if (_equippedPickaxe == null)
             Debug.LogError("초기 곡괭이 데이터가 없습니다!");
