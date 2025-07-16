@@ -7,222 +7,79 @@ using UnityEngine.InputSystem;
 public class PlayerInputHandler : MonoBehaviour
 {
     private PlayerInputActions _inputActions;
-    public PlayerStateHandler _stateHandler;
+    private PlayerStateHandler _stateHandler;
 
     public Vector2 MoveInput { get; private set; }
     public bool IsSwing { get; private set; }
 
-    public event Action OnInventoryToggle;
-    public event Action OnBuildMode;
-    public event Action OnUnBuildMode;
-
-    private bool isReturnKeyHeld = false;
-    private float returnKeyHeldTime = 0f;
-    private bool isRecallStarted = false;
-    [SerializeField] private float holdTimeToTriggerRecall = 2f;
-
+    #region About Event Handling
     private void Awake()
     {
         _inputActions = new PlayerInputActions();
-        
     }
-
     private void OnEnable()
     {
-        _inputActions.Player.Enable();
-
+        // 이동 관련
         _inputActions.Player.Move.performed += OnMovePerformed;
         _inputActions.Player.Move.canceled += OnMoveCanceled;
 
-        _inputActions.Player.Swing.performed += OnSwingPerformed;
+        // 스윙 관련
+        _inputActions.Player.Swing.started += OnSwingStarted;
         _inputActions.Player.Swing.canceled += OnSwingCanceled;
-
-        _inputActions.Player.Inventory.performed += OnInventoryPerformed;
-        _inputActions.Player.Build.performed += OnBuildPerformed;
-        _inputActions.Player.UnBuild.performed += OnUnBuildPerformed;
-
-        _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
-        _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
-
-        /*
-        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
-            UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
-        */
-
-        StartCoroutine(WaitAndSubscribe());
     }
-
-    private IEnumerator WaitAndSubscribe()
-    {
-        yield return new WaitUntil(() => UIManager.Instance != null && UIManager.Instance.RecallUI != null);
-
-        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
-    }
-
     private void OnDisable()
     {
+        // 이동 관련
         _inputActions.Player.Move.performed -= OnMovePerformed;
         _inputActions.Player.Move.canceled -= OnMoveCanceled;
 
-        _inputActions.Player.Swing.performed -= OnSwingPerformed;
+        // 스윙 관련
+        _inputActions.Player.Swing.started -= OnSwingStarted;
         _inputActions.Player.Swing.canceled -= OnSwingCanceled;
-
-        _inputActions.Player.Inventory.performed -= OnInventoryPerformed;
-        _inputActions.Player.Build.performed -= OnBuildPerformed;
-        _inputActions.Player.UnBuild.performed -= OnUnBuildPerformed;
-
-        _inputActions.Player.ReturnHome.performed -= OnReturnHomePerformed;
-        _inputActions.Player.ReturnHome.canceled -= OnReturnHomeCanceled;
-        
-        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
-            UIManager.Instance.RecallUI.OnCountdownFinished -= OnRecallCountdownFinished;
-        
-        _inputActions.Player.Disable();
     }
-
     private void OnDestroy()
     {
+        // 이동 관련
+        _inputActions.Player.Move.performed -= OnMovePerformed;
+        _inputActions.Player.Move.canceled -= OnMoveCanceled;
+
+        // 스윙 관련
+        _inputActions.Player.Swing.started -= OnSwingStarted;
+        _inputActions.Player.Swing.canceled -= OnSwingCanceled;
     }
+    #endregion
 
-    private void Update()
-    {
-        if (isRecallStarted) return;
-
-        if (isReturnKeyHeld)
-        {
-            returnKeyHeldTime += Time.deltaTime;
-            UIManager.Instance.RecallUI.UpdateHoldProgress(returnKeyHeldTime / holdTimeToTriggerRecall);
-
-            if (returnKeyHeldTime >= holdTimeToTriggerRecall)
-            {
-                StartRecall();
-            }
-        }
-    }
-
-    private void StartRecall()
-    {
-        Debug.Log("StartRecall() 호출됨");
-        isRecallStarted = true;
-        isReturnKeyHeld = false;
-
-        if (AuraHandler.Instance != null)
-            AuraHandler.Instance.Show();
-
-        UIManager.Instance.RecallUI.StartRecallCountdown();
-    }
-
-
-    private IEnumerator DelayedRecall()
-    {
-        yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
-        {
-            UIManager.Instance.RecallUI.CloseRecall();
-            MapManager.Instance.ReturnToHomeMap();
-        }));
-
-        isRecallStarted = false;
-        returnKeyHeldTime = 0f;
-
-
-        if (AuraHandler.Instance != null)
-            AuraHandler.Instance.Hide();
-
-        if (_stateHandler != null)
-            _stateHandler.ExitMiningArea();
-    }
-
-    private void OnReturnHomePerformed(InputAction.CallbackContext context)
-    {
-        if (isRecallStarted) return;
-        if (_stateHandler != null && _stateHandler.IsInMiningArea)
-        {
-            if (IsOnMiningTrigger())
-            {
-                Debug.Log("광산 트리거 위에서는 귀환할 수 없습니다.");
-                return;
-            }
-
-            isReturnKeyHeld = true;
-            returnKeyHeldTime = 0f;
-
-            UIManager.Instance.RecallUI.ShowRecallIcon();
-        }
-    }
-
-    private void OnReturnHomeCanceled(InputAction.CallbackContext context)
-    {
-        if (isRecallStarted) return;
-        if (_stateHandler != null && _stateHandler.IsInMiningArea)
-        {
-            isReturnKeyHeld = false;
-            returnKeyHeldTime = 0f;
-            UIManager.Instance.RecallUI.ShowRecallIcon();
-        }
-    }
-
+    /// <summary>
+    /// 방향키로 움직이고 있을 때, 벡터 값을 저장
+    /// </summary>
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         MoveInput = context.ReadValue<Vector2>();
     }
 
+    /// <summary>
+    /// 모든 방향키가 눌리고 있지 않을 때, 0 벡터 저장
+    /// </summary>
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         MoveInput = Vector2.zero;
     }
 
-    private void OnSwingPerformed(InputAction.CallbackContext context)
+    /// <summary>
+    /// 광산 지역에서 왼쪽 마우스 클릭 시에, 스윙 불 값 true로 변경
+    /// </summary>
+    private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_stateHandler != null && _stateHandler.IsInMiningArea)
-        {
-            IsSwing = true;
-        }
-        else
-        {
-            IsSwing = false;
-        }
+        if (!_stateHandler.IsInMiningArea) return;
+        
+        IsSwing = true;
     }
 
+    /// <summary>
+    /// 광산 지역에서 왼쪽 마우스 클릭 시에, 스윙 불 값 true로 변경
+    /// </summary>
     private void OnSwingCanceled(InputAction.CallbackContext context)
     {
         IsSwing = false;
-    }
-
-    private void OnInventoryPerformed(InputAction.CallbackContext context)
-    {
-        OnInventoryToggle?.Invoke();
-    }
-
-    private void OnBuildPerformed(InputAction.CallbackContext context)
-    {
-        OnBuildMode?.Invoke();
-    }
-
-    private void OnUnBuildPerformed(InputAction.CallbackContext context)
-    {
-        OnUnBuildMode?.Invoke();
-    }
-
-    private void OnRecallCountdownFinished()
-    {
-        StartCoroutine(DelayedRecall());
-    }
-
-    public bool IsRecallInProgress()
-    {
-        return isRecallStarted;
-    }
-
-    private bool IsOnMiningTrigger()
-    {
-        Collider2D[] results = Physics2D.OverlapCircleAll(transform.position, 0.1f);
-        foreach (var col in results)
-        {
-            if (col.TryGetComponent<MiningHandler>(out var handler))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

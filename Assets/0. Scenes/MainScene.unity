@@ -543,6 +543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a29e34036e876d498187d452b830d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSmelting: 0
 --- !u!4 &928510759
 Transform:
   m_ObjectHideFlags: 0
@@ -792,6 +793,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a29e34036e876d498187d452b830d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSmelting: 0
 --- !u!4 &1050548881
 Transform:
   m_ObjectHideFlags: 0
@@ -829,7 +831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -3.25
       objectReference: {fileID: 0}
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1610,6 +1612,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 31084890357813855}
     m_Modifications:
+    - target: {fileID: 2546944948531312630, guid: 47aeb8c8b40a6384f8951f3209dd456b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7540950409474600631, guid: 47aeb8c8b40a6384f8951f3209dd456b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1895,7 +1901,7 @@ Transform:
   m_GameObject: {fileID: 4881548125829083928}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: -3.25, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
