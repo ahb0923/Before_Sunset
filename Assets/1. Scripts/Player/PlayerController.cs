@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask _miningLayer;
     private Vector2 _moveDir;
-    private Vector2 _clickDir;
+    private Vector3 _clickDir;
 
     private Coroutine _swingCoroutine;
     public bool IsSwing => _swingCoroutine != null;
@@ -35,7 +35,6 @@ public class PlayerController : MonoBehaviour
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         _moveDir = context.ReadValue<Vector2>().normalized;
-        SetAnimationDirection(_moveDir);
     }
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
@@ -82,6 +81,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Move()
     {
+        SetAnimationDirection(_moveDir);
         _player.Rigid.MovePosition(_player.Rigid .position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
     }
 
@@ -105,11 +105,8 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
-        // 디버그 코드
-        Debug.DrawRay(_player.Animator.transform.position, _clickDir * _equippedPickaxe.range, Color.red, 1f);
-
+        // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
-
         TryMineOre();
     }
 
@@ -120,10 +117,10 @@ public class PlayerController : MonoBehaviour
     {
         if (_equippedPickaxe == null) return;
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, _clickDir, _equippedPickaxe.range, _miningLayer);
-        if (hit.collider != null)
+        Collider2D hit = Physics2D.OverlapBox(_player.Animator.transform.position + _clickDir, new Vector2(1f, 1f), 0f, _miningLayer);
+        if (hit != null)
         {
-            if (hit.collider.TryGetComponent<OreController>(out var ore))
+            if (hit.TryGetComponent<OreController>(out var ore))
             {
                 if (ore.CanBeMined(_equippedPickaxe.crushingForce))
                 {
@@ -135,7 +132,7 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("곡괭이 파워 부족!");
                 }
             }
-            else if (hit.collider.TryGetComponent<JewelController>(out var jewel))
+            else if (hit.TryGetComponent<JewelController>(out var jewel))
             {
                 jewel.OnMined();
                 Debug.Log("쥬얼 파괴됨!");
@@ -154,7 +151,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void SetAnimationDirection(Vector2 moveDir)
     {
-        if (IsSwing) return;
+        if (moveDir == Vector2.zero) return;
 
         if (Mathf.Abs(moveDir.x) == Mathf.Abs(moveDir.y))
         {
