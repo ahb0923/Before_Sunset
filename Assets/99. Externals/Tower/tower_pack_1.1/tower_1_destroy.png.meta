@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -132,9 +132,127 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: tower_1_destroy_0
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 12
+        width: 28
+        height: 86
+      alignment: 9
+      pivot: {x: 0.5, y: 0.13953489}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a509f55751a0f74d9a353bcfd617b34
+      internalID: 1721011035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower_1_destroy_1
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 12
+        width: 28
+        height: 77
+      alignment: 9
+      pivot: {x: 0.5, y: 0.15584415}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ace3573b208a11743aebc35ef9f5aef7
+      internalID: -1916817512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower_1_destroy_2
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 12
+        width: 30
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1764706}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2edd5c800bf736d44aa30efe5d4cce0f
+      internalID: -227825797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower_1_destroy_5
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 12
+        width: 32
+        height: 60
+      alignment: 9
+      pivot: {x: 0.5, y: 0.14814815}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e54405673ec0b04c900df67a4106034
+      internalID: -1247691313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tower_1_destroy_6
+      rect:
+        serializedVersion: 2
+        x: 269
+        y: 12
+        width: 33
+        height: 62
+      alignment: 9
+      pivot: {x: 0.5, y: 0.19354838}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87abeb3db53a76e4c8a46c416ff65bcc
+      internalID: 1339615769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +263,17 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tower_1_destroy_0: 1721011035
+      tower_1_destroy_1: -1916817512
+      tower_1_destroy_2: -227825797
+      tower_1_destroy_3: 1431579318
+      tower_1_destroy_4: -206023419
+      tower_1_destroy_5: -1247691313
+      tower_1_destroy_6: 1339615769
+      tower_1_destroy_7: -934143850
+      tower_1_destroy_8: -671919414
+      tower_1_destroy_9: 708295356
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
