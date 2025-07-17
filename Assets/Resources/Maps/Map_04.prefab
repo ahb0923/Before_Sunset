@@ -1647,7 +1647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 2
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &6319283115011359831
@@ -2853,6 +2853,37 @@ MonoBehaviour:
   - {fileID: 6205362333708755379}
   - {fileID: 3881113052975465300}
   playerTag: Player
+--- !u!1 &2228263299984208814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8037610254592558473}
+  m_Layer: 0
+  m_Name: OreContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8037610254592558473
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2228263299984208814}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3077665107732505403}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2369043409334872323
 GameObject:
   m_ObjectHideFlags: 0
@@ -6816,6 +6847,8 @@ Transform:
   - {fileID: 1172892578922301690}
   - {fileID: 8586565923904572854}
   - {fileID: 2284704002837142861}
+  - {fileID: 8037610254592558473}
+  - {fileID: 6353329788126704582}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6722121047977443954
@@ -6897,7 +6930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 3
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &8342266182598556388
@@ -80762,7 +80795,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 1
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &6383059652989578166
@@ -86361,6 +86394,37 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!1 &8726310946630946140
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6353329788126704582}
+  m_Layer: 0
+  m_Name: JewelContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6353329788126704582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8726310946630946140}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3077665107732505403}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8984454964343772732
 GameObject:
   m_ObjectHideFlags: 0

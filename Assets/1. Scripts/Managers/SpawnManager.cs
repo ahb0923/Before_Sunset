@@ -14,7 +14,7 @@ public class SpawnManager : MonoBehaviour
 
     private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
 
-    private async void Start()
+    private void Start()
     {
         oreSpawner = Helper_Component.FindChildComponent<OreSpawner>(this.transform, "OreSpawner");
         jewelSpawner = Helper_Component.FindChildComponent<JewelSpawner>(this.transform, "JewelSpawner");
@@ -34,6 +34,14 @@ public class SpawnManager : MonoBehaviour
     {
         var task = DataManager.Instance.InitCheck();
         return task.IsCompleted && DataManager.Instance.OreData != null && DataManager.Instance.JewelData != null;
+    }
+
+    private Transform GetContainer(string containerName)
+    {
+        var container = GameObject.Find(containerName);
+        if (container == null)
+            Debug.LogWarning($"컨테이너 {containerName}를 찾을 수 없습니다.");
+        return container?.transform;
     }
 
     public void OnMapChanged(Vector3 mapPosition, int mapIndex, Vector2[] spawnAreas)
@@ -66,6 +74,12 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
+        var oreContainer = GetContainer("OreContainer");
+        var jewelContainer = GetContainer("JewelContainer");
+
+        oreSpawner.SetParentTransform(oreContainer);
+        jewelSpawner.SetParentTransform(jewelContainer);
+
         if (mapResources.ContainsKey(currentMapIndex))
         {
             // 기존 스폰 오브젝트 재활성화
@@ -94,13 +108,13 @@ public class SpawnManager : MonoBehaviour
         if (oreSpawner != null && oreList != null)
         {
             oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.transform));
+            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.GetParentTransform()));
         }
 
         if (jewelSpawner != null && jewelList != null)
         {
             jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.transform));
+            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.GetParentTransform()));
         }
 
         mapResources[currentMapIndex] = spawnedObjects;
@@ -109,6 +123,8 @@ public class SpawnManager : MonoBehaviour
     private List<GameObject> GetChildrenGameObjects(Transform parent)
     {
         List<GameObject> list = new List<GameObject>();
+        if (parent == null) return list;
+
         for (int i = 0; i < parent.childCount; i++)
             list.Add(parent.GetChild(i).gameObject);
         return list;
@@ -122,8 +138,8 @@ public class SpawnManager : MonoBehaviour
 
     private void ClearAll()
     {
-        ClearChildren(oreSpawner?.transform);
-        ClearChildren(jewelSpawner?.transform);
+        ClearChildren(oreSpawner?.GetParentTransform());
+        ClearChildren(jewelSpawner?.GetParentTransform());
         mapResources.Clear();
     }
 

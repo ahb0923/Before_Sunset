@@ -24,6 +24,18 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private List<TData> spawnableList = new();
     private List<Vector3> placedPositions = new();
 
+    private Transform parentTransform;
+
+    public void SetParentTransform(Transform parent)
+    {
+        parentTransform = parent;
+    }
+
+    public Transform GetParentTransform()
+    {
+        return parentTransform;
+    }
+
     public void SetSpawnArea(Vector3 center, Vector2 size)
     {
         spawnAreaCenter3D = center;
@@ -67,6 +79,12 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 continue;
             }
 
+            if (parentTransform != null)
+                obj.transform.SetParent(parentTransform, false);
+
+            obj.transform.position = pos;
+            obj.SetActive(true);
+            obj.GetComponent<IPoolable>()?.OnGetFromPool();
 
             placedPositions.Add(pos);
             placed++;
@@ -91,7 +109,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         return new Vector3(x, y, z);
     }
-
 
     private bool IsTooClose(Vector3 pos)
     {
