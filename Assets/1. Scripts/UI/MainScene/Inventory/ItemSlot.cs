@@ -60,6 +60,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         SetAmount(item);
     }
 
+    public void DisableHighlight()
+    {
+        _highlight.SetActive(false);
+    }
+
     private void SetImage(Item item)
     {
         if (item.Data.id >= 100 && item.Data.id < 200)
@@ -326,10 +331,5 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             item.stack = max;
             DragManager.DraggingItem.stack = total - max;
         }
-    }
-
-    private void OnDisable()
-    {
-        _highlight.SetActive(false);
     }
 }
