@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 64
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -132,6 +132,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -139,12 +152,12 @@ TextureImporter:
       name: farmer slash effects 64x64_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 477
-        width: 68
-        height: 8
+        x: 0
+        y: 448
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -160,12 +173,12 @@ TextureImporter:
       name: farmer slash effects 64x64_1
       rect:
         serializedVersion: 2
-        x: 152
-        y: 406
-        width: 16
-        height: 77
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 64
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.13443935, y: 0.6154399}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -181,12 +194,12 @@ TextureImporter:
       name: farmer slash effects 64x64_2
       rect:
         serializedVersion: 2
-        x: 217
-        y: 476
-        width: 14
-        height: 9
+        x: 128
+        y: 448
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -202,12 +215,12 @@ TextureImporter:
       name: farmer slash effects 64x64_3
       rect:
         serializedVersion: 2
-        x: 281
-        y: 476
-        width: 14
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 192
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.85}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -223,12 +236,12 @@ TextureImporter:
       name: farmer slash effects 64x64_4
       rect:
         serializedVersion: 2
-        x: 347
-        y: 475
-        width: 10
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 257
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.48470116, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -244,12 +257,12 @@ TextureImporter:
       name: farmer slash effects 64x64_5
       rect:
         serializedVersion: 2
-        x: 410
-        y: 473
-        width: 82
-        height: 16
+        x: 320
+        y: 448
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -265,12 +278,12 @@ TextureImporter:
       name: farmer slash effects 64x64_6
       rect:
         serializedVersion: 2
-        x: 26
-        y: 411
-        width: 13
-        height: 11
+        x: 384
+        y: 448
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -286,12 +299,12 @@ TextureImporter:
       name: farmer slash effects 64x64_7
       rect:
         serializedVersion: 2
-        x: 87
-        y: 412
-        width: 16
-        height: 10
+        x: 448
+        y: 448
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -307,12 +320,12 @@ TextureImporter:
       name: farmer slash effects 64x64_8
       rect:
         serializedVersion: 2
-        x: 219
-        y: 407
-        width: 12
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.42202738, y: 0.24658775}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -328,12 +341,12 @@ TextureImporter:
       name: farmer slash effects 64x64_9
       rect:
         serializedVersion: 2
-        x: 284
-        y: 407
-        width: 9
-        height: 16
+        x: 64
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -349,12 +362,12 @@ TextureImporter:
       name: farmer slash effects 64x64_10
       rect:
         serializedVersion: 2
-        x: 347
-        y: 405
-        width: 11
-        height: 18
+        x: 128
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -370,12 +383,12 @@ TextureImporter:
       name: farmer slash effects 64x64_11
       rect:
         serializedVersion: 2
-        x: 412
-        y: 406
-        width: 10
-        height: 17
+        x: 192
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -391,12 +404,12 @@ TextureImporter:
       name: farmer slash effects 64x64_12
       rect:
         serializedVersion: 2
-        x: 471
-        y: 404
-        width: 15
-        height: 22
+        x: 256
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -412,12 +425,12 @@ TextureImporter:
       name: farmer slash effects 64x64_13
       rect:
         serializedVersion: 2
-        x: 21
-        y: 340
-        width: 13
-        height: 24
+        x: 320
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -433,12 +446,12 @@ TextureImporter:
       name: farmer slash effects 64x64_14
       rect:
         serializedVersion: 2
-        x: 89
-        y: 339
-        width: 12
-        height: 24
+        x: 384
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -454,12 +467,12 @@ TextureImporter:
       name: farmer slash effects 64x64_15
       rect:
         serializedVersion: 2
-        x: 144
-        y: 341
-        width: 30
-        height: 22
+        x: 448
+        y: 384
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -475,12 +488,12 @@ TextureImporter:
       name: farmer slash effects 64x64_16
       rect:
         serializedVersion: 2
-        x: 211
-        y: 341
-        width: 25
-        height: 22
+        x: 0
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -496,12 +509,12 @@ TextureImporter:
       name: farmer slash effects 64x64_17
       rect:
         serializedVersion: 2
-        x: 275
-        y: 340
-        width: 26
-        height: 24
+        x: 64
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -517,12 +530,12 @@ TextureImporter:
       name: farmer slash effects 64x64_18
       rect:
         serializedVersion: 2
-        x: 339
-        y: 343
-        width: 25
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 128
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.44590926, y: 0.6983104}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -538,12 +551,12 @@ TextureImporter:
       name: farmer slash effects 64x64_19
       rect:
         serializedVersion: 2
-        x: 404
-        y: 341
-        width: 21
-        height: 19
+        x: 192
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -559,12 +572,12 @@ TextureImporter:
       name: farmer slash effects 64x64_20
       rect:
         serializedVersion: 2
-        x: 471
-        y: 340
-        width: 19
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 256
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.46101332, y: 0.69493055}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -580,12 +593,12 @@ TextureImporter:
       name: farmer slash effects 64x64_21
       rect:
         serializedVersion: 2
-        x: 21
-        y: 273
-        width: 20
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 320
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.3460803, y: 0.13444042}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -601,12 +614,12 @@ TextureImporter:
       name: farmer slash effects 64x64_22
       rect:
         serializedVersion: 2
-        x: 87
-        y: 278
-        width: 20
-        height: 20
+        x: 384
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -622,12 +635,12 @@ TextureImporter:
       name: farmer slash effects 64x64_23
       rect:
         serializedVersion: 2
-        x: 158
-        y: 278
-        width: 6
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 448
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.40253448, y: 0.3245597}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -643,12 +656,12 @@ TextureImporter:
       name: farmer slash effects 64x64_24
       rect:
         serializedVersion: 2
-        x: 220
-        y: 277
-        width: 9
-        height: 24
+        x: 0
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -664,12 +677,12 @@ TextureImporter:
       name: farmer slash effects 64x64_25
       rect:
         serializedVersion: 2
-        x: 286
-        y: 275
-        width: 6
-        height: 26
+        x: 64
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -685,12 +698,12 @@ TextureImporter:
       name: farmer slash effects 64x64_26
       rect:
         serializedVersion: 2
-        x: 350
-        y: 273
-        width: 8
-        height: 30
+        x: 128
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -706,12 +719,12 @@ TextureImporter:
       name: farmer slash effects 64x64_27
       rect:
         serializedVersion: 2
-        x: 410
-        y: 269
-        width: 10
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 192
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.46940112, y: 0.4}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -727,12 +740,12 @@ TextureImporter:
       name: farmer slash effects 64x64_28
       rect:
         serializedVersion: 2
-        x: 470
-        y: 269
-        width: 15
-        height: 38
+        x: 256
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -748,12 +761,12 @@ TextureImporter:
       name: farmer slash effects 64x64_29
       rect:
         serializedVersion: 2
-        x: 24
-        y: 202
-        width: 16
-        height: 41
+        x: 320
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -769,12 +782,12 @@ TextureImporter:
       name: farmer slash effects 64x64_30
       rect:
         serializedVersion: 2
-        x: 91
-        y: 207
-        width: 16
-        height: 34
+        x: 384
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -790,12 +803,12 @@ TextureImporter:
       name: farmer slash effects 64x64_31
       rect:
         serializedVersion: 2
-        x: 150
-        y: 206
-        width: 24
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 448
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.33572865, y: 0.44524288}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -811,12 +824,12 @@ TextureImporter:
       name: farmer slash effects 64x64_32
       rect:
         serializedVersion: 2
-        x: 213
-        y: 202
-        width: 25
-        height: 43
+        x: 0
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -832,12 +845,12 @@ TextureImporter:
       name: farmer slash effects 64x64_33
       rect:
         serializedVersion: 2
-        x: 278
-        y: 200
-        width: 24
-        height: 46
+        x: 64
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -853,12 +866,12 @@ TextureImporter:
       name: farmer slash effects 64x64_34
       rect:
         serializedVersion: 2
-        x: 332
-        y: 205
-        width: 27
-        height: 37
+        x: 128
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -874,12 +887,12 @@ TextureImporter:
       name: farmer slash effects 64x64_35
       rect:
         serializedVersion: 2
-        x: 405
-        y: 205
-        width: 21
-        height: 33
+        x: 192
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -895,12 +908,12 @@ TextureImporter:
       name: farmer slash effects 64x64_36
       rect:
         serializedVersion: 2
-        x: 457
-        y: 207
-        width: 41
-        height: 34
+        x: 256
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -916,12 +929,12 @@ TextureImporter:
       name: farmer slash effects 64x64_37
       rect:
         serializedVersion: 2
-        x: 11
-        y: 138
-        width: 47
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 320
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.28836012, y: 0.71164083}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -937,12 +950,12 @@ TextureImporter:
       name: farmer slash effects 64x64_38
       rect:
         serializedVersion: 2
-        x: 74
-        y: 137
-        width: 48
-        height: 46
+        x: 384
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -958,12 +971,12 @@ TextureImporter:
       name: farmer slash effects 64x64_39
       rect:
         serializedVersion: 2
-        x: 137
-        y: 133
-        width: 47
-        height: 55
+        x: 448
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -979,12 +992,12 @@ TextureImporter:
       name: farmer slash effects 64x64_40
       rect:
         serializedVersion: 2
-        x: 197
-        y: 131
-        width: 54
-        height: 59
+        x: 0
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -992,6 +1005,69 @@ TextureImporter:
       bones: []
       spriteID: 26dbb69726b3dff4fab94397850775ef
       internalID: -1904910093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_41
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c58fc4e742d98304c8ed0b50ad6c2e60
+      internalID: 797710542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_42
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06e37b616c7d0bd40a5e830e9e456046
+      internalID: 1400353311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: farmer slash effects 64x64_43
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae14bbebb52b70b4988659f325b5a98f
+      internalID: -140793554
       vertices: []
       indices: 
       edges: []
@@ -1043,6 +1119,9 @@ TextureImporter:
       farmer slash effects 64x64_39: -448467317
       farmer slash effects 64x64_4: -102016748
       farmer slash effects 64x64_40: -1904910093
+      farmer slash effects 64x64_41: 797710542
+      farmer slash effects 64x64_42: 1400353311
+      farmer slash effects 64x64_43: -140793554
       farmer slash effects 64x64_5: 974700922
       farmer slash effects 64x64_6: 209989273
       farmer slash effects 64x64_7: -196073963
