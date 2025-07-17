@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OreController : MonoBehaviour, IPoolable
+public class OreController : MonoBehaviour, IPoolable, IInteractable
 {
     public OreDatabase _data { get; private set; }
+
+    public BasePlayer player;
 
     private int _currentHP;
 
@@ -21,6 +23,18 @@ public class OreController : MonoBehaviour, IPoolable
 
     [SerializeField] private int _id;
     public int GetId() => _id;
+
+    private Collider2D _collider;
+
+    private void Awake()
+    {
+        _collider = GetComponent<Collider2D>();
+    }
+
+    public void Init(BasePlayer basePlayer)
+    {
+        player = basePlayer;
+    }
 
     public void OnInstantiate()
     {
@@ -78,5 +92,36 @@ public class OreController : MonoBehaviour, IPoolable
         {
             Debug.LogWarning($"[OreController] 드롭 프리팹이 존재하지 않거나 null입니다. ID: {dropId}");
         }
+    }
+
+    public void Interact()
+    {
+        int pickaxePower = player.Stat.Pickaxe.crushingForce;
+        int damage = player.Stat.Pickaxe.damage;
+
+        if (!CanBeMined(pickaxePower))
+        {
+            Debug.Log("곡괭이 힘이 부족합니다.");
+            return;
+        }
+
+        bool destroyed = Mine(damage);
+        Debug.Log(destroyed ? "광물 파괴됨" : "채광됨");
+    }
+
+
+    public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
+    {
+        if (_collider == null || playerCollider == null)
+            return false;
+
+        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
+        Vector2 closestPointToPlayer = _collider.ClosestPoint(playerPos2D);
+        float centerToEdge = Vector2.Distance(playerPos2D, closestPointToPlayer);
+
+        float playerRadius = playerCollider.radius * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
+        float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
+
+        return edgeToEdgeDistance <= range;
     }
 }

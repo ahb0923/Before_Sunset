@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingCoroutine;
     public bool IsSwing => _swingCoroutine != null;
 
+    private PlayerInteractor _interactor;
+
     private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
@@ -69,6 +71,7 @@ public class PlayerController : MonoBehaviour
     {
         _player = player;
         _equippedPickaxe = player.Stat.Pickaxe;
+        _interactor = GetComponent<PlayerInteractor>();
 
         _actions = player.InputActions;
         _actions.Player.Move.started += OnMoveStarted;
@@ -96,12 +99,16 @@ public class PlayerController : MonoBehaviour
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
 
+        Collider2D col = Physics2D.OverlapPoint(clickPos);
+        IInteractable target = null;
+        if (col != null)
+            col.TryGetComponent<IInteractable>(out target);
+
         // 플레이어 기준으로 클릭의 방향 벡터 구하기
         _clickDir = (clickPos - _player.Animator.transform.position).normalized;
-        if (Mathf.Abs(_clickDir.x) > Mathf.Abs(_clickDir.y))
-            _clickDir = Vector2.right * (_clickDir.x > 0 ? 1 : -1);
-        else
-            _clickDir = Vector2.up * (_clickDir.y > 0 ? 1 : -1);
+        _clickDir = Mathf.Abs(_clickDir.x) > Mathf.Abs(_clickDir.y)
+            ? Vector2.right * Mathf.Sign(_clickDir.x)
+            : Vector2.up * Mathf.Sign(_clickDir.y);
 
         _player.Animator.SetFloat(BasePlayer.X, _clickDir.x);
         _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
@@ -109,43 +116,30 @@ public class PlayerController : MonoBehaviour
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
-        TryMineOre();
+
+        TryMineTarget(target);
+
+        _swingCoroutine = null;
     }
 
     /// <summary>
     /// 채광 시도
     /// </summary>
-    private void TryMineOre()
+    private void TryMineTarget(IInteractable target)
     {
+        if (target == null) return;
+
         if (_equippedPickaxe == null) return;
 
-        Collider2D hit = Physics2D.OverlapBox(_player.Animator.transform.position + _clickDir, new Vector2(1f, 1f), 0f, _miningLayer);
-        if (hit != null)
+        if (target is OreController ore)
         {
-            if (hit.TryGetComponent<OreController>(out var ore))
-            {
-                if (ore.CanBeMined(_equippedPickaxe.crushingForce))
-                {
-                    bool destroyed = ore.Mine(_equippedPickaxe.damage);
-                    Debug.Log(destroyed ? "광석이 파괴됨!" : $"광석에 {_equippedPickaxe.damage}의 데미지 입힘");
-                }
-                else
-                {
-                    Debug.Log("곡괭이 파워 부족!");
-                }
-            }
-            else if (hit.TryGetComponent<JewelController>(out var jewel))
-            {
-                jewel.OnMined();
-                Debug.Log("쥬얼 파괴됨!");
-            }
+            ore.Init(_player);
+            ore.Interact();
         }
-        else
+        else if (target is JewelController jewel)
         {
-            Debug.Log("채광 범위 내에 광석/보석 없음");
+            jewel.Interact();
         }
-
-        _swingCoroutine = null;
     }
 
     /// <summary>

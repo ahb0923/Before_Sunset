@@ -262,6 +262,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6689483718170885462, guid: c097f65801382a24a97cb3a84b97b73b, type: 3}
+      propertyPath: fadeImage
+      value: 
+      objectReference: {fileID: 1728414978}
     - target: {fileID: 7498704713366024373, guid: c097f65801382a24a97cb3a84b97b73b, type: 3}
       propertyPath: player
       value: 
@@ -753,6 +757,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6590933842250423535, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
+      propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 969134075631786501}
     - target: {fileID: 7508487163038984533, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1431,7 +1439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074921222671413708, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000025838614
+      value: -0.000020086765
       objectReference: {fileID: 0}
     - target: {fileID: 9171448275945978400, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
