@@ -15,9 +15,13 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingCoroutine;
     public bool IsSwing => _swingCoroutine != null;
 
+    private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
+
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
+        if (IsSwing || PlayerInputHandler._isRecallInProgress) return;
+
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
 
@@ -34,7 +38,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_player.IsInBase || IsSwing) return;
+        if (_player.IsInBase || IsSwing || IsRecalling) return;
 
         _swingCoroutine = StartCoroutine(C_Swing());
     }
@@ -53,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsSwing) return;
+        if(IsSwing || IsRecalling) return;
 
         Move();
     }
