@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 1
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &1026053479726121068
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1641,7 +1641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 3
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &2450481059334812504
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1739,7 +1739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 2
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &2486436018423472239
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6124,13 +6124,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 2.083109, y: 20.257122}
-      - {x: -40.4218, y: 20.178585}
-      - {x: -40.38713, y: -19.580154}
-      - {x: -0.5246701, y: -19.546734}
-      - {x: 14.733108, y: -19.502453}
-      - {x: 43.600735, y: -18.897058}
-      - {x: 43.014675, y: 19.95055}
+    - - {x: 46, y: 22}
+      - {x: -43, y: 22}
+      - {x: -43, y: -21}
+      - {x: 46, y: -21}
   m_UseDelaunayMesh: 0
 --- !u!1 &4099464645974343327
 GameObject:
@@ -43369,7 +43366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalDirection: 0
   isEntering: 1
-  stayTimeToTrigger: 1.5
+  stayTimeToTrigger: 0.5
 --- !u!70 &8080924552491907276
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

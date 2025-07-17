@@ -20,16 +20,21 @@ public class MapManager : MonoSingleton<MapManager>
     private Stack<int> mapHistory = new Stack<int>();
     private Dictionary<int, int> mapPrefabIndexMap = new Dictionary<int, int>();
 
+    // (현재맵, 포탈방향) → 이동할 맵 인덱스
+    private Dictionary<(int fromMapIndex, MiningHandler.PortalDirection dir), int> portalMapLinks
+        = new Dictionary<(int, MiningHandler.PortalDirection), int>();
+
+
     private Vector2[] smallSpawnAreas = new Vector2[]
     {
-        new Vector2(60f, 30f),
-        new Vector2(60f, 30f)
+        new Vector2(60f, 32f),
+        new Vector2(60f, 32f)
     };
 
     private Vector2[] largeSpawnAreas = new Vector2[]
     {
-        new Vector2(80f, 50f),
-        new Vector2(80f, 50f)
+        new Vector2(85f, 50f),
+        new Vector2(85f, 50f)
     };
 
     protected override void Awake()
@@ -54,8 +59,27 @@ public class MapManager : MonoSingleton<MapManager>
     public void MoveToMapByDirection(MiningHandler.PortalDirection dir)
     {
         LastEnteredPortalDirection = dir;
-        mapHistory.Push(CurrentMapIndex);
-        MoveToRandomMap();
+
+        int current = CurrentMapIndex;
+
+        // 이미 연결된 맵이 있다면 해당 맵으로 이동
+        if (portalMapLinks.TryGetValue((current, dir), out int linkedMapIndex))
+        {
+            MoveToMap(linkedMapIndex, true);
+        }
+        else
+        {
+            // 새로운 맵 인덱스 할당
+            int newMapIndex = nextMapIndex++;
+            MoveToMap(newMapIndex, true);
+
+            // 현재 맵의 해당 방향 → 새 맵
+            portalMapLinks[(current, dir)] = newMapIndex;
+
+            // 새 맵의 반대 방향 → 현재 맵
+            var oppositeDir = GetOppositeDirection(dir);
+            portalMapLinks[(newMapIndex, oppositeDir)] = current;
+        }
     }
 
     public void MoveToRandomMap()
@@ -130,7 +154,8 @@ public class MapManager : MonoSingleton<MapManager>
         if (targetIndex == 0)
         {
             baseMap.SetActive(true);
-            player.position = baseMap.transform.position;
+            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(baseMap, LastEnteredPortalDirection);
+            player.position = spawnPos;
 
             // 기본 맵은 스폰 안 함
             spawnManager?.OnMapChanged(baseMap.transform.position, 0, smallSpawnAreas);
