@@ -31,7 +31,10 @@ public class BasePlayer : MonoBehaviour
         Stat = GetComponent<PlayerStatHandler>();
         Animator = GetComponentInChildren<Animator>();
         InputActions = new PlayerInputActions();
+    }
 
+    private void Start()
+    {
         Stat.Init(this);
         Controller.Init(this);
         InputHandler.Init(this);

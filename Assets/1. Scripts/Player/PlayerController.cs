@@ -15,40 +15,39 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingCoroutine;
     public bool IsSwing => _swingCoroutine != null;
 
-    #region Event Cancel
-    private void OnDisable()
-    {
-        _actions.Player.Disable();
-
-        _actions.Player.Move.started -= OnMoveStarted;
-        _actions.Player.Move.performed -= OnMovePerformed;
-        _actions.Player.Move.canceled -= OnMoveCanceled;
-        _actions.Player.Swing.started -= OnSwingStarted;
-    }
-    #endregion
-
-    #region Move Event
+    #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
+
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         _moveDir = context.ReadValue<Vector2>().normalized;
     }
+
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
         _moveDir = Vector2.zero;
         _player.Animator.SetBool(BasePlayer.MOVE, false);
     }
-    #endregion
 
-    #region Swing Event
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
         if (_player.IsInBase || IsSwing) return;
 
         _swingCoroutine = StartCoroutine(C_Swing());
+    }
+    #endregion
+
+    #region Event Unsubscriptions
+    private void OnDisable()
+    {
+        _actions.Player.Disable();
+        _actions.Player.Move.started -= OnMoveStarted;
+        _actions.Player.Move.performed -= OnMovePerformed;
+        _actions.Player.Move.canceled -= OnMoveCanceled;
+        _actions.Player.Swing.started -= OnSwingStarted;
     }
     #endregion
 
@@ -72,7 +71,6 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.performed += OnMovePerformed;
         _actions.Player.Move.canceled += OnMoveCanceled;
         _actions.Player.Swing.started += OnSwingStarted;
-
         _actions.Player.Enable();
     }
 

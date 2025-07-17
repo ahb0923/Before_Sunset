@@ -26,6 +26,7 @@ public class PlayerStatHandler : MonoBehaviour
     public void EquipPickaxe(int id)
     {
         Pickaxe = DataManager.Instance.EquipmentData.GetById(id);
+        InventoryManager.Instance.Inventory.SetPickaxe(Pickaxe);
         _player.Animator.SetFloat(BasePlayer.MINING, Pickaxe.speed);
         // 나중에 곡괭이 이미지가 바뀐다거나 할 수도
     }
