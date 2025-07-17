@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 3
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &2321436332149332090
@@ -680,7 +680,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d7bb37608ad5ca2489fbf2f90eb1bcbd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 2
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &8625449798808348248
@@ -18068,7 +18068,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d7bb37608ad5ca2489fbf2f90eb1bcbd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -39822,7 +39822,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d7bb37608ad5ca2489fbf2f90eb1bcbd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -40308,7 +40308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
+  portalDirection: 1
   isEntering: 1
   stayTimeToTrigger: 0.5
 --- !u!70 &3449784131702583828

@@ -142,18 +142,18 @@ public class PoolManager : MonoSingleton<PoolManager>
         /// <summary>
         /// 미네랄은 스크립트가 없어서 일단 보류
         /// </summary>
-        //foreach (var data in DataManager.Instance.MineralData.GetAllItems())
-        //{
-        //    var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
-        //    if(prefab != null)
-        //    {
-        //        _objectPoolDatas.Add(new ObjectPoolData
-        //        {
-        //            prefab = prefab,
-        //            count = 10
-        //        });
-        //    }
-        //}
+        foreach (var data in DataManager.Instance.MineralData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
     }
     /// <summary>
     /// 해당 타입의 오브젝트를 풀에서 가져와서 반환, 없으면 새로 생성해서 반환
