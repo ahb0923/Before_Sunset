@@ -8,14 +8,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private OreSpawner oreSpawner;
     [SerializeField] private JewelSpawner jewelSpawner;
 
-    [Header("현재 스테이지")]
-    [SerializeField] private int currentStage = 1;
-
     private Vector3 currentMapPosition = Vector3.zero;
-
-    [Header("기본 스폰 영역 크기")]
-    [SerializeField] private Vector2 defaultOreSpawnAreaSize = new Vector2(30f, 30f);
-    [SerializeField] private Vector2 defaultJewelSpawnAreaSize = new Vector2(20f, 20f);
 
     private OreDataHandler oreHandler = new OreDataHandler();
     private JewelDataHandler jewelHandler = new JewelDataHandler();
@@ -23,17 +16,14 @@ public class SpawnManager : MonoBehaviour
     private bool oreDataLoaded = false;
     private bool jewelDataLoaded = false;
 
-    private int currentMapIndex = -1; // -1은 초기 상태 (맵 미지정)
+    private int currentMapIndex = -1;
 
-    // 맵 인덱스별로 스폰된 자원 저장
     private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
 
     private async void Start()
     {
         await LoadAllDataAsync();
-        SetMapPositionAndArea(currentMapPosition, defaultOreSpawnAreaSize, defaultJewelSpawnAreaSize);
 
-        // 기본 맵 인덱스가 0이라면 스폰 안 하고, 필요시 다른 맵부터 스폰 가능
         currentMapIndex = 0;
     }
 
@@ -52,30 +42,29 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    public void SetMapPositionAndArea(Vector3 mapPosition, Vector2 oreAreaSize, Vector2 jewelAreaSize)
+    public void OnMapChanged(Vector3 mapPosition, int mapIndex, Vector2[] spawnAreas)
     {
-        currentMapPosition = mapPosition;
+        if (spawnAreas == null || spawnAreas.Length < 2)
+        {
+            Debug.LogError("스폰 영역 정보가 부족합니다.");
+            return;
+        }
 
-        oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
-        jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
-    }
-
-    public void OnMapChanged(Vector3 mapPosition, int mapIndex)
-    {
         if (currentMapIndex == mapIndex)
         {
-            // 같은 맵이면 기존 자원 활성화
+            // 이미 스폰된 오브젝트 활성화
             SetMapResourcesActive(mapIndex, true);
             return;
         }
 
-        // 이전 맵 자원 비활성화
+        // 이전 맵 오브젝트 비활성화
         if (currentMapIndex != -1)
             SetMapResourcesActive(currentMapIndex, false);
 
         currentMapIndex = mapIndex;
+        currentMapPosition = mapPosition;
 
-        SetMapPositionAndArea(mapPosition, defaultOreSpawnAreaSize, defaultJewelSpawnAreaSize);
+        SetMapPositionAndArea(mapPosition, spawnAreas[0], spawnAreas[1]);
 
         if (currentMapIndex == 0)
         {
@@ -85,17 +74,17 @@ public class SpawnManager : MonoBehaviour
 
         if (mapResources.ContainsKey(currentMapIndex))
         {
-            // 이미 스폰된 자원 활성화만
+            // 기존 스폰 오브젝트 재활성화
             SetMapResourcesActive(currentMapIndex, true);
         }
         else
         {
-            // 새로 스폰하고 저장
+            // 새로 스폰 후 저장
             SpawnAllAndStore();
         }
     }
 
-    private void SetMapResourcesActive(int mapIndex, bool active)
+    public void SetMapResourcesActive(int mapIndex, bool active)
     {
         if (mapResources.TryGetValue(mapIndex, out var resources))
         {
@@ -104,24 +93,31 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    public void SetMapPositionAndArea(Vector3 mapPosition, Vector2 oreAreaSize, Vector2 jewelAreaSize)
+    {
+        currentMapPosition = mapPosition;
+        oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
+        jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
+    }
+
     private void SpawnAllAndStore()
     {
         if (!oreDataLoaded || !jewelDataLoaded) return;
 
         List<GameObject> spawnedObjects = new List<GameObject>();
 
-        List<OreData> oreList = oreHandler.GetAllItems();
-        List<JewelData> jewelList = jewelHandler.GetAllItems();
+        List<OreDatabase> oreList = oreHandler.GetAllItems();
+        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
 
         if (oreSpawner != null && oreList != null)
         {
-            oreSpawner.SpawnResources(oreList, currentStage);
+            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
             spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.transform));
         }
 
         if (jewelSpawner != null && jewelList != null)
         {
-            jewelSpawner.SpawnResources(jewelList, currentStage);
+            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
             spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.transform));
         }
 
@@ -132,46 +128,14 @@ public class SpawnManager : MonoBehaviour
     {
         List<GameObject> list = new List<GameObject>();
         for (int i = 0; i < parent.childCount; i++)
-        {
             list.Add(parent.GetChild(i).gameObject);
-        }
         return list;
     }
 
-    public void ChangeStage(int newStage)
+    public void OnStageChanged()
     {
-        currentStage = newStage;
-
-        // 스테이지 변경 시 모든 자원 삭제 후 다시 스폰
         ClearAll();
         mapResources.Clear();
-
-        SpawnAll();
-    }
-
-    public void SpawnAll()
-    {
-        if (!oreDataLoaded || !jewelDataLoaded) return;
-
-        if (currentMapIndex == 0)
-        {
-            Debug.Log("기본맵이라 자원 스폰하지 않음");
-            ClearAll();
-            return;
-        }
-
-        List<OreData> oreList = oreHandler.GetAllItems();
-        List<JewelData> jewelList = jewelHandler.GetAllItems();
-
-        if (oreSpawner != null && oreList != null)
-        {
-            oreSpawner.SpawnResources(oreList, currentStage);
-        }
-
-        if (jewelSpawner != null && jewelList != null)
-        {
-            jewelSpawner.SpawnResources(jewelList, currentStage);
-        }
     }
 
     private void ClearAll()

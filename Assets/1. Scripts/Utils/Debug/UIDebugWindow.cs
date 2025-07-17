@@ -19,9 +19,19 @@ public class UIDebugWindow : EditorWindow
             InventoryManager.Instance.Inventory.AddItem(100,7);
         }
         
-        if (GUILayout.Button("100번 아이템 30개 사용"))
+        if (GUILayout.Button("110번 아이템 추가"))
         {
-            bool used = InventoryManager.Instance.Inventory.UseItem(100,30);
+            InventoryManager.Instance.Inventory.AddItem(110,9);
+        }
+        
+        if (GUILayout.Button("120번 아이템 추가"))
+        {
+            InventoryManager.Instance.Inventory.AddItem(120,9);
+        }
+        
+        if (GUILayout.Button("110번 아이템 15개 사용"))
+        {
+            bool used = InventoryManager.Instance.Inventory.UseItem(110,15);
             if (used)
             {
                 Debug.Log("사용!");
@@ -37,14 +47,9 @@ public class UIDebugWindow : EditorWindow
             InventoryManager.Instance.Inventory.AddItem(200,3);
         }
         
-        if (GUILayout.Button("700번 장비 아이템 추가"))
+        if (GUILayout.Button("제련소 열기"))
         {
-            InventoryManager.Instance.Inventory.AddItem(700,0);
-        }
-        
-        if (GUILayout.Button("빌드 슬롯 만들기"))
-        {
-            UIManager.Instance.CraftArea.Work();
+            // UIManager.Instance.SmelterUI.OpenSmelter();
         }
         
         if (GUILayout.Button("코루틴 테스트"))
@@ -52,9 +57,9 @@ public class UIDebugWindow : EditorWindow
             UIManager.Instance.BattleUI.ShowReturnUI();
         }
         
-        if (GUILayout.Button("루프 테스트"))
+        if (GUILayout.Button("하급제련소강제주입"))
         {
-            UIManager.Instance.BattleUI.StartBlink();
+            // UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
         }
     }
 }

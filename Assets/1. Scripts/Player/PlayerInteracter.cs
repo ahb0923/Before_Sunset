@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,12 +15,12 @@ public class PlayerInteractor : MonoBehaviour
     private Vector2 lastMousePos;
     private Vector3 lastPlayerPos;
 
-    private PlayerStateHandler stateHandler;
+    private BasePlayer _player;
     private CircleCollider2D playerCollider;
 
     void Awake()
     {
-        stateHandler = GetComponent<PlayerStateHandler>();
+        _player = GetComponent<BasePlayer>();
         playerCollider = GetComponent<CircleCollider2D>();
     }
 
@@ -97,14 +97,15 @@ public class PlayerInteractor : MonoBehaviour
     {
         if (currentCursor != cursor)
         {
-            Cursor.SetCursor(cursor, Vector2.zero, CursorMode.Auto);
+            Vector2 hotspot = Vector2.zero;
+            Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
             currentCursor = cursor;
         }
     }
 
     float GetEffectiveRange()
     {
-        return (stateHandler != null && stateHandler.IsInMiningArea) ? 0.5f : interactionRange;
+        return (_player != null && !_player.IsInBase) ? 0.5f : interactionRange;
     }
 
     float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)

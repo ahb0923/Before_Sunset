@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {
     private Tilemap _groundTilemap;
-    private BaseTower _towerPrefab;
-
-    private Collider2D _towerMainCollider;
+    //private BaseTower _towerPrefab;
+    private BuildInfo _buildInfo;
 
     [SerializeField] private LayerMask _buildingLayer;
     [SerializeField] private bool _isPlacing;
-    [SerializeField] private Transform _towerPool;
+    [SerializeField] private Transform _buildablePool;
     public bool IsPlacing => _isPlacing;
 
 
@@ -28,21 +25,22 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// 버튼 클릭했을때 아이콘이 마우스 포인터따라오게 해당되는 prefab.Image
     /// </summary>
     /// <param name="prefab"></param>
-    public void StartPlacing(BaseTower prefab)
+    public void StartPlacing(GameObject prefab)
     {
-        _towerPrefab = prefab;
-       // _towerMainCollider = prefab.GetComponent<Collider2D>();
-        //Debug.Log(_towerMainCollider);
+       // _towerPrefab = Helper_Component.GetComponent<BaseTower>(prefab);
+
+        _buildInfo = Helper_Component.GetComponent<BuildInfo>(prefab);
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();
-        DefenseManager.Instance.DragIcon.SetIcon(prefab.ui.icon.sprite);
+        //DefenseManager.Instance.DragIcon.SetIcon(_towerPrefab.ui.icon.sprite);
+        DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
     }
 
     public void CancelPlacing()
     {
         _isPlacing = false;
-        _towerPrefab = null;
+        _buildInfo = null;
 
         DefenseManager.Instance.DragIcon.Hide();
         DefenseManager.Instance.BuildPreview.Clear();
@@ -50,7 +48,8 @@ public class BuildManager : MonoSingleton<BuildManager>
     private void Update()
     {
         // 이미지를 드래그중인 상황이 아니라면 update 실행x => 성능 개선용
-        if (!_isPlacing || _towerPrefab == null)
+        //if (!_isPlacing || _towerPrefab == null)
+        if (!_isPlacing || _buildInfo == null)
             return;
 
         // 마우스 위치
@@ -59,7 +58,7 @@ public class BuildManager : MonoSingleton<BuildManager>
 
         // 프리뷰 표시
         DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
-        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _towerPrefab.size);
+        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.size);
 
         // 좌클릭 확정
         if (Input.GetMouseButtonDown(0)) //  && !EventSystem.current.IsPointerOverGameObject()
@@ -74,7 +73,8 @@ public class BuildManager : MonoSingleton<BuildManager>
     }
     private void TryPlace(Vector3 worldPos)
     {
-        if (TryBuildTower(_towerPrefab, worldPos))
+        // if (TryBuildTower(_towerPrefab, worldPos))
+        if (TryBuildTower(_buildInfo, worldPos))
         {
             Debug.Log("설치 성공");
         }
@@ -90,7 +90,9 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// <param name="prefab"></param>
     /// <param name="worldPos"></param>
     /// <returns></returns>
-    public bool TryBuildTower(BaseTower prefab, Vector3 worldPos)
+    
+    //public bool TryBuildTower(BaseTower prefab, Vector3 worldPos)
+    public bool TryBuildTower(BuildInfo prefab, Vector3 worldPos)
     {
         Vector3Int originCell = _groundTilemap.WorldToCell(worldPos);
         BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap);
@@ -115,12 +117,16 @@ public class BuildManager : MonoSingleton<BuildManager>
             return false;
         }
 
-        // 배치 성공
-        //BaseTower tower = Instantiate(prefab, cellCenter, Quaternion.identity);
-        BaseTower tower = Helper_Component.GetComponent<BaseTower>(PoolManager.Instance.GetFromPool(prefab.towerId, cellCenter, _towerPool));
-        DefenseManager.Instance.AddObstacle(tower.transform, 1); // 일단 1x1이니까 1로 두었음
-        RenderUtil.SetSortingOrderByY(tower.ui.icon);
+        // 인벤토리 재화 체크
+        // => 이곳에 코드 구현
 
+        // 배치 성공
+        //BaseTower tower = Helper_Component.GetComponent<BaseTower>(PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool));
+        Debug.Log(prefab.id);
+        var obj = PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool);
+        DefenseManager.Instance.AddObstacle(obj.transform, 1); // 일단 1x1이니까 1로 두었음
+        //RenderUtil.SetSortingOrderByY(tower.ui.icon);
+        RenderUtil.SetSortingOrderByY(Helper_Component.FindChildComponent<SpriteRenderer>(obj.transform, "Image"));
         return true;
     }
     /// <summary>

@@ -7,22 +7,30 @@ using UnityEngine;
 using UnityEngine.U2D;
 using UnityEngine.UI;
 
-public class TowerDataHandler : BaseDataHandler<TowerData>
+public class TowerDataHandler : BaseDataHandler<TowerDatabase>
 {
     //protected override string DataUrl => "https://script.google.com/macros/s/your-tower-sheet-id/exec";
 
     protected override string FileName => "TowerData_JSON.json";
-    protected override int GetId(TowerData data) => data.id;
-    protected override string GetName(TowerData data) => data.towerName;
+    protected override int GetId(TowerDatabase data) => data.id;
+    protected override string GetName(TowerDatabase data) => data.towerName;
 
     private Dictionary<int,GameObject> _towerPrefabs = new();
-    public Dictionary<int, GameObject> TowerImages => _towerPrefabs;
-    public GameObject GetTowerPrefabById(int id) => _towerPrefabs[id];
+    public Dictionary<int, GameObject> TowerPrefabs => _towerPrefabs;
+    public GameObject GetPrefabById(int id)
+    {
+        if (_towerPrefabs.TryGetValue(id, out var prefab))
+        {
+            return prefab;
+        }
 
+        Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        return null;
+    }
     /// <summary>
     /// 타워 이미지 데이터 초기화
     /// </summary>
-    public void SettingTowerImages()
+    public void SettingPrefab()
     {
         foreach(var tower in dataIdDictionary.Values)
         {
@@ -35,15 +43,15 @@ public class TowerDataHandler : BaseDataHandler<TowerData>
                 }
                 else
                 {
-                    Debug.LogWarning($"[SettingTowerImages] 이미지 로드 실패: {tower.towerName} / {tower.prefabName}");
+                    Debug.LogWarning($"[Setting Prefab] 프리팹 로드 실패: {tower.towerName} / {tower.prefabName}");
                 }
             }
         }
-        Debug.Log($"[Setting Tower Images] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
+        Debug.Log($"[Setting Prefab] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
     }
 
     [ContextMenu ("Debug all Log")]
-    public override void DebugLogAll(Func<TowerData, string> formatter = null)
+    public override void DebugLogAll(Func<TowerDatabase, string> formatter = null)
     {
         if (dataIdDictionary.Count == 0)
         {

@@ -48,7 +48,8 @@ public class DataManager : PlainSingleton<DataManager>
     public TowerDataHandler TowerData { get; private set; } = new();
     public MonsterDataHandler MonsterData { get; private set; } = new();
     public OreDataHandler OreData { get; private set; } = new();
-
+    public ProjectileDataHandler ProjectileData { get; private set; } = new();
+    public SmelterDataHandler SmelterData { get; private set; } = new();
 
 
     // ↓ 인벤토리에 들어가는 아이템 데이터
@@ -57,23 +58,36 @@ public class DataManager : PlainSingleton<DataManager>
     public JewelDataHandler JewelData { get; private set; } = new();
     public EquipmentDataHandler EquipmentData { get; private set; } = new();
 
-    public SmelterDataHandler SmelterData { get; private set; } = new();    
-
-
     // ↓ 시스템 데이터
     public WaveDataHandler WaveData { get; private set; } = new();
 
+    private Task _initTask;
+    private bool _isInitialized;
+
+    public Task InitCheck()
+    {
+        if (_initTask != null)
+            return _initTask;
+
+        _initTask = InitAsync();
+        return _initTask;
+    }
+
     public async Task InitAsync()
     {
+        if (_isInitialized)
+            return;
+        
         List<IDataLoader> loaders = new()
         {
-            MineralData,
             TowerData,
             MonsterData,
-            JewelData,
             OreData,
-            EquipmentData,
+            ProjectileData,
             SmelterData,
+            MineralData,
+            JewelData,
+            EquipmentData,
             WaveData
         };
 
@@ -83,9 +97,18 @@ public class DataManager : PlainSingleton<DataManager>
         }
 
         ItemData.Init(MineralData, JewelData, EquipmentData);
-        TowerData.SettingTowerImages();
+        TowerData.SettingPrefab();
+        SmelterData.SettingPrefab();
+        ProjectileData.SettingPrefab();
+        MonsterData.SettingPrefab();
+        OreData.SettingPrefab();
+
+        JewelData.SettingPrefab();
+        MineralData.SettingPrefab();
+
 
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
+        _isInitialized = true;
 
         //MineralData.DebugLogAll();
         //TowerData.DebugLogAll();
@@ -93,6 +116,5 @@ public class DataManager : PlainSingleton<DataManager>
         //JewelData.DebugLogAll();
         //OreData.DebugLogAll();
         //EquipmentData.DebugLogAll();
-
     }
 }

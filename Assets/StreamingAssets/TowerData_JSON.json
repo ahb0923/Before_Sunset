@@ -11,6 +11,7 @@
     "damage": 5,
     "aps": 1,
     "range": 3,
+    "projectileId": 800,
     "prefabName": "Tower_Cooper",
     "buildRequirements": {
       "구리주괴": 15
@@ -26,6 +27,7 @@
     "towerHp": 20,
     "damage": 2,
     "aps": -0.2,
+    "projectileId": 800,
     "buildRequirements": {
       "구리주괴": 15,
       "철주괴": 20
@@ -43,6 +45,7 @@
     "damage": 8,
     "aps": 2,
     "range": 5,
+    "projectileId": 801,
     "prefabName": "Tower_Iron",
     "buildRequirements": {
       "구리주괴": 10,
@@ -59,6 +62,7 @@
     "towerHp": 20,
     "damage": 5,
     "aps": -0.3,
+    "projectileId": 801,
     "buildRequirements": {
       "철주괴": 30,
       "은주괴": 20
@@ -99,7 +103,7 @@
   {
     "id": "430",
     "towerName": "다이아 프리즘",
-    "flavorText": "작성예정",
+    "flavorText": "통통통통통통통통통 사후르",
     "buildType": "Base",
     "nextUpgradeId": 431,
     "attackType": "Projectile",
@@ -109,10 +113,11 @@
     "reflectionDamage": 4,
     "aps": 1.5,
     "range": 4,
+    "projectileId": 803,
     "prefabName": "Tower_Diaprism",
     "buildRequirements": {
       "탄자나이트": 4,
-      "다이아몬드": 3
+      "다이아": 3
     }
   },
   {
@@ -127,15 +132,16 @@
     "reflectionDamage": 4,
     "aps": -0.3,
     "range": 1,
+    "projectileId": 803,
     "buildRequirements": {
       "탄자나이트": 8,
-      "다이아몬드": 10
+      "다이아": 10
     }
   },
   {
     "id": "440",
     "towerName": "재생 타워",
-    "flavorText": "작성예정",
+    "flavorText": "다친 타워 3개까지 고침 ㄹㅇ(코어는 못함 ㅋ)",
     "buildType": "Base",
     "nextUpgradeId": 441,
     "attackType": "Areaofeffect",
@@ -168,12 +174,13 @@
   {
     "id": "450",
     "towerName": "자력 타워",
-    "flavorText": "작성예정",
+    "flavorText": "몬스터 고장내기 1황",
     "buildType": "Base",
     "nextUpgradeId": 451,
     "attackType": "Areaofeffect",
     "level": 1,
     "towerHp": 100,
+    "damage": 6,
     "aps": 3,
     "range": 6,
     "prefabName": "Tower_Magnet",
@@ -190,6 +197,7 @@
     "attackType": "Areaofeffect",
     "level": 2,
     "towerHp": 50,
+    "damage": 2,
     "aps": -0.5,
     "range": 1,
     "buildRequirements": {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 
@@ -26,11 +26,20 @@ public class PoolManager : MonoSingleton<PoolManager>
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        if(Instance != null)
+            DontDestroyOnLoad(this.gameObject);
+    }
+
     /// <summary>
     /// 오브젝트 풀링 세팅
     /// </summary>
     public void InitPool()
     {
+        SettingPrefab();
+
         _prefabs = new Dictionary<int, GameObject>();
         _pools = new Dictionary<int, Queue<GameObject>>();
 
@@ -55,7 +64,97 @@ public class PoolManager : MonoSingleton<PoolManager>
 
         _isSet = true;
     }
-
+    public void SettingPrefab()
+    {
+        _objectPoolDatas.Clear();
+        foreach (var data in DataManager.Instance.MonsterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MonsterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 20
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.TowerData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.TowerData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 5
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.ProjectileData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.ProjectileData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.SmelterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.SmelterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.OreData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.JewelData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        /// <summary>
+        /// 미네랄은 스크립트가 없어서 일단 보류
+        /// </summary>
+        foreach (var data in DataManager.Instance.MineralData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+    }
     /// <summary>
     /// 해당 타입의 오브젝트를 풀에서 가져와서 반환, 없으면 새로 생성해서 반환
     /// </summary>

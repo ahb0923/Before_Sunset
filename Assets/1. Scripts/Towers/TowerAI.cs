@@ -26,8 +26,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 {
     private BaseTower _tower;
     private bool _isDestroy = false;
-    private bool _isNowBuilding = true;
-
 
     protected override TOWER_STATE InvalidState => TOWER_STATE.None;
 
@@ -36,7 +34,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     {
         _tower = baseTower;
     }
-    
+
     protected override void OnAwake()
     {
         _tower = GetComponent<BaseTower>();
@@ -51,28 +49,25 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     {
         AddState(TOWER_STATE.Construction, new StateElem
         {
-            Entered = () => Debug.Log("건설 시작"),
+            Entered = () => _tower._attackCollider.enabled = false,
             Doing = C_Construction,
-            Exited = () =>
-            {
-                Debug.Log("건설 완료");
-            }
+            Exited = () => _tower._attackCollider.enabled = true
         });
         AddState(TOWER_STATE.Attack, new StateElem
         {
-            Entered = () => Debug.Log("공격 시작"),
+            //Entered = () => Debug.Log("공격 시작"),
             Doing = C_Attack,
         });
 
         AddState(TOWER_STATE.Idle, new StateElem
         {
-            Entered = () => Debug.Log("건물 대기 중"),
+            //Entered = () => Debug.Log("건물 대기 중"),
             Doing = C_Idle,
         });
 
         AddState(TOWER_STATE.Destroy, new StateElem
         {
-            Entered = () => Debug.Log("건물 파괴"),
+            //Entered = () => Debug.Log("건물 파괴"),
             Doing = C_Destroy
         });
     }
@@ -88,6 +83,11 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     public void SetState(TOWER_STATE state, bool force = false)
     {
         TransitionTo(state, force);
+        /*
+        if (state == TOWER_STATE.Construction)
+            _tower._attackCollider.enabled = false;
+        else if (state == TOWER_STATE.Idle || state == TOWER_STATE.Attack)
+            _tower._attackCollider.enabled = true;*/
     }
     public IEnumerator C_Construction()
     {
@@ -132,18 +132,22 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         ui.hpBar_delay.fillAmount = 1f;
         icon.color = ColorExtensions.WithAlpha(icon.color, 1f);
 
+
+        /*
         // 건설 직후, 공격 범위 내 적 검색
         _tower.attackSensor.ScanInitialEnemies();
 
         if (_tower.attackSensor.HasDetectedEnemy())
             CurState = TOWER_STATE.Attack;
         else
-            CurState = TOWER_STATE.Idle;
+            CurState = TOWER_STATE.Idle;*/
+        CurState = TOWER_STATE.Idle;
     }
 
 
     protected virtual IEnumerator C_Idle()
     {
+        /*
         if (_isNowBuilding)
         {
             _isNowBuilding = false;
@@ -154,6 +158,15 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             else
                 CurState = TOWER_STATE.Idle;
         }
+        yield return null;*/
+        _tower.attackSensor.ScanInitialEnemies();
+
+        if (_tower.attackSensor.HasDetectedEnemy())
+        {
+            CurState = TOWER_STATE.Attack;
+            yield break;
+        }
+
         yield return null;
     }
     protected virtual IEnumerator C_Attack()
@@ -166,14 +179,10 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                 yield break;
             }
 
-            var stat = _tower.statHandler;
-
             switch (_tower.statHandler.attackType)
             {
-                // 투사체 발사 타워
                 case TOWER_ATTACK_TYPE.Projectile:
                     _tower.attackSensor.CheckTargetValid();
-
                     GameObject target = _tower.attackSensor.CurrentTarget;
                     if (target == null)
                     {
@@ -181,146 +190,14 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                         CurState = TOWER_STATE.Idle;
                         yield break;
                     }
-
-                    // 화살 발사
-                    //GameObject projObj = ObjectPoolM.anager.Instance().Get(building.projectile.gameObject.name);
-                    GameObject projObj = Instantiate(_tower.projectile);
-                    Projectile proj = Helper_Component.GetComponent<Projectile>(projObj);
-                    // 발사체 속도 하드코딩 => 추후 proj 데이터를 따로 만들든, tower데이터의 추가하든..
-
-                    // 추후에 필드 멤버로 만들어서 init에서 세팅해버리기
-
-
-                    // 이쪽 추후에 리팩터링
-                    if (_tower.towerType == TOWER_TYPE.CooperTower)
-                    {
-                        ProjectileAttackSettings projAttackSettings = new()
-                        {
-                            attacker = projObj,
-                            target = target,
-                            damage = stat.AttackPower,
-                        };
-                        ProjectileMovementSettings projMovementSettings = new()
-                        {
-                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
-                            moveSpeed = 10f,
-                        };
-                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
-                    }
-                    else if (_tower.towerType == TOWER_TYPE.IronTower)
-                    {
-                        ProjectileAttackSettings projAttackSettings = new()
-                        {
-                            attacker = projObj,
-                            target = target,
-                            damage = stat.AttackPower,
-                            splashRadius = 1.5f,
-                            enemyLayer = LayerMask.GetMask("Monster")
-                        };
-                        ProjectileMovementSettings projMovementSettings = new()
-                        {
-                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
-                            duration = 1f,
-                        };
-                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_Curved(), new ProjectileAttack_Splash());
-                    }
-                    else if (_tower.towerType == TOWER_TYPE.DiaprismTower)
-                    {
-                        ProjectileAttackSettings projAttackSettings = new()
-                        {
-                            attacker = projObj,
-                            target = target,
-                            damage = stat.AttackPower,
-                            enemyLayer = LayerMask.GetMask("Monster"),
-                            chainCount = 2,
-                            chainingRadius = 2f,
-                            previousTarget = null,
-                        };
-                        ProjectileMovementSettings projMovementSettings = new()
-                        {
-                            firePosition = _tower.transform.position + new Vector3(0, 2, 0),
-                            duration = 1f,
-                        };
-                        proj.Init(projAttackSettings, projMovementSettings, new ProjectileMovement_CurvedTarget(), new ProjectileAttack_Chaining());
-                    }
-                    
                     break;
-                    
-
-                // 자신 중심 공격 타워
                 case TOWER_ATTACK_TYPE.Areaofeffect:
-
-                    if (_tower.towerType == TOWER_TYPE.HealTower)
-                    {
-                        float radius = _tower.statHandler.AttackRange;
-                        int healAmount = Mathf.RoundToInt(_tower.statHandler.AttackPower);
-
-                        Collider2D[] hits = Physics2D.OverlapCircleAll(
-                            _tower.transform.position, radius, LayerMask.GetMask("Tower"));
-
-                        Debug.Log($"검색 갯수 : {hits.Length}");
-
-                        // 체력 비율 낮은 순으로 정렬
-                        List<GameObject> healables = new();
-
-                        foreach (var hit in hits)
-                        {
-                            if (hit.gameObject == _tower.gameObject) continue; // 자기 자신 제외
-
-                            var hitStat = hit.GetComponent<TowerStatHandler>();
-                            if (hitStat != null && hitStat.CurrHp < hitStat.MaxHp)
-                            {
-                                healables.Add(hit.gameObject);
-                            }
-                        }
-
-                        healables.Sort((a, b) =>
-                        {
-                            var sa = a.GetComponent<TowerStatHandler>();
-                            var sb = b.GetComponent<TowerStatHandler>();
-                            float ra = sa == null ? float.MaxValue : sa.CurrHp;
-                            float rb = sb == null ? float.MaxValue : sb.CurrHp;
-                            return ra.CompareTo(rb);
-                        });
-
-                        int healCount = Mathf.Min(3, healables.Count);
-                        for (int i = 0; i < healCount; i++)
-                        {
-                            var healbleStat = healables[i].GetComponent<TowerStatHandler>();
-                            healbleStat.CurrHp += healAmount;
-
-                            Debug.Log($"힐타워: {healables[i].name} 체력 {healAmount} 회복");
-                        }
-                    }
-                    else if (_tower.towerType == TOWER_TYPE.MagnetTower)
-                    {
-                        float radius = _tower.statHandler.AttackRange;
-                        //float pullSpeed = _tower.statHandler.AttackPower;
-                        float pullSpeed = 6;
-                        Vector3 centerPos = _tower.transform.position;
-
-
-                        Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
-
-                        List<GameObject> candidates = new();
-                        foreach (var h in hits)
-                        {
-                            if (h == null || !h.gameObject.activeSelf) continue;
-                            candidates.Add(h.gameObject);
-                        }
-
-                        candidates.Sort((a, b) => Vector2.Distance(centerPos, b.transform.position).CompareTo(Vector2.Distance(centerPos, a.transform.position)));
-
-                        int pullCount = Mathf.Min(3, candidates.Count);
-                        for (int i = 0; i < pullCount; i++)
-                        {
-                            GameObject pullTarget = candidates[i];
-                            _tower.StartCoroutine(PullTargetCoroutine(pullTarget, centerPos, pullSpeed));
-                        }
-                    }
                     break;
             }
-            yield return new WaitForSeconds(stat.AttackSpeed);
+
+            if (_tower.ai.CurState == TOWER_STATE.Destroy) yield break;
+
+            yield return _tower.attackStrategy.Attack(_tower);
         }
     }
 
@@ -358,7 +235,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     {
         StopAllCoroutines();
         _isDestroy = false;
-        _isNowBuilding = true;
         IsInterrupted = false;
         CurState = InvalidState;
         RunDoingState();

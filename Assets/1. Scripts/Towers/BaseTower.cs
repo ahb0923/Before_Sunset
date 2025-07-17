@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -41,8 +41,14 @@ public class BaseTower : MonoBehaviour, IPoolable
     public TowerAttackSensor attackSensor;
     // ui 관련
     public TowerUI ui;
+    // 건설 관련 (buildManager에서 이용)
+    public BuildInfo buildInfo;
     // 발사체
     public GameObject projectile;
+
+    // 공격 전략
+    public IAttackStrategy attackStrategy;
+
 
 
     private void Reset()
@@ -58,10 +64,13 @@ public class BaseTower : MonoBehaviour, IPoolable
         // 이동 필요?
         _buildCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "BuildArea");
 
+
+
         ai = Helper_Component.GetComponent<TowerAI>(gameObject);
         statHandler = Helper_Component.GetComponent<TowerStatHandler>(gameObject);
         attackSensor = Helper_Component.GetComponentInChildren<TowerAttackSensor>(gameObject);
         ui = Helper_Component.GetComponentInChildren<TowerUI>(gameObject);
+        buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
     }
     
 
@@ -71,6 +80,30 @@ public class BaseTower : MonoBehaviour, IPoolable
         ui.Init(this);
         ai.Init(this);
         attackSensor.Init(this);
+        InitAttackStrategy();
+        buildInfo.Init(towerId, size);
+    }
+
+    public void InitAttackStrategy()
+    {
+        switch (towerType)
+        {
+            case TOWER_TYPE.CooperTower:
+                attackStrategy = new AttackStrategy_CooperTower();
+                break;
+            case TOWER_TYPE.IronTower:
+                attackStrategy = new AttackStrategy_IronTower();
+                break;
+            case TOWER_TYPE.DiaprismTower:
+                attackStrategy = new AttackStrategy_DiaprismTower();
+                break;
+            case TOWER_TYPE.HealTower:
+                attackStrategy = new AttackStrategy_HealTower();
+                break;
+            case TOWER_TYPE.MagnetTower:
+                attackStrategy = new AttackStrategy_MagnetTower();
+                break;
+        }
     }
 
 
@@ -108,6 +141,6 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.SetState(TOWER_STATE.None, true);
         gameObject.SetActive(false);
     }
-    // =======================================
 
+    // =======================================
 }

@@ -3,58 +3,71 @@
     "id": "100",
     "itemName": "돌",
     "itemType": "Mineral",
+    "prefabName": "Mineral_Stone",
     "context": "기본적인 자원. 제련소를 만들 수 있다."
   },
   {
     "id": "110",
     "itemName": "구리",
     "itemType": "Mineral",
+    "prefabName": "Mineral_Cooper",
+    "smeltingTime": 8,
     "ingotId": 111,
     "context": "최초로 발견 된 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
     "id": "111",
-    "itemName": "구리 주괴",
+    "itemName": "구리주괴",
     "itemType": "Ingot",
+    "prefabName": "Ingot_Cooper",
     "context": "구리를 제련해 만든 주괴. 기초 타워 제작에 사용된다."
   },
   {
     "id": "120",
     "itemName": "철",
     "itemType": "Mineral",
+    "prefabName": "Mineral_Iron",
+    "smeltingTime": 12,
     "ingotId": 121,
     "context": "강인하고 단단한 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
     "id": "121",
-    "itemName": "철 주괴",
+    "itemName": "철주괴",
     "itemType": "Ingot",
+    "prefabName": "Ingot_Iron",
     "context": "철을 제련해 만든 주괴. 중급 타워 제작에 사용된다."
   },
   {
     "id": "130",
     "itemName": "은",
     "itemType": "Mineral",
+    "prefabName": "Mineral_Silver",
+    "smeltingTime": 15,
     "ingotId": 131,
     "context": "에너지의 흐름이 느껴지는 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
     "id": "131",
-    "itemName": "은 주괴",
+    "itemName": "은주괴",
     "itemType": "Ingot",
+    "prefabName": "Ingot_Silver",
     "context": "은을 제련해 만든 주괴. 중급 타워 제작에 사용된다. "
   },
   {
     "id": "140",
     "itemName": "금",
     "itemType": "Mineral",
+    "prefabName": "Mineral_Gold",
+    "smeltingTime": 18,
     "ingotId": 141,
     "context": "가치를 증명하는 귀금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
     "id": "141",
-    "itemName": "금 주괴",
+    "itemName": "금주괴",
     "itemType": "Ingot",
+    "prefabName": "Ingot_Gold",
     "context": "금을 제련해 만든 주괴. 상급 타워 제작에 사용된다."
   }
 ]

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -42,6 +42,8 @@ public class TowerUI : MonoBehaviour
     /// <param name="max">최대 체력</param>
     public void UpdateHpBar(float curr, float max)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         float ratio = Mathf.Clamp01(curr / max);
 
         hpBar_immediate.fillAmount = ratio;
