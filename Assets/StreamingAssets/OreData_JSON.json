@@ -1,7 +1,8 @@
 [
   {
     "id": "000",
-    "itemName": "돌 광석",
+    "itemName": "돌광석",
+    "prefabName": "Ore_Stone",
     "dropMineralId": "100",
     "hp": 1,
     "def": 0,
@@ -10,7 +11,8 @@
   },
   {
     "id": "001",
-    "itemName": "구리 광석",
+    "itemName": "구리광석",
+    "prefabName": "Ore_Cooper",
     "dropMineralId": "110",
     "hp": 2,
     "def": 0,
@@ -19,7 +21,8 @@
   },
   {
     "id": "002",
-    "itemName": "철 광석",
+    "itemName": "철광석",
+    "prefabName": "Ore_Iron",
     "dropMineralId": "120",
     "hp": 4,
     "def": 1,
@@ -28,7 +31,8 @@
   },
   {
     "id": "003",
-    "itemName": "은 광석",
+    "itemName": "은광석",
+    "prefabName": "Ore_Silver",
     "dropMineralId": "130",
     "hp": 5,
     "def": 2,
@@ -37,7 +41,8 @@
   },
   {
     "id": "004",
-    "itemName": "금 광석",
+    "itemName": "금광석",
+    "prefabName": "Ore_Gold",
     "dropMineralId": "140",
     "hp": 6,
     "def": 3,

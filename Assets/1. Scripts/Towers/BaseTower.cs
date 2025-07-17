@@ -41,6 +41,8 @@ public class BaseTower : MonoBehaviour, IPoolable
     public TowerAttackSensor attackSensor;
     // ui 관련
     public TowerUI ui;
+    // 건설 관련 (buildManager에서 이용)
+    public BuildInfo buildInfo;
     // 발사체
     public GameObject projectile;
 
@@ -62,10 +64,13 @@ public class BaseTower : MonoBehaviour, IPoolable
         // 이동 필요?
         _buildCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "BuildArea");
 
+
+
         ai = Helper_Component.GetComponent<TowerAI>(gameObject);
         statHandler = Helper_Component.GetComponent<TowerStatHandler>(gameObject);
         attackSensor = Helper_Component.GetComponentInChildren<TowerAttackSensor>(gameObject);
         ui = Helper_Component.GetComponentInChildren<TowerUI>(gameObject);
+        buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
     }
     
 
@@ -76,6 +81,7 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.Init(this);
         attackSensor.Init(this);
         InitAttackStrategy();
+        buildInfo.Init(towerId, size);
     }
 
     public void InitAttackStrategy()
@@ -135,6 +141,6 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.SetState(TOWER_STATE.None, true);
         gameObject.SetActive(false);
     }
-    // =======================================
 
+    // =======================================
 }

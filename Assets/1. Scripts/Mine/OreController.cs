@@ -43,7 +43,7 @@ public class OreController : MonoBehaviour, IPoolable
 
     public void OnReturnToPool()
     {
-        //
+        throw new System.NotImplementedException();
     }
 
     public bool CanBeMined(int pickaxePower)

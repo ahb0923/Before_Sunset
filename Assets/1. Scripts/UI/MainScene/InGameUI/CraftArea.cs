@@ -56,7 +56,7 @@ public class CraftArea : MonoBehaviour
         for (int i = 0; i < _buildSlots.Count; i++)
         {
             TowerDatabase data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
-            _buildSlots[i].SetTowerSlot(data);
+            _buildSlots[i].SetSlot(data);
         }
     }
     
@@ -73,7 +73,8 @@ public class CraftArea : MonoBehaviour
         for (int i = 0; i < _buildSlots.Count; i++)
         {
             SmelterDatabase data = i < _smelterData.Count ? _smelterData[i] : null;
-            _buildSlots[i].SetSmelterSlot(data);
+            //_buildSlots[i].SetSmelterSlot(data);
+            _buildSlots[i].SetSlot(data);
         }
     }
 

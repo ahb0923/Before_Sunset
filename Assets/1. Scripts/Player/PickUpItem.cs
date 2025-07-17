@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUpItem : MonoBehaviour
+public class PickUpItem : MonoBehaviour, IPoolable
 {
     public int itemId;
     public float pickupRadius = 3f;
@@ -12,6 +12,23 @@ public class PickUpItem : MonoBehaviour
     private Transform playerTransform;
     private float timer = 0f;
     private bool canAttract = false;
+
+    public int GetId()
+    {
+        return itemId;
+    }
+
+    public void OnGetFromPool()
+    {
+    }
+
+    public void OnInstantiate()
+    {
+    }
+
+    public void OnReturnToPool() 
+    {
+    }
 
     private void Start()
     {

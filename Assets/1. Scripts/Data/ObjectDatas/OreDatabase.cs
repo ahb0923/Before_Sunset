@@ -7,6 +7,7 @@ public class OreDatabase
 {
     public int id;
     public string itemName;
+    public string prefabName;
     public int dropMineralId;
     public int hp;
     public int def;

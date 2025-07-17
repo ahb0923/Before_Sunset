@@ -11,6 +11,7 @@ public enum MINERAL_TYPE
 public class MineralDatabase : ItemDatabase
 {
     public MINERAL_TYPE itemType;
+    public string prefabName;
     public int ingotId;
     public int smeltingTime;
 }

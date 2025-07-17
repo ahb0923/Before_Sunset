@@ -3,10 +3,13 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Smelter : MonoBehaviour, IPointerClickHandler
+public class Smelter : MonoBehaviour, IPoolable
 {
+    public int smelterID;
     public SmelterDatabase smelterData;
-    
+    private BuildInfo _buildInfo;
+    public Vector2Int size = new Vector2Int(1, 1);
+
     public Item InputItem { get; private set; }
     public Item OutputItem { get; private set; }
     
@@ -14,10 +17,17 @@ public class Smelter : MonoBehaviour, IPointerClickHandler
     public bool isSmelting;
     public event Action<float> OnSmeltingProgress;
 
+    [SerializeField] private Smelter_Interaction _interaction;
+
     private void Awake()
     {
-        // 테스트용 코드
-        smelterData = DataManager.Instance.SmelterData.GetById(900);
+        smelterData = DataManager.Instance.SmelterData.GetById(smelterID);
+        if(_interaction==null)
+            _interaction = Helper_Component.GetComponentInChildren<Smelter_Interaction>(gameObject);
+        _interaction.Init(this);
+        if (_buildInfo == null)
+            _buildInfo = Helper_Component.GetComponent<BuildInfo>(gameObject);
+        _buildInfo.Init(smelterID, size);
     }
 
     /// <summary>
@@ -135,8 +145,21 @@ public class Smelter : MonoBehaviour, IPointerClickHandler
         OutputItem = item;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public int GetId()
     {
-        UIManager.Instance.SmelterUI.OpenSmelter(this);
+        return smelterID;
+    }
+
+    public void OnInstantiate()
+    {
+        isSmelting = false;
+    }
+
+    public void OnGetFromPool()
+    {
+    }
+
+    public void OnReturnToPool()
+    {
     }
 }
