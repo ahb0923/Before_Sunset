@@ -380,7 +380,7 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             if (item == null) continue;
 
-            ItemSaveData itemData = new ItemSaveData(item.Data.id, item.quantity);
+            ItemSaveData itemData = new ItemSaveData(item.Data.id, item.stack == 0 ? 1 : item.stack);
             invenData.items.Add(itemData);
         }
     }
