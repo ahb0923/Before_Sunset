@@ -138,7 +138,7 @@ public class CraftArea : MonoBehaviour
         {
             foreach (var slot in _buildSlots)
             {
-                slot.bGImage.color = Color.white;
+                slot.RefreshUI();
             }
 
             if (TooltipManager.Instance.isOpen)

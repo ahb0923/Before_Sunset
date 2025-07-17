@@ -100,6 +100,11 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         gameObject.SetActive(false);
     }
 
+    public void RefreshUI()
+    {
+        bGImage.color = _originalColor;
+    }
+
     private string SetSmelt(SmelterDatabase data)
     {
         return $"제련 가능 광물\n" +

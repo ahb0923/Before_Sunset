@@ -48,6 +48,11 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
+    public void DisableHighlight()
+    {
+        _highlight.SetActive(false);
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (_tween != null)
@@ -77,10 +82,5 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _tween = _highlightImage.DOFade(0f, 0.2f).OnComplete(() => _highlight.SetActive(false));
         
         TooltipManager.Instance.HideTooltip();
-    }
-
-    private void OnDisable()
-    {
-        _highlight.SetActive(false);
     }
 }

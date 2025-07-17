@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class QuickSlotInventoryUI : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private PickaxeSlot _pickaxeSlot;
     
-    private List<ItemSlot> _quickSlots = new List<ItemSlot>();
+    public List<ItemSlot> quickSlots = new List<ItemSlot>();
     
     private const string ITEM_SLOT_AREA = "QuickSlotArea";
     private const string ITEM_SLOT_PREFAB = "Slots/ItemSlot";
@@ -42,7 +43,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
         
         _pickaxeSlot.RefreshUI();
         
-        foreach (var itemSlot in _quickSlots)
+        foreach (var itemSlot in quickSlots)
         {
             itemSlot.RefreshUI();
         }
@@ -53,12 +54,12 @@ public class QuickSlotInventoryUI : MonoBehaviour
         for (int i = 0; i < _numberOfQuickSlots; i++)
         {
             var slot = Instantiate(_slotPrefab, _itemSlotContainer);
-            _quickSlots.Add(slot.GetComponent<ItemSlot>());
+            quickSlots.Add(slot.GetComponent<ItemSlot>());
         }
         
-        for (int i = 0; i < _quickSlots.Count; i++)
+        for (int i = 0; i < quickSlots.Count; i++)
         {
-            _quickSlots[i].InitIndex(i);
+            quickSlots[i].InitIndex(i);
         }
     }
 
@@ -80,9 +81,9 @@ public class QuickSlotInventoryUI : MonoBehaviour
 
     public void RefreshUI(Item[] items)
     {
-        for (int i = 0; i < _quickSlots.Count; i++)
+        for (int i = 0; i < quickSlots.Count; i++)
         {
-            _quickSlots[i].RefreshUI();
+            quickSlots[i].RefreshUI();
         }
     }
     

@@ -40,11 +40,21 @@ public class Inventory : MonoBehaviour
         {
             InventoryUI.gameObject.SetActive(false);
             QuickSlotInventoryUI.gameObject.SetActive(true);
+
+            foreach (var slot in InventoryUI.itemSlots)
+            {
+                slot.DisableHighlight();
+            }
         }
         else
         {
             InventoryUI.gameObject.SetActive(true);
             QuickSlotInventoryUI.gameObject.SetActive(false);
+            
+            foreach (var slot in QuickSlotInventoryUI.quickSlots)
+            {
+                slot.DisableHighlight();
+            }
         }
         
         if (TooltipManager.Instance != null)
@@ -245,6 +255,8 @@ public class Inventory : MonoBehaviour
         
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        
+        ToastManager.Instance.ShowToast("정렬 완료!!");
     }
 
     /// <summary>
