@@ -23,7 +23,7 @@ public class LoadingSceneController : MonoBehaviour
     [SerializeField] private string[] _tips =
     {
         "팁: (당근을 흔드는 중입니다.)",
-        "팁: UI개발자를 제외한 인원들은 가짜 스탠다드!",
+        // "팁: UI개발자를 제외한 인원들은 가짜 스탠다드!",
         "팁: 이쁘게 봐주세요. 이것은 강요입니다.",
     };
     
@@ -67,7 +67,7 @@ public class LoadingSceneController : MonoBehaviour
         op.allowSceneActivation = false;
 
         float timer = 0f;
-        float minLoadingTime = 3f;
+        float minLoadingTime = 1f;
         
         while (!op.isDone)
         {
