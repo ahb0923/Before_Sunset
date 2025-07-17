@@ -1,0 +1,373 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+
+
+public class Inventory : MonoBehaviour
+{
+    public Item Pickaxe { get; private set; }
+    public Item[] Items { get; private set; } = new Item[29];
+    
+    [field:SerializeField] public InventoryUI InventoryUI { get; private set; }
+    [field:SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
+    [SerializeField] private Button _inventoryButton;
+    
+    private const string SORT_BUTTON = "SortButton";
+    private const string INVENTORY_BUTTON = "InventoryButton";
+
+    private void Reset()
+    {
+        InventoryUI = GetComponentInChildren<InventoryUI>();
+        QuickSlotInventoryUI = GetComponentInChildren<QuickSlotInventoryUI>();
+        _inventoryButton = Helper_Component.FindChildComponent<Button>(this.transform.parent.parent, INVENTORY_BUTTON);
+    }
+
+    private void Awake()
+    {
+        Button sortButton = Helper_Component.FindChildComponent<Button>(this.transform, SORT_BUTTON);
+        sortButton.onClick.AddListener(Sort);
+        _inventoryButton.onClick.AddListener(Toggle);
+        //Pickaxe
+    }
+
+    /// <summary>
+    /// 인벤토리와 퀵슬롯 토글 메서드
+    /// </summary>
+    public void Toggle()
+    {
+        if (InventoryUI.gameObject.activeSelf)
+        {
+            InventoryUI.gameObject.SetActive(false);
+            QuickSlotInventoryUI.gameObject.SetActive(true);
+
+            foreach (var slot in InventoryUI.itemSlots)
+            {
+                slot.DisableHighlight();
+            }
+        }
+        else
+        {
+            InventoryUI.gameObject.SetActive(true);
+            QuickSlotInventoryUI.gameObject.SetActive(false);
+            
+            foreach (var slot in QuickSlotInventoryUI.quickSlots)
+            {
+                slot.DisableHighlight();
+            }
+        }
+        
+        if (TooltipManager.Instance != null)
+            TooltipManager.Instance.HideTooltip();
+    }
+
+    /// <summary>
+    /// 곡괭이 초기화 메서드
+    /// </summary>
+    /// <param name="data"></param>
+    public void SetPickaxe(EquipmentDatabase data)
+    {
+        Pickaxe = new Item(data);
+        InventoryUI.RefreshPickaxe();
+        QuickSlotInventoryUI.RefreshPickaxe();
+    }
+
+    /// <summary>
+    /// 아이템의 id 값으로 아이템 만드는 메서드
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private Item CreateItem(int id)
+    {
+        Item item = new Item(DataManager.Instance.ItemData.GetId(id));
+        return item;
+    }
+
+    /// <summary>
+    /// 인벤토리UI 새로고침 메서드
+    /// </summary>
+    public void RefreshInventories()
+    {
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+    }
+    
+    /// <summary>
+    /// 인벤토리에 아이템 추가 메서드
+    /// </summary>
+    /// <param name="id">추가 할 아이템</param>
+    /// <param name="quantity">아이템 수량</param>
+    public void AddItem(int id, int quantity)
+    {
+        Item item = CreateItem(id);
+        
+        if (item.Stackable)
+        {
+            AddStackableItem(item, quantity);
+        }
+        else
+        {
+            AddNotStackableItem(item);
+        }
+
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+    }
+
+    /// <summary>
+    /// 겹칠 수 있는 아이템을 인벤토리에 추가하는 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="quantity"></param>
+    private void AddStackableItem(Item item, int quantity)
+    {
+        Item savedItem = null;
+        
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (Items[i] == null || Items[i].IsMaxStack)
+                continue;
+            
+            if (Items[i].Data.itemName == item.Data.itemName)
+            {
+                savedItem = Items[i];
+                break;
+            }
+        }
+
+        if (savedItem == null)
+        {
+            int emptyIndex = GetEmptySlotIndex();
+            if (emptyIndex == -1)
+            {
+                Debug.LogWarning("추가 불가능");
+            }
+            else
+            {
+                item.stack += quantity;
+                Items[emptyIndex] = item;
+            }
+        }
+        // 기존에 겹칠수 있는 아이템이 있을 경우
+        else
+        {
+            int max = savedItem.MaxStack;
+            savedItem.stack += quantity;
+
+            if (savedItem.stack > max)
+            {
+                int left = savedItem.stack - max;
+                savedItem.stack = max;
+                AddStackableItem(item, left);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 겹칠 수 없는 아이템을 인벤토리에 추가하는 메서드
+    /// </summary>
+    /// <param name="item"></param>
+    private void AddNotStackableItem(Item item)
+    {
+        int emptyIndex = GetEmptySlotIndex();
+        if (emptyIndex == -1)
+        {
+            Debug.LogWarning("추가 불가능");
+        }
+        else
+        {
+            Items[emptyIndex] = item;
+        }
+    }
+
+    /// <summary>
+    /// 인벤토리에서 첫번째 빈 슬롯을 찾아주는 메서드
+    /// </summary>
+    /// <returns></returns>
+    private int GetEmptySlotIndex()
+    {
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (Items[i] == null)
+                return i;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// 아이템 정렬 메서드
+    /// </summary>
+    public void Sort()
+    {
+        List<Item> items = Items.Where(item => item != null).ToList();
+        
+        List<Item> mergedItems = new List<Item>();
+
+        foreach (var item in items)
+        {
+            var noMax = mergedItems.FirstOrDefault(x => x.Data.id == item.Data.id && x.Stackable && x.stack < x.MaxStack);
+
+            if (noMax != null)
+            {
+                int max = item.MaxStack;
+                int result = noMax.stack + item.stack;
+
+                if (result <= max)
+                {
+                    noMax.stack = result;
+                }
+                else
+                {
+                    noMax.stack = max;
+
+                    Item leftover = item.Clone();
+                    leftover.stack = result - max;
+                    mergedItems.Add(leftover);
+                }
+            }
+            else
+            {
+                mergedItems.Add(item.Clone());
+            }
+        }
+        
+        mergedItems.Sort((a, b) =>
+        {
+            int result = a.Data.id.CompareTo(b.Data.id);
+            if (result != 0)
+            {
+                return result;
+            }
+            
+            bool isAMax = a.Stackable && a.stack == a.MaxStack;
+            bool isBMax = b.Stackable && b.stack == b.MaxStack;
+            
+            if (isAMax && !isBMax) return -1;
+
+            return 0;
+        });
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Items[i] = i < mergedItems.Count ? mergedItems[i] : null;
+        }
+        
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+        
+        ToastManager.Instance.ShowToast("정렬 완료!!");
+    }
+
+    /// <summary>
+    /// 아이템 사용 메서드
+    /// </summary>
+    /// <param name="id">사용할 아이템의 아이디</param>
+    /// <param name="quantity">사용할 아이템의 수량</param>
+    /// <returns>사용하면 T 불가능하면 F</returns>
+    public bool UseItem(int id, int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return false;
+        }
+        
+        int total = 0;
+
+        foreach (Item item in Items)
+        {
+            if (item != null && item.Data.id == id)
+            {
+                total += item.stack;
+            }
+        }
+
+        if (total < quantity)
+        {
+            return false;
+        }
+
+        int remain = quantity;
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Item item = Items[i];
+
+            if (item == null || item.Data.id != id)
+            {
+                continue;
+            }
+
+            if (item.stack > remain)
+            {
+                item.stack -= remain;
+                break;
+            }
+            else
+            {
+                remain -= item.stack;
+                Items[i] = null;
+            }
+        }
+        
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+        return true;
+    }
+    
+    /// <summary>
+    /// 아이템 사용 메서드
+    /// </summary>
+    /// <param name="itemName">사용할 아이템의 이름</param>
+    /// <param name="quantity">사용할 아이템의 수량</param>
+    /// <returns>사용하면 T 불가능하면 F</returns>
+    public bool UseItem(string itemName, int quantity)
+    {
+        if (quantity <= 0)
+        {
+            return false;
+        }
+        
+        int total = 0;
+
+        foreach (Item item in Items)
+        {
+            if (item != null && item.Data.itemName == itemName)
+            {
+                total += item.stack;
+            }
+        }
+
+        if (total < quantity)
+        {
+            return false;
+        }
+
+        int remain = quantity;
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            Item item = Items[i];
+
+            if (item == null || item.Data.itemName != itemName)
+            {
+                continue;
+            }
+
+            if (item.stack > remain)
+            {
+                item.stack -= remain;
+                break;
+            }
+            else
+            {
+                remain -= item.stack;
+                Items[i] = null;
+            }
+        }
+        
+        InventoryUI.RefreshUI(Items);
+        QuickSlotInventoryUI.RefreshUI(Items);
+        return true;
+    }
+}

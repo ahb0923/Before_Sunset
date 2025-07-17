@@ -11,7 +11,7 @@ public class MiningHandler : MonoBehaviour
     [SerializeField] private bool isEntering;  // 입장/퇴장 자동 결정
     [SerializeField] private float stayTimeToTrigger = 0.5f;
 
-    private PlayerStateHandler _playerState;
+    private BasePlayer _player;
     private Coroutine _triggerCoroutine;
     public PortalDirection CurrentPortalDirection => portalDirection;
 
@@ -41,22 +41,22 @@ public class MiningHandler : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        if (_playerState == null)
+        if (_player == null)
         {
-            _playerState = other.GetComponentInChildren<PlayerStateHandler>();
-            if (_playerState == null)
+            _player = other.GetComponentInChildren<BasePlayer>();
+            if (_player == null)
             {
                 Debug.LogWarning("PlayerStateHandler를 찾지 못했습니다.");
                 return;
             }
         }
 
-        var inputHandler = other.GetComponentInChildren<PlayerInputHandler>();
-        if (inputHandler != null && inputHandler.IsRecallInProgress())
-        {
-            Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
-            return;
-        }
+        //var inputHandler = other.GetComponentInChildren<PlayerInputHandler>();
+        //if (inputHandler != null)
+        //{
+        //    Debug.Log("귀환 중이므로 광산 입장/퇴장 불가");
+        //    return;
+        //}
 
         if (_triggerCoroutine == null)
             _triggerCoroutine = StartCoroutine(WaitAndTrigger());
@@ -75,7 +75,7 @@ public class MiningHandler : MonoBehaviour
     {
         yield return new WaitForSeconds(stayTimeToTrigger);
 
-        if (_playerState == null) yield break;
+        if (_player == null) yield break;
 
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
@@ -92,11 +92,11 @@ public class MiningHandler : MonoBehaviour
 
             if (isBaseMapAfterMove)
             {
-                _playerState.ExitMiningArea();
+                _player.SetPlayerInBase(true);
             }
             else
             {
-                _playerState.EnterMiningArea();
+                _player.SetPlayerInBase(false);
             }
         }));
 
