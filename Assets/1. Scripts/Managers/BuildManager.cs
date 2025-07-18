@@ -5,13 +5,13 @@ using UnityEngine.Tilemaps;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {
-    private Tilemap _groundTilemap;
-    //private BaseTower _towerPrefab;
-    private BuildInfo _buildInfo;
-
     [SerializeField] private LayerMask _buildingLayer;
-    [SerializeField] private bool _isPlacing;
     [SerializeField] private Transform _buildablePool;
+
+    private Tilemap _groundTilemap;
+    private GameObject _buildPrefab;
+    private BuildInfo _buildInfo;
+    private bool _isPlacing;
     public bool IsPlacing => _isPlacing;
 
 
@@ -25,16 +25,18 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// 버튼 클릭했을때 아이콘이 마우스 포인터따라오게 해당되는 prefab.Image
     /// </summary>
     /// <param name="prefab"></param>
-    public void StartPlacing(GameObject prefab)
+    public void StartPlacing(int ID)
     {
-       // _towerPrefab = Helper_Component.GetComponent<BaseTower>(prefab);
+        _buildPrefab = DataManager.Instance.TowerData.GetPrefabById(ID) ?? _buildPrefab;
+        _buildPrefab = DataManager.Instance.SmelterData.GetPrefabById(ID) ?? _buildPrefab;
 
-        _buildInfo = Helper_Component.GetComponent<BuildInfo>(prefab);
+
+        _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(_buildPrefab);
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();
-        //DefenseManager.Instance.DragIcon.SetIcon(_towerPrefab.ui.icon.sprite);
         DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
+        //DefenseManager.Instance.DragIcon.SetIcon(DataManager.Instance.TowerData.GetSpriteById(ID));
     }
 
     public void CancelPlacing()
@@ -45,10 +47,11 @@ public class BuildManager : MonoSingleton<BuildManager>
         DefenseManager.Instance.DragIcon.Hide();
         DefenseManager.Instance.BuildPreview.Clear();
     }
+
+
     private void Update()
     {
         // 이미지를 드래그중인 상황이 아니라면 update 실행x => 성능 개선용
-        //if (!_isPlacing || _towerPrefab == null)
         if (!_isPlacing || _buildInfo == null)
             return;
 
@@ -58,7 +61,7 @@ public class BuildManager : MonoSingleton<BuildManager>
 
         // 프리뷰 표시
         DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
-        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.size);
+        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.buildSize);
 
         // 좌클릭 확정
         if (Input.GetMouseButtonDown(0)) //  && !EventSystem.current.IsPointerOverGameObject()
@@ -73,7 +76,6 @@ public class BuildManager : MonoSingleton<BuildManager>
     }
     private void TryPlace(Vector3 worldPos)
     {
-        // if (TryBuildTower(_towerPrefab, worldPos))
         if (TryBuildTower(_buildInfo, worldPos))
         {
             Debug.Log("설치 성공");
@@ -90,16 +92,14 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// <param name="prefab"></param>
     /// <param name="worldPos"></param>
     /// <returns></returns>
-    
-    //public bool TryBuildTower(BaseTower prefab, Vector3 worldPos)
     public bool TryBuildTower(BuildInfo prefab, Vector3 worldPos)
     {
         Vector3Int originCell = _groundTilemap.WorldToCell(worldPos);
         BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap);
 
         // 모든 타일이 화면 안에 있고, 존재하는지 확인
-        for (int x = 0; x < prefab.size.x; x++)
-            for (int y = 0; y < prefab.size.y; y++)
+        for (int x = 0; x < prefab.buildSize.x; x++)
+            for (int y = 0; y < prefab.buildSize.y; y++)
             {
                 Vector3Int checkCell = originCell + new Vector3Int(x, y, 0);
                 if (!visibleTiles.Contains(checkCell) || !_groundTilemap.HasTile(checkCell))
@@ -110,7 +110,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         Vector3 cellCenter = _groundTilemap.GetCellCenterWorld(originCell);
 
         // 충돌 검사
-        Collider2D hit = Physics2D.OverlapBox(cellCenter, prefab.size - new Vector2(0.1f, 0.1f), 0f, _buildingLayer);
+        Collider2D hit = Physics2D.OverlapBox(cellCenter, prefab.buildSize - new Vector2(0.1f, 0.1f), 0f, _buildingLayer);
         if (hit != null)
         {
             Debug.Log($"설치 실패: {hit.name}과 충돌");
@@ -121,12 +121,8 @@ public class BuildManager : MonoSingleton<BuildManager>
         // => 이곳에 코드 구현
 
         // 배치 성공
-        //BaseTower tower = Helper_Component.GetComponent<BaseTower>(PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool));
-        Debug.Log(prefab.id);
         var obj = PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool);
         DefenseManager.Instance.AddObstacle(obj.transform, 1); // 일단 1x1이니까 1로 두었음
-        //RenderUtil.SetSortingOrderByY(tower.ui.icon);
-        RenderUtil.SetSortingOrderByY(Helper_Component.FindChildComponent<SpriteRenderer>(obj.transform, "Image"));
         return true;
     }
     /// <summary>

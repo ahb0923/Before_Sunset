@@ -8,10 +8,9 @@ using UnityEngine.Serialization;
 
 public class TowerStatHandler : MonoBehaviour, IDamageable
 {
-    [Header(" [ Data ] ")]
-    [SerializeField] private TowerDatabase _data;
-
     private BaseTower _tower;
+
+    private TowerDatabase _data;
 
     public event Action<float, float> OnHpChanged;
     //public Coroutine fixCoroutine;
@@ -25,7 +24,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
 
     public string FlavorText { get; private set; }
 
-    [SerializeField]private float _currHp;
+    private float _currHp;
     public float CurrHp
     {
         get => _currHp;

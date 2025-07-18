@@ -26,6 +26,7 @@ public class TowerDatabase
     public float aps;
     public float range;
 
+    public string spriteName;
     public string prefabName;
 
     public Dictionary<string, int> buildRequirements;
