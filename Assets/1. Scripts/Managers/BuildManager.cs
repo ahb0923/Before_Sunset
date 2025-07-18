@@ -36,7 +36,6 @@ public class BuildManager : MonoSingleton<BuildManager>
 
         DefenseManager.Instance.DragIcon.Show();
         DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
-        //DefenseManager.Instance.DragIcon.SetIcon(DataManager.Instance.TowerData.GetSpriteById(ID));
     }
 
     public void CancelPlacing()
@@ -58,10 +57,15 @@ public class BuildManager : MonoSingleton<BuildManager>
         // 마우스 위치
         Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorld.z = 0;
+        Vector3Int cell = _groundTilemap.WorldToCell(mouseWorld);
+        Vector3 cellCenter = _groundTilemap.GetCellCenterWorld(cell);
 
+        // 프리뷰 표시 (셀 중심으로)
+        DefenseManager.Instance.DragIcon.SetPosition(Camera.main.WorldToScreenPoint(cellCenter));
+        DefenseManager.Instance.BuildPreview.ShowPreview(cellCenter, _buildInfo.buildSize);
         // 프리뷰 표시
-        DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
-        DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.buildSize);
+        //DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
+        //DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.buildSize);
 
         // 좌클릭 확정
         if (Input.GetMouseButtonDown(0)) //  && !EventSystem.current.IsPointerOverGameObject()
