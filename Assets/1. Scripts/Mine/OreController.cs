@@ -77,6 +77,16 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
 
     public void Interact()
     {
+        Vector2 playerPos = player.transform.position;
+        Vector2 orePos = transform.position;
+
+        int wallLayerMask = LayerMask.GetMask("Wall");
+        if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
+        {
+            Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+            return;
+        }
+
         int pickaxePower = player.Stat.Pickaxe.crushingForce;
         int damage = player.Stat.Pickaxe.damage;
 
