@@ -8,14 +8,11 @@ public class PlayerController : MonoBehaviour
     private PlayerInputActions _actions;
     private EquipmentDatabase _equippedPickaxe;
 
-    [SerializeField] private LayerMask _miningLayer;
     private Vector2 _moveDir;
     private Vector3 _clickDir;
 
     private Coroutine _swingCoroutine;
     public bool IsSwing => _swingCoroutine != null;
-
-    private PlayerInteractor _interactor;
 
     private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
 
@@ -71,7 +68,6 @@ public class PlayerController : MonoBehaviour
     {
         _player = player;
         _equippedPickaxe = player.Stat.Pickaxe;
-        _interactor = GetComponent<PlayerInteractor>();
 
         _actions = player.InputActions;
         _actions.Player.Move.started += OnMoveStarted;
@@ -95,6 +91,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private IEnumerator C_Swing()
     {
+        // UI 클릭 체크
+        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
+
         // 클릭 월드 포지션 구하기
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
