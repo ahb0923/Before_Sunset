@@ -177,6 +177,7 @@ public class TowerAttackSensor : MonoBehaviour
         else
         {
             Debug.Log("[센서] 타겟 없음 → 대기 상태");
+            _currentTarget = null;
             _tower.ai.SetState(TOWER_STATE.Idle);
         }
     }
@@ -186,7 +187,7 @@ public class TowerAttackSensor : MonoBehaviour
     /// </summary>
     public void CheckTargetValid()
     {
-        if (_currentTarget == null || !_currentTarget.activeSelf)
+        if (_currentTarget == null || !_currentTarget.activeSelf || !detectedEnemies.Contains(_currentTarget))
         {
             RefreshTarget();  // 가장 가까운 적으로 다시 설정
         }
