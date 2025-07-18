@@ -49,8 +49,6 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable
         {
             _collider.enabled = false;
         }
-
-        Debug.Log("쥬얼 파괴됨!");
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)

@@ -9,18 +9,6 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
 
     private int _currentHP;
 
-    [System.Serializable]
-    public class DropPrefabEntry
-    {
-        public int id;
-        public GameObject prefab;
-    }
-
-    [Header("드롭 프리팹 매핑")]
-    [SerializeField] private List<DropPrefabEntry> dropPrefabs = new();
-
-    private Dictionary<int, GameObject> _dropPrefabDict;
-
     [SerializeField] private int _id;
     public int GetId() => _id;
 
@@ -39,15 +27,6 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
     public void OnInstantiate()
     {
         _data = DataManager.Instance.OreData.GetById(_id);
-
-        _dropPrefabDict = new Dictionary<int, GameObject>();
-        foreach (var entry in dropPrefabs)
-        {
-            if (!_dropPrefabDict.ContainsKey(entry.id))
-            {
-                _dropPrefabDict.Add(entry.id, entry.prefab);
-            }
-        }
     }
 
     public void OnGetFromPool()
@@ -84,13 +63,15 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
     {
         int dropId = _data.dropMineralId;
 
-        if (_dropPrefabDict != null && _dropPrefabDict.TryGetValue(dropId, out var prefab) && prefab != null)
+        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, transform.position);
+
+        if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
         {
-            Instantiate(prefab, transform.position, Quaternion.identity);
+            dropItem.OnGetFromPool();
         }
         else
         {
-            Debug.LogWarning($"[OreController] 드롭 프리팹이 존재하지 않거나 null입니다. ID: {dropId}");
+            Debug.LogWarning($"[OreController] 드롭 아이템 풀에서 꺼내기 실패 ID: {dropId}");
         }
     }
 
@@ -106,9 +87,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
         }
 
         bool destroyed = Mine(damage);
-        Debug.Log(destroyed ? "광물 파괴됨" : "채광됨");
     }
-
 
     public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
     {
