@@ -159,6 +159,7 @@ public class Smelter : MonoBehaviour, IPoolable
 
     public void OnGetFromPool()
     {
+        RenderUtil.SetSortingOrderByY(spriteRenderer);
     }
 
     public void OnReturnToPool()

@@ -167,6 +167,8 @@ public class TowerAttackSensor : MonoBehaviour
             Debug.Log("[센서] 건설 중이라 타겟 설정 안함");
             return;
         }
+        
+        // 타워 타입에 따라 다른 타겟 설정하도록
         _currentTarget = NearestTarget();
 
         if (_currentTarget != null)
