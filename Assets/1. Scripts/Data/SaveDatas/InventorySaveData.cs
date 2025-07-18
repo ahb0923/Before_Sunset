@@ -3,6 +3,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class InventorySaveData
 {
+    public ItemSaveData pickaxe;
     public List<ItemSaveData> items;
 
     public InventorySaveData() 

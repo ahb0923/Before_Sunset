@@ -376,12 +376,47 @@ public class Inventory : MonoBehaviour, ISaveable
     public void SaveData(GameData data)
     {
         InventorySaveData invenData = data.inventory;
+
+        invenData.pickaxe = new ItemSaveData(Pickaxe.Data.id, 1);
+
         foreach(Item item in Items)
         {
-            if (item == null) continue;
+            ItemSaveData itemData;
+            if(item != null)
+            {
+                itemData = new ItemSaveData(item.Data.id, item.stack == 0 ? 1 : item.stack);
+            }
+            else
+            {
+                itemData = new ItemSaveData(-1, 0);
+            }
 
-            ItemSaveData itemData = new ItemSaveData(item.Data.id, item.stack == 0 ? 1 : item.stack);
             invenData.items.Add(itemData);
         }
+    }
+
+    /// <summary>
+    /// 인벤토리 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        InventorySaveData invenData = data.inventory;
+
+        SetPickaxe(DataManager.Instance.EquipmentData.GetById(invenData.pickaxe.itemId));
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (invenData.items[i].itemId == -1)
+            {
+                Items[i] = null;
+            }
+            else
+            {
+                Items[i] = CreateItem(invenData.items[i].itemId);
+                Items[i].stack = invenData.items[i].quantity;
+            }
+        }
+
+        RefreshInventories();
     }
 }

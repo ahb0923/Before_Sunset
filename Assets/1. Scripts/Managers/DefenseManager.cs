@@ -152,23 +152,6 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     }
 
     /// <summary>
-    /// 타워 데이터 정보 저장
-    /// </summary>
-    public void SaveData(GameData data)
-    {
-        foreach (Transform towerObj in _obstacleDict.Keys)
-        {
-            if (towerObj.TryGetComponent<TowerStatHandler>(out var tower))
-            {
-                // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
-                BuildingSaveData towerData = new BuildingSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
-                data.constructedTowers.Add(towerData);
-            }
-            // 여기에 제련소도 추가해야 할 듯
-        }
-    }
-
-    /// <summary>
     /// 코어로부터 체비쇼프 거리를 반환<br/>
     /// ※ 체비쇼프 거리는 상하좌우나 대각선에서 1타일 떨어져 있으면 모두 1을 반환
     /// </summary>
@@ -187,5 +170,61 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(_mapCenter, _mapSize);
+    }
+
+    /// <summary>
+    /// 모든 빌딩 데이터 정보 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        foreach (Transform constructed in _obstacleDict.Keys)
+        {
+            if (constructed.TryGetComponent<TowerStatHandler>(out var tower))
+            {
+                // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
+                BuildingSaveData towerData = new BuildingSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
+                data.constructedTowers.Add(towerData);
+            }
+            // 여기에 제련소도 추가해야 할 듯
+        }
+    }
+
+    /// <summary>
+    /// 모든 빌딩 데이터 정보 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        // 기존 빌딩들 풀에 반환
+        foreach(Transform towerObj in _obstacleDict.Keys)
+        {
+            if (towerObj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                PoolManager.Instance.ReturnToPool(poolable.GetId(), towerObj.gameObject);
+            }
+        }
+        
+        // 컬렉션 데이터 초기화
+        _walkableIdStack.Clear();
+        _obstacleDict.Clear();
+        _distFromCoreDict.Clear();
+
+        // 코어 옵스터클에 추가
+        _nextId = 0;
+        AddObstacle(Core.transform, Core.Size);
+
+        // 로드된 데이터의 모든 빌딩 데이터를 옵스터클에 추가
+        foreach (BuildingSaveData building in data.constructedTowers)
+        {
+            GameObject obj = PoolManager.Instance.GetFromPool(building.towerId, building.position);
+            obj.transform.position = building.position;
+            AddObstacle(obj.transform, 1); // 타워 & 제련소 사이즈 현재는 1
+
+            if (obj.TryGetComponent<TowerStatHandler>(out var tower))
+            {
+                tower.CurrHp = building.curHp;
+                // 일단, 업그레이드 관련 정보가 없어서 로드는 안하고 있음
+            }
+            // 여기에 제련소도 추가해야 할 듯
+        }
     }
 }

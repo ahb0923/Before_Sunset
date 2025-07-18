@@ -158,8 +158,19 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        data.timeData.stage = Stage;
-        data.timeData.day = Day;
-        data.timeData.dailyTime = _dailyTimer;
+        data.timeData = new TimeSaveData(Stage, Day, _dailyTimer);
+    }
+
+    /// <summary>
+    /// 시간 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        Stage = data.timeData.stage;
+        Day = data.timeData.day;
+        _dailyTimer = data.timeData.dailyTime;
+
+        UIManager.Instance.GameTimeUI.SetDayPieces();
+        UIManager.Instance.GameTimeUI.SetStageText();
     }
 }
