@@ -7,7 +7,7 @@ public class PickUpItem : MonoBehaviour
     public int itemId;
     public float pickupRadius = 3f;
     public float moveSpeed = 5f;
-    public float delayBeforeAttract = 1f;
+    public float delayBeforeAttract = 0.5f;
 
     private Transform playerTransform;
     private float timer = 0f;

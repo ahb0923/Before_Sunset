@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemId: 100
   pickupRadius: 3
-  moveSpeed: 5
-  delayBeforeAttract: 1
+  moveSpeed: 8
+  delayBeforeAttract: 0.5
 --- !u!212 &2534809606382847675
 SpriteRenderer:
   m_ObjectHideFlags: 0
