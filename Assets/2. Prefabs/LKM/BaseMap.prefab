@@ -135,9 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 3
-  isEntering: 1
-  stayTimeToTrigger: 0.5
+  _portalDirection: 3
+  _stayTimeToTrigger: 0.5
 --- !u!70 &2321436332149332090
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -233,9 +232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 0
-  isEntering: 1
-  stayTimeToTrigger: 0.5
+  _portalDirection: 0
+  _stayTimeToTrigger: 0.5
 --- !u!70 &3705887040993635364
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -840,9 +838,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 2
-  isEntering: 1
-  stayTimeToTrigger: 0.5
+  _portalDirection: 2
+  _stayTimeToTrigger: 0.5
 --- !u!70 &8625449798808348248
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -40308,9 +40305,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21c746bb9da026c4db30e8f2ea660282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  portalDirection: 1
-  isEntering: 1
-  stayTimeToTrigger: 0.5
+  _portalDirection: 1
+  _stayTimeToTrigger: 0.5
 --- !u!70 &3449784131702583828
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
