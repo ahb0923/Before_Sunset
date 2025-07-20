@@ -58,6 +58,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (detectedEnemies.Add(enemy))
         {
             Debug.Log($"적 진입: {enemy.name} | 총 {detectedEnemies.Count}명 감지됨");
+            enemy.GetComponent<BaseMonster>()?.RegisterSensor(this);
             if (_tower.ai.CurState != TOWER_STATE.Construction && detectedEnemies.Count == 1)
                 _tower.ai.SetState(TOWER_STATE.Attack);
         }
@@ -72,6 +73,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (detectedEnemies.Remove(enemy))
         {
             Debug.Log($"[센서] 적 제거됨: {enemy.name} | 남은 {detectedEnemies.Count}명");
+            enemy.GetComponent<BaseMonster>()?.UnregisterSensor(this);
             if (enemy == _currentTarget)
             {
                 Debug.Log("[센서] 현재 타겟 제거 → 새 타겟 찾기");

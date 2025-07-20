@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseMonster : MonoBehaviour, IPoolable
@@ -25,6 +26,9 @@ public class BaseMonster : MonoBehaviour, IPoolable
     [field: SerializeField] public GameObject Projectile { get; private set; }
 
     public bool IsDead => Ai.CurState == MONSTER_STATE.Dead;
+
+    // 자신을 타게팅하고 있는 타워들
+    private HashSet<TowerAttackSensor> _registeredSensors = new();
 
     private void LateUpdate()
     {
@@ -69,6 +73,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnReturnToPool()
     {
+        NotifyDeath();
         Ai.ChangeState(MONSTER_STATE.Invalid);
         Detector.DetectedObstacles.Clear();
         DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(this);
@@ -81,4 +86,29 @@ public class BaseMonster : MonoBehaviour, IPoolable
     {
         Detector.SetAttackCore(isAttackCore);
     }
+
+
+
+    /// <summary>
+    /// 몬스터가 죽었을 때 자신을 감지하던 모든 타워에 알림
+    /// </summary>
+    public void NotifyDeath()
+    {
+        foreach (var sensor in _registeredSensors)
+        {
+            sensor.RemoveEnemy(gameObject); // 타워 측에서 hashSet 정리
+        }
+        _registeredSensors.Clear();
+    }
+    public void RegisterSensor(TowerAttackSensor sensor)
+    {
+        _registeredSensors.Add(sensor);
+    }
+
+    public void UnregisterSensor(TowerAttackSensor sensor)
+    {
+        _registeredSensors.Remove(sensor);
+    }
+
+
 }
