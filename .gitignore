@@ -78,6 +78,31 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Google Firebase configs (Android/Desktop)
+Assets/StreamingAssets/google-services.json
+Assets/StreamingAssets/google-services.json.meta
+Assets/StreamingAssets/google-services-desktop.json
+Assets/StreamingAssets/google-services-desktop.json.meta
+
+# Firebase 인증 키 등 (절대 커밋하면 앙대요!)
+*.keystore
+*.p12
+serviceAccountKey.json
+
+# Android/Gradle 관련 빌드 산출물
+.gradle/
+local.properties
+*.apk
+*.aab
+*.dex
+*.so
+
+# 기타
+.DS_Store
+.vscode/
+.idea/
+*.log
+
 # Visual Scripting auto-generated files
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
 /[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta

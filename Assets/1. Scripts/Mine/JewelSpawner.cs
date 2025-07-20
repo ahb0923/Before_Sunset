@@ -9,8 +9,5 @@ public class JewelSpawner : ResourceSpawner<JewelDatabase>
         GetId = data => data.id;
         GetSpawnStage = data => 1;
         GetProbability = data => data.spawnProbability;
-
-        prefabFolder = "Prefabs/Jewel";
-        prefabPrefix = "Jewel";
     }
 }
