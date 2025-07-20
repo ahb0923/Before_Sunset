@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class BaseMonster : MonoBehaviour, IPoolable
 {
+    private static int _nextInstanceId = 0;
+    public int SpawnInstanceId { get; private set; }
+
     public static readonly int MOVE = Animator.StringToHash("Move");
     public static readonly int ATTACK = Animator.StringToHash("Attack");
     public static readonly int X = Animator.StringToHash("DirX");
@@ -63,6 +66,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnGetFromPool()
     {
+        SpawnInstanceId = ++_nextInstanceId;
         Stat.SetFullHp();
         HpBar.SetFullHpBar();
         Ai.InitExploreState();
@@ -87,8 +91,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Detector.SetAttackCore(isAttackCore);
     }
 
-
-
     /// <summary>
     /// 몬스터가 죽었을 때 자신을 감지하던 모든 타워에 알림
     /// </summary>
@@ -102,11 +104,18 @@ public class BaseMonster : MonoBehaviour, IPoolable
         }
         _registeredSensors.Clear();
     }
+    /// <summary>
+    /// 타워 공격목록 해시셋에 자신 등록
+    /// </summary>
+    /// <param name="sensor"></param>
     public void RegisterSensor(TowerAttackSensor sensor)
     {
         _registeredSensors.Add(sensor);
     }
-
+    /// <summary>
+    /// 타워 공격목록 해시셋에 자신 제거 
+    /// </summary>
+    /// <param name="sensor"></param>
     public void UnregisterSensor(TowerAttackSensor sensor)
     {
         _registeredSensors.Remove(sensor);
