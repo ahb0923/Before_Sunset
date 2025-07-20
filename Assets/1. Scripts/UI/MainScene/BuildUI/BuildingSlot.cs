@@ -87,7 +87,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void RefreshUI()
     {
-        bGImage.color = _originalColor;
+        bgImage.color = _originalColor;
     }
 
     private string SetSmelt(SmelterDatabase data)
