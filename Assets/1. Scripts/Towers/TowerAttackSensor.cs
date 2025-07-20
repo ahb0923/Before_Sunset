@@ -207,7 +207,7 @@ public class TowerAttackSensor : MonoBehaviour
     {
         var monster = _currentTarget?.GetComponent<BaseMonster>();
 
-        if (_currentTarget == null || !_currentTarget.activeSelf || monster == null || monster.SpawnInstanceId != _currentTargetSpawnId || !detectedEnemies.Contains(_currentTarget))
+        if (_currentTarget == null || !_currentTarget.activeSelf || monster == null || monster.SpawnInstanceId != _currentTargetSpawnId)
         {
             Debug.Log("[센서] 타겟이 유효하지 않음 → fallback 클린업 & 리프레시");
             CleanupInvalidEnemies();

@@ -108,7 +108,6 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 
 
     // ============<< IPoolable >>============
-
     public int GetId()
     {
         return towerId;

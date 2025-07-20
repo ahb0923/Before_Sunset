@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BaseMonster : MonoBehaviour, IPoolable
 {
+    // 모든 몬스터들이 공유하는 전역변수, 몬스터들만의 고유 식별 ID
     private static int _nextInstanceId = 0;
     public int SpawnInstanceId { get; private set; }
 
