@@ -178,6 +178,12 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             yield return _tower.attackStrategy.Attack(_tower);
         }
 
+        if (_tower.attackSensor.CurrentTarget == null || !_tower.attackSensor.CurrentTarget.activeSelf)
+        {
+            _tower.attackSensor.CheckTargetValid();
+            yield break; // 상태 Idle로 전환될 것
+        }
+
         while (true)
         {
             if (IsInterrupted)

@@ -77,6 +77,7 @@ public class TowerAttackSensor : MonoBehaviour
             if (enemy == _currentTarget)
             {
                 Debug.Log("[센서] 현재 타겟 제거 → 새 타겟 찾기");
+                _currentTarget = null;
                 RefreshTarget();
             }
             if (detectedEnemies.Count == 0)
@@ -97,7 +98,7 @@ public class TowerAttackSensor : MonoBehaviour
         foreach (var enemy in detectedEnemies)
         {
             // 검사하는 타이밍에 맞춰서 다른 타워가 해당 몬스터를 부숴버릴 경우에 대비
-            if (enemy == null) continue;
+            if (enemy == null || !enemy.activeSelf) continue;
 
             float dist = Vector3.Distance(origin, enemy.transform.position);
             if (dist < minDist)
@@ -173,6 +174,8 @@ public class TowerAttackSensor : MonoBehaviour
         // 타워 타입에 따라 다른 타겟 설정하도록
         _currentTarget = NearestTarget();
 
+        Debug.Log($"[센서] 남아있는 적 갯수 테스트용: {detectedEnemies.Count}");
+
         if (_currentTarget != null)
         {
             Debug.Log($"[센서] 새 타겟 설정: {_currentTarget.name}");
@@ -193,7 +196,31 @@ public class TowerAttackSensor : MonoBehaviour
     {
         if (_currentTarget == null || !_currentTarget.activeSelf || !detectedEnemies.Contains(_currentTarget))
         {
+            // fallback: 유효하지 않은 적 제거
+            CleanupInvalidEnemies();
+
             RefreshTarget();  // 가장 가까운 적으로 다시 설정
+        }
+    }
+    /// <summary>
+    /// 타워에 남아있는 적 확실하게 제거
+    /// </summary>
+    public void CleanupInvalidEnemies()
+    {
+        List<GameObject> toRemove = new();
+
+        foreach (var enemy in detectedEnemies)
+        {
+            if (enemy == null || !enemy.activeSelf)
+            {
+                Debug.Log($"[센서] 클린업 대상: {(enemy == null ? "null" : enemy.name)}");
+                toRemove.Add(enemy);
+            }
+        }
+
+        foreach (var enemy in toRemove)
+        {
+            RemoveEnemy(enemy); // 내부에서 sensor → enemy 해제 처리까지 자동
         }
     }
 
@@ -228,6 +255,7 @@ public class TowerAttackSensor : MonoBehaviour
                 if (other.gameObject == _currentTarget)
                 {
                     Debug.Log($"[센서] 현재 타겟 이탈: {other.name} → 타겟 갱신");
+                    _currentTarget = null;
                     RefreshTarget();
                 }
                 if (detectedEnemies.Count == 0)

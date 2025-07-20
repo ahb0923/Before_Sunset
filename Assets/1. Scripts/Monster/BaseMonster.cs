@@ -94,9 +94,11 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void NotifyDeath()
     {
+        Debug.Log($"[몬스터] 죽음 알림 시작: {name} | 감지 센서 수: {_registeredSensors.Count}");
         foreach (var sensor in _registeredSensors)
         {
-            sensor.RemoveEnemy(gameObject); // 타워 측에서 hashSet 정리
+            Debug.Log($"[몬스터] → 센서에 알림: {sensor.name}");
+            sensor.RemoveEnemy(gameObject);
         }
         _registeredSensors.Clear();
     }
