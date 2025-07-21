@@ -72,7 +72,7 @@ public class UpgradeUI : MonoBehaviour
 
     private void InitSlots(TowerDatabase data)
     {
-        var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
+        var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
         
         if (_slots.Count >= upgradeTowerData.buildRequirements.Count)
         {
@@ -93,7 +93,7 @@ public class UpgradeUI : MonoBehaviour
 
     private void SetSlot(TowerDatabase data)
     {
-        var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
+        var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
         
         List<KeyValuePair<string, int>> dataList = upgradeTowerData.buildRequirements.ToList();
         List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
@@ -114,7 +114,7 @@ public class UpgradeUI : MonoBehaviour
 
     private void SetUpgradeUI(TowerDatabase data)
     {
-        var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
+        var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
             
         _targetNameText.text = data.towerName;
         _targetInfoText.text = data.flavorText;

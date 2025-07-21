@@ -38,7 +38,10 @@ public class MineralDataHandler : BaseDataHandler<MineralDatabase>
         Debug.LogWarning($"[MineralDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
-    
+    protected override void AfterLoaded()
+    {
+        SettingPrefab();
+    }
     public void SettingPrefab()
     {
         foreach (var mineral in dataIdDictionary.Values)
