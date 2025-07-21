@@ -83,7 +83,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 obj.transform.SetParent(parentTransform, false);
 
             obj.transform.position = pos;
-            obj.SetActive(true);
             obj.GetComponent<IPoolable>()?.OnGetFromPool();
 
             placedPositions.Add(pos);
@@ -136,5 +135,75 @@ public class ResourceSpawner<TData> : MonoBehaviour
         }
 
         return default;
+    }
+
+    public List<ResourceState> SaveCurrentStates()
+    {
+        var savedStates = new List<ResourceState>();
+        var parent = GetParentTransform();
+        if (parent == null) return savedStates;
+
+        List<Transform> toReturn = new();
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            var obj = parent.GetChild(i).gameObject;
+            var stateComp = obj.GetComponent<IResourceStateSavable>();
+
+            if (stateComp != null)
+            {
+                // 위치 변환 없이 저장
+                savedStates.Add(stateComp.SaveState());
+
+                stateComp.OnReturnToPool();
+            }
+
+            toReturn.Add(parent.GetChild(i));
+        }
+
+        foreach (var tr in toReturn)
+        {
+            var poolable = tr.GetComponent<IPoolable>();
+            if (poolable != null)
+            {
+                PoolManager.Instance.ReturnToPool(poolable.GetId(), tr.gameObject);
+            }
+            else
+            {
+                Debug.LogWarning($"[ReturnToPool] IPoolable 컴포넌트가 없습니다: {tr.name}");
+            }
+        }
+
+        return savedStates;
+    }
+
+    public List<GameObject> SpawnFromSavedStates(List<ResourceState> savedStates)
+    {
+        List<GameObject> spawnedObjects = new List<GameObject>();
+
+        foreach (var state in savedStates)
+        {
+            // 저장된 위치 그대로 사용
+            GameObject obj = PoolManager.Instance.GetFromPool(state.Id, state.Position);
+            if (obj == null)
+            {
+                Debug.LogWarning($"풀에서 꺼내기 실패 ID: {state.Id}");
+                continue;
+            }
+
+            if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
+            {
+                resource.LoadState(state);
+                resource.OnGetFromPool();
+            }
+
+            if (parentTransform != null)
+                obj.transform.SetParent(parentTransform, false);
+
+            obj.SetActive(true);
+            spawnedObjects.Add(obj);
+        }
+
+        return spawnedObjects;
     }
 }

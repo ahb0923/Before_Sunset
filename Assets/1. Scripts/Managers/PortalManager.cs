@@ -47,6 +47,7 @@ public class PortalManager : MonoSingleton<PortalManager>
         return portalDirection != oppositeDir;
     }
 
+    // 들어온 방향 받아서 나갈 방향 찾기
     public Portal.PortalDirection GetOppositeDirection(Portal.PortalDirection dir)
     {
         return dir switch

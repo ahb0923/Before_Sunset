@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OreController : MonoBehaviour, IPoolable, IInteractable
+public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceStateSavable
 {
     public OreDatabase _data { get; private set; }
 
@@ -37,6 +37,22 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable
     public void OnReturnToPool()
     {
         //throw new System.NotImplementedException();
+    }
+
+    public ResourceState SaveState()
+    {
+        return new ResourceState
+        {
+            Id = _id,
+            Position = transform.position,
+            HP = _currentHP
+        };
+    }
+
+    public void LoadState(ResourceState state)
+    {
+        _currentHP = state.HP;
+        transform.position = state.Position;
     }
 
     public bool CanBeMined(int pickaxePower)

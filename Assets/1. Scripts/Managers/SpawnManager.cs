@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -13,6 +15,7 @@ public class SpawnManager : MonoBehaviour
     private int currentMapIndex = -1;
 
     private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<ResourceState>> _mapResourceStates = new();
 
     private void Start()
     {
@@ -52,25 +55,37 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        if (currentMapIndex == mapIndex)
-        {
-            // 이미 스폰된 오브젝트 활성화
-            SetMapResourcesActive(mapIndex, true);
-            return;
-        }
-
-        // 이전 맵 오브젝트 비활성화
+        // 현재 맵 상태 저장
         if (currentMapIndex != -1)
-            SetMapResourcesActive(currentMapIndex, false);
+        {
+            // 1) 상태 저장
+            List<ResourceState> saved = new();
+            saved.AddRange(oreSpawner.SaveCurrentStates());
+            saved.AddRange(jewelSpawner.SaveCurrentStates());
+            _mapResourceStates[currentMapIndex] = saved;
+
+            // 2) 이전 맵 자원들 풀에 반환
+            if (mapResources.TryGetValue(currentMapIndex, out var oldResources))
+            {
+                foreach (var obj in oldResources)
+                {
+                    if (obj == null) continue;
+                    if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
+                    {
+                        resource.OnReturnToPool();
+                    }
+                    PoolManager.Instance.ReturnToPool(obj.GetComponent<IPoolable>().GetId(), obj);
+                }
+                oldResources.Clear();
+            }
+        }
 
         currentMapIndex = mapIndex;
         currentMapPosition = mapPosition;
-
         SetMapPositionAndArea(mapPosition, spawnAreas[0], spawnAreas[1]);
 
         if (currentMapIndex == 0)
         {
-            Debug.Log("기본맵이라 자원 스폰하지 않음");
             return;
         }
 
@@ -80,14 +95,20 @@ public class SpawnManager : MonoBehaviour
         oreSpawner.SetParentTransform(oreContainer);
         jewelSpawner.SetParentTransform(jewelContainer);
 
-        if (mapResources.ContainsKey(currentMapIndex))
+        oreContainer.transform.position = Vector3.zero;
+        jewelContainer.transform.position = Vector3.zero;
+
+        if (_mapResourceStates.TryGetValue(currentMapIndex, out var savedStates))
         {
-            // 기존 스폰 오브젝트 재활성화
-            SetMapResourcesActive(currentMapIndex, true);
+            List<GameObject> newResources = new List<GameObject>();
+
+            newResources.AddRange(oreSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id < 1000).ToList()));
+            newResources.AddRange(jewelSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id >= 1000).ToList()));
+
+            mapResources[currentMapIndex] = newResources;
         }
         else
         {
-            // 새로 스폰 후 저장
             SpawnAllAndStore();
         }
     }

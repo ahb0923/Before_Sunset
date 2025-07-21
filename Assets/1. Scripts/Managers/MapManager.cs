@@ -67,6 +67,7 @@ public class MapManager : MonoSingleton<MapManager>
         }
     }
 
+    // 포탈 방향 받아서 맵 이동
     public void MoveToMapByDirection(Portal.PortalDirection dir)
     {
         int current = CurrentMapIndex;
@@ -87,11 +88,7 @@ public class MapManager : MonoSingleton<MapManager>
         }
     }
 
-    public void MoveToRandomMap()
-    {
-        MoveToMap(_nextMapIndex++, false);
-    }
-
+    // 이전맵 이동
     public void MoveToPreviousMap()
     {
         if (_mapHistory.Count == 0) return;
@@ -104,6 +101,7 @@ public class MapManager : MonoSingleton<MapManager>
         MoveToMap(prev, false);
     }
 
+    // 귀환
     public void ReturnToHomeMap()
     {
         if (CurrentMapIndex == 0) return;
@@ -111,6 +109,7 @@ public class MapManager : MonoSingleton<MapManager>
         MoveToMap(0, false);
     }
 
+    // 맵이동
     private void MoveToMap(int targetIndex, bool addToHistory = true)
     {
         if (targetIndex == CurrentMapIndex) return;
@@ -181,6 +180,7 @@ public class MapManager : MonoSingleton<MapManager>
         CurrentMapIndex = targetIndex;
     }
 
+    // 포탈에서 거리두고 플레이어 위치시키기
     private Vector3 GetSpawnPositionByEnteredPortal(GameObject mapInstance, Portal.PortalDirection? enteredDir)
     {
         if (enteredDir == null)

@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
-        if (IsSwing || PlayerInputHandler._isRecallInProgress) return;
+        if (PlayerInputHandler._isRecallInProgress) return;
 
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }

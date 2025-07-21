@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JewelController : MonoBehaviour, IPoolable, IInteractable
+public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourceStateSavable
 {
     public PickUpItem pickUpItem;
     public Collider2D _collider;
@@ -33,6 +33,28 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable
             pickUpItem.enabled = false;
         if (_collider != null)
             _collider.enabled = false;
+    }
+
+    public ResourceState SaveState()
+    {
+        return new ResourceState
+        {
+            Id = _id,
+            Position = transform.position,
+            IsMined = mined
+        };
+    }
+
+    public void LoadState(ResourceState state)
+    {
+        transform.position = state.Position;
+        mined = state.IsMined;
+
+        if (pickUpItem != null)
+            pickUpItem.enabled = mined;
+
+        if (_collider != null)
+            _collider.enabled = !mined;
     }
 
     public void Interact()
