@@ -23,7 +23,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private static GameObject _draggingItemIcon;
     private static Item _draggingItem;
     private static ItemSlot _draggingOriginSlot;
-    
+
     private void Reset()
     {
         _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_IMAGE);

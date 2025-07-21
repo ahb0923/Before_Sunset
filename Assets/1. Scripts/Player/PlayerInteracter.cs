@@ -15,12 +15,12 @@ public class PlayerInteractor : MonoBehaviour
     private Vector2 lastMousePos;
     private Vector3 lastPlayerPos;
 
-    private BasePlayer _player;
+    private PlayerStateHandler stateHandler;
     private CircleCollider2D playerCollider;
 
     void Awake()
     {
-        _player = GetComponent<BasePlayer>();
+        stateHandler = GetComponent<PlayerStateHandler>();
         playerCollider = GetComponent<CircleCollider2D>();
     }
 
@@ -105,7 +105,7 @@ public class PlayerInteractor : MonoBehaviour
 
     float GetEffectiveRange()
     {
-        return (_player != null && !_player.IsInBase) ? 0.5f : interactionRange;
+        return (stateHandler != null && stateHandler.IsInMiningArea) ? 0.5f : interactionRange;
     }
 
     float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)

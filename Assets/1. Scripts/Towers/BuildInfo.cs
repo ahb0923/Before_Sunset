@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuildInfo : MonoBehaviour
+public class BuildInfo : MonoBehaviour, IBuildable
 {
     public int id;
-    public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등
+    public Vector2Int buildSize = new Vector2Int(1, 1); // 1x1 또는 2x2 등
     public SpriteRenderer spriteRenderer;
 
     private void Start()
@@ -15,10 +15,10 @@ public class BuildInfo : MonoBehaviour
             spriteRenderer = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
     }
 
-    public void Init(int id, Vector2Int size)
+    public void Init(int id, Vector2Int buildSize)
     {
         this.id = id;
-        this.size = size;
+        this.buildSize = buildSize;
     }
 
     public void SettingSpriteOrder()
@@ -26,4 +26,8 @@ public class BuildInfo : MonoBehaviour
         RenderUtil.SetSortingOrderByY(spriteRenderer);
     }
 
+    public Vector2 GetSize()
+    {
+        throw new System.NotImplementedException();
+    }
 }

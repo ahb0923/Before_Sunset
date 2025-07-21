@@ -11,4 +11,6 @@ public class EquipmentDatabase : ItemDatabase
     public int crushingForce;
     public float speed;
     public float range;
+
+    public Dictionary<string, int> upgradeRequirements;
 }

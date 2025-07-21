@@ -19,6 +19,8 @@ public class Smelter : MonoBehaviour, IPoolable
 
     [SerializeField] private Smelter_Interaction _interaction;
 
+    public SpriteRenderer spriteRenderer;
+    
     private void Awake()
     {
         smelterData = DataManager.Instance.SmelterData.GetById(smelterID);
@@ -26,7 +28,7 @@ public class Smelter : MonoBehaviour, IPoolable
             _interaction = Helper_Component.GetComponentInChildren<Smelter_Interaction>(gameObject);
         _interaction.Init(this);
         if (_buildInfo == null)
-            _buildInfo = Helper_Component.GetComponent<BuildInfo>(gameObject);
+            _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
         _buildInfo.Init(smelterID, size);
     }
 
@@ -157,6 +159,7 @@ public class Smelter : MonoBehaviour, IPoolable
 
     public void OnGetFromPool()
     {
+        RenderUtil.SetSortingOrderByY(spriteRenderer);
     }
 
     public void OnReturnToPool()

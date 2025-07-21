@@ -1,121 +1,228 @@
 using System.Collections;
+using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputHandler : MonoBehaviour
 {
-    private BasePlayer _player;
-    private PlayerInputActions _actions;
+    private PlayerInputActions _inputActions;
+    public PlayerStateHandler _stateHandler;
 
-    [SerializeField] private float _returnKeyHeldTime = 1f;
+    public Vector2 MoveInput { get; private set; }
+    public bool IsSwing { get; private set; }
 
-    private bool _isRecallStarted;
-    private bool _isHeldReturnKey;
-    private float _heldTimer;
+    public event Action OnInventoryToggle;
+    public event Action OnBuildMode;
+    public event Action OnUnBuildMode;
 
-    #region Event Subscriptions
-    private void OnInventoryStarted(InputAction.CallbackContext context)
+    private bool isReturnKeyHeld = false;
+    private float returnKeyHeldTime = 0f;
+    private bool isRecallStarted = false;
+    [SerializeField] private float holdTimeToTriggerRecall = 2f;
+
+    private void Awake()
     {
-        InventoryManager.Instance.Inventory.Toggle();
+        _inputActions = new PlayerInputActions();
+        
     }
 
-    private void OnBuildStarted(InputAction.CallbackContext context)
+    private void OnEnable()
     {
-        UIManager.Instance.CraftArea.Toggle();
+        _inputActions.Player.Enable();
+
+        _inputActions.Player.Move.performed += OnMovePerformed;
+        _inputActions.Player.Move.canceled += OnMoveCanceled;
+
+        _inputActions.Player.Swing.performed += OnSwingPerformed;
+        _inputActions.Player.Swing.canceled += OnSwingCanceled;
+
+        _inputActions.Player.Inventory.performed += OnInventoryPerformed;
+        _inputActions.Player.Build.performed += OnBuildPerformed;
+        _inputActions.Player.UnBuild.performed += OnUnBuildPerformed;
+
+        _inputActions.Player.ReturnHome.performed += OnReturnHomePerformed;
+        _inputActions.Player.ReturnHome.canceled += OnReturnHomeCanceled;
+
+        /*
+        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
+            UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
+        */
+
+        StartCoroutine(WaitAndSubscribe());
     }
 
-    private void OnDestroyModeStarted(InputAction.CallbackContext context)
+    private IEnumerator WaitAndSubscribe()
     {
-        // 추가 예정
+        yield return new WaitUntil(() => UIManager.Instance != null && UIManager.Instance.RecallUI != null);
+
+        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
     }
 
-    private void OnReturnHomeStarted(InputAction.CallbackContext context)
-    {
-        _isHeldReturnKey = true;
-    }
-
-    private void OnReturnHomeCanceled(InputAction.CallbackContext context)
-    {
-        _heldTimer = 0f;
-        UIManager.Instance.RecallUI.UpdateHoldProgress(0f);
-        _isHeldReturnKey = false;
-    }
-    #endregion
-
-    #region Event Unsubscriptions
     private void OnDisable()
     {
-        _actions.Interaction.Disable();
+        _inputActions.Player.Move.performed -= OnMovePerformed;
+        _inputActions.Player.Move.canceled -= OnMoveCanceled;
 
-        _actions.Interaction.Inventory.started -= OnInventoryStarted;
-        _actions.Interaction.Build.started -= OnBuildStarted;
-        _actions.Interaction.DestroyMode.started -= OnDestroyModeStarted;
-        _actions.Interaction.ReturnHome.performed -= OnReturnHomeStarted;
+        _inputActions.Player.Swing.performed -= OnSwingPerformed;
+        _inputActions.Player.Swing.canceled -= OnSwingCanceled;
+
+        _inputActions.Player.Inventory.performed -= OnInventoryPerformed;
+        _inputActions.Player.Build.performed -= OnBuildPerformed;
+        _inputActions.Player.UnBuild.performed -= OnUnBuildPerformed;
+
+        _inputActions.Player.ReturnHome.performed -= OnReturnHomePerformed;
+        _inputActions.Player.ReturnHome.canceled -= OnReturnHomeCanceled;
+        
+        if (UIManager.Instance != null && UIManager.Instance.RecallUI != null)
+            UIManager.Instance.RecallUI.OnCountdownFinished -= OnRecallCountdownFinished;
+        
+        _inputActions.Player.Disable();
     }
-    #endregion
+
+    private void OnDestroy()
+    {
+    }
 
     private void Update()
     {
-        if (_player.IsInBase || _isRecallStarted || !_isHeldReturnKey) return;
+        if (isRecallStarted) return;
 
-        _heldTimer += Time.deltaTime;
-        UIManager.Instance.RecallUI.UpdateHoldProgress(_heldTimer / _returnKeyHeldTime);
-
-        if(_heldTimer >= _returnKeyHeldTime)
+        if (isReturnKeyHeld)
         {
-            StartRecall();
+            returnKeyHeldTime += Time.deltaTime;
+            UIManager.Instance.RecallUI.UpdateHoldProgress(returnKeyHeldTime / holdTimeToTriggerRecall);
+
+            if (returnKeyHeldTime >= holdTimeToTriggerRecall)
+            {
+                StartRecall();
+            }
         }
     }
 
-    /// <summary>
-    /// 키보드 인풋 핸들러 초기화
-    /// </summary>
-    public void Init(BasePlayer player)
-    {
-        _player = player;
-
-        _actions = player.InputActions;
-        _actions.Interaction.Inventory.started += OnInventoryStarted;
-        _actions.Interaction.Build.started += OnBuildStarted;
-        _actions.Interaction.DestroyMode.started += OnDestroyModeStarted;
-        _actions.Interaction.ReturnHome.started += OnReturnHomeStarted;
-        _actions.Interaction.ReturnHome.canceled += OnReturnHomeCanceled;
-        _actions.Interaction.Enable();
-
-        UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
-
-        _isRecallStarted = false;
-        _isHeldReturnKey = false;
-        _heldTimer = 0f;
-    }
-
-    /// <summary>
-    /// 귀환 키보드 일정 시간 눌렀을 때, 귀환 시작
-    /// </summary>
     private void StartRecall()
     {
-        _isRecallStarted = true;
-        _heldTimer = 0f;
+        Debug.Log("StartRecall() 호출됨");
+        isRecallStarted = true;
+        isReturnKeyHeld = false;
+
+        if (AuraHandler.Instance != null)
+            AuraHandler.Instance.Show();
 
         UIManager.Instance.RecallUI.StartRecallCountdown();
     }
 
-    /// <summary>
-    /// 귀환 카운트다운이 끝나고 실제 기지로 귀환
-    /// </summary>
-    private void OnRecallCountdownFinished()
-    {
-        StartCoroutine(C_Recall());
-    }
-    private IEnumerator C_Recall()
+
+    private IEnumerator DelayedRecall()
     {
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
             UIManager.Instance.RecallUI.CloseRecall();
             MapManager.Instance.ReturnToHomeMap();
-            _player.SetPlayerInBase(true);
         }));
 
-        _isRecallStarted = false;
+        isRecallStarted = false;
+        returnKeyHeldTime = 0f;
+
+
+        if (AuraHandler.Instance != null)
+            AuraHandler.Instance.Hide();
+
+        if (_stateHandler != null)
+            _stateHandler.ExitMiningArea();
+    }
+
+    private void OnReturnHomePerformed(InputAction.CallbackContext context)
+    {
+        if (isRecallStarted) return;
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            if (IsOnMiningTrigger())
+            {
+                Debug.Log("광산 트리거 위에서는 귀환할 수 없습니다.");
+                return;
+            }
+
+            isReturnKeyHeld = true;
+            returnKeyHeldTime = 0f;
+
+            UIManager.Instance.RecallUI.ShowRecallIcon();
+        }
+    }
+
+    private void OnReturnHomeCanceled(InputAction.CallbackContext context)
+    {
+        if (isRecallStarted) return;
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            isReturnKeyHeld = false;
+            returnKeyHeldTime = 0f;
+            UIManager.Instance.RecallUI.ShowRecallIcon();
+        }
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        MoveInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        MoveInput = Vector2.zero;
+    }
+
+    private void OnSwingPerformed(InputAction.CallbackContext context)
+    {
+        if (_stateHandler != null && _stateHandler.IsInMiningArea)
+        {
+            IsSwing = true;
+        }
+        else
+        {
+            IsSwing = false;
+        }
+    }
+
+    private void OnSwingCanceled(InputAction.CallbackContext context)
+    {
+        IsSwing = false;
+    }
+
+    private void OnInventoryPerformed(InputAction.CallbackContext context)
+    {
+        OnInventoryToggle?.Invoke();
+    }
+
+    private void OnBuildPerformed(InputAction.CallbackContext context)
+    {
+        OnBuildMode?.Invoke();
+    }
+
+    private void OnUnBuildPerformed(InputAction.CallbackContext context)
+    {
+        OnUnBuildMode?.Invoke();
+    }
+
+    private void OnRecallCountdownFinished()
+    {
+        StartCoroutine(DelayedRecall());
+    }
+
+    public bool IsRecallInProgress()
+    {
+        return isRecallStarted;
+    }
+
+    private bool IsOnMiningTrigger()
+    {
+        Collider2D[] results = Physics2D.OverlapCircleAll(transform.position, 0.1f);
+        foreach (var col in results)
+        {
+            if (col.TryGetComponent<MiningHandler>(out var handler))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

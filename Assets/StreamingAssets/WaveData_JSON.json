@@ -1,93 +1,98 @@
 [
   {
-    "stageId": "1000",
-    "summonDelay": "1",
-    "isAttackCore": "true",
+    "stageID": 1000,
+    "summonDelay": 1,
+    "isAttackCore": true,
     "waveInfo": {
-      "머프": 5,
-      "드리즐": 3
-    }
-  },
-  {
-    "stageId": "1001",
-    "summonDelay": "10",
-    "isAttackCore": "false",
-    "waveInfo": {
-      "머프": 3,
-      "헤비": 2
-    }
-  },
-  {
-    "stageId": "1002",
-    "summonDelay": "10",
-    "isAttackCore": "true",
-    "waveInfo": {
-      "머프": 5,
-      "드리즐": 2
-    }
-  },
-  {
-    "stageId": "1010",
-    "summonDelay": "1",
-    "isAttackCore": "true",
-    "waveInfo": {
-      "머프": 5,
       "드리즐": 3,
+      "머프": 5
+    }
+  },
+  {
+    "stageID": 1001,
+    "summonDelay": 10,
+    "isAttackCore": false,
+    "waveInfo": {
+      "헤비": 2,
+      "머프": 3
+    }
+  },
+  {
+    "stageID": 1002,
+    "summonDelay": 10,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 2,
+      "머프": 5
+    }
+  },
+  {
+    "stageID": 1010,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 5,
       "플리터": 2
     }
   },
   {
-    "stageId": "1011",
-    "summonDelay": "10",
-    "isAttackCore": "false",
+    "stageID": 1011,
+    "summonDelay": 10,
+    "isAttackCore": false,
     "waveInfo": {
-      "머프": 5,
-      "헤비": 2
+      "헤비": 2,
+      "머프": 5
     }
   },
   {
-    "stageId": "1012",
-    "summonDelay": "10",
-    "isAttackCore": "true",
+    "stageID": 1012,
+    "summonDelay": 10,
+    "isAttackCore": true,
     "waveInfo": {
       "머프": 3,
       "플리터": 5
     }
   },
   {
-    "stageId": "1013",
-    "summonDelay": "10",
-    "isAttackCore": "false",
+    "stageID": 1013,
+    "summonDelay": 10,
+    "isAttackCore": false,
     "waveInfo": {
-      "머프": 2,
       "드리즐": 2,
       "헤비": 1,
+      "머프": 2,
       "플리터": 2
     }
   },
   {
-    "stageId": "1020",
+    "stageID": 1020,
     "summonDelay": 0,
-    "isAttackCore": "true"
+    "isAttackCore": true,
+    "waveInfo": null
   },
   {
-    "stageId": "1021",
+    "stageID": 1021,
     "summonDelay": 0,
-    "isAttackCore": "false"
+    "isAttackCore": false,
+    "waveInfo": null
   },
   {
-    "stageId": "1022",
+    "stageID": 1022,
     "summonDelay": 0,
-    "isAttackCore": "true"
+    "isAttackCore": true,
+    "waveInfo": null
   },
   {
-    "stageId": "1023",
+    "stageID": 1023,
     "summonDelay": 0,
-    "isAttackCore": "false"
+    "isAttackCore": false,
+    "waveInfo": null
   },
   {
-    "stageId": "1024",
+    "stageID": 1024,
     "summonDelay": 0,
-    "isAttackCore": "true"
+    "isAttackCore": true,
+    "waveInfo": null
   }
 ]

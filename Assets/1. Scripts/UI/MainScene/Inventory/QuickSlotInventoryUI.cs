@@ -16,8 +16,8 @@ public class QuickSlotInventoryUI : MonoBehaviour
     private const string ITEM_SLOT_AREA = "QuickSlotArea";
     private const string ITEM_SLOT_PREFAB = "Slots/ItemSlot";
     private const string PICKAXE_SLOT = "PickaxeSlot";
-    
-    
+
+    int k;
     private void Reset()
     {
         _itemSlotContainer = this.gameObject.transform.Find(ITEM_SLOT_AREA);

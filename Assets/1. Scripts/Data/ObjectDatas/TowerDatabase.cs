@@ -17,7 +17,7 @@ public class TowerDatabase
     public string flavorText;
     public TOWER_BUILD_TYPE buildType;
     public TOWER_ATTACK_TYPE attackType;
-    public int nextUpgradeId;
+    public int? nextUpgradeId;
     public int projectileId;
 
     public int level;
@@ -26,6 +26,7 @@ public class TowerDatabase
     public float aps;
     public float range;
 
+    public string spriteName;
     public string prefabName;
 
     public Dictionary<string, int> buildRequirements;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -17,14 +18,14 @@ public enum TOWER_TYPE
     HealTower,
     MagnetTower
 }
-public class BaseTower : MonoBehaviour, IPoolable 
+public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 {
     [Header(" [에디터 할당] ")]
     public TOWER_TYPE towerType;
     public int towerId;
 
 
-    public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등
+    public Vector2Int buildSize = new Vector2Int(3, 3); // 1x1 또는 2x2 등
 
 
     public Collider2D mainCollider;
@@ -48,7 +49,6 @@ public class BaseTower : MonoBehaviour, IPoolable
 
     // 공격 전략
     public IAttackStrategy attackStrategy;
-
 
 
     private void Reset()
@@ -81,7 +81,7 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.Init(this);
         attackSensor.Init(this);
         InitAttackStrategy();
-        buildInfo.Init(towerId, size);
+        buildInfo.Init(towerId, buildSize);
     }
 
     public void InitAttackStrategy()
@@ -108,7 +108,6 @@ public class BaseTower : MonoBehaviour, IPoolable
 
 
     // ============<< IPoolable >>============
-
     public int GetId()
     {
         return towerId;
@@ -131,6 +130,7 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.ResetStateMachine();
         ai.SetState(TOWER_STATE.Construction, true);
         ui.ResetHpBar();
+        RenderUtil.SetSortingOrderByY(ui.icon);
     }
 
     /// <summary>
@@ -141,6 +141,16 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.SetState(TOWER_STATE.None, true);
         gameObject.SetActive(false);
     }
-
     // =======================================
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (BuildManager.Instance.IsPlacing) return;
+
+            var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
+            UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
+        }
+    }
 }

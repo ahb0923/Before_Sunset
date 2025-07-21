@@ -16,7 +16,7 @@ public class FirestoreLoader : MonoBehaviour
 
     private void Awake()
     {
-        LoadData();
+       // LoadData();
     }
 
     public void LoadData()
