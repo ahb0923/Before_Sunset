@@ -7,8 +7,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
     [SerializeField] private MonsterDatabase _data;
     
-    [SerializeField] private Color _hitColor = Color.red;
-    private Color _originColor;
+    [SerializeField] private Material _hitMat;
+    private Material _originMat;
     [SerializeField] private float _hitDuration = 0.1f;
     private Coroutine _hitCoroutine;
 
@@ -50,7 +50,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         Size = _data.size;
         Context = _data.context;
 
-        _originColor = _monster.Spriter.color;
+        _originMat = _monster.Spriter.material;
     }
 
     public void SetFullHp()
@@ -93,9 +93,9 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
     private IEnumerator C_Hit()
     {
-        _monster.Spriter.color = _hitColor;
+        _monster.Spriter.material = _hitMat;
         yield return Helper_Coroutine.WaitSeconds(_hitDuration);
-        _monster.Spriter.color = _originColor;
+        _monster.Spriter.material = _originMat;
         _hitCoroutine = null;
     }
 }
