@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7104076274220234564}
   - component: {fileID: 5080727689215684317}
   - component: {fileID: -4826578254387843137}
-  - component: {fileID: 968911421407609387}
   - component: {fileID: 500277172002488279}
   m_Layer: 21
   m_Name: Jewel_Diamond
@@ -47,7 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f82f488759539a4ea406f2fc6e3b5d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickUpItem: {fileID: 968911421407609387}
   _collider: {fileID: -4826578254387843137}
   _id: 204
 --- !u!61 &-4826578254387843137
@@ -95,22 +93,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.3206663, y: 0.3206663}
   m_EdgeRadius: 0
---- !u!114 &968911421407609387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5442702181559230353}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b63e7da54c9088b4e91fddb16bca015b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 204
-  pickupRadius: 3
-  moveSpeed: 5
-  delayBeforeAttract: 1
 --- !u!212 &500277172002488279
 SpriteRenderer:
   m_ObjectHideFlags: 0

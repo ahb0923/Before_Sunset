@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourceStateSavable
 {
-    public PickUpItem pickUpItem;
     public Collider2D _collider;
 
     private bool mined = false;
 
     [SerializeField] private int _id;
     public int GetId() => _id;
+
+    public bool IsMined() => mined;
 
     public void OnInstantiate()
     {
@@ -20,19 +21,13 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourc
     public void OnGetFromPool()
     {
         mined = false;
-        if (pickUpItem != null)
-            pickUpItem.enabled = false;
-        if (_collider != null)
-            _collider.enabled = true;
+        _collider.isTrigger = false;
     }
 
     public void OnReturnToPool()
     {
-        mined = false;
-        if (pickUpItem != null)
-            pickUpItem.enabled = false;
-        if (_collider != null)
-            _collider.enabled = false;
+        mined = true;
+        _collider.isTrigger = true;
     }
 
     public ResourceState SaveState()
@@ -50,34 +45,22 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourc
         transform.position = state.Position;
         mined = state.IsMined;
 
-        if (pickUpItem != null)
-            pickUpItem.enabled = mined;
-
         if (_collider != null)
-            _collider.enabled = !mined;
+            _collider.isTrigger = mined;
     }
 
     public void Interact()
     {
         if (mined) return;
-
         mined = true;
-
-        if (pickUpItem != null)
-        {
-            pickUpItem.enabled = true;
-        }
         if (_collider != null)
         {
-            _collider.enabled = false;
+            _collider.isTrigger = true;
         }
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
     {
-        if (_collider == null || playerCollider == null)
-            return false;
-
         Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
         Vector2 closestPointToPlayer = _collider.ClosestPoint(playerPos2D);
         float centerToEdge = Vector2.Distance(playerPos2D, closestPointToPlayer);

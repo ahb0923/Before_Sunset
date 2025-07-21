@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 7180197995015105084}
   - component: {fileID: 6686093153861780179}
   - component: {fileID: 6590933842250423535}
+  - component: {fileID: 993159302880225653}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -447,9 +448,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca6d937269f4b647b34d9e2aea9a46c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _miningLayer:
-    serializedVersion: 2
-    m_Bits: 3145728
 --- !u!114 &7180197995015105084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,6 +492,25 @@ MonoBehaviour:
   interactCursor: {fileID: 2800000, guid: 06a5f0615a0741f4eb8ee91abad9efcf, type: 3}
   outOfRangeCursor: {fileID: 2800000, guid: 9086380efde14e54ca9507ae867608d0, type: 3}
   interactionRange: 2
+--- !u!114 &993159302880225653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7508487163038984533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b63e7da54c9088b4e91fddb16bca015b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupRadius: 3
+  moveSpeed: 5
+  delayBeforeAttract: 0.5
+  dropItemLayerNames:
+  - Mineral
+  - Ingot
+  - Jewel
 --- !u!1 &8192908079925631552
 GameObject:
   m_ObjectHideFlags: 0
