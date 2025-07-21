@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
@@ -5,6 +6,11 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     private BaseMonster _monster;
 
     [SerializeField] private MonsterDatabase _data;
+    
+    [SerializeField] private Color _hitColor = Color.red;
+    private Color _originColor;
+    [SerializeField] private float _hitDuration = 0.1f;
+    private Coroutine _hitCoroutine;
 
     public string MonsterName { get; private set; }
     public ATTACK_TYPE AttackType { get; private set; }
@@ -12,7 +18,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
     public int MaxHp { get; private set; }
     public int CurHp { get; private set; }
-    
+
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
     public float AttackRange { get; private set; }
@@ -43,6 +49,8 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         Speed = _data.speed;
         Size = _data.size;
         Context = _data.context;
+
+        _originColor = _monster.Spriter.color;
     }
 
     public void SetFullHp()
@@ -73,5 +81,21 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         {
             _monster.Ai.ChangeState(MONSTER_STATE.Dead);
         }
+        else
+        {
+            if(_hitCoroutine != null)
+            {
+                StopCoroutine( _hitCoroutine);
+            }
+            _hitCoroutine = StartCoroutine(C_Hit());
+        }
+    }
+
+    private IEnumerator C_Hit()
+    {
+        _monster.Spriter.color = _hitColor;
+        yield return Helper_Coroutine.WaitSeconds(_hitDuration);
+        _monster.Spriter.color = _originColor;
+        _hitCoroutine = null;
     }
 }
