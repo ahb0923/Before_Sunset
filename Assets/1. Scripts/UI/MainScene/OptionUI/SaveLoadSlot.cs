@@ -11,6 +11,12 @@ public class SaveLoadSlot : MonoBehaviour
     [SerializeField] private Button _saveBtn;
     [SerializeField] private Button _loadBtn;
 
+    private void Awake()
+    {
+        _saveBtn.onClick.AddListener(() => Save());
+        _loadBtn.onClick.AddListener(() => Load());
+    }
+
     private void Start()
     {
         _saveBtn.onClick.AddListener(() => UIManager.Instance.AskPopUpUI.Open($"{slotIndex}번 슬롯에 데이터를 저장하시겠습니까?", onYesAction: Save));
@@ -19,15 +25,12 @@ public class SaveLoadSlot : MonoBehaviour
         if (SaveManager.Instance.DoesSaveSlotExist(slotIndex))
         {
             GameData data = SaveManager.Instance.GetGameDataFromSlot(slotIndex);
-            UpdateSavedStageText(data.timeData.stage, data.timeData.day, data.timeData.isNight);
-            UpdateSavedTimeText(DateTime.Parse(data.lastSaveDateTime));
         }
     }
 
     private void Save()
     {
         UpdateSavedStageText(TimeManager.Instance.Stage, TimeManager.Instance.Day, TimeManager.Instance.IsNight);
-        UpdateSavedTimeText(DateTime.Now);
         SaveManager.Instance.SaveGameToSlot(slotIndex);
     }
 
@@ -43,10 +46,5 @@ public class SaveLoadSlot : MonoBehaviour
     {
         string DayOrNight = isNight ? "밤" : "낮";
         savedStageTxt.text = $"{stage}주째 {day}일의 " + DayOrNight;
-    }
-
-    private void UpdateSavedTimeText(DateTime time)
-    {
-        savedTimeTxt.text = time.ToString("HH:mm:ss - yyyy/MM/dd");
     }
 }

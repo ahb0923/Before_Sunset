@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TimeManager : MonoSingleton<TimeManager>
+public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 12;
