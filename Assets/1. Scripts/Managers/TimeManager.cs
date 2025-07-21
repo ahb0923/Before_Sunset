@@ -158,7 +158,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        data.timeData = new TimeSaveData(Stage, Day, _dailyTimer);
+        data.timeData = new TimeSaveData(Stage, Day, _dailyTimer, IsNight);
     }
 
     /// <summary>

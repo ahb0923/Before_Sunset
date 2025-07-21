@@ -22,14 +22,15 @@ public class SaveLoadSlot : MonoBehaviour
         if (SaveManager.Instance.DoesSaveSlotExist(slotIndex))
         {
             GameData data = SaveManager.Instance.GetGameDataFromSlot(slotIndex);
-            //UpdateSavedTimeText(data.timeData.stage, data.timeData.day, data.timeData.dailyTime > TimeManager.Instance.DailyPercent);
+            UpdateSavedStageText(data.timeData.stage, data.timeData.day, data.timeData.isNight);
+            UpdateSavedTimeText(DateTime.Parse(data.lastSaveDateTime));
         }
     }
 
     private void Save()
     {
         UpdateSavedStageText(TimeManager.Instance.Stage, TimeManager.Instance.Day, TimeManager.Instance.IsNight);
-        UpdateSavedTimeText();
+        UpdateSavedTimeText(DateTime.Now);
         SaveManager.Instance.SaveGameToSlot(slotIndex);
     }
 
@@ -47,9 +48,8 @@ public class SaveLoadSlot : MonoBehaviour
         savedStageTxt.text = $"{stage}주째 {day}일의 " + DayOrNight;
     }
 
-    private void UpdateSavedTimeText()
+    private void UpdateSavedTimeText(DateTime time)
     {
-        DateTime now = DateTime.Now;
-        savedTimeTxt.text = now.ToString("HH:mm:ss - yyyy/MM/dd");
+        savedTimeTxt.text = time.ToString("HH:mm:ss - yyyy/MM/dd");
     }
 }
