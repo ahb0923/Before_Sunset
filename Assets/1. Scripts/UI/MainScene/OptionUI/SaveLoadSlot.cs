@@ -11,14 +11,11 @@ public class SaveLoadSlot : MonoBehaviour
     [SerializeField] private Button _saveBtn;
     [SerializeField] private Button _loadBtn;
 
-    private void Awake()
-    {
-        _saveBtn.onClick.AddListener(() => Save());
-        _loadBtn.onClick.AddListener(() => Load());
-    }
-
     private void Start()
     {
+        _saveBtn.onClick.AddListener(() => UIManager.Instance.AskPopUpUI.Open($"{slotIndex}번 슬롯에 데이터를 저장하시겠습니까?", onYesAction: Save));
+        _loadBtn.onClick.AddListener(() => UIManager.Instance.AskPopUpUI.Open($"{slotIndex}번 슬롯에 데이터를 불러오시겠습니까?", onYesAction: Load));
+
         if (SaveManager.Instance.DoesSaveSlotExist(slotIndex))
         {
             GameData data = SaveManager.Instance.GetGameDataFromSlot(slotIndex);
