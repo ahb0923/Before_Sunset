@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Core : MonoBehaviour, IDamageable, ISaveable
+public class Core : MonoBehaviour, IDamageable
 {
     [SerializeField] private int _size;
     public int Size => _size;
     [SerializeField] private int _maxHp = 500;
-    public int CurHp { private set; get; }
+    private int _curHp;
     [SerializeField] private Image _hpBar;
     public bool IsDead { get; private set; }
 
@@ -41,9 +41,9 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
             return;
         }
 
-        SetHp(Mathf.Max(CurHp - DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense), 0));
+        SetHp(Mathf.Max(_curHp - DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense), 0));
 
-        if (CurHp == 0)
+        if (_curHp == 0)
         {
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
@@ -56,23 +56,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     /// </summary>
     private void SetHp(int hp)
     {
-        CurHp = hp;
-        _hpBar.fillAmount = (float)CurHp / _maxHp;
-    }
-
-    /// <summary>
-    /// 코어 체력 저장
-    /// </summary>
-    public void SaveData(GameData data)
-    {
-        data.coreCurHp = CurHp;
-    }
-
-    /// <summary>
-    /// 코어 체력 로드
-    /// </summary>
-    public void LoadData(GameData data)
-    {
-        SetHp(data.coreCurHp);
+        _curHp = hp;
+        _hpBar.fillAmount = (float)_curHp / _maxHp;
     }
 }

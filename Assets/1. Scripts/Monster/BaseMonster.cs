@@ -37,7 +37,8 @@ public class BaseMonster : MonoBehaviour, IPoolable
     private void LateUpdate()
     {
         if (Spriter == null || Collider == null) return;
-        float yPos = Collider.offset.y - Collider.size.y * 0.5f;
+
+        float yPos = Collider.offset.y - Collider.size.y / 2;
         RenderUtil.SetSortingOrderByY(Spriter, yPos);
     }
 

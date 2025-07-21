@@ -78,7 +78,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 타겟과 경로에 대한 탐색 진행
+    /// 타겟과 경로에 대한 탐색 진행 
     /// </summary>
     private IEnumerator C_Explore()
     {
