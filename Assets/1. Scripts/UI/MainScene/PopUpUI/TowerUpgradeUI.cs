@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeUI : MonoBehaviour
+public class TowerUpgradeUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _targetNameText;
     [SerializeField] private TextMeshProUGUI _targetInfoText;

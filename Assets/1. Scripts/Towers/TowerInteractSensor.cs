@@ -71,7 +71,7 @@ public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
             if (BuildManager.Instance.IsPlacing) return;
 
             var data = DataManager.Instance.TowerData.GetByName(_tower.statHandler.TowerName);
-            UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
+            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(data);
         }
     }
 }
