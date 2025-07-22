@@ -82,7 +82,7 @@
     "id": 420,
     "towerName": "오팔 필드",
     "flavorText": "테스트용 플레이버 텍스트",
-    "buildType": 1,
+    "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 421,
     "projectileId": 0,
@@ -91,8 +91,8 @@
     "damage": 5.0,
     "aps": 0.5,
     "range": 4.0,
-    "spriteName": null,
-    "prefabName": null,
+    "spriteName": "Tower_Opal_Sprite",
+    "prefabName": "Tower_Opal",
     "buildRequirements": {
       "금주괴": 20,
       "오팔": 5

@@ -182,10 +182,26 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
             if (constructed.TryGetComponent<TowerStatHandler>(out var tower))
             {
                 // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
-                BuildingSaveData towerData = new BuildingSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
+                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
                 data.constructedTowers.Add(towerData);
             }
-            // 여기에 제련소도 추가해야 할 듯
+            else if(constructed.TryGetComponent<Smelter>(out var smelter))
+            {
+                ItemSaveData inputItemData = null;
+                if(smelter.InputItem != null)
+                {
+                    inputItemData = new ItemSaveData(smelter.InputItem.Data.id, smelter.InputItem.stack);
+                }
+
+                ItemSaveData outputItemData = null;
+                if(smelter.OutputItem != null)
+                {
+                    outputItemData = new ItemSaveData(smelter.OutputItem.Data.id, smelter.OutputItem.stack);
+                }
+
+                SmelterSaveData smelterData = new SmelterSaveData(smelter.smelterID, smelter.transform.position, inputItemData, 0f, outputItemData);
+                data.constructedSmelters.Add(smelterData);
+            }
         }
     }
 
@@ -212,19 +228,44 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         _nextId = 0;
         AddObstacle(Core.transform, Core.Size);
 
-        // 로드된 데이터의 모든 빌딩 데이터를 옵스터클에 추가
-        foreach (BuildingSaveData building in data.constructedTowers)
+        // 로드된 타워 설치
+        foreach (TowerSaveData towerData in data.constructedTowers)
         {
-            GameObject obj = PoolManager.Instance.GetFromPool(building.towerId, building.position);
-            obj.transform.position = building.position;
+            GameObject obj = PoolManager.Instance.GetFromPool(towerData.towerId, towerData.position);
             AddObstacle(obj.transform, 1); // 타워 & 제련소 사이즈 현재는 1
 
             if (obj.TryGetComponent<TowerStatHandler>(out var tower))
             {
-                tower.CurrHp = building.curHp;
+                tower.CurrHp = towerData.curHp;
                 // 일단, 업그레이드 관련 정보가 없어서 로드는 안하고 있음
             }
-            // 여기에 제련소도 추가해야 할 듯
+        }
+
+        // 로드된 제련소 설치
+        foreach (SmelterSaveData smelterData in data.constructedSmelters)
+        {
+            GameObject obj = PoolManager.Instance.GetFromPool(smelterData.smelterId, smelterData.position);
+            AddObstacle(obj.transform, 1); // 타워 & 제련소 사이즈 현재는 1
+
+            if (obj.TryGetComponent<Smelter>(out var smelter))
+            {
+                Item inputItem = null;
+                if(smelterData.inputItem.itemId != 0)
+                {
+                    inputItem = new Item(DataManager.Instance.ItemData.GetId(smelterData.inputItem.itemId));
+                    inputItem.stack = smelterData.inputItem.quantity;
+                }
+
+                Item outputItem = null;
+                if (smelterData.outputItem.itemId != 0)
+                {
+                    outputItem = new Item(DataManager.Instance.ItemData.GetId(smelterData.outputItem.itemId));
+                    outputItem.stack = smelterData.outputItem.quantity;
+                }
+
+                smelter.SetInputItem(inputItem);
+                smelter.SetOutputItem(outputItem);
+            }
         }
     }
 }
