@@ -8,12 +8,13 @@ using UnityEngine.Serialization;
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     [SerializeField] public GameObject buildingPrefab;
-    [SerializeField] public Image bGImage;
+    [SerializeField] public Image bgImage;
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
     
     private TowerDatabase _towerData;
     private SmelterDatabase _smelterData;
+    private int currentBuildID;
     private Color _originalColor;
     private Tween _tween;
     
@@ -24,7 +25,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     
     private void Reset()
     {
-        bGImage = GetComponent<Image>();
+        bgImage = GetComponent<Image>();
         _buildingIcon = Helper_Component.FindChildComponent<Image>(this.transform, BUILDING_ICON);
         _buildingName = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, BUILDING_NAME);
     }
@@ -32,7 +33,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     public void InitIndex(int index)
     {
         Index = index;
-        _originalColor = bGImage.color;
+        _originalColor = bgImage.color;
     }
 
     public void SetSlot(TowerDatabase data)
@@ -43,12 +44,11 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             _towerData = data;
             _smelterData = null;
+            currentBuildID = data.id;
+            
+            buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(currentBuildID);
 
-            //var go = DataManager.Instance.TowerData.GetPrefabById(data.id);
-            //buildingPrefab = go != null ? go.GetComponent<BaseTower>() : null;
-            buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(data.id);
-
-            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform,"Image").sprite;
+            _buildingIcon.sprite = DataManager.Instance.TowerData.GetSpriteById(currentBuildID);
             _buildingIcon.preserveAspect = true;
             _buildingName.text = data.towerName;
             
@@ -63,33 +63,18 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             _towerData = null;
             _smelterData = data;
+            currentBuildID = data.id;
 
-            buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(_smelterData.id);
+            buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(currentBuildID);
 
-            _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform, "Image").sprite;
+            // _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform, "Image").sprite;
+            _buildingIcon.sprite = Helper_Component.GetComponentInChildren<SpriteRenderer>(buildingPrefab).sprite;
             _buildingIcon.preserveAspect = true;
             _buildingName.text = data.smelterName;
 
             this.gameObject.SetActive(true);
         }
     }
-    /*
-    public void SetSmelterSlot(SmelterDatabase smelterData)
-    {
-        buildingPrefab = null;
-        
-        if (smelterData != null)
-        {
-            _towerData = null;
-            _smelterData = smelterData;
-            
-            // _buildingIcon = smelterData.icon;
-            // _buildingIcon.preserveAspect = true;
-            _buildingName.text = smelterData.smelterName;
-            
-            this.gameObject.SetActive(true);
-        }
-    }*/
     
     public void ClearSlot()
     {
@@ -102,7 +87,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void RefreshUI()
     {
-        bGImage.color = _originalColor;
+        bgImage.color = _originalColor;
     }
 
     private string SetSmelt(SmelterDatabase data)
@@ -119,8 +104,8 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        bGImage.color = _originalColor;
-        _tween = bGImage.DOColor(Color.yellow, 0.2f);
+        bgImage.color = _originalColor;
+        _tween = bgImage.DOColor(Color.yellow, 0.2f);
         
         UIManager.Instance.CraftMaterialArea.Open();
         
@@ -140,23 +125,17 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         // 좌클릭시
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            if (buildingPrefab != null)
+            if (!BuildManager.Instance.IsPlacing)
             {
-                if (!BuildManager.Instance.IsPlacing)
-                {
-                    BuildManager.Instance.StartPlacing(buildingPrefab);
-                }
+                BuildManager.Instance.StartPlacing(currentBuildID);
             }
         }
         // 우클릭시
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            if (buildingPrefab != null)
+            if(BuildManager.Instance.IsPlacing)
             {
-                if (BuildManager.Instance.IsPlacing)
-                {
-                    BuildManager.Instance.CancelPlacing();
-                }
+                BuildManager.Instance.CancelPlacing();
             }
         }
     }
@@ -168,7 +147,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             _tween.Kill();
         }
         
-        _tween = bGImage.DOColor(_originalColor, 0.2f);
+        _tween = bgImage.DOColor(_originalColor, 0.2f);
         
         TooltipManager.Instance.HideTooltip();
         UIManager.Instance.CraftMaterialArea.Close();

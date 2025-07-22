@@ -46,10 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ec291a8b4bea2b43883542201ac549a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 1
-  dropPrefabs:
-  - id: 110
-    prefab: {fileID: 5442702181559230353, guid: e9261b1c42d7b1444966886fd6c833bb, type: 3}
+  _player: {fileID: 0}
   _id: 1
 --- !u!58 &5594350411403384768
 CircleCollider2D:
@@ -106,7 +103,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: d7bb37608ad5ca2489fbf2f90eb1bcbd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -26,6 +26,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 {
     private BaseTower _tower;
     private bool _isDestroy = false;
+    private bool _isFirstAttack = false;
 
     protected override TOWER_STATE InvalidState => TOWER_STATE.None;
 
@@ -82,6 +83,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     public void SetState(TOWER_STATE state, bool force = false)
     {
+        if (state == TOWER_STATE.Attack)
+            _isFirstAttack = true;
         TransitionTo(state, force);
         /*
         if (state == TOWER_STATE.Construction)
@@ -113,7 +116,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             float t = Mathf.Clamp01(elapsed / totalTime);
             stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
 
-            ui.UpdateHpBar(stat.CurrHp, stat.MaxHp);
+            _tower.ui.SetConstructionProgress(t);
             /*
             // 일정 시간마다 스프라이트 전환
             if (spriteIndex < sprites.Count && elapsed >= interval * spriteIndex)
@@ -127,11 +130,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         }
 
         // 건설 완료 후 체력 100% 보장
+        _tower.ui.SetConstructionProgress(1f);
         stat.CurrHp = stat.MaxHp;
-        ui.hpBar_immediate.fillAmount = 1f;
-        ui.hpBar_delay.fillAmount = 1f;
-        icon.color = ColorExtensions.WithAlpha(icon.color, 1f);
-
 
         /*
         // 건설 직후, 공격 범위 내 적 검색
@@ -171,11 +171,24 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     protected virtual IEnumerator C_Attack()
     {
+        if (_isFirstAttack)
+        {
+            //Debug.Log("[C_Attack] 공격 진입 직후 1회 스킵");
+            _isFirstAttack = false;
+            yield return _tower.attackStrategy.Attack(_tower);
+        }
+
+        if (_tower.attackSensor.CurrentTarget == null || !_tower.attackSensor.CurrentTarget.activeSelf)
+        {
+            _tower.attackSensor.CheckTargetValid();
+            yield break; // 상태 Idle로 전환될 것
+        }
+
         while (true)
         {
             if (IsInterrupted)
             {
-                Debug.Log("[C_Attack] 상태 중단 감지");
+               // Debug.Log("[C_Attack] 상태 중단 감지");
                 yield break;
             }
 
@@ -186,7 +199,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     GameObject target = _tower.attackSensor.CurrentTarget;
                     if (target == null)
                     {
-                        Debug.Log("타겟 없음, Idle로 전환");
+                        //Debug.Log("타겟 없음, Idle로 전환");
                         CurState = TOWER_STATE.Idle;
                         yield break;
                     }
@@ -199,25 +212,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
             yield return _tower.attackStrategy.Attack(_tower);
         }
-    }
-
-    private IEnumerator PullTargetCoroutine(GameObject target, Vector3 center, float speed)
-    {
-        Debug.Log(target);
-        //var ai = target.GetComponent<MonsterAI>();
-        //if (ai != null) ai.enabled = false;
-
-        while (target != null && target.activeSelf)
-        {
-            Vector3 dir = (center - target.transform.position).normalized;
-            target.transform.position += dir * speed * Time.deltaTime;
-
-            if (Vector3.Distance(center, target.transform.position) < 2f)
-                break;
-
-            yield return null;
-        }
-        //if (ai != null) ai.enabled = true;
     }
     private IEnumerator C_Destroy()
     {

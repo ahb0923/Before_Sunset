@@ -4,237 +4,305 @@ using Cinemachine;
 
 public class MapManager : MonoSingleton<MapManager>
 {
-    public MiningHandler.PortalDirection? LastEnteredPortalDirection { get; private set; }
     public int CurrentMapIndex { get; private set; } = 0;
 
-    [SerializeField] private GameObject baseMap;
-    [SerializeField] private string mapFolder = "Maps";
-    [SerializeField] private string mapPrefix = "Map_";
-    [SerializeField] private int prefabCount = 4;
-    [SerializeField] private Transform player;
-    [SerializeField] private float mapSpacing = 100f;
+    private GameObject _baseMap;
+    private Transform _player;
 
-    private int nextMapIndex = 1;
-    private List<GameObject> prefabPool = new List<GameObject>();
-    private Dictionary<int, GameObject> mapInstances = new Dictionary<int, GameObject>();
-    private Stack<int> mapHistory = new Stack<int>();
-    private Dictionary<int, int> mapPrefabIndexMap = new Dictionary<int, int>();
+    [SerializeField] private float _mapSpacing = 100f;
 
-    // (현재맵, 포탈방향) → 이동할 맵 인덱스
-    private Dictionary<(int fromMapIndex, MiningHandler.PortalDirection dir), int> portalMapLinks
-        = new Dictionary<(int, MiningHandler.PortalDirection), int>();
+    private int _nextMapIndex = 1;
+    private Dictionary<int, GameObject> _activeMapInstances = new Dictionary<int, GameObject>();
+    private Stack<int> _mapHistory = new Stack<int>();
+    private Dictionary<int, int> _mapPrefabIdMap = new Dictionary<int, int>();
 
+    private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
 
-    private Vector2[] smallSpawnAreas = new Vector2[]
-    {
-        new Vector2(60f, 32f),
-        new Vector2(60f, 32f)
-    };
-
-    private Vector2[] largeSpawnAreas = new Vector2[]
-    {
-        new Vector2(85f, 50f),
-        new Vector2(85f, 50f)
-    };
+    private SpawnManager _spawnManager;
 
     protected override void Awake()
     {
         base.Awake();
-        LoadAllPrefabs();
-        baseMap.SetActive(true);
+
+        // BaseMap과 Player를 이름으로 찾아서 자동 할당
+        if (_baseMap == null)
+        {
+            var baseMapGO = GameObject.Find("BaseMap");
+            if (baseMapGO != null)
+                _baseMap = baseMapGO;
+            else
+                Debug.LogError("BaseMap 오브젝트를 찾을 수 없습니다. 이름이 'BaseMap'인지 확인하세요.");
+        }
+
+        if (_player == null)
+        {
+            var playerGO = GameObject.Find("Player");
+            if (playerGO != null)
+                _player = playerGO.transform;
+            else
+                Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 이름이 'Player'인지 확인하세요.");
+        }
+
+        _baseMap.SetActive(true);
+        _spawnManager = FindObjectOfType<SpawnManager>();
         MoveToMap(0, false);
     }
 
-    private void LoadAllPrefabs()
+    // 포탈 방향 받아서 맵 이동
+    public void MoveToMapByDirection(Portal.PortalDirection dir)
     {
-        for (int i = 1; i <= prefabCount; i++)
-        {
-            string path = $"{mapFolder}/{mapPrefix}{i:D2}";
-            var prefab = Resources.Load<GameObject>(path);
-            if (prefab != null) prefabPool.Add(prefab);
-            else Debug.LogWarning($"Map prefab not found: {path}");
-        }
-    }
-
-    public void MoveToMapByDirection(MiningHandler.PortalDirection dir)
-    {
-        LastEnteredPortalDirection = dir;
-
         int current = CurrentMapIndex;
 
-        // 이미 연결된 맵이 있다면 해당 맵으로 이동
-        if (portalMapLinks.TryGetValue((current, dir), out int linkedMapIndex))
+        if (_portalMapLinks.TryGetValue((current, dir), out int linkedMapIndex))
         {
             MoveToMap(linkedMapIndex, true);
         }
         else
         {
-            // 새로운 맵 인덱스 할당
-            int newMapIndex = nextMapIndex++;
+            int newMapIndex = _nextMapIndex++;
             MoveToMap(newMapIndex, true);
 
-            // 현재 맵의 해당 방향 → 새 맵
-            portalMapLinks[(current, dir)] = newMapIndex;
+            _portalMapLinks[(current, dir)] = newMapIndex;
 
-            // 새 맵의 반대 방향 → 현재 맵
-            var oppositeDir = GetOppositeDirection(dir);
-            portalMapLinks[(newMapIndex, oppositeDir)] = current;
+            var oppositeDir = PortalManager.Instance.GetOppositeDirection(dir);
+            _portalMapLinks[(newMapIndex, oppositeDir)] = current;
         }
     }
 
-    public void MoveToRandomMap()
-    {
-        MoveToMap(nextMapIndex, false);
-        nextMapIndex++;
-    }
-
+    // 이전맵 이동
     public void MoveToPreviousMap()
     {
-        if (mapHistory.Count == 0) return;
+        if (_mapHistory.Count == 0) return;
 
-        int prev = mapHistory.Pop();
+        int prev = _mapHistory.Pop();
 
-        if (LastEnteredPortalDirection.HasValue)
-            LastEnteredPortalDirection = GetOppositeDirection(LastEnteredPortalDirection.Value);
+        if (PortalManager.Instance.LastEnteredPortalDirection.HasValue)
+            PortalManager.Instance.LastEnteredPortalDirection = PortalManager.Instance.GetOppositeDirection(PortalManager.Instance.LastEnteredPortalDirection.Value);
 
         MoveToMap(prev, false);
     }
 
+    // 귀환
     public void ReturnToHomeMap()
     {
         if (CurrentMapIndex == 0) return;
-        mapHistory.Clear();
+
+        // 활성화된 모든 맵을 풀에 반환
+        foreach (var kvp in _activeMapInstances)
+        {
+            if (kvp.Key != 0 && _mapPrefabIdMap.ContainsKey(kvp.Key))
+            {
+                int prefabId = _mapPrefabIdMap[kvp.Key];
+                PoolManager.Instance.ReturnToPool(prefabId, kvp.Value);
+            }
+        }
+
+        _activeMapInstances.Clear();
+        _mapHistory.Clear();
+        _mapPrefabIdMap.Clear();
+
         MoveToMap(0, false);
     }
 
+    // 맵이동
     private void MoveToMap(int targetIndex, bool addToHistory = true)
     {
         if (targetIndex == CurrentMapIndex) return;
 
-        var spawnManager = FindObjectOfType<SpawnManager>();
-
-        if (CurrentMapIndex != 0)
-        {
-            spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);
-        }
+        _spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);
 
         // 현재 맵 비활성화
         if (CurrentMapIndex == 0)
-            baseMap.SetActive(false);
-        else if (mapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
+        {
+            _baseMap.SetActive(false);
+        }
+        else if (_activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
+        {
             currentChunk.SetActive(false);
-
-        // 타겟 맵 생성 혹은 존재 여부 확인
-        if (targetIndex > 0 && !mapInstances.ContainsKey(targetIndex))
-        {
-            if (!mapPrefabIndexMap.ContainsKey(targetIndex))
-            {
-                int prefabIndex = Random.Range(0, prefabPool.Count);
-                mapPrefabIndexMap[targetIndex] = prefabIndex;
-            }
-
-            int pIndex = mapPrefabIndexMap[targetIndex];
-            GameObject prefab = prefabPool[pIndex];
-            GameObject instance = Instantiate(prefab);
-            instance.SetActive(false);
-
-            instance.transform.position = baseMap.transform.position + new Vector3(mapSpacing * targetIndex, 0, 0);
-
-            var vcam = instance.GetComponentInChildren<CinemachineVirtualCamera>();
-            if (vcam != null)
-            {
-                vcam.Follow = player;
-                vcam.LookAt = player;
-            }
-
-            mapInstances[targetIndex] = instance;
         }
 
-        // 새 맵 활성화 및 플레이어 위치 조정
-        if (targetIndex == 0)
+        // 타겟 맵 활성화 또는 생성
+        if (targetIndex > 0 && !_activeMapInstances.ContainsKey(targetIndex))
         {
-            baseMap.SetActive(true);
-            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(baseMap, LastEnteredPortalDirection);
-            player.position = spawnPos;
-
-            // 기본 맵은 스폰 안 함
-            spawnManager?.OnMapChanged(baseMap.transform.position, 0, smallSpawnAreas);
-        }
-        else if (mapInstances.TryGetValue(targetIndex, out var nextMap))
-        {
-            nextMap.SetActive(true);
-
-            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, LastEnteredPortalDirection);
-            player.position = spawnPos;
-
-            Vector2[] spawnAreasToUse;
-
-            string prefabName = nextMap.name.ToLower();
-
-            if (prefabName.Contains("01") || prefabName.Contains("02") || prefabName.Contains("03"))
+            // 새로운 맵 생성 - 풀에서 가져오기
+            if (!_mapPrefabIdMap.ContainsKey(targetIndex))
             {
-                spawnAreasToUse = smallSpawnAreas;
+                // 랜덤하게 맵 타입 선택 (기본 광산, 거대 광산, 희귀 광산 중)
+                int prefabId = GetRandomMapPrefabId();
+                _mapPrefabIdMap[targetIndex] = prefabId;
+            }
+
+            int mapPrefabId = _mapPrefabIdMap[targetIndex];
+            Vector3 spawnPos = _baseMap.transform.position + new Vector3(_mapSpacing * targetIndex, 0, 0);
+
+            GameObject mapInstance = PoolManager.Instance.GetFromPool(mapPrefabId, spawnPos);
+
+            if (mapInstance != null)
+            {
+                mapInstance.SetActive(false);
+
+                // Cinemachine 카메라 설정
+                var vcam = mapInstance.GetComponentInChildren<CinemachineVirtualCamera>();
+                if (vcam != null)
+                {
+                    vcam.Follow = _player;
+                    vcam.LookAt = _player;
+                }
+
+                _activeMapInstances[targetIndex] = mapInstance;
             }
             else
             {
-                spawnAreasToUse = largeSpawnAreas;
+                Debug.LogError($"풀에서 맵을 가져올 수 없습니다. ID: {mapPrefabId}");
+                return;
             }
+        }
 
-            spawnManager?.SetMapPositionAndArea(nextMap.transform.position, spawnAreasToUse[0], spawnAreasToUse[1]);
-            spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex, spawnAreasToUse);
+        // 맵 활성화 및 플레이어 위치 설정
+        if (targetIndex == 0)
+        {
+            _baseMap.SetActive(true);
+            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(_baseMap, PortalManager.Instance.LastEnteredPortalDirection);
+            _player.position = spawnPos;
+
+            Vector2[] smallSpawnAreas = new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
+            _spawnManager?.OnMapChanged(_baseMap.transform.position, 0, smallSpawnAreas);
+        }
+        else if (_activeMapInstances.TryGetValue(targetIndex, out var nextMap))
+        {
+            nextMap.SetActive(true);
+            Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, PortalManager.Instance.LastEnteredPortalDirection);
+            _player.position = spawnPos;
+
+            Vector2[] spawnAreas = GetSpawnAreasByMapType(_mapPrefabIdMap[targetIndex]);
+            _spawnManager?.SetMapPositionAndArea(nextMap.transform.position, spawnAreas[0], spawnAreas[1]);
+            _spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex, spawnAreas);
         }
 
         if (addToHistory)
-            mapHistory.Push(CurrentMapIndex);
+            _mapHistory.Push(CurrentMapIndex);
 
         CurrentMapIndex = targetIndex;
     }
 
-    private Vector3 GetSpawnPositionByEnteredPortal(GameObject mapInstance, MiningHandler.PortalDirection? enteredDir)
+    // 랜덤 맵 프리팹 ID 선택 (스몰 60%, 빅 30%, 레어 10%)
+    private int GetRandomMapPrefabId()
+    {
+        var mapDatas = DataManager.Instance.MapData.GetAllItems();
+        var basicMaps = new List<MapDatabase>();
+        var bigMaps = new List<MapDatabase>();
+        var rareMaps = new List<MapDatabase>();
+
+        // 맵 타입별로 분류
+        foreach (var map in mapDatas)
+        {
+            switch (map.mapType)
+            {
+                case MAP_TYPE.MineSmall:
+                    basicMaps.Add(map);
+                    break;
+                case MAP_TYPE.MineLarge:
+                    bigMaps.Add(map);
+                    break;
+                case MAP_TYPE.MineRare:
+                    rareMaps.Add(map);
+                    break;
+            }
+        }
+
+        // 확률 기반 선택
+        int randomValue = Random.Range(0, 100);
+
+        if (randomValue < 60)
+        {
+            if (basicMaps.Count > 0)
+            {
+                int randomIndex = Random.Range(0, basicMaps.Count);
+                return basicMaps[randomIndex].id;
+            }
+        }
+        else if (randomValue < 90)
+        {
+            if (bigMaps.Count > 0)
+            {
+                int randomIndex = Random.Range(0, bigMaps.Count);
+                return bigMaps[randomIndex].id;
+            }
+        }
+        else
+        {
+            if (rareMaps.Count > 0)
+            {
+                int randomIndex = Random.Range(0, rareMaps.Count);
+                return rareMaps[randomIndex].id;
+            }
+        }
+
+        // 폴백: 선택된 타입의 맵이 없을 경우 다른 타입에서 선택
+        var allMineMaps = new List<MapDatabase>();
+        allMineMaps.AddRange(basicMaps);
+        allMineMaps.AddRange(bigMaps);
+        allMineMaps.AddRange(rareMaps);
+
+        if (allMineMaps.Count == 0)
+        {
+            Debug.LogError("사용할 수 있는 광산 맵이 없습니다!");
+            return 1110; // 기본값
+        }
+
+        int fallbackIndex = Random.Range(0, allMineMaps.Count);
+        return allMineMaps[fallbackIndex].id;
+    }
+
+    // 맵 타입에 따른 스폰 영역 반환
+    private Vector2[] GetSpawnAreasByMapType(int mapId)
+    {
+        var mapData = DataManager.Instance.MapData.GetById(mapId);
+        if (mapData == null)
+        {
+            return new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) }; // 기본값
+        }
+
+        switch (mapData.mapType)
+        {
+            case MAP_TYPE.MineSmall:
+                return new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
+            case MAP_TYPE.MineLarge:
+                return new Vector2[] { new Vector2(85f, 50f), new Vector2(85f, 50f) };
+            case MAP_TYPE.MineRare:
+                return new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
+            default:
+                return new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
+        }
+    }
+
+    // 포탈에서 거리두고 플레이어 위치시키기
+    private Vector3 GetSpawnPositionByEnteredPortal(GameObject mapInstance, Portal.PortalDirection? enteredDir)
     {
         if (enteredDir == null)
             return mapInstance.transform.position;
 
-        var exitDir = GetOppositeDirection(enteredDir.Value);
+        var exitDir = PortalManager.Instance.GetOppositeDirection(enteredDir.Value);
 
-        var portals = mapInstance.GetComponentsInChildren<MiningHandler>();
+        var offsetByDirection = new Dictionary<Portal.PortalDirection, Vector3>()
+        {
+            { Portal.PortalDirection.North, new Vector3(0, -2f, 0) },
+            { Portal.PortalDirection.South, new Vector3(0, 2f, 0) },
+            { Portal.PortalDirection.East,  new Vector3(-2f, 0, 0) },
+            { Portal.PortalDirection.West,  new Vector3(2f, 0, 0) }
+        };
+
+        var portals = mapInstance.GetComponentsInChildren<Portal>();
 
         foreach (var portal in portals)
         {
             if (portal.CurrentPortalDirection == exitDir)
             {
-                Vector3 pos = portal.transform.position;
-                switch (exitDir)
-                {
-                    case MiningHandler.PortalDirection.North:
-                        pos.y -= 2f;
-                        break;
-                    case MiningHandler.PortalDirection.South:
-                        pos.y += 2f;
-                        break;
-                    case MiningHandler.PortalDirection.East:
-                        pos.x -= 2f;
-                        break;
-                    case MiningHandler.PortalDirection.West:
-                        pos.x += 2f;
-                        break;
-                }
-                return pos;
+                Vector3 offset = offsetByDirection.TryGetValue(exitDir, out var v) ? v : Vector3.zero;
+                return portal.transform.position + offset;
             }
         }
 
         return mapInstance.transform.position;
-    }
-
-    private MiningHandler.PortalDirection GetOppositeDirection(MiningHandler.PortalDirection dir)
-    {
-        return dir switch
-        {
-            MiningHandler.PortalDirection.North => MiningHandler.PortalDirection.South,
-            MiningHandler.PortalDirection.South => MiningHandler.PortalDirection.North,
-            MiningHandler.PortalDirection.East => MiningHandler.PortalDirection.West,
-            MiningHandler.PortalDirection.West => MiningHandler.PortalDirection.East,
-            _ => dir,
-        };
     }
 }

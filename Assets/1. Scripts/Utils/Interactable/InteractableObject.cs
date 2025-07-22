@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +16,17 @@ public class InteractableObject : MonoBehaviour, IInteractable
     public void Interact()
     {
         Debug.Log($"{gameObject.name}과 상호작용");
+
+        Transform lighting = transform.Find("Lighting");
+        if (lighting != null)
+        {
+            bool isActive = lighting.gameObject.activeSelf;
+            lighting.gameObject.SetActive(!isActive);
+        }
+        else
+        {
+            Debug.LogWarning("Lighting 오브젝트를 찾을 수 없습니다.");
+        }
     }
 
     /// <summary>

@@ -1426,7 +1426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1139285630712967838}
-  - component: {fileID: 7092282123596462570}
+  - component: {fileID: 3739743433318358312}
   m_Layer: 5
   m_Name: QuickSlotInventory
   m_TagString: Untagged
@@ -1454,7 +1454,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -490}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &7092282123596462570
+--- !u!114 &3739743433318358312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1469,7 +1469,7 @@ MonoBehaviour:
   _numberOfQuickSlots: 9
   _itemSlotContainer: {fileID: 6851388436625730010}
   _slotPrefab: {fileID: 7407233304449865545, guid: f6be210f695db1946888ff6abe5d28aa, type: 3}
-  _pickaxeSlot: {fileID: 7808126367721608837}
+  _pickaxeSlot: {fileID: 7629509954135347349}
   quickSlots: []
 --- !u!1 &491116264003949481
 GameObject:
@@ -10543,7 +10543,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 55.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6914946177090361215
@@ -10850,7 +10850,7 @@ MonoBehaviour:
   _numberOfItemSlots: 20
   _itemSlotContainer: {fileID: 8382171280939140272}
   _quickSlotContainer: {fileID: 1106052252306842817}
-  _pickaxeSlot: {fileID: 7199321217616712002}
+  _pickaxeSlot: {fileID: 0}
   _slotPrefab: {fileID: 7407233304449865545, guid: f6be210f695db1946888ff6abe5d28aa, type: 3}
   itemSlots: []
 --- !u!1 &3631755413456922904
@@ -13103,7 +13103,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 79.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9132067432433055833
@@ -17622,7 +17622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <InventoryUI>k__BackingField: {fileID: 2106706698416424860}
-  <QuickSlotInventoryUI>k__BackingField: {fileID: 7092282123596462570}
+  <QuickSlotInventoryUI>k__BackingField: {fileID: 0}
   _inventoryButton: {fileID: 6955692521489339105}
 --- !u!1 &5829519008625369824
 GameObject:
@@ -24954,7 +24954,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 79.005, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2966517396490973009
@@ -27712,17 +27712,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4159070690666473189, guid: 364af58cb3ee08c4e9a50fe23195efb4, type: 3}
   m_PrefabInstance: {fileID: 3571760670504237760}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7199321217616712002 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5942589761228614530, guid: 364af58cb3ee08c4e9a50fe23195efb4, type: 3}
-  m_PrefabInstance: {fileID: 3571760670504237760}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 174bb65fad073694aaefc53b111c9193, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4477801137483808007
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27825,9 +27814,9 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4159070690666473189, guid: 364af58cb3ee08c4e9a50fe23195efb4, type: 3}
   m_PrefabInstance: {fileID: 4477801137483808007}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7808126367721608837 stripped
+--- !u!114 &7629509954135347349 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5942589761228614530, guid: 364af58cb3ee08c4e9a50fe23195efb4, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6324512420274679186, guid: 364af58cb3ee08c4e9a50fe23195efb4, type: 3}
   m_PrefabInstance: {fileID: 4477801137483808007}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

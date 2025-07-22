@@ -92,7 +92,7 @@ public class DismantleUI : MonoBehaviour
     
     private void SetSlot(TowerDatabase data)
     {
-        var upgradeTowerData = DataManager.Instance.TowerData.GetById(data.nextUpgradeId);
+        var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
         
         List<KeyValuePair<string, int>> dataList = upgradeTowerData.buildRequirements.ToList();
         List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
