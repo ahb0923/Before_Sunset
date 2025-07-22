@@ -35,8 +35,10 @@ public class DataManager : PlainSingleton<DataManager>
     // ↓ 시스템 데이터
     public WaveDataHandler WaveData { get; private set; } = new();
     public ClearRewardDataHandler ClearRewardData { get; private set; } = new();
+    public MonsterRewardDataHandler MonsterRewardData { get; private set; } = new();
     public MapDataHandler MapData { get; private set; } = new();
     public UpgradeDataHandler UpgradeData { get; private set; } = new();
+
 
 
 
@@ -66,6 +68,7 @@ public class DataManager : PlainSingleton<DataManager>
 
         await WaveData.LoadFromFirestoreCollection("WaveData");
         await ClearRewardData.LoadFromFirestoreCollection("ClearRewardData");
+        await MonsterRewardData.LoadFromFirestoreCollection("MonsterRewardData");
         await MapData.LoadFromFirestoreCollection("MapData");
         await UpgradeData.LoadFromFirestoreCollection("UpgradeData");
 
@@ -82,6 +85,7 @@ public class DataManager : PlainSingleton<DataManager>
             EquipmentData,
             WaveData,
             ClearRewardData,
+            MonsterRewardData,
             MapData,
             UpgradeData
         };
