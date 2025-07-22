@@ -297,8 +297,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1153589068934948632}
+  - component: {fileID: -5266965788898585691}
   m_Layer: 0
-  m_Name: Map_02
+  m_Name: RareMineMap01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -339,6 +340,19 @@ Transform:
   - {fileID: 7052200044502978733}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5266965788898585691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1369425118263845411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa906bc2e12fef4d81d6477124bf784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 1131
 --- !u!1 &1577318986529267469
 GameObject:
   m_ObjectHideFlags: 0

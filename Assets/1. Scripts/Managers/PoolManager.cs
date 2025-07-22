@@ -139,9 +139,6 @@ public class PoolManager : MonoSingleton<PoolManager>
                 });
             }
         }
-        /// <summary>
-        /// 미네랄은 스크립트가 없어서 일단 보류
-        /// </summary>
         foreach (var data in DataManager.Instance.MineralData.GetAllItems())
         {
             var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
@@ -151,6 +148,18 @@ public class PoolManager : MonoSingleton<PoolManager>
                 {
                     prefab = prefab,
                     count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MapData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MapData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 1
                 });
             }
         }

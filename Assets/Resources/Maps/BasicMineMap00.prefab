@@ -5396,8 +5396,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2604353408081559128}
+  - component: {fileID: -2994363472807027240}
   m_Layer: 0
-  m_Name: Map_01
+  m_Name: BasicMineMap00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5436,6 +5437,19 @@ Transform:
   - {fileID: 7997258364562161680}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-2994363472807027240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3688037286083766232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa906bc2e12fef4d81d6477124bf784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 1110
 --- !u!1 &4292912795694544900
 GameObject:
   m_ObjectHideFlags: 0

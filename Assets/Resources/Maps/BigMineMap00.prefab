@@ -8531,8 +8531,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3077665107732505403}
+  - component: {fileID: -6480652139344823730}
   m_Layer: 0
-  m_Name: Map_04
+  m_Name: BigMineMap00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8572,6 +8573,19 @@ Transform:
   - {fileID: 5480554917431103697}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6480652139344823730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6480010293607117732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aa906bc2e12fef4d81d6477124bf784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 1120
 --- !u!1 &6722121047977443954
 GameObject:
   m_ObjectHideFlags: 0
