@@ -22,6 +22,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private Vector2 _moveDir;
     private WaitForFixedUpdate _waitFixedDeltaTime = new WaitForFixedUpdate();
 
+    [SerializeField] private float _deadAnimDuration = 0.5f;
+
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
     public void Init(BaseMonster monster, Animator animator)
@@ -63,7 +65,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         AddState(MONSTER_STATE.Dead, new StateElem
         {
-            Entered = Dead
+            Entered = () => StartCoroutine(C_Dead()),
+            Exited = () => _monster.Spriter.color.WithAlpha(1f)
         });
     }
 
@@ -314,15 +317,37 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// <summary>
     /// 사망 애니메이션 & 풀링 반환
     /// </summary>
-    private void Dead()
+    private IEnumerator C_Dead()
     {
-        // 몬스터가 사망했으므로, 현재 몬스터를 노드에서 제외
-        _path?.ReleaseMonsterCount();
+        _path?.ReleaseMonsterCount(); // 현재 몬스터를 경로 상에서 제외
+        _monster.NotifyDeath(); // 자신을 감지하던 모든 타워에 몬스터 사망 알림
+        _monster.Detector.DetectedObstacles.Clear(); // 몬스터가 감지한 타워 초기화
+        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(_monster); // 몬스터 스포너에게 몬스터 사망 알림
 
-        // 사망 애니메이션 처리
-        Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
+        yield return C_DeadAnimation();
 
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
+    }
+
+    /// <summary>
+    /// 점점 투명이 되는 사망 애니메이션
+    /// </summary>
+    private IEnumerator C_DeadAnimation()
+    {
+        float timer = 0f;
+        while(timer <= _deadAnimDuration)
+        {
+            if (TimeManager.Instance.IsGamePause)
+            {
+                yield return null;
+                continue;
+            }
+
+            _monster.Spriter.color = _monster.Spriter.color.WithAlpha(Mathf.Clamp01(1f - timer / _deadAnimDuration));
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
     }
 
     /// <summary>
