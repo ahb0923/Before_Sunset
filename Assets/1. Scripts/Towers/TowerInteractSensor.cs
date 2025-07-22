@@ -64,5 +64,4 @@ public class TowerInteractSensor : MonoBehaviour
         SetSpriteAlpha(_inside.Count > 0 ? 0.5f : 1f);
     }
 
-
 }

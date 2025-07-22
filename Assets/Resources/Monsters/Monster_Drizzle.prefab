@@ -284,7 +284,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.02850005, y: -0.18460724}
+  m_Offset: {x: 0, y: -0.18460724}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -313,7 +313,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 320
-  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 6c71c107345ebbd419077d3c30215279, type: 3}
+  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +353,8 @@ MonoBehaviour:
     range: 0
     size: 0
     context: 
+  _hitMat: {fileID: 2100000, guid: e22a3c62fe1ba4d4e8c5dae26789a776, type: 2}
+  _hitDuration: 0.1
 --- !u!1001 &1997279349383755188
 PrefabInstance:
   m_ObjectHideFlags: 0

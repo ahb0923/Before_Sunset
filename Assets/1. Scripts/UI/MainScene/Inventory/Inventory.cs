@@ -3,16 +3,15 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, ISaveable
 {
     public Item Pickaxe { get; private set; }
     public Item[] Items { get; private set; } = new Item[29];
-    
-    [field:SerializeField] public InventoryUI InventoryUI { get; private set; }
-    [field:SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
+
+    [field: SerializeField] public InventoryUI InventoryUI { get; private set; }
+    [field: SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
     [SerializeField] private Button _inventoryButton;
-    
+
     private const string SORT_BUTTON = "SortButton";
     private const string INVENTORY_BUTTON = "InventoryButton";
 
@@ -50,13 +49,13 @@ public class Inventory : MonoBehaviour
         {
             InventoryUI.gameObject.SetActive(true);
             QuickSlotInventoryUI.gameObject.SetActive(false);
-            
+
             foreach (var slot in QuickSlotInventoryUI.quickSlots)
             {
                 slot.DisableHighlight();
             }
         }
-        
+
         if (TooltipManager.Instance != null)
             TooltipManager.Instance.HideTooltip();
     }
@@ -91,7 +90,7 @@ public class Inventory : MonoBehaviour
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
     }
-    
+
     /// <summary>
     /// 인벤토리에 아이템 추가 메서드
     /// </summary>
@@ -100,7 +99,7 @@ public class Inventory : MonoBehaviour
     public void AddItem(int id, int quantity)
     {
         Item item = CreateItem(id);
-        
+
         if (item.Stackable)
         {
             AddStackableItem(item, quantity);
@@ -122,12 +121,12 @@ public class Inventory : MonoBehaviour
     private void AddStackableItem(Item item, int quantity)
     {
         Item savedItem = null;
-        
+
         for (int i = 0; i < Items.Length; i++)
         {
             if (Items[i] == null || Items[i].IsMaxStack)
                 continue;
-            
+
             if (Items[i].Data.itemName == item.Data.itemName)
             {
                 savedItem = Items[i];
@@ -162,7 +161,7 @@ public class Inventory : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 겹칠 수 없는 아이템을 인벤토리에 추가하는 메서드
     /// </summary>
@@ -201,7 +200,7 @@ public class Inventory : MonoBehaviour
     public void Sort()
     {
         List<Item> items = Items.Where(item => item != null).ToList();
-        
+
         List<Item> mergedItems = new List<Item>();
 
         foreach (var item in items)
@@ -231,7 +230,7 @@ public class Inventory : MonoBehaviour
                 mergedItems.Add(item.Clone());
             }
         }
-        
+
         mergedItems.Sort((a, b) =>
         {
             int result = a.Data.id.CompareTo(b.Data.id);
@@ -239,10 +238,10 @@ public class Inventory : MonoBehaviour
             {
                 return result;
             }
-            
+
             bool isAMax = a.Stackable && a.stack == a.MaxStack;
             bool isBMax = b.Stackable && b.stack == b.MaxStack;
-            
+
             if (isAMax && !isBMax) return -1;
 
             return 0;
@@ -252,10 +251,10 @@ public class Inventory : MonoBehaviour
         {
             Items[i] = i < mergedItems.Count ? mergedItems[i] : null;
         }
-        
+
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
-        
+
         ToastManager.Instance.ShowToast("정렬 완료!!");
     }
 
@@ -271,7 +270,7 @@ public class Inventory : MonoBehaviour
         {
             return false;
         }
-        
+
         int total = 0;
 
         foreach (Item item in Items)
@@ -309,12 +308,12 @@ public class Inventory : MonoBehaviour
                 Items[i] = null;
             }
         }
-        
+
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
         return true;
     }
-    
+
     /// <summary>
     /// 아이템 사용 메서드
     /// </summary>
@@ -327,7 +326,7 @@ public class Inventory : MonoBehaviour
         {
             return false;
         }
-        
+
         int total = 0;
 
         foreach (Item item in Items)
@@ -365,9 +364,59 @@ public class Inventory : MonoBehaviour
                 Items[i] = null;
             }
         }
-        
+
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
         return true;
+    }
+    
+    /// <summary>
+    /// 인벤토리 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        InventorySaveData invenData = data.inventory;
+
+        invenData.pickaxe = new ItemSaveData(Pickaxe.Data.id, 1);
+
+        foreach(Item item in Items)
+        {
+            ItemSaveData itemData;
+            if(item != null)
+            {
+                itemData = new ItemSaveData(item.Data.id, item.stack == 0 ? 1 : item.stack);
+            }
+            else
+            {
+                itemData = new ItemSaveData(-1, 0);
+            }
+
+            invenData.items.Add(itemData);
+        }
+    }
+
+    /// <summary>
+    /// 인벤토리 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        InventorySaveData invenData = data.inventory;
+
+        SetPickaxe(DataManager.Instance.EquipmentData.GetById(invenData.pickaxe.itemId));
+
+        for (int i = 0; i < Items.Length; i++)
+        {
+            if (invenData.items[i].itemId == -1)
+            {
+                Items[i] = null;
+            }
+            else
+            {
+                Items[i] = CreateItem(invenData.items[i].itemId);
+                Items[i].stack = invenData.items[i].quantity;
+            }
+        }
+
+        RefreshInventories();
     }
 }
