@@ -13,6 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
     private bool _isHeldReturnKey;
     private float _heldTimer;
 
+    public static bool _isRecallInProgress { get; private set; } = false;
+
     #region Event Subscriptions
     private void OnInventoryStarted(InputAction.CallbackContext context)
     {
@@ -95,6 +97,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void StartRecall()
     {
         _isRecallStarted = true;
+        _isRecallInProgress = true;
         _heldTimer = 0f;
 
         UIManager.Instance.RecallUI.StartRecallCountdown();
@@ -117,5 +120,6 @@ public class PlayerInputHandler : MonoBehaviour
         }));
 
         _isRecallStarted = false;
+        _isRecallInProgress = false;
     }
 }
