@@ -29,7 +29,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// �ð� �ٴ� ���ư����� ������Ʈ
+    /// 밤낮 시계 바늘의 회전 업데이트
     /// </summary>
     private void UpdateClockHand()
     {
@@ -37,18 +37,18 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ��¥�� �ð��� ���� ��ŵ ��ư ��ȣ�ۿ� ���� ���� ������Ʈ
+    /// 몬스터 소환 상태에 따른 스킵 버튼 활성화/비활성화 업데이트
     /// </summary>
     private void UpdateSkipButtonState()
     {
-        // �Ͻ� ���� �ÿ��� ��Ȱ��ȭ
+        // 일시정지 시에는 비활성화
         if (TimeManager.Instance.IsGamePause)
         {
             _daySkipBtn.interactable = false;
             _halfDaySkipBtn.interactable = false;
         }
 
-        // 3���� ������ Ȱ��ȭ
+        // 몬스터 소환 전(1 ~ 3일차)에는 활성화
         if(TimeManager.Instance.Day <= TimeManager.Instance.MaxDay - 2)
         {
             _daySkipBtn.interactable = true;
@@ -56,7 +56,7 @@ public class GameTimeUI : MonoBehaviour
         }
         else
         {
-            // 4���� ������ ���� ���� ��ŵ�� ����
+            // 몬스터 소환 전(4일차 낮)에는 반나절 스킵만 활성화
             if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && !TimeManager.Instance.IsNight)
             {
                 _halfDaySkipBtn.interactable = true;
@@ -64,7 +64,7 @@ public class GameTimeUI : MonoBehaviour
             }
             else
             {
-                // ���� ���� ���Ŀ��� ��� ���Ͱ� �׾��� ���� ��ŵ ����
+                // 몬스터 소환 후에는 클리어 상태에 따라서 활성화 또는 비활성화
                 if (TimeManager.Instance.IsStageClear)
                 {
                     _halfDaySkipBtn.interactable = true;
@@ -80,7 +80,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// ��¥�� ���� ��¥ �ǽ� Ȱ��ȭ
+    /// 날짜에 따른 날짜 피스 UI 설정
     /// </summary>
     public void SetDayPieces()
     {
@@ -91,7 +91,7 @@ public class GameTimeUI : MonoBehaviour
     }
 
     /// <summary>
-    /// �������� �ؽ�Ʈ ������Ʈ
+    /// 스테이지 텍스트 설정
     /// </summary>
     public void SetStageText()
     {

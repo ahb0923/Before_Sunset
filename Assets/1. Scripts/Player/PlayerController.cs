@@ -39,6 +39,9 @@ public class PlayerController : MonoBehaviour
     {
         if (_player.IsInBase || IsSwing || IsRecalling) return;
 
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.Pickaxe.speed)
+            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.Pickaxe.speed);
+
         _swingCoroutine = StartCoroutine(C_Swing());
     }
     #endregion

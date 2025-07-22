@@ -1,22 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.U2D;
-using UnityEngine.UI;
 
 public class TowerDataHandler : BaseDataHandler<TowerDatabase>
 {
-    //protected override string DataUrl => "https://script.google.com/macros/s/your-tower-sheet-id/exec";
-
     protected override string FileName => "TowerData_JSON.json";
     protected override int GetId(TowerDatabase data) => data.id;
     protected override string GetName(TowerDatabase data) => data.towerName;
-
-    private Dictionary<int,GameObject> _towerPrefabs = new();
+    private Dictionary<int, GameObject> _towerPrefabs = new();
     public Dictionary<int, GameObject> TowerPrefabs => _towerPrefabs;
+
+    private Dictionary<int, Sprite> _towerSprites = new();
+    public Dictionary<int, Sprite> TowerSprites => _towerSprites;
+    
     public GameObject GetPrefabById(int id)
     {
         if (_towerPrefabs.TryGetValue(id, out var prefab))
@@ -27,14 +25,28 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
         Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
+    public Sprite GetSpriteById(int id)
+    {
+        if (_towerSprites.TryGetValue(id, out var sprite))
+        {
+            return sprite;
+        }
+
+        Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 이미지가 존재하지 않습니다.");
+        return null;
+    }
+    protected override void AfterLoaded()
+    {
+        SettingPrefab();
+    }
     /// <summary>
-    /// 타워 이미지 데이터 초기화
+    /// 타워 프리팹 및 이미지 데이터 초기화
     /// </summary>
     public void SettingPrefab()
     {
-        foreach(var tower in dataIdDictionary.Values)
+        foreach (var tower in dataIdDictionary.Values)
         {
-            if(tower.buildType == TOWER_BUILD_TYPE.Base)
+            if (tower.buildType == TOWER_BUILD_TYPE.Base)
             {
                 GameObject towerPrefab = Resources.Load<GameObject>($"Towers/{tower.prefabName}");
                 if (towerPrefab != null)
@@ -46,11 +58,25 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
                     Debug.LogWarning($"[Setting Prefab] 프리팹 로드 실패: {tower.towerName} / {tower.prefabName}");
                 }
             }
+
+            Sprite towerSprite = Resources.Load<Sprite>($"Towers/{tower.spriteName}");
+            if (towerSprite != null)
+            {
+                _towerSprites.Add(tower.id, towerSprite);
+            }
+            else
+            {
+                Debug.LogWarning($"[Setting Prefab] 이미지 로드 실패: {tower.towerName} / {tower.spriteName}");
+            }
+
         }
         Debug.Log($"[Setting Prefab] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
     }
 
-    [ContextMenu ("Debug all Log")]
+    /// <summary>
+    /// 디버그용 코드
+    /// </summary>
+    /// <param name="formatter"></param>
     public override void DebugLogAll(Func<TowerDatabase, string> formatter = null)
     {
         if (dataIdDictionary.Count == 0)

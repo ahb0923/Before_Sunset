@@ -71,8 +71,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2124863439
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: -4584001840792588798, guid: ca1fe683d8872314481b6dbcd87cb1d1, type: 3}
   m_Color: {r: 0.4669811, g: 0.63629293, b: 1, a: 1}
@@ -117,8 +117,8 @@ GameObject:
   - component: {fileID: 2078991498260920185}
   - component: {fileID: 6080508498196729439}
   - component: {fileID: 3951482302717768146}
-  - component: {fileID: -5589406379188427173}
-  m_Layer: 6
+  - component: {fileID: 5925358709970405489}
+  m_Layer: 13
   m_Name: Smelter_Intermediate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,6 +140,7 @@ Transform:
   m_Children:
   - {fileID: 1009550082726299445}
   - {fileID: 5755767429188180159}
+  - {fileID: 8585004534285398941}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &6080508498196729439
@@ -202,8 +203,9 @@ MonoBehaviour:
   smelterID: 901
   size: {x: 3, y: 3}
   isSmelting: 0
-  _interaction: {fileID: 3018222078204139495}
---- !u!114 &-5589406379188427173
+  _interaction: {fileID: 5925358709970405489}
+  spriteRenderer: {fileID: 7547968999694799401}
+--- !u!114 &5925358709970405489
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,12 +214,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1185829061793917326}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d4d8ebb0b1a62840b2fef8044c1aac8, type: 3}
+  m_Script: {fileID: 11500000, guid: ec5a5da6296a63942a588c0e0849e21e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 901
-  size: {x: 3, y: 3}
-  spriteRenderer: {fileID: 7547968999694799401}
 --- !u!1 &1411796654157379378
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +228,6 @@ GameObject:
   - component: {fileID: 5755767429188180159}
   - component: {fileID: 2817296541848955910}
   - component: {fileID: 7917403153284250501}
-  - component: {fileID: 3018222078204139495}
   m_Layer: 12
   m_Name: InteractArea
   m_TagString: Untagged
@@ -281,7 +279,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -314,15 +312,50 @@ MonoBehaviour:
   currType: 1
   rayDirection: 0
   size: {x: 1, y: 1, z: 1}
---- !u!114 &3018222078204139495
+--- !u!1 &4334308537380334963
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8585004534285398941}
+  - component: {fileID: 3541192899161949689}
+  m_Layer: 13
+  m_Name: BuildArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8585004534285398941
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4334308537380334963}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2078991498260920185}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3541192899161949689
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1411796654157379378}
+  m_GameObject: {fileID: 4334308537380334963}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec5a5da6296a63942a588c0e0849e21e, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d4d8ebb0b1a62840b2fef8044c1aac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 901
+  buildSize: {x: 3, y: 3}
+  spriteRenderer: {fileID: 7547968999694799401}

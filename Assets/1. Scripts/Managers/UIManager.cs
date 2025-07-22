@@ -10,7 +10,7 @@ public class UIManager : MonoSingleton<UIManager>
     public CraftMaterialArea CraftMaterialArea { get; private set; }
     public SaveLoadUI SaveLoadUI { get; private set; }
     public BattleUI BattleUI { get; private set; }
-    public UpgradeUI UpgradeUI { get; private set; }
+    public TowerUpgradeUI TowerUpgradeUI { get; private set; }
     public DismantleUI DismantleUI { get; private set; }
     public RecallUI RecallUI { get; private set; }
     public SmelterUI SmelterUI { get; private set; }
@@ -25,7 +25,7 @@ public class UIManager : MonoSingleton<UIManager>
         CraftMaterialArea = Helper_Component.FindChildComponent<CraftMaterialArea>(this.transform, "CraftMaterialArea");
         SaveLoadUI = Helper_Component.FindChildComponent<SaveLoadUI>(this.transform, "SaveLoadBG");
         BattleUI = Helper_Component.FindChildComponent<BattleUI>(this.transform, "BattleUI");
-        UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
+        TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "UpgradeUI");
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");

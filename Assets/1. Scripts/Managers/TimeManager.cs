@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TimeManager : MonoSingleton<TimeManager>
+public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 12;
@@ -151,5 +151,26 @@ public class TimeManager : MonoSingleton<TimeManager>
         {
             _dailyTimer = _realSecDayLength * 0.5f;
         }
+    }
+
+    /// <summary>
+    /// 시간 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        data.timeData = new TimeSaveData(Stage, Day, _dailyTimer, IsNight);
+    }
+
+    /// <summary>
+    /// 시간 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        Stage = data.timeData.stage;
+        Day = data.timeData.day;
+        _dailyTimer = data.timeData.dailyTime;
+
+        UIManager.Instance.GameTimeUI.SetDayPieces();
+        UIManager.Instance.GameTimeUI.SetStageText();
     }
 }

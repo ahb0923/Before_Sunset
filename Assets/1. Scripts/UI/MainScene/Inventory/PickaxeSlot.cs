@@ -12,7 +12,6 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private GameObject _highlight;
 
     private Tween _tween;
-    
     private const string ITEM_IMAGE = "IconImage";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
 

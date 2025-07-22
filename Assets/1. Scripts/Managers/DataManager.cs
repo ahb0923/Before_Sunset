@@ -4,37 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-/*
-    << 전체 ID >>
-    ID 범위	        데이터 타입
-    000 ~ 099	    광석 (Ore)
-    100 ~ 199	    기본 자원 (Mineral)
-    200 ~ 399	    희귀 자원 (Jewel)
-    400 ~ 599	    타워 (Tower)
-    600 ~ 699	    몬스터 (Monster)
-    700 ~ 799	    장비 (Equipment)
-    800 ~ 899	    스킬 (Skill)
-    900 ~ 999	    구조물 (Structure)
-    1000 ~ 1099	    스테이지
 
-    << 타워 ID >>	
-    ID 범위	        데이터 타입
-    400 ~ 409	    구리 발사기
-    410 ~ 419	    철 캐논
-    420 ~ 429	    오팔 필드
-    430 ~ 439	    다이아 프리즘
-    440 ~ 449	    재생 타워
-    450 ~ 459	    자력 타워
-    460 ~ 469	    전깃줄 타워
-	
-    << 자원 ID >>	
-    ID 범위	        데이터 타입
-    100 ~ 109	    돌
-    110 ~ 119	    구리
-    120 ~ 129	    철
-    130 ~ 139	    은
-    140 ~ 149	    금
- */
+//Data ID 링크 : https://docs.google.com/spreadsheets/d/1n4f79j8bouq0bDa4URmX-OY1y2ZLqQ7RPAfw86tyr0I/edit?gid=0#gid=0
 
 public interface IDataLoader
 {
@@ -44,6 +15,9 @@ public interface IDataLoader
 }
 public class DataManager : PlainSingleton<DataManager>
 {
+    private Task _initTask;
+    private bool _isInitialized;
+
     // ↓ 인벤토리에 들어가지 않는 아이템(오브젝트 데이터)
     public TowerDataHandler TowerData { get; private set; } = new();
     public MonsterDataHandler MonsterData { get; private set; } = new();
@@ -60,9 +34,11 @@ public class DataManager : PlainSingleton<DataManager>
 
     // ↓ 시스템 데이터
     public WaveDataHandler WaveData { get; private set; } = new();
+    public ClearRewardDataHandler ClearRewardData { get; private set; } = new();
+    public MapDataHandler MapData { get; private set; } = new();
+    public UpgradeDataHandler UpgradeData { get; private set; } = new();
 
-    private Task _initTask;
-    private bool _isInitialized;
+
 
     public Task InitCheck()
     {
@@ -77,18 +53,37 @@ public class DataManager : PlainSingleton<DataManager>
     {
         if (_isInitialized)
             return;
-        
+
+        // Firestore에서 고정 데이터 받아와서 저장
+        await TowerData.LoadFromFirestoreCollection("TowerData");
+        await MonsterData.LoadFromFirestoreCollection("MonsterData");
+        await SmelterData.LoadFromFirestoreCollection("SmelterData");
+        await ProjectileData.LoadFromFirestoreCollection("ProjectileData");
+        await OreData.LoadFromFirestoreCollection("OreData");
+        await MineralData.LoadFromFirestoreCollection("MineralData");
+        await JewelData.LoadFromFirestoreCollection("JewelData");
+        await EquipmentData.LoadFromFirestoreCollection("EquipmentData");
+
+        await WaveData.LoadFromFirestoreCollection("WaveData");
+        await ClearRewardData.LoadFromFirestoreCollection("ClearRewardData");
+        await MapData.LoadFromFirestoreCollection("MapData");
+        await UpgradeData.LoadFromFirestoreCollection("UpgradeData");
+
+
         List<IDataLoader> loaders = new()
         {
             TowerData,
             MonsterData,
-            OreData,
-            ProjectileData,
             SmelterData,
+            ProjectileData,
+            OreData,
             MineralData,
             JewelData,
             EquipmentData,
-            WaveData
+            WaveData,
+            ClearRewardData,
+            MapData,
+            UpgradeData
         };
 
         foreach (var loader in loaders)
@@ -97,24 +92,9 @@ public class DataManager : PlainSingleton<DataManager>
         }
 
         ItemData.Init(MineralData, JewelData, EquipmentData);
-        TowerData.SettingPrefab();
-        SmelterData.SettingPrefab();
-        ProjectileData.SettingPrefab();
-        MonsterData.SettingPrefab();
-        OreData.SettingPrefab();
-
-        JewelData.SettingPrefab();
-        MineralData.SettingPrefab();
 
 
         Debug.Log("[DataManager] 모든 데이터 초기화 완료");
         _isInitialized = true;
-
-        //MineralData.DebugLogAll();
-        //TowerData.DebugLogAll();
-        //MonsterData.DebugLogAll();
-        //JewelData.DebugLogAll();
-        //OreData.DebugLogAll();
-        //EquipmentData.DebugLogAll();
     }
 }
