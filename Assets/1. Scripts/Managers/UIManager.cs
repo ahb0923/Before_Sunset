@@ -25,7 +25,7 @@ public class UIManager : MonoSingleton<UIManager>
         CraftMaterialArea = Helper_Component.FindChildComponent<CraftMaterialArea>(this.transform, "CraftMaterialArea");
         SaveLoadUI = Helper_Component.FindChildComponent<SaveLoadUI>(this.transform, "SaveLoadBG");
         BattleUI = Helper_Component.FindChildComponent<BattleUI>(this.transform, "BattleUI");
-        TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "UpgradeUI");
+        TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "TowerUpgradeUI");
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
