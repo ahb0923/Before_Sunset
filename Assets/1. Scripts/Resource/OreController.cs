@@ -5,7 +5,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 {
     public OreDatabase _data { get; private set; }
 
-    public BasePlayer player;
+    public BasePlayer _player;
 
     private int _currentHP;
 
@@ -21,7 +21,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void Init(BasePlayer basePlayer)
     {
-        player = basePlayer;
+        _player = basePlayer;
     }
 
     public void OnInstantiate()
@@ -36,7 +36,6 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnReturnToPool()
     {
-        //throw new System.NotImplementedException();
     }
 
     public ResourceState SaveState()
@@ -93,7 +92,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void Interact()
     {
-        Vector2 playerPos = player.transform.position;
+        Vector2 playerPos = _player.transform.position;
         Vector2 orePos = transform.position;
 
         int wallLayerMask = LayerMask.GetMask("Wall");
@@ -103,8 +102,8 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
             return;
         }
 
-        int pickaxePower = player.Stat.Pickaxe.crushingForce;
-        int damage = player.Stat.Pickaxe.damage;
+        int pickaxePower = _player.Stat.Pickaxe.crushingForce;
+        int damage = _player.Stat.Pickaxe.damage;
 
         if (!CanBeMined(pickaxePower))
         {
@@ -126,6 +125,8 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
         float playerRadius = playerCollider.radius * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
+
+        Debug.Log($"[Ore IsInteractable] dist: {edgeToEdgeDistance}, radius: {playerRadius}, edgeToEdge: {centerToEdge}, range: {range}");
 
         return edgeToEdgeDistance <= range;
     }
