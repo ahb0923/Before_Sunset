@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Smelter : MonoBehaviour, IPoolable
+public class Smelter : MonoBehaviour, IPoolable, IDamageable
 {
     public int smelterID;
     public SmelterDatabase smelterData;
@@ -164,5 +164,17 @@ public class Smelter : MonoBehaviour, IPoolable
 
     public void OnReturnToPool()
     {
+    }
+
+    public void OnDamaged(Damaged damaged)
+    {
+        // 1) 부서지는 애니메이션
+        // 2) 여기서 제련중이던 아이템 필드에 드롭
+        // 3) 있다면 제련중이던 실제 정보값들 저장 위치 초기화
+        // 4) 파괴 될 경우 50% 의 아이템 손실
+
+
+        StopAllCoroutines();
+        PoolManager.Instance.ReturnToPool(smelterID, gameObject);
     }
 }

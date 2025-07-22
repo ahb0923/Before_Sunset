@@ -182,6 +182,16 @@ public class TowerAttackSensor : MonoBehaviour
 
         // 타워 타입에 따라 다른 타겟 설정하도록
         GameObject newTarget = NearestTarget();
+        switch (_tower.towerType)
+        {
+            case TOWER_TYPE.CooperTower:
+            case TOWER_TYPE.IronTower:
+                newTarget = NearestTarget();
+                break;
+            case TOWER_TYPE.DiaprismTower:
+                newTarget = HighHpTarget();
+                break;
+        }
 
         Debug.Log($"[센서] 남아있는 적 갯수 테스트용: {detectedEnemies.Count}");
 

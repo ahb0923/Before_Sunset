@@ -16,7 +16,8 @@ public enum TOWER_TYPE
     IronTower,
     DiaprismTower,
     HealTower,
-    MagnetTower
+    MagnetTower,
+    OpalTower
 }
 public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 {
