@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private BasePlayer _player;
+    private PlayerInteractor _interactor;
     private PlayerInputActions _actions;
     private EquipmentDatabase _equippedPickaxe;
 
@@ -59,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(IsSwing || IsRecalling) return;
+        if (IsSwing || IsRecalling) return;
 
         Move();
     }
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour
     public void Init(BasePlayer player)
     {
         _player = player;
+        _interactor = GetComponent<PlayerInteractor>();
         _equippedPickaxe = player.Stat.Pickaxe;
 
         _actions = player.InputActions;
@@ -86,7 +88,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         SetAnimationDirection(_moveDir);
-        _player.Rigid.MovePosition(_player.Rigid .position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
+        _player.Rigid.MovePosition(_player.Rigid.position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
     }
 
     /// <summary>
@@ -105,10 +107,14 @@ public class PlayerController : MonoBehaviour
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
 
-        Collider2D col = Physics2D.OverlapPoint(clickPos);
-        IInteractable target = null;
-        if (col != null)
-            col.TryGetComponent<IInteractable>(out target);
+        IInteractable target = _interactor.GetCurrentTarget();
+
+        if (target != null && !(target is OreController) && !(target is JewelController))
+        {
+            TryInteractTarget(target);
+            _swingCoroutine = null;
+            yield break;
+        }
 
         // 플레이어 기준으로 클릭의 방향 벡터 구하기
         _clickDir = (clickPos - _player.Animator.transform.position).normalized;
@@ -123,7 +129,7 @@ public class PlayerController : MonoBehaviour
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
 
-        TryMineTarget(target);
+        TryInteractTarget(target);
 
         _swingCoroutine = null;
     }
@@ -131,22 +137,51 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 채광 시도
     /// </summary>
-    private void TryMineTarget(IInteractable target)
+    private void TryInteractTarget(IInteractable target)
     {
         if (target == null) return;
 
-        if (_equippedPickaxe == null) return;
+        float range = (target is OreController || target is JewelController) ? 1.5f : 5.0f;
+
+        if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
+            return;
 
         if (target is OreController ore)
         {
-            ore.Init(_player);
-            ore.Interact();
+            int wallLayerMask = LayerMask.GetMask("Wall");
+            Vector2 playerPos = _player.transform.position;
+            Vector2 orePos = ore.transform.position;
+
+            if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
+            {
+                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                return;
+            }
+
+            if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
+            {
+                Debug.Log("곡괭이 힘이 부족합니다.");
+                return;
+            }
+
+            ore.Mine(_player.Stat.Pickaxe.damage);
         }
         else if (target is JewelController jewel)
         {
-            jewel.Interact();
+            int wallLayerMask = LayerMask.GetMask("Wall");
+            Vector2 playerPos = _player.transform.position;
+            Vector2 jewelPos = jewel.transform.position;
+
+            if (Physics2D.Linecast(playerPos, jewelPos, wallLayerMask))
+            {
+                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                return;
+            }
         }
+
+        target.Interact();
     }
+
 
     /// <summary>
     /// 애니메이션 방향 설정

@@ -15,6 +15,7 @@ public class BasePlayer : MonoBehaviour, ISaveable
     [SerializeField] private SpriteRenderer _effectDownRenderer;
 
     public Rigidbody2D Rigid { get; private set; }
+    public BoxCollider2D PlayerCollider { get; private set; }
     public PlayerController Controller { get; private set; }
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerStatHandler Stat { get; private set; }
@@ -26,6 +27,7 @@ public class BasePlayer : MonoBehaviour, ISaveable
     private void Awake()
     {
         Rigid = GetComponent<Rigidbody2D>();
+        PlayerCollider = GetComponent<BoxCollider2D>();
         Controller = GetComponent<PlayerController>();
         InputHandler = GetComponent<PlayerInputHandler>();
         Stat = GetComponent<PlayerStatHandler>();
