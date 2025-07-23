@@ -56,16 +56,16 @@ public class OptionUI : MonoBehaviour
     
     private void Start()
     {
-        // _wholeSoundSlider.value = AudioManager.Instance().Volume;
-        // _bGSoundSlider.value = AudioManager.Instance().BgmVolume;
-        // _effectSoundSlider.value = AudioManager.Instance().SfxVolume;
+        _wholeSoundSlider.value = AudioManager.Instance.GetWholeVolume();
+        _bGSoundSlider.value = AudioManager.Instance.GetBGMVolume();
+        _effectSoundSlider.value = AudioManager.Instance.GetSFXVolume();
     }
 
     private void Update()
     {
-        // AudioManager.Instance().SetVolume(_wholeSoundSlider.value);
-        // AudioManager.Instance().SetBGMVolume(_bGSoundSlider.value);
-        // AudioManager.Instance().SetSFXVolume(_effectSoundSlider.value);
+        AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
+        AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
+        AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
     }
 
     private void Open()

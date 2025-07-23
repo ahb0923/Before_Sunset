@@ -18,11 +18,8 @@ public class PlayerInteractor : MonoBehaviour
 
     void Awake()
     {
-        if (_mainCamera == null)
-            _mainCamera = Camera.main;
-
-        if (_playerCollider == null)
-            _playerCollider = GetComponent<BoxCollider2D>();
+        _mainCamera = Camera.main;
+        _playerCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -35,19 +32,23 @@ public class PlayerInteractor : MonoBehaviour
         if (col != null && col.TryGetComponent(out IInteractable interactable))
         {
             float range = (interactable is OreController || interactable is JewelController) ? 1.5f : 5.0f;
+
             if (interactable.IsInteractable(transform.position, range, _playerCollider))
             {
-                Cursor.SetCursor(interactCursor, new Vector2(-0.5f, -0.5f), CursorMode.Auto);
+                Vector2 hotspot = new Vector2(interactCursor.width * 0.5f, interactCursor.height * 0.5f);
+                Cursor.SetCursor(interactCursor, hotspot, CursorMode.Auto);
                 _currentTarget = interactable;
                 return;
             }
             else
             {
-                Cursor.SetCursor(outOfRangeCursor, new Vector2(-0.5f, -0.5f), CursorMode.Auto);
+                Vector2 hotspot = new Vector2(outOfRangeCursor.width * 0.5f, outOfRangeCursor.height * 0.5f);
+                Cursor.SetCursor(outOfRangeCursor, hotspot, CursorMode.Auto);
                 _currentTarget = null;
                 return;
             }
         }
+
         Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.Auto);
         _currentTarget = null;
     }

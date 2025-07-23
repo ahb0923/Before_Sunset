@@ -70,6 +70,11 @@ public class PlayerItemCollect : MonoBehaviour
 
         if (Vector3.Distance(itemTransform.position, transform.position) <= 0.1f)
         {
+            if (itemObject.TryGetComponent(out JewelController jewel))
+            {
+                AudioManager.Instance.PlaySFX("JewelPickUp");
+            }
+
             InventoryManager.Instance.Inventory.AddItem(itemId, 1);
             PoolManager.Instance.ReturnToPool(itemId, itemObject);
         }

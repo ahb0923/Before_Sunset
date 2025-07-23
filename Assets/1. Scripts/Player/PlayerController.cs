@@ -126,9 +126,15 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
+        if (target is OreController)
+        {
+            AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
+        }
+
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
 
+        target = _interactor.GetCurrentTarget();
         TryInteractTarget(target);
 
         _swingCoroutine = null;

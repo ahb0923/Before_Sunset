@@ -182,6 +182,7 @@ public class MapManager : MonoSingleton<MapManager>
         if (addToHistory)
             _mapHistory.Push(CurrentMapIndex);
 
+        ChangeMapBGM(targetIndex);
         CurrentMapIndex = targetIndex;
     }
 
@@ -305,4 +306,33 @@ public class MapManager : MonoSingleton<MapManager>
 
         return mapInstance.transform.position;
     }
+
+    private void ChangeMapBGM(int mapIndex)
+    {
+        int mapId = (mapIndex == 0) ? 0 : _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
+
+        var mapData = DataManager.Instance.MapData.GetById(mapId);
+        if (mapData == null)
+        {
+            Debug.LogWarning("맵 데이터를 찾을 수 없어 BGM을 변경할 수 없습니다.");
+            return;
+        }
+
+        switch (mapData.mapType)
+        {
+            case MAP_TYPE.Base:
+                AudioManager.Instance.PlayBGM("NormalBase");
+                break;
+            case MAP_TYPE.MineSmall:
+                AudioManager.Instance.PlayBGM("BasicMine1");
+                break;
+            case MAP_TYPE.MineLarge:
+                AudioManager.Instance.PlayBGM("BasicMine1");
+                break;
+            case MAP_TYPE.MineRare:
+                AudioManager.Instance.PlayBGM("RareMine1");
+                break;
+        }
+    }
+
 }
