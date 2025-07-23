@@ -33,7 +33,6 @@ public class UpgradeSlot : MonoBehaviour
         _upgradeCostText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, UPGRADE_COST_TEXT);
         _upgradeButton = Helper_Component.FindChildComponent<Button>(this.transform, UPGRADE_BUTTON);
     }
-
     
     private void Awake()
     {

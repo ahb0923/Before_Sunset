@@ -170,6 +170,7 @@ public class UpgradeUI : MonoBehaviour
         
         Refresh();
         RefreshSlot();
+        UIManager.Instance.EssenceUI.Refresh();
         ToastManager.Instance.ShowToast("업그레이드 초기화 완료!");
     }
     
@@ -211,6 +212,7 @@ public class UpgradeUI : MonoBehaviour
             UpgradeManager.Instance.FixUpgrade();
             UpgradeManager.Instance.FixEssence();
             IsChange = false;
+            UIManager.Instance.EssenceUI.Refresh();
             ToastManager.Instance.ShowToast("적용하기 완료!");
         }
         else

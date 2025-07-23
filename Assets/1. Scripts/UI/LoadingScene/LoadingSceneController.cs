@@ -61,7 +61,16 @@ public class LoadingSceneController : MonoBehaviour
 
     private IEnumerator C_LoadSceneProcess()
     {
-        yield return GameManager.Instance.InitAsync().AsCoroutine();
+        var initTask = GameManager.Instance.InitAsync();
+        
+        while (GameManager.Instance.InitProgress < 1f)
+        {
+            _loadingBar.fillAmount = Mathf.Lerp(0f, 0.9f, GameManager.Instance.InitProgress);
+            ShowPercentage();
+            yield return null;
+        }
+        
+        yield return initTask.AsCoroutine();
         
         AsyncOperation op = SceneManager.LoadSceneAsync(NEXT_SCENE);
         op.allowSceneActivation = false;
@@ -87,6 +96,7 @@ public class LoadingSceneController : MonoBehaviour
                 if (_loadingBar.fillAmount >= 1f)
                 {
                     yield return new WaitForSecondsRealtime(0.5f);
+                    _loadingPercent.text = "100.00%";
                     StartCoroutine(C_FadeOutBeforeScene(op));
                     yield break;
                 }
