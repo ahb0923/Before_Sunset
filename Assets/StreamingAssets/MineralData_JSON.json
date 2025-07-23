@@ -1,64 +1,83 @@
 [
   {
-    "id": "100",
+    "itemType": 0,
+    "prefabName": "Mineral_Stone",
+    "ingotId": 0,
+    "smeltingTime": 0,
+    "id": 100,
     "itemName": "돌",
-    "itemType": "Mineral",
     "context": "기본적인 자원. 제련소를 만들 수 있다."
   },
   {
-    "id": "110",
-    "itemName": "구리",
-    "itemType": "Mineral",
-    "smeltingTime": 8,
+    "itemType": 0,
+    "prefabName": "Mineral_Cooper",
     "ingotId": 111,
+    "smeltingTime": 8,
+    "id": 110,
+    "itemName": "구리",
     "context": "최초로 발견 된 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
-    "id": "111",
+    "itemType": 1,
+    "prefabName": "Ingot_Cooper",
+    "ingotId": 0,
+    "smeltingTime": 0,
+    "id": 111,
     "itemName": "구리주괴",
-    "itemType": "Ingot",
     "context": "구리를 제련해 만든 주괴. 기초 타워 제작에 사용된다."
   },
   {
-    "id": "120",
-    "itemName": "철",
-    "itemType": "Mineral",
-    "smeltingTime": 12,
+    "itemType": 0,
+    "prefabName": "Mineral_Iron",
     "ingotId": 121,
+    "smeltingTime": 12,
+    "id": 120,
+    "itemName": "철",
     "context": "강인하고 단단한 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
-    "id": "121",
+    "itemType": 1,
+    "prefabName": "Ingot_Iron",
+    "ingotId": 0,
+    "smeltingTime": 0,
+    "id": 121,
     "itemName": "철주괴",
-    "itemType": "Ingot",
     "context": "철을 제련해 만든 주괴. 중급 타워 제작에 사용된다."
   },
   {
-    "id": "130",
-    "itemName": "은",
-    "itemType": "Mineral",
-    "smeltingTime": 15,
+    "itemType": 0,
+    "prefabName": "Mineral_Silver",
     "ingotId": 131,
+    "smeltingTime": 15,
+    "id": 130,
+    "itemName": "은",
     "context": "에너지의 흐름이 느껴지는 금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
-    "id": "131",
+    "itemType": 1,
+    "prefabName": "Ingot_Silver",
+    "ingotId": 0,
+    "smeltingTime": 0,
+    "id": 131,
     "itemName": "은주괴",
-    "itemType": "Ingot",
     "context": "은을 제련해 만든 주괴. 중급 타워 제작에 사용된다. "
   },
   {
-    "id": "140",
-    "itemName": "금",
-    "itemType": "Mineral",
-    "smeltingTime": 18,
+    "itemType": 0,
+    "prefabName": "Mineral_Gold",
     "ingotId": 141,
+    "smeltingTime": 18,
+    "id": 140,
+    "itemName": "금",
     "context": "가치를 증명하는 귀금속. 제련을 통해 사용할 수 있을 것 같다."
   },
   {
-    "id": "141",
+    "itemType": 1,
+    "prefabName": "Ingot_Gold",
+    "ingotId": 0,
+    "smeltingTime": 0,
+    "id": 141,
     "itemName": "금주괴",
-    "itemType": "Ingot",
     "context": "금을 제련해 만든 주괴. 상급 타워 제작에 사용된다."
   }
 ]

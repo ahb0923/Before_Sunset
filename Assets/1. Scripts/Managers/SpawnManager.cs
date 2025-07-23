@@ -1,45 +1,50 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    [Header("스포너 컴포넌트")]
-    [SerializeField] private OreSpawner oreSpawner;
-    [SerializeField] private JewelSpawner jewelSpawner;
+    private OreSpawner oreSpawner;
+    private JewelSpawner jewelSpawner;
+    private OreDataHandler oreHandler;
+    private JewelDataHandler jewelHandler;
 
     private Vector3 currentMapPosition = Vector3.zero;
-
-    private OreDataHandler oreHandler = new OreDataHandler();
-    private JewelDataHandler jewelHandler = new JewelDataHandler();
-
-    private bool oreDataLoaded = false;
-    private bool jewelDataLoaded = false;
-
     private int currentMapIndex = -1;
 
     private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<ResourceState>> _mapResourceStates = new();
 
-    private async void Start()
+    private void Start()
     {
-        await LoadAllDataAsync();
+        oreSpawner = Helper_Component.FindChildComponent<OreSpawner>(this.transform, "OreSpawner");
+        jewelSpawner = Helper_Component.FindChildComponent<JewelSpawner>(this.transform, "JewelSpawner");
 
-        currentMapIndex = 0;
+        StartCoroutine(WaitForDataManagerInit());
+    }
+    private IEnumerator WaitForDataManagerInit()
+    {
+        while (!DataManagerReady())
+            yield return null;
+
+        oreHandler = DataManager.Instance.OreData;
+        jewelHandler = DataManager.Instance.JewelData;
     }
 
-    private async Task LoadAllDataAsync()
+    private bool DataManagerReady()
     {
-        if (!oreDataLoaded)
-        {
-            await oreHandler.LoadAsyncLocal();
-            oreDataLoaded = true;
-        }
+        var task = DataManager.Instance.InitCheck();
+        return task.IsCompleted && DataManager.Instance.OreData != null && DataManager.Instance.JewelData != null;
+    }
 
-        if (!jewelDataLoaded)
-        {
-            await jewelHandler.LoadAsyncLocal();
-            jewelDataLoaded = true;
-        }
+    private Transform GetContainer(string containerName)
+    {
+        var container = GameObject.Find(containerName);
+        if (container == null)
+            Debug.LogWarning($"컨테이너 {containerName}를 찾을 수 없습니다.");
+        return container?.transform;
     }
 
     public void OnMapChanged(Vector3 mapPosition, int mapIndex, Vector2[] spawnAreas)
@@ -50,38 +55,121 @@ public class SpawnManager : MonoBehaviour
             return;
         }
 
-        if (currentMapIndex == mapIndex)
-        {
-            // 이미 스폰된 오브젝트 활성화
-            SetMapResourcesActive(mapIndex, true);
-            return;
-        }
-
-        // 이전 맵 오브젝트 비활성화
+        // 현재 맵 상태 저장
         if (currentMapIndex != -1)
-            SetMapResourcesActive(currentMapIndex, false);
+        {
+            // 1) 상태 저장
+            List<ResourceState> saved = new();
+            saved.AddRange(oreSpawner.SaveCurrentStates());
+            saved.AddRange(jewelSpawner.SaveCurrentStates());
+            _mapResourceStates[currentMapIndex] = saved;
+
+            // 2) 이전 맵 자원들 풀에 반환
+            if (mapResources.TryGetValue(currentMapIndex, out var oldResources))
+            {
+                foreach (var obj in oldResources)
+                {
+                    if (obj == null) continue;
+                    if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
+                    {
+                        resource.OnReturnToPool();
+                    }
+                    PoolManager.Instance.ReturnToPool(obj.GetComponent<IPoolable>().GetId(), obj);
+                }
+                oldResources.Clear();
+            }
+        }
 
         currentMapIndex = mapIndex;
         currentMapPosition = mapPosition;
-
         SetMapPositionAndArea(mapPosition, spawnAreas[0], spawnAreas[1]);
 
         if (currentMapIndex == 0)
         {
-            Debug.Log("기본맵이라 자원 스폰하지 않음");
             return;
         }
 
-        if (mapResources.ContainsKey(currentMapIndex))
+        var oreContainer = GetContainer("OreContainer");
+        var jewelContainer = GetContainer("JewelContainer");
+
+        oreSpawner.SetParentTransform(oreContainer);
+        jewelSpawner.SetParentTransform(jewelContainer);
+
+        oreContainer.transform.position = Vector3.zero;
+        jewelContainer.transform.position = Vector3.zero;
+
+        if (_mapResourceStates.TryGetValue(currentMapIndex, out var savedStates))
         {
-            // 기존 스폰 오브젝트 재활성화
-            SetMapResourcesActive(currentMapIndex, true);
+            List<GameObject> newResources = new List<GameObject>();
+
+            newResources.AddRange(oreSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id < 1000).ToList()));
+            newResources.AddRange(jewelSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id >= 1000).ToList()));
+
+            mapResources[currentMapIndex] = newResources;
         }
         else
         {
-            // 새로 스폰 후 저장
             SpawnAllAndStore();
         }
+    }
+
+    private void SpawnAllAndStore()
+    {
+        if (oreHandler == null || jewelHandler == null)
+        {
+            Debug.LogWarning("SpawnManager: 데이터 핸들러가 세팅되지 않았습니다.");
+            return;
+        }
+
+        List<GameObject> spawnedObjects = new List<GameObject>();
+
+        List<OreDatabase> oreList = oreHandler.GetAllItems();
+        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
+
+        if (oreSpawner != null && oreList != null)
+        {
+            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
+            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.GetParentTransform()));
+        }
+
+        if (jewelSpawner != null && jewelList != null)
+        {
+            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
+            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.GetParentTransform()));
+        }
+
+        mapResources[currentMapIndex] = spawnedObjects;
+    }
+
+    private List<GameObject> GetChildrenGameObjects(Transform parent)
+    {
+        List<GameObject> list = new List<GameObject>();
+        if (parent == null) return list;
+
+        for (int i = 0; i < parent.childCount; i++)
+            list.Add(parent.GetChild(i).gameObject);
+        return list;
+    }
+
+    public void OnStageChanged()
+    {
+        ClearAll();
+        mapResources.Clear();
+    }
+
+    private void ClearAll()
+    {
+        ClearChildren(oreSpawner?.GetParentTransform());
+        ClearChildren(jewelSpawner?.GetParentTransform());
+        mapResources.Clear();
+    }
+
+    private void ClearChildren(Transform parent)
+    {
+        if (parent == null) return;
+
+        for (int i = parent.childCount - 1; i >= 0; i--)
+            Destroy(parent.GetChild(i).gameObject);
     }
 
     public void SetMapResourcesActive(int mapIndex, bool active)
@@ -98,58 +186,5 @@ public class SpawnManager : MonoBehaviour
         currentMapPosition = mapPosition;
         oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
         jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
-    }
-
-    private void SpawnAllAndStore()
-    {
-        if (!oreDataLoaded || !jewelDataLoaded) return;
-
-        List<GameObject> spawnedObjects = new List<GameObject>();
-
-        List<OreDatabase> oreList = oreHandler.GetAllItems();
-        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
-
-        if (oreSpawner != null && oreList != null)
-        {
-            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.transform));
-        }
-
-        if (jewelSpawner != null && jewelList != null)
-        {
-            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.transform));
-        }
-
-        mapResources[currentMapIndex] = spawnedObjects;
-    }
-
-    private List<GameObject> GetChildrenGameObjects(Transform parent)
-    {
-        List<GameObject> list = new List<GameObject>();
-        for (int i = 0; i < parent.childCount; i++)
-            list.Add(parent.GetChild(i).gameObject);
-        return list;
-    }
-
-    public void OnStageChanged()
-    {
-        ClearAll();
-        mapResources.Clear();
-    }
-
-    private void ClearAll()
-    {
-        ClearChildren(oreSpawner?.transform);
-        ClearChildren(jewelSpawner?.transform);
-        mapResources.Clear();
-    }
-
-    private void ClearChildren(Transform parent)
-    {
-        if (parent == null) return;
-
-        for (int i = parent.childCount - 1; i >= 0; i--)
-            Destroy(parent.GetChild(i).gameObject);
     }
 }

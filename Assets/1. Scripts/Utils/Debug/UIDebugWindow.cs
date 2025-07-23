@@ -49,7 +49,7 @@ public class UIDebugWindow : EditorWindow
         
         if (GUILayout.Button("제련소 열기"))
         {
-            UIManager.Instance.SmelterUI.OpenSmelter();
+            // UIManager.Instance.SmelterUI.OpenSmelter();
         }
         
         if (GUILayout.Button("코루틴 테스트"))
@@ -59,7 +59,7 @@ public class UIDebugWindow : EditorWindow
         
         if (GUILayout.Button("하급제련소강제주입"))
         {
-            UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
+            // UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
         }
     }
 }

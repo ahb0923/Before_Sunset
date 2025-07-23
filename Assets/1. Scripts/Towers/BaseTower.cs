@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -15,16 +16,17 @@ public enum TOWER_TYPE
     IronTower,
     DiaprismTower,
     HealTower,
-    MagnetTower
+    MagnetTower,
+    OpalTower
 }
-public class BaseTower : MonoBehaviour, IPoolable 
+public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 {
     [Header(" [에디터 할당] ")]
     public TOWER_TYPE towerType;
     public int towerId;
 
 
-    public Vector2Int size = new Vector2Int(1, 1); // 1x1 또는 2x2 등
+    public Vector2Int buildSize = new Vector2Int(3, 3); // 1x1 또는 2x2 등
 
 
     public Collider2D mainCollider;
@@ -41,12 +43,13 @@ public class BaseTower : MonoBehaviour, IPoolable
     public TowerAttackSensor attackSensor;
     // ui 관련
     public TowerUI ui;
+    // 건설 관련 (buildManager에서 이용)
+    public BuildInfo buildInfo;
     // 발사체
     public GameObject projectile;
 
     // 공격 전략
     public IAttackStrategy attackStrategy;
-
 
 
     private void Reset()
@@ -62,10 +65,13 @@ public class BaseTower : MonoBehaviour, IPoolable
         // 이동 필요?
         _buildCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "BuildArea");
 
+
+
         ai = Helper_Component.GetComponent<TowerAI>(gameObject);
         statHandler = Helper_Component.GetComponent<TowerStatHandler>(gameObject);
         attackSensor = Helper_Component.GetComponentInChildren<TowerAttackSensor>(gameObject);
         ui = Helper_Component.GetComponentInChildren<TowerUI>(gameObject);
+        buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
     }
     
 
@@ -76,6 +82,7 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.Init(this);
         attackSensor.Init(this);
         InitAttackStrategy();
+        buildInfo.Init(towerId, buildSize);
     }
 
     public void InitAttackStrategy()
@@ -102,7 +109,6 @@ public class BaseTower : MonoBehaviour, IPoolable
 
 
     // ============<< IPoolable >>============
-
     public int GetId()
     {
         return towerId;
@@ -125,6 +131,7 @@ public class BaseTower : MonoBehaviour, IPoolable
         ai.ResetStateMachine();
         ai.SetState(TOWER_STATE.Construction, true);
         ui.ResetHpBar();
+        RenderUtil.SetSortingOrderByY(ui.icon);
     }
 
     /// <summary>
@@ -137,4 +144,14 @@ public class BaseTower : MonoBehaviour, IPoolable
     }
     // =======================================
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (BuildManager.Instance.IsPlacing) return;
+
+            var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
+            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(data);
+        }
+    }
 }

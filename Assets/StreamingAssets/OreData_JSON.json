@@ -1,47 +1,57 @@
 [
   {
-    "id": "000",
-    "itemName": "돌 광석",
-    "dropMineralId": "100",
+    "id": 0,
+    "itemName": "돌광석",
+    "prefabName": "Ore_Stone",
+    "dropMineralId": 100,
     "hp": 1,
     "def": 0,
     "spawnProbability": 65,
-    "spawnStage": 1
+    "spawnStage": 1,
+    "context": null
   },
   {
-    "id": "001",
-    "itemName": "구리 광석",
-    "dropMineralId": "110",
+    "id": 1,
+    "itemName": "구리광석",
+    "prefabName": "Ore_Cooper",
+    "dropMineralId": 110,
     "hp": 2,
     "def": 0,
     "spawnProbability": 40,
-    "spawnStage": 1
+    "spawnStage": 1,
+    "context": null
   },
   {
-    "id": "002",
-    "itemName": "철 광석",
-    "dropMineralId": "120",
+    "id": 2,
+    "itemName": "철광석",
+    "prefabName": "Ore_Iron",
+    "dropMineralId": 120,
     "hp": 4,
     "def": 1,
     "spawnProbability": 30,
-    "spawnStage": 2
+    "spawnStage": 2,
+    "context": null
   },
   {
-    "id": "003",
-    "itemName": "은 광석",
-    "dropMineralId": "130",
+    "id": 3,
+    "itemName": "은광석",
+    "prefabName": "Ore_Silver",
+    "dropMineralId": 130,
     "hp": 5,
     "def": 2,
     "spawnProbability": 20,
-    "spawnStage": 2
+    "spawnStage": 2,
+    "context": null
   },
   {
-    "id": "004",
-    "itemName": "금 광석",
-    "dropMineralId": "140",
+    "id": 4,
+    "itemName": "금광석",
+    "prefabName": "Ore_Gold",
+    "dropMineralId": 140,
     "hp": 6,
     "def": 3,
     "spawnProbability": 20,
-    "spawnStage": 2
+    "spawnStage": 2,
+    "context": null
   }
 ]

@@ -23,6 +23,12 @@ public class ProjectileDataHandler : BaseDataHandler<ProjectileDatabase>
         Debug.LogWarning($"[ProjectileDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
+
+    protected override void AfterLoaded()
+    {
+        SettingPrefab();
+    }
+
     /// <summary>
     /// 타워 이미지 데이터 초기화
     /// </summary>

@@ -284,7 +284,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0013557225, y: -0.08628045}
+  m_Offset: {x: 0, y: -0.08628045}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -312,7 +312,7 @@ MonoBehaviour:
   _id: 600
   _obstacleLayer:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 8512
   <Projectile>k__BackingField: {fileID: 0}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
@@ -345,6 +345,7 @@ MonoBehaviour:
     monsterName: 
     attackType: 0
     moveType: 0
+    prefabName: 
     hp: 0
     damage: 0
     aps: 0
@@ -352,6 +353,8 @@ MonoBehaviour:
     range: 0
     size: 0
     context: 
+  _hitMat: {fileID: 2100000, guid: e22a3c62fe1ba4d4e8c5dae26789a776, type: 2}
+  _hitDuration: 0.1
 --- !u!1001 &4041250866971082284
 PrefabInstance:
   m_ObjectHideFlags: 0

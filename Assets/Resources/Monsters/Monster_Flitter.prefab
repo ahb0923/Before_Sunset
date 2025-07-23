@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9190753969601880263}
   - component: {fileID: 1966239875604961671}
+  - component: {fileID: 1916479285881716654}
   m_Layer: 7
   m_Name: Monster_Sprite
   m_TagString: Untagged
@@ -27,8 +28,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7211768120753557082}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -73,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 917686060, guid: 60d4a04ecb0dd6440b5f43f51897a0f6, type: 3}
+  m_Sprite: {fileID: 1257880583, guid: ec9ba170efd183a42ba9636b1f5d32bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -84,6 +85,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1916479285881716654
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615177644808902849}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a21c4b2f95b97124886180f0c9f1ba99, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3251908670913583317
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +201,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.25068653}
@@ -210,7 +232,7 @@ MonoBehaviour:
   _id: 603
   _obstacleLayer:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 8512
   <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
@@ -243,6 +265,7 @@ MonoBehaviour:
     monsterName: 
     attackType: 0
     moveType: 0
+    prefabName: 
     hp: 0
     damage: 0
     aps: 0
@@ -250,6 +273,8 @@ MonoBehaviour:
     range: 0
     size: 0
     context: 
+  _hitMat: {fileID: 2100000, guid: e22a3c62fe1ba4d4e8c5dae26789a776, type: 2}
+  _hitDuration: 0.1
 --- !u!1 &8992987739912055509
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 130
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_LocalPosition.x

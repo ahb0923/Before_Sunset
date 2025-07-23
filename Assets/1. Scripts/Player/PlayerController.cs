@@ -1,208 +1,166 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 2.0f;
-    [SerializeField] private Animator animator;
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private GameObject buildModeUI;
-    [SerializeField] private GameObject unbuildModeUI;
-    [SerializeField] private InventoryUI inventoryUI;
-    [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private PlayerInputHandler _input;
-
-    private EquipmentDataHandler equipmentDataHandler;
-
-    private bool _isSwinging = false;
-
-    // 현재 장착 곡괭이 데이터 (초기값은 null)
+    private BasePlayer _player;
+    private PlayerInputActions _actions;
     private EquipmentDatabase _equippedPickaxe;
 
-    private async void Start()
+    private Vector2 _moveDir;
+    private Vector3 _clickDir;
+
+    private Coroutine _swingCoroutine;
+    public bool IsSwing => _swingCoroutine != null;
+
+    private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
+
+    #region Event Subscriptions
+    private void OnMoveStarted(InputAction.CallbackContext context)
     {
-        _input.OnInventoryToggle += ToggleInventory;
-        _input.OnBuildMode += EnterBuildMode;
-        _input.OnUnBuildMode += EnterUnBuildMode;
+        if (PlayerInputHandler._isRecallInProgress) return;
 
-        if (equipmentDataHandler == null)
-            equipmentDataHandler = new EquipmentDataHandler();
-
-        await equipmentDataHandler.LoadAsyncLocal();
-
-        _equippedPickaxe = equipmentDataHandler.GetById(700);
-        InventoryManager.Instance.Inventory.SetPickaxe(_equippedPickaxe);
-
-        if (_equippedPickaxe == null)
-            Debug.LogError("초기 곡괭이 데이터가 없습니다!");
-        else
-            animator.speed = _equippedPickaxe.speed;
+        _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
 
-    private void OnDestroy()
+    private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        _input.OnInventoryToggle -= ToggleInventory;
-        _input.OnBuildMode -= EnterBuildMode;
-        _input.OnUnBuildMode -= EnterUnBuildMode;
+        _moveDir = context.ReadValue<Vector2>().normalized;
     }
 
-    private void Update()
+    private void OnMoveCanceled(InputAction.CallbackContext context)
     {
-        HandleLookAndFlip();
-        HandleMovement();
-        HandleSwing();
+        _moveDir = Vector2.zero;
+        _player.Animator.SetBool(BasePlayer.MOVE, false);
     }
 
-    private void LateUpdate()
+    private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        RenderUtil.SetSortingOrderByY(_spriteRenderer);
+        if (_player.IsInBase || IsSwing || IsRecalling) return;
+
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.Pickaxe.speed)
+            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.Pickaxe.speed);
+
+        _swingCoroutine = StartCoroutine(C_Swing());
+    }
+    #endregion
+
+    #region Event Unsubscriptions
+    private void OnDisable()
+    {
+        _actions.Player.Disable();
+        _actions.Player.Move.started -= OnMoveStarted;
+        _actions.Player.Move.performed -= OnMovePerformed;
+        _actions.Player.Move.canceled -= OnMoveCanceled;
+        _actions.Player.Swing.started -= OnSwingStarted;
+    }
+    #endregion
+
+    private void FixedUpdate()
+    {
+        if(IsSwing || IsRecalling) return;
+
+        Move();
     }
 
-    private void HandleLookAndFlip()
+    /// <summary>
+    /// 플레이어 컨트롤러 초기화 + 인풋 시스템 이벤트 등록
+    /// </summary>
+    public void Init(BasePlayer player)
     {
-        if (mainCamera == null) return;
+        _player = player;
+        _equippedPickaxe = player.Stat.Pickaxe;
 
-        Vector3 mouseWorld = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector2 lookDir = (mouseWorld - transform.position).normalized;
-
-        bool isUp = false;
-        bool isDown = false;
-        bool isSide = false;
-
-        if (Mathf.Abs(lookDir.x) > Mathf.Abs(lookDir.y))
-        {
-            isSide = true;
-            _spriteRenderer.flipX = lookDir.x < 0;
-        }
-        else
-        {
-            _spriteRenderer.flipX = false;
-            isUp = lookDir.y > 0;
-            isDown = !isUp;
-        }
-
-        animator.SetBool("isUp", isUp);
-        animator.SetBool("isDown", isDown);
-        animator.SetBool("isSide", isSide);
+        _actions = player.InputActions;
+        _actions.Player.Move.started += OnMoveStarted;
+        _actions.Player.Move.performed += OnMovePerformed;
+        _actions.Player.Move.canceled += OnMoveCanceled;
+        _actions.Player.Swing.started += OnSwingStarted;
+        _actions.Player.Enable();
     }
 
-    private void HandleMovement()
+    /// <summary>
+    /// 플레이어 이동
+    /// </summary>
+    private void Move()
     {
-        if (_isSwinging)
-        {
-            _rigidbody.velocity = Vector2.zero;
-            animator.SetBool("isWalking", false);
-            return;
-        }
-
-        Vector2 move = _input.MoveInput;
-        _rigidbody.velocity = move * moveSpeed;
-        animator.SetBool("isWalking", move.sqrMagnitude > 0.01f);
+        SetAnimationDirection(_moveDir);
+        _player.Rigid.MovePosition(_player.Rigid .position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
     }
 
-    private void HandleSwing()
-    {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
-
-        if (_input.IsSwing && !_isSwinging)
-        {
-            StartCoroutine(C_Swing());
-        }
-    }
-
+    /// <summary>
+    /// 스윙 애니메이션 실행
+    /// </summary>
     private IEnumerator C_Swing()
     {
-        _isSwinging = true;
-        animator.SetBool("isSwinging", true);
+        // UI 클릭 체크
+        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
 
-        TryMineOre();
+        // 클릭 월드 포지션 구하기
+        Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        clickPos.z = 0f;
 
-        yield return new WaitForSeconds(1.2f / (_equippedPickaxe?.speed ?? 1f)); // 곡괭이 속도 반영
+        Collider2D col = Physics2D.OverlapPoint(clickPos);
+        IInteractable target = null;
+        if (col != null)
+            col.TryGetComponent<IInteractable>(out target);
 
-        animator.SetBool("isSwinging", false);
-        _isSwinging = false;
+        // 플레이어 기준으로 클릭의 방향 벡터 구하기
+        _clickDir = (clickPos - _player.Animator.transform.position).normalized;
+        _clickDir = Mathf.Abs(_clickDir.x) > Mathf.Abs(_clickDir.y)
+            ? Vector2.right * Mathf.Sign(_clickDir.x)
+            : Vector2.up * Mathf.Sign(_clickDir.y);
+
+        _player.Animator.SetFloat(BasePlayer.X, _clickDir.x);
+        _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
+        _player.Animator.SetTrigger(BasePlayer.SWING);
+
+        // 애니메이션 끝나는 걸 기다렸다가 채광 시도
+        yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
+
+        TryMineTarget(target);
+
+        _swingCoroutine = null;
     }
 
-    private void TryMineOre()
+    /// <summary>
+    /// 채광 시도
+    /// </summary>
+    private void TryMineTarget(IInteractable target)
     {
+        if (target == null) return;
+
         if (_equippedPickaxe == null) return;
 
-        Vector2 playerPos2D = (Vector2)transform.position + Vector2.down * 0.1f;
-
-        Vector2 dir = Vector2.right;
-        if (animator.GetBool("isUp")) dir = Vector2.up;
-        else if (animator.GetBool("isDown")) dir = Vector2.down;
-        else if (animator.GetBool("isSide")) dir = _spriteRenderer.flipX ? Vector2.left : Vector2.right;
-
-        float range = _equippedPickaxe.range;
-
-        int oreLayerMask = LayerMask.GetMask("Ore", "Jewel");
-        RaycastHit2D hit = Physics2D.Raycast(playerPos2D, dir, range, oreLayerMask);
-
-        Debug.DrawRay(playerPos2D, dir * range, Color.red, 1f);
-
-        if (hit.collider != null)
+        if (target is OreController ore)
         {
-            OreController ore = hit.collider.GetComponent<OreController>();
-            if (ore != null)
-            {
-                if (ore.CanBeMined(_equippedPickaxe.crushingForce))
-                {
-                    bool destroyed = ore.Mine(_equippedPickaxe.damage);
-                    Debug.Log(destroyed ? "광석이 파괴됨!" : "광석에 데미지 입힘");
-                }
-                else
-                {
-                    Debug.Log("곡괭이 파워 부족!");
-                }
-                return;
-            }
-
-            JewelController jewel = hit.collider.GetComponent<JewelController>();
-            if (jewel != null)
-            {
-                jewel.OnMined();
-                return;
-            }
-
-            Debug.Log("채굴 대상 없음");
+            ore.Init(_player);
+            ore.Interact();
         }
-        else
+        else if (target is JewelController jewel)
         {
-            Debug.Log("채광 범위 내에 광석/보석 없음");
+            jewel.Interact();
         }
     }
 
-
-
-    private void ToggleInventory()
+    /// <summary>
+    /// 애니메이션 방향 설정
+    /// </summary>
+    private void SetAnimationDirection(Vector2 moveDir)
     {
-        InventoryManager.Instance.Inventory.Toggle();
-    }
+        if (moveDir == Vector2.zero) return;
 
-    private void EnterBuildMode()
-    {
-        if (buildModeUI != null)
+        if (Mathf.Abs(moveDir.x) == Mathf.Abs(moveDir.y))
         {
-            bool isActive = !buildModeUI.activeSelf;
-            buildModeUI.SetActive(isActive);
-            if (isActive && unbuildModeUI != null)
-                unbuildModeUI.SetActive(false);
+            moveDir.x = moveDir.x > 0 ? 1f : -1f;
+            moveDir.y = 0f;
         }
-    }
-
-    private void EnterUnBuildMode()
-    {
-        if (unbuildModeUI != null)
-        {
-            bool isActive = !unbuildModeUI.activeSelf;
-            unbuildModeUI.SetActive(isActive);
-            if (isActive && buildModeUI != null)
-                buildModeUI.SetActive(false);
-        }
+        _player.Animator.SetFloat(BasePlayer.X, moveDir.x);
+        _player.Animator.SetFloat(BasePlayer.Y, moveDir.y);
     }
 }

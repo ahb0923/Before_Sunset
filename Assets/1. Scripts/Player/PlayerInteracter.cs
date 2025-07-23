@@ -15,12 +15,15 @@ public class PlayerInteractor : MonoBehaviour
     private Vector2 lastMousePos;
     private Vector3 lastPlayerPos;
 
-    private PlayerStateHandler stateHandler;
+    private BasePlayer _player;
     private CircleCollider2D playerCollider;
+
+    private IInteractable currentTarget;
+    public IInteractable CurrentTarget => currentTarget;
 
     void Awake()
     {
-        stateHandler = GetComponent<PlayerStateHandler>();
+        _player = GetComponent<BasePlayer>();
         playerCollider = GetComponent<CircleCollider2D>();
     }
 
@@ -35,11 +38,6 @@ public class PlayerInteractor : MonoBehaviour
             lastMousePos = currentMousePos;
             lastPlayerPos = currentPlayerPos;
         }
-
-        if (Mouse.current.leftButton.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            TryInteract(currentPlayerPos);
-        }
     }
 
     void UpdateCursor(Vector2 screenPos, Vector3 playerPos)
@@ -50,47 +48,24 @@ public class PlayerInteractor : MonoBehaviour
         float currentRange = GetEffectiveRange();
 
         Collider2D col = Physics2D.OverlapPoint(mousePos2D);
-        if (col != null)
+        if (col != null && col.TryGetComponent<IInteractable>(out var interactable))
         {
-            var interactable = col.GetComponent<IInteractable>();
-            if (interactable != null)
+            float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
+            if (distanceToEdge <= currentRange)
             {
-                float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
-                if (distanceToEdge <= currentRange)
-                {
-                    SetCustomCursor(interactCursor);
-                }
-                else
-                {
-                    SetCustomCursor(outOfRangeCursor);
-                }
-                return;
+                currentTarget = interactable;
+                SetCustomCursor(interactCursor);
             }
+            else
+            {
+                currentTarget = null;
+                SetCustomCursor(outOfRangeCursor);
+            }
+            return;
         }
 
+        currentTarget = null;
         SetCustomCursor(defaultCursor);
-    }
-
-    void TryInteract(Vector3 playerPos)
-    {
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
-
-        float currentRange = GetEffectiveRange();
-
-        Collider2D col = Physics2D.OverlapPoint(mousePos2D);
-        if (col != null)
-        {
-            var interactable = col.GetComponent<IInteractable>();
-            if (interactable != null)
-            {
-                float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
-                if (distanceToEdge <= currentRange)
-                {
-                    interactable.Interact();
-                }
-            }
-        }
     }
 
     void SetCustomCursor(Texture2D cursor)
@@ -98,14 +73,25 @@ public class PlayerInteractor : MonoBehaviour
         if (currentCursor != cursor)
         {
             Vector2 hotspot = Vector2.zero;
+
+            if (cursor != defaultCursor)
+            {
+                hotspot = new Vector2(cursor.width / 2f, cursor.height / 2f);
+            }
+            else
+            {
+                hotspot = Vector2.zero;
+            }
+
             Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
             currentCursor = cursor;
         }
     }
 
+
     float GetEffectiveRange()
     {
-        return (stateHandler != null && stateHandler.IsInMiningArea) ? 0.5f : interactionRange;
+        return (_player != null && !_player.IsInBase) ? 1f : interactionRange;
     }
 
     float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)

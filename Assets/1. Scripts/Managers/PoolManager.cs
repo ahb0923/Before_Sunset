@@ -38,6 +38,8 @@ public class PoolManager : MonoSingleton<PoolManager>
     /// </summary>
     public void InitPool()
     {
+        SettingPrefab();
+
         _prefabs = new Dictionary<int, GameObject>();
         _pools = new Dictionary<int, Queue<GameObject>>();
 
@@ -98,6 +100,66 @@ public class PoolManager : MonoSingleton<PoolManager>
                 {
                     prefab = prefab,
                     count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.SmelterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.SmelterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.OreData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.JewelData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MineralData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MapData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MapData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 1
                 });
             }
         }
