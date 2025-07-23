@@ -1,7 +1,16 @@
 [
   {
     "id": 1300,
-    "upgradeName": "이동속도 1",
+    "upgradeName": "이동속도",
+    "statType": 0,
+    "category": 0,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1301,
+    "upgradeName": "이동속도",
     "statType": 0,
     "category": 0,
     "level": 1,
@@ -9,26 +18,35 @@
     "essenceCost": 1
   },
   {
-    "id": 1301,
-    "upgradeName": "이동속도 2",
+    "id": 1302,
+    "upgradeName": "이동속도",
     "statType": 0,
     "category": 0,
     "level": 2,
-    "increaseRate": 0.5,
+    "increaseRate": 1.0,
     "essenceCost": 2
   },
   {
-    "id": 1302,
-    "upgradeName": "이동속도 3",
+    "id": 1303,
+    "upgradeName": "이동속도",
     "statType": 0,
     "category": 0,
     "level": 3,
-    "increaseRate": 0.5,
+    "increaseRate": 1.5,
     "essenceCost": 3
   },
   {
     "id": 1310,
-    "upgradeName": "채굴속도 1",
+    "upgradeName": "채굴속도",
+    "statType": 1,
+    "category": 0,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1311,
+    "upgradeName": "채굴속도",
     "statType": 1,
     "category": 0,
     "level": 1,
@@ -36,26 +54,35 @@
     "essenceCost": 1
   },
   {
-    "id": 1311,
-    "upgradeName": "채굴속도 2",
+    "id": 1312,
+    "upgradeName": "채굴속도",
     "statType": 1,
     "category": 0,
     "level": 2,
-    "increaseRate": 0.5,
+    "increaseRate": 1.0,
     "essenceCost": 2
   },
   {
-    "id": 1312,
-    "upgradeName": "채굴속도 3",
+    "id": 1313,
+    "upgradeName": "채굴속도",
     "statType": 1,
     "category": 0,
     "level": 3,
-    "increaseRate": 0.5,
+    "increaseRate": 1.5,
     "essenceCost": 3
   },
   {
     "id": 1320,
-    "upgradeName": "드랍률 1",
+    "upgradeName": "드랍률",
+    "statType": 2,
+    "category": 0,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1321,
+    "upgradeName": "드랍률",
     "statType": 2,
     "category": 0,
     "level": 1,
@@ -63,26 +90,35 @@
     "essenceCost": 1
   },
   {
-    "id": 1321,
-    "upgradeName": "드랍률 2",
+    "id": 1322,
+    "upgradeName": "드랍률",
     "statType": 2,
     "category": 0,
     "level": 2,
-    "increaseRate": 30.0,
+    "increaseRate": 80.0,
     "essenceCost": 2
   },
   {
-    "id": 1322,
-    "upgradeName": "드랍률 3",
+    "id": 1323,
+    "upgradeName": "드랍률",
     "statType": 2,
     "category": 0,
     "level": 3,
-    "increaseRate": 20.0,
+    "increaseRate": 100.0,
     "essenceCost": 3
   },
   {
     "id": 1330,
-    "upgradeName": "시야범위 1",
+    "upgradeName": "시야범위",
+    "statType": 3,
+    "category": 0,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1331,
+    "upgradeName": "시야범위",
     "statType": 3,
     "category": 0,
     "level": 1,
@@ -90,26 +126,35 @@
     "essenceCost": 1
   },
   {
-    "id": 1331,
-    "upgradeName": "시야범위 2",
+    "id": 1332,
+    "upgradeName": "시야범위",
     "statType": 3,
     "category": 0,
     "level": 2,
-    "increaseRate": 1.0,
+    "increaseRate": 2.0,
     "essenceCost": 2
   },
   {
-    "id": 1332,
-    "upgradeName": "시야범위 3",
+    "id": 1333,
+    "upgradeName": "시야범위",
     "statType": 3,
     "category": 0,
     "level": 3,
-    "increaseRate": 1.0,
+    "increaseRate": 3.0,
     "essenceCost": 3
   },
   {
     "id": 1340,
-    "upgradeName": "코어 체력 1",
+    "upgradeName": "체력",
+    "statType": 4,
+    "category": 1,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1341,
+    "upgradeName": "체력",
     "statType": 4,
     "category": 1,
     "level": 1,
@@ -117,26 +162,35 @@
     "essenceCost": 2
   },
   {
-    "id": 1341,
-    "upgradeName": "코어 체력 2",
+    "id": 1342,
+    "upgradeName": "체력",
     "statType": 4,
     "category": 1,
     "level": 2,
-    "increaseRate": 200.0,
+    "increaseRate": 350.0,
     "essenceCost": 3
   },
   {
-    "id": 1342,
-    "upgradeName": "코어 체력 3",
+    "id": 1343,
+    "upgradeName": "체력",
     "statType": 4,
     "category": 1,
     "level": 3,
-    "increaseRate": 250.0,
+    "increaseRate": 600.0,
     "essenceCost": 4
   },
   {
     "id": 1350,
-    "upgradeName": "코어 공격범위 1",
+    "upgradeName": "공격범위",
+    "statType": 5,
+    "category": 1,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1351,
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 1,
@@ -144,26 +198,35 @@
     "essenceCost": 2
   },
   {
-    "id": 1351,
-    "upgradeName": "코어 공격범위 2",
+    "id": 1352,
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 2,
-    "increaseRate": 1.0,
+    "increaseRate": 2.0,
     "essenceCost": 3
   },
   {
-    "id": 1352,
-    "upgradeName": "코어 공격범위 3",
+    "id": 1353,
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 3,
-    "increaseRate": 1.0,
+    "increaseRate": 3.0,
     "essenceCost": 4
   },
   {
     "id": 1360,
-    "upgradeName": "코어 공격력 1",
+    "upgradeName": "공격력",
+    "statType": 6,
+    "category": 1,
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
+  },
+  {
+    "id": 1361,
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 1,
@@ -171,264 +234,57 @@
     "essenceCost": 2
   },
   {
-    "id": 1361,
-    "upgradeName": "코어 공격력 2",
+    "id": 1362,
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 2,
-    "increaseRate": 5.0,
+    "increaseRate": 8.0,
     "essenceCost": 3
   },
   {
-    "id": 1362,
-    "upgradeName": "코어 공격력 3",
+    "id": 1363,
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 3,
-    "increaseRate": 7.0,
+    "increaseRate": 15.0,
     "essenceCost": 4
   },
   {
     "id": 1370,
-    "upgradeName": "코어 시야범위 1",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
-    "level": 1,
-    "increaseRate": 2.0,
-    "essenceCost": 2
+    "level": 0,
+    "increaseRate": 0.0,
+    "essenceCost": 0
   },
   {
     "id": 1371,
-    "upgradeName": "코어 시야범위 2",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
-    "level": 2,
+    "level": 1,
     "increaseRate": 2.0,
-    "essenceCost": 3
+    "essenceCost": 2
   },
   {
     "id": 1372,
-    "upgradeName": "코어 시야범위 3",
-    "statType": 3,
-    "category": 1,
-    "level": 3,
-    "increaseRate": 2.0,
-    "essenceCost": 4
-  },
-  {
-    "id": 1320,
-    "upgradeName": null,
-    "statType": 2,
-    "category": 0,
-    "level": 1,
-    "increaseRate": 0.5,
-    "essenceCost": 1
-  },
-  {
-    "id": 1321,
-    "upgradeName": null,
-    "statType": 2,
-    "category": 0,
-    "level": 2,
-    "increaseRate": 0.5,
-    "essenceCost": 2
-  },
-  {
-    "id": 1322,
-    "upgradeName": null,
-    "statType": 2,
-    "category": 0,
-    "level": 3,
-    "increaseRate": 0.5,
-    "essenceCost": 3
-  },
-  {
-    "id": 1330,
-    "upgradeName": null,
-    "statType": 3,
-    "category": 0,
-    "level": 1,
-    "increaseRate": 0.5,
-    "essenceCost": 1
-  },
-  {
-    "id": 1331,
-    "upgradeName": null,
-    "statType": 3,
-    "category": 0,
-    "level": 2,
-    "increaseRate": 0.5,
-    "essenceCost": 2
-  },
-  {
-    "id": 1332,
-    "upgradeName": null,
-    "statType": 3,
-    "category": 0,
-    "level": 3,
-    "increaseRate": 0.5,
-    "essenceCost": 3
-  },
-  {
-    "id": 1300,
-    "upgradeName": null,
-    "statType": 0,
-    "category": 0,
-    "level": 1,
-    "increaseRate": 0.5,
-    "essenceCost": 1
-  },
-  {
-    "id": 1301,
-    "upgradeName": null,
-    "statType": 0,
-    "category": 0,
-    "level": 2,
-    "increaseRate": 0.5,
-    "essenceCost": 2
-  },
-  {
-    "id": 1302,
-    "upgradeName": null,
-    "statType": 0,
-    "category": 0,
-    "level": 3,
-    "increaseRate": 0.5,
-    "essenceCost": 3
-  },
-  {
-    "id": 1310,
-    "upgradeName": null,
-    "statType": 1,
-    "category": 0,
-    "level": 1,
-    "increaseRate": 0.5,
-    "essenceCost": 1
-  },
-  {
-    "id": 1311,
-    "upgradeName": null,
-    "statType": 1,
-    "category": 0,
-    "level": 2,
-    "increaseRate": 0.5,
-    "essenceCost": 2
-  },
-  {
-    "id": 1312,
-    "upgradeName": null,
-    "statType": 1,
-    "category": 0,
-    "level": 3,
-    "increaseRate": 0.5,
-    "essenceCost": 3
-  },
-  {
-    "id": 1360,
-    "upgradeName": null,
-    "statType": 6,
-    "category": 1,
-    "level": 1,
-    "increaseRate": 3.0,
-    "essenceCost": 2
-  },
-  {
-    "id": 1361,
-    "upgradeName": null,
-    "statType": 6,
-    "category": 1,
-    "level": 2,
-    "increaseRate": 5.0,
-    "essenceCost": 3
-  },
-  {
-    "id": 1362,
-    "upgradeName": null,
-    "statType": 6,
-    "category": 1,
-    "level": 3,
-    "increaseRate": 7.0,
-    "essenceCost": 4
-  },
-  {
-    "id": 1350,
-    "upgradeName": null,
-    "statType": 5,
-    "category": 1,
-    "level": 1,
-    "increaseRate": 1.0,
-    "essenceCost": 2
-  },
-  {
-    "id": 1351,
-    "upgradeName": null,
-    "statType": 5,
-    "category": 1,
-    "level": 2,
-    "increaseRate": 1.0,
-    "essenceCost": 3
-  },
-  {
-    "id": 1352,
-    "upgradeName": null,
-    "statType": 5,
-    "category": 1,
-    "level": 3,
-    "increaseRate": 1.0,
-    "essenceCost": 4
-  },
-  {
-    "id": 1370,
-    "upgradeName": null,
-    "statType": 3,
-    "category": 1,
-    "level": 1,
-    "increaseRate": 2.0,
-    "essenceCost": 3
-  },
-  {
-    "id": 1371,
-    "upgradeName": null,
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
     "level": 2,
-    "increaseRate": 2.0,
-    "essenceCost": 4
-  },
-  {
-    "id": 1372,
-    "upgradeName": null,
-    "statType": 3,
-    "category": 1,
-    "level": 3,
-    "increaseRate": 2.0,
-    "essenceCost": 5
-  },
-  {
-    "id": 1340,
-    "upgradeName": null,
-    "statType": 4,
-    "category": 1,
-    "level": 1,
-    "increaseRate": 100.0,
-    "essenceCost": 2
-  },
-  {
-    "id": 1341,
-    "upgradeName": null,
-    "statType": 4,
-    "category": 1,
-    "level": 2,
-    "increaseRate": 100.0,
+    "increaseRate": 4.0,
     "essenceCost": 3
   },
   {
-    "id": 1342,
-    "upgradeName": null,
-    "statType": 4,
+    "id": 1373,
+    "upgradeName": "코어 시야범위",
+    "statType": 3,
     "category": 1,
     "level": 3,
-    "increaseRate": 100.0,
+    "increaseRate": 6.0,
     "essenceCost": 4
   }
 ]

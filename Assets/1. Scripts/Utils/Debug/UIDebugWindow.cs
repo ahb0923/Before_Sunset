@@ -47,19 +47,19 @@ public class UIDebugWindow : EditorWindow
             InventoryManager.Instance.Inventory.AddItem(200,3);
         }
         
-        if (GUILayout.Button("제련소 열기"))
+        if (GUILayout.Button("업그레이드창 열기"))
         {
-            // UIManager.Instance.SmelterUI.OpenSmelter();
+            UIManager.Instance.UpgradeUI.OpenUpgrade();
         }
         
-        if (GUILayout.Button("코루틴 테스트"))
+        if (GUILayout.Button("정수 4개 추가"))
         {
-            UIManager.Instance.BattleUI.ShowReturnUI();
+            UpgradeManager.Instance.AddEssencePiece(120);
         }
         
-        if (GUILayout.Button("하급제련소강제주입"))
+        if (GUILayout.Button("정수조각 4개 추가"))
         {
-            // UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
+            UpgradeManager.Instance.AddEssencePiece(4);
         }
     }
 }

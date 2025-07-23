@@ -27,7 +27,7 @@ public class Inventory : MonoBehaviour, ISaveable
         Button sortButton = Helper_Component.FindChildComponent<Button>(this.transform, SORT_BUTTON);
         sortButton.onClick.AddListener(Sort);
         _inventoryButton.onClick.AddListener(Toggle);
-        //Pickaxe
+        InitPickaxe(DataManager.Instance.EquipmentData.GetById(700));
     }
 
     /// <summary>
@@ -64,11 +64,9 @@ public class Inventory : MonoBehaviour, ISaveable
     /// 곡괭이 초기화 메서드
     /// </summary>
     /// <param name="data"></param>
-    public void SetPickaxe(EquipmentDatabase data)
+    public void InitPickaxe(EquipmentDatabase data)
     {
         Pickaxe = new Item(data);
-        InventoryUI.RefreshPickaxe();
-        QuickSlotInventoryUI.RefreshPickaxe();
     }
 
     /// <summary>
@@ -89,6 +87,12 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+    }
+
+    public void RefreshPickaxeSlots()
+    {
+        InventoryUI.RefreshPickaxe();
+        QuickSlotInventoryUI.RefreshPickaxe();
     }
 
     /// <summary>
@@ -402,7 +406,7 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         InventorySaveData invenData = data.inventory;
 
-        SetPickaxe(DataManager.Instance.EquipmentData.GetById(invenData.pickaxe.itemId));
+        InitPickaxe(DataManager.Instance.EquipmentData.GetById(invenData.pickaxe.itemId));
 
         for (int i = 0; i < Items.Length; i++)
         {
