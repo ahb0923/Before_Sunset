@@ -23,7 +23,7 @@
     "statType": 0,
     "category": 0,
     "level": 2,
-    "increaseRate": 0.5,
+    "increaseRate": 1.0,
     "essenceCost": 2
   },
   {
@@ -32,7 +32,7 @@
     "statType": 0,
     "category": 0,
     "level": 3,
-    "increaseRate": 0.5,
+    "increaseRate": 1.5,
     "essenceCost": 3
   },
   {
@@ -59,7 +59,7 @@
     "statType": 1,
     "category": 0,
     "level": 2,
-    "increaseRate": 0.5,
+    "increaseRate": 1.0,
     "essenceCost": 2
   },
   {
@@ -68,7 +68,7 @@
     "statType": 1,
     "category": 0,
     "level": 3,
-    "increaseRate": 0.5,
+    "increaseRate": 1.5,
     "essenceCost": 3
   },
   {
@@ -95,7 +95,7 @@
     "statType": 2,
     "category": 0,
     "level": 2,
-    "increaseRate": 30.0,
+    "increaseRate": 80.0,
     "essenceCost": 2
   },
   {
@@ -104,7 +104,7 @@
     "statType": 2,
     "category": 0,
     "level": 3,
-    "increaseRate": 20.0,
+    "increaseRate": 100.0,
     "essenceCost": 3
   },
   {
@@ -131,7 +131,7 @@
     "statType": 3,
     "category": 0,
     "level": 2,
-    "increaseRate": 1.0,
+    "increaseRate": 2.0,
     "essenceCost": 2
   },
   {
@@ -140,7 +140,7 @@
     "statType": 3,
     "category": 0,
     "level": 3,
-    "increaseRate": 1.0,
+    "increaseRate": 3.0,
     "essenceCost": 3
   },
   {
@@ -167,7 +167,7 @@
     "statType": 4,
     "category": 1,
     "level": 2,
-    "increaseRate": 200.0,
+    "increaseRate": 350.0,
     "essenceCost": 3
   },
   {
@@ -176,7 +176,7 @@
     "statType": 4,
     "category": 1,
     "level": 3,
-    "increaseRate": 250.0,
+    "increaseRate": 600.0,
     "essenceCost": 4
   },
   {
@@ -190,7 +190,7 @@
   },
   {
     "id": 1351,
-    "upgradeName": "공격범위 1",
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 1,
@@ -199,20 +199,20 @@
   },
   {
     "id": 1352,
-    "upgradeName": "공격범위 2",
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 2,
-    "increaseRate": 1.0,
+    "increaseRate": 2.0,
     "essenceCost": 3
   },
   {
     "id": 1353,
-    "upgradeName": "공격범위 3",
+    "upgradeName": "공격범위",
     "statType": 5,
     "category": 1,
     "level": 3,
-    "increaseRate": 1.0,
+    "increaseRate": 3.0,
     "essenceCost": 4
   },
   {
@@ -226,7 +226,7 @@
   },
   {
     "id": 1361,
-    "upgradeName": "공격력 1",
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 1,
@@ -235,25 +235,25 @@
   },
   {
     "id": 1362,
-    "upgradeName": "공격력 2",
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 2,
-    "increaseRate": 5.0,
+    "increaseRate": 8.0,
     "essenceCost": 3
   },
   {
     "id": 1363,
-    "upgradeName": "공격력 3",
+    "upgradeName": "공격력",
     "statType": 6,
     "category": 1,
     "level": 3,
-    "increaseRate": 7.0,
+    "increaseRate": 15.0,
     "essenceCost": 4
   },
   {
     "id": 1370,
-    "upgradeName": "시야범위",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
     "level": 0,
@@ -262,7 +262,7 @@
   },
   {
     "id": 1371,
-    "upgradeName": "시야범위 1",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
     "level": 1,
@@ -271,20 +271,20 @@
   },
   {
     "id": 1372,
-    "upgradeName": "시야범위 2",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
     "level": 2,
-    "increaseRate": 2.0,
+    "increaseRate": 4.0,
     "essenceCost": 3
   },
   {
     "id": 1373,
-    "upgradeName": "시야범위 3",
+    "upgradeName": "코어 시야범위",
     "statType": 3,
     "category": 1,
     "level": 3,
-    "increaseRate": 2.0,
+    "increaseRate": 6.0,
     "essenceCost": 4
   }
 ]
