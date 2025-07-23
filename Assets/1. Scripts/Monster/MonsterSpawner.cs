@@ -51,7 +51,7 @@ public class MonsterSpawner : MonoBehaviour
             WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
 
             // 다음 웨이브 기다림
-            yield return Helper_Coroutine.C_WaitIfNotPaused(currentWaveData.summonDelay, () => TimeManager.Instance.IsGamePause);
+            yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
 
             // 몬스터 웨이브 소환
             foreach (var pair in currentWaveData.waveInfo)

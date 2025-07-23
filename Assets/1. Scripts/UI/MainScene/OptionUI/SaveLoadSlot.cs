@@ -22,6 +22,11 @@ public class SaveLoadSlot : MonoBehaviour
             UpdateSavedStageText(data.timeData.stage, data.timeData.day, data.timeData.isNight);
             UpdateSavedTimeText(DateTime.Parse(data.lastSaveDateTime));
         }
+        else
+        {
+            savedStageTxt.text = "";
+            savedTimeTxt.text = "데이터 저장 가능!";
+        }
     }
 
     private void Save()

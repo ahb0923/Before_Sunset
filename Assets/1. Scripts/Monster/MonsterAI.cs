@@ -66,7 +66,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         AddState(MONSTER_STATE.Dead, new StateElem
         {
             Entered = () => StartCoroutine(C_Dead()),
-            Exited = () => _monster.Spriter.color.WithAlpha(1f)
+            Exited = () => _monster.Spriter.color = _monster.Spriter.color.WithAlpha(1f)
         });
     }
 
@@ -200,13 +200,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 yield break;
             }
 
-            // 일시 정지 시에는 이동 중지
-            if (TimeManager.Instance.IsGamePause)
-            {
-                yield return _waitFixedDeltaTime;
-                continue;
-            }
-
             // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
             if (IsTargetInAttackRange())
             {
@@ -307,7 +300,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // Attack Per Sec 동안 기다림
-            yield return Helper_Coroutine.C_WaitIfNotPaused(_monster.Stat.AttackPerSec, () => TimeManager.Instance.IsGamePause);
+            yield return Helper_Coroutine.WaitSeconds(_monster.Stat.AttackPerSec);
         }
 
         // 타겟이 없어지거나 멀어지면, 다시 탐색 상태 전환
@@ -337,12 +330,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         float timer = 0f;
         while(timer <= _deadAnimDuration)
         {
-            if (TimeManager.Instance.IsGamePause)
-            {
-                yield return null;
-                continue;
-            }
-
             _monster.Spriter.color = _monster.Spriter.color.WithAlpha(Mathf.Clamp01(1f - timer / _deadAnimDuration));
 
             timer += Time.deltaTime;

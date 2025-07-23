@@ -75,7 +75,7 @@ public class Smelter : MonoBehaviour, IPoolable
     /// </summary>
     /// <param name="mineralData"></param>
     /// <returns></returns>
-    private IEnumerator C_Smelt(MineralDatabase mineralData)
+    private IEnumerator C_Smelt(MineralDatabase mineralData, float savedTime = 0f)
     {
         isSmelting = true;
         InputItem.stack--;
@@ -88,7 +88,7 @@ public class Smelter : MonoBehaviour, IPoolable
         RefreshUI();
         
         float duration = mineralData.smeltingTime;
-        float elapsed = 0f;
+        float elapsed = savedTime;
 
         while (elapsed < duration)
         {

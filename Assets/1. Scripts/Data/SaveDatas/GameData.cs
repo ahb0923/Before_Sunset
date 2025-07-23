@@ -45,6 +45,7 @@ public class GameData
     public List<SmelterSaveData> constructedSmelters;
 
     // 3. 광산 관련 : 소환된 광산 정보 (광석 & 쥬얼도 포함)
+    public MapLinkSaveData mapLinks;
     public List<MineSaveData> spawnedMines;
 
     // 4. 시간 관련 : 인게임 시간 정보 & 저장 버튼 누른 시간
@@ -59,5 +60,6 @@ public class GameData
         constructedSmelters = new List<SmelterSaveData>();
         spawnedMines = new List<MineSaveData>();
         lastSaveDateTime = DateTime.UtcNow.ToString("o");
+        mapLinks = new MapLinkSaveData();
     }
 }
