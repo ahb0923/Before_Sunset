@@ -17,7 +17,9 @@ public class ProjectileAttack_Chaining : IProjectileAttack
             Attacker = attackSettings.attacker,
             Victim = attackSettings.target,
             Value = attackSettings.damage,
-            IgnoreDefense = false
+            IgnoreDefense = false,
+            Multiplier = 1.0f
+
         });
 
         // 체인 종료 조건 1: 남은 체인 횟수 없음
@@ -42,7 +44,7 @@ public class ProjectileAttack_Chaining : IProjectileAttack
         nextAtk.previousTarget = attackSettings.target;
         nextAtk.target = nextTarget;
         nextAtk.chainCount -= 1;
-        nextAtk.damage = attackSettings.damage / 2;
+        nextAtk.damage = Mathf.Max(1f, attackSettings.damage * 0.5f);
 
         ProjectileMovementSettings nextMove = new ProjectileMovementSettings
         {

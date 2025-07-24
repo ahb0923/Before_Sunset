@@ -104,6 +104,9 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
             case TOWER_TYPE.MagnetTower:
                 attackStrategy = new AttackStrategy_MagnetTower();
                 break;
+            case TOWER_TYPE.OpalTower:
+                attackStrategy = new AttackStrategy_OpalTower();
+                break;
         }
     }
 

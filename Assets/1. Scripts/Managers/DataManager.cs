@@ -24,6 +24,7 @@ public class DataManager : PlainSingleton<DataManager>
     public OreDataHandler OreData { get; private set; } = new();
     public ProjectileDataHandler ProjectileData { get; private set; } = new();
     public SmelterDataHandler SmelterData { get; private set; } = new();
+    public DebuffDataHandler DebuffData { get; private set; } = new();
 
 
     // ↓ 인벤토리에 들어가는 아이템 데이터
@@ -65,6 +66,7 @@ public class DataManager : PlainSingleton<DataManager>
         await MineralData.LoadFromFirestoreCollection("MineralData");
         await JewelData.LoadFromFirestoreCollection("JewelData");
         await EquipmentData.LoadFromFirestoreCollection("EquipmentData");
+        await DebuffData.LoadFromFirestoreCollection("DebuffData");
 
         await WaveData.LoadFromFirestoreCollection("WaveData");
         await ClearRewardData.LoadFromFirestoreCollection("ClearRewardData");
@@ -83,6 +85,7 @@ public class DataManager : PlainSingleton<DataManager>
             MineralData,
             JewelData,
             EquipmentData,
+            DebuffData,
             WaveData,
             ClearRewardData,
             MonsterRewardData,

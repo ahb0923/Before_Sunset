@@ -22,7 +22,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
     public float AttackRange { get; private set; }
-    public float Speed { get; private set; }
+    public float Speed { get; set; }
     public int Size { get; private set; }
     public string Context { get; private set; }
 
@@ -66,14 +66,16 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     {
         if (_monster.IsDead) return;
 
+        _monster.OnBeforeDamaged?.Invoke(damaged);
+
         if (damaged.Attacker == null)
         {
             Debug.LogWarning("타격 대상 못찾음!");
             return;
         }
 
-        Debug.Log($"[{damaged.Attacker}]로부터 『{damaged.Value}』데미지 - {gameObject.name}");
-        CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
+        Debug.Log($"[{damaged.Attacker}]로부터 『{damaged.FinalDamage}』데미지 - {gameObject.name}");
+        CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense, damaged.Multiplier);
         CurHp = Mathf.Max(CurHp, 0);
         _monster.HpBar.UpdateHpBar(CurHp);
 

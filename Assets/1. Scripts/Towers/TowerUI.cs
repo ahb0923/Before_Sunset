@@ -23,6 +23,7 @@ public class TowerUI : MonoBehaviour
     public Image hpBar_delay;
     public Image hpBar_immediate;
     private CanvasGroup _hpBarCanvasGroup;
+    public SpriteRenderer effectArea;
 
 
     private void Reset()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,6 +34,11 @@ public class BaseMonster : MonoBehaviour, IPoolable
 
     // 자신을 타게팅하고 있는 타워들
     private HashSet<TowerAttackSensor> _registeredSensors = new();
+
+    // 디버프 상태인지 체크하는 함수
+    public bool isDebuffed = false;
+
+    public Action<Damaged> OnBeforeDamaged; 
 
     private void LateUpdate()
     {
@@ -70,6 +76,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Stat.SetFullHp();
         HpBar.SetFullHpBar();
         Ai.InitExploreState();
+        isDebuffed = false;
     }
 
     /// <summary>

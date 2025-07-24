@@ -163,6 +163,18 @@ public class PoolManager : MonoSingleton<PoolManager>
                 });
             }
         }
+        foreach (var data in DataManager.Instance.DebuffData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.DebuffData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
     }
     /// <summary>
     /// 해당 타입의 오브젝트를 풀에서 가져와서 반환, 없으면 새로 생성해서 반환

@@ -4,22 +4,33 @@ using UnityEngine;
 
 public enum DEBUFF_TYPE
 {
-    Fire,
-    Ice,
-    Electric
+    Burn,
+    Frostbite,
+    Electricshock
 }
 
-public abstract class BaseDebuff
+public abstract class BaseDebuff : MonoBehaviour, IPoolable
 {
-    public DEBUFF_TYPE Type { get; private set; }
+    [SerializeField] private int debuffId;
+    public int DebuffId { get { return debuffId; } }
+
+    [SerializeField] private DEBUFF_TYPE debuffType;
+    public DEBUFF_TYPE DebuffType { get { return debuffType; } }
+
     public bool IsActive { get; protected set; }
 
     protected BaseMonster target;
     protected Coroutine runningCoroutine;
 
-    protected BaseDebuff(DEBUFF_TYPE type)
+    public float value;
+    public float duration;
+
+    public void InitSetting()
     {
-        Type = type;
+        var data = DataManager.Instance.DebuffData.GetById(debuffId);
+
+        value = data.effectValue;
+        duration = data.duration;
     }
 
     /// <summary>
@@ -31,15 +42,14 @@ public abstract class BaseDebuff
         if (IsActive) return;
 
         this.target = target;
+        target.isDebuffed = true;
         IsActive = true;
-        runningCoroutine = target.StartCoroutine(EffectCoroutine());
+        runningCoroutine = target.StartCoroutine(C_Effect());
     }
 
-    protected abstract IEnumerator EffectCoroutine();
+    protected abstract IEnumerator C_Effect();
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public virtual void Remove()
     {
         if (!IsActive) return;
@@ -49,8 +59,26 @@ public abstract class BaseDebuff
             target.StopCoroutine(runningCoroutine);
             runningCoroutine = null;
         }
-
+        target.isDebuffed = false;
         IsActive = false;
     }
 
+    public int GetId()
+    {
+        return debuffId;
+    }
+
+    public void OnInstantiate()
+    {
+        InitSetting();
+    }
+
+    public void OnGetFromPool()
+    {
+    }
+
+    public void OnReturnToPool()
+    {
+        target = null;
+    }
 }
