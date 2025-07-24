@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Linq;
 
-public class MapManager : MonoSingleton<MapManager>
+public class MapManager : MonoSingleton<MapManager>, ISaveable
 {
     public int CurrentMapIndex { get; private set; } = 0;
 
@@ -120,7 +121,7 @@ public class MapManager : MonoSingleton<MapManager>
     }
 
     // 맵이동
-    private void MoveToMap(int targetIndex, bool addToHistory = true)
+    public void MoveToMap(int targetIndex, bool addToHistory = true)
     {
         if (targetIndex == CurrentMapIndex) return;
 
@@ -350,4 +351,52 @@ public class MapManager : MonoSingleton<MapManager>
         }
     }
 
+    /// <summary>
+    /// 맵 링크 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        data.mapLinks.currentMapIndex = CurrentMapIndex;
+        data.mapLinks.nextMapIndex = _nextMapIndex;
+        
+        data.mapLinks.mapHistory = _mapHistory.ToList();
+        
+        foreach(var pair in _mapPrefabIdMap)
+        {
+            data.mapLinks.prefabIdDict.Add(pair);
+        }
+
+        foreach(var pair in _portalMapLinks)
+        {
+            data.mapLinks.portalMapLinks.Add(pair);
+        }
+
+        data.playerPosition = _player.transform.position;
+    }
+
+    /// <summary>
+    /// 맵 링크 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        _nextMapIndex = data.mapLinks.nextMapIndex;
+
+        _mapHistory.Clear();
+        foreach(int stack in data.mapLinks.mapHistory)
+        {
+            _mapHistory.Push(stack);
+        }
+
+        _mapPrefabIdMap.Clear();
+        foreach(var pair in data.mapLinks.prefabIdDict)
+        {
+            _mapPrefabIdMap[pair.key] = pair.value;
+        }
+
+        _portalMapLinks.Clear();
+        foreach(var pair in data.mapLinks.portalMapLinks)
+        {
+            _portalMapLinks[(pair.key, pair.direction)] = pair.value;
+        }
+    }
 }

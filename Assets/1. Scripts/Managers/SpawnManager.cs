@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager : MonoBehaviour, ISaveable
 {
     private OreSpawner oreSpawner;
     private JewelSpawner jewelSpawner;
@@ -186,5 +187,70 @@ public class SpawnManager : MonoBehaviour
         currentMapPosition = mapPosition;
         oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
         jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
+    }
+
+    /// <summary>
+    /// 광산에 스폰된 광석과 쥬얼 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        MineSaveData mineData;
+
+        // 이전 맵의 리소스 데이터 저장
+        foreach (var key in _mapResourceStates.Keys)
+        {
+            mineData = new MineSaveData();
+            mineData.mapId = key;
+            foreach(ResourceState resource in _mapResourceStates[key])
+            {
+                if(!resource.IsMined)
+                    mineData.resources.Add(new ResourceSaveData(resource.Id, resource.Position, resource.HP));
+            }
+
+            data.spawnedMines.Add(mineData);
+        }
+
+        // 현재 맵의 리소스 데이터 저장
+        List<ResourceState> saved = new();
+        saved.AddRange(oreSpawner.SaveCurrentStates(false));
+        saved.AddRange(jewelSpawner.SaveCurrentStates(false));
+
+        mineData = new MineSaveData();
+        mineData.mapId = currentMapIndex;
+        foreach (ResourceState resource in saved)
+        {
+            if (!resource.IsMined)
+                mineData.resources.Add(new ResourceSaveData(resource.Id, resource.Position, resource.HP));
+        }
+
+        data.spawnedMines.Add(mineData);
+    }
+
+    /// <summary>
+    /// 광산에 스폰된 광석과 쥬얼 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        _mapResourceStates.Clear();
+
+        foreach(MineSaveData mineData in data.spawnedMines)
+        {
+            List<ResourceState> resourceStates = new List<ResourceState>();
+
+            foreach(ResourceSaveData resourceData in mineData.resources)
+            {
+                ResourceState resourceState = new ResourceState()
+                {
+                    Id = resourceData.resourceId,
+                    Position = resourceData.position,
+                    HP = resourceData.curHp,
+                    IsMined = false
+                };
+
+                resourceStates.Add(resourceState);
+            }
+
+            _mapResourceStates[mineData.mapId] = resourceStates;
+        }
     }
 }
