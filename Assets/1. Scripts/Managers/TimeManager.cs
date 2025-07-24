@@ -170,6 +170,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         Day = data.timeData.day;
         _dailyTimer = data.timeData.dailyTime;
 
+        _isSpawned = false;
+
         UIManager.Instance.GameTimeUI.SetDayPieces();
         UIManager.Instance.GameTimeUI.SetStageText();
     }
