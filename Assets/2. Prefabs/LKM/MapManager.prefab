@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6853907983924778161}
   - component: {fileID: 4387048579900560220}
   m_Layer: 0
-  m_Name: ResourceSpawner
+  m_Name: SpawnManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,6 +32,7 @@ Transform:
   m_Children:
   - {fileID: 952241456628168774}
   - {fileID: 6019921928882651257}
+  - {fileID: 1259996076706528393}
   m_Father: {fileID: 1567066008658286277}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4387048579900560220
@@ -94,7 +95,7 @@ MonoBehaviour:
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 268436736
 --- !u!1 &2967901326904584771
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,7 +144,7 @@ MonoBehaviour:
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 1280
+    m_Bits: 268436736
 --- !u!1 &5312562281314221255
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,10 +192,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d4e98bc22068654f87d6088f1ec344a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapFolder: Maps
-  _mapPrefix: Map_
-  _prefabCount: 4
   _mapSpacing: 100
+--- !u!1 &5596221135525025191
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1259996076706528393}
+  - component: {fileID: 719417822023873415}
+  m_Layer: 0
+  m_Name: BaseSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1259996076706528393
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5596221135525025191}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6853907983924778161}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &719417822023873415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5596221135525025191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13122151d9438194e85cfa1608670b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _zoneLayerNames:
+  - Zone1
+  - Zone2
+  - Zone3
 --- !u!1 &7300367591099770782
 GameObject:
   m_ObjectHideFlags: 0
