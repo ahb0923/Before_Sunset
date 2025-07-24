@@ -42,9 +42,9 @@ public class UIDebugWindow : EditorWindow
             }
         }
         
-        if (GUILayout.Button("200번 아이템 추가"))
+        if (GUILayout.Button("111번 아이템 추가"))
         {
-            InventoryManager.Instance.Inventory.AddItem(200,3);
+            InventoryManager.Instance.Inventory.AddItem(111,20);
         }
         
         if (GUILayout.Button("업그레이드창 열기"))

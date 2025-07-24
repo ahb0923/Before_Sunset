@@ -20,14 +20,12 @@ public class UpgradeUI : MonoBehaviour
     [Header("UpgradeSlot")]
     [SerializeField] private GameObject _playerUpgrade;
     [SerializeField] private GameObject _coreUpgrade;
-    [SerializeField] private GameObject _pickaxeUpgrade;
     [SerializeField] private GameObject _upgradeSlotPrefab;
     [SerializeField] private Transform _playerUpgradeContainer;
     [SerializeField] private Transform _coreUpgradeContainer;
-    [SerializeField] private Transform _pickaxeUpgradeContainer;
     [SerializeField] private List<UpgradeSlot> _playerUpgradeSlots = new List<UpgradeSlot>();
     [SerializeField] private List<UpgradeSlot> _coreUpgradeSlots = new List<UpgradeSlot>();
-    [SerializeField] private List<UpgradeSlot> _pickaxeUpgradeSlots = new List<UpgradeSlot>();
+    [SerializeField] private PickaxeUpgradeSlot _pickaxeUpgradeSlot;
 
     private RectTransform _rect;
     public bool IsChange { get; private set; } = false;
@@ -42,7 +40,7 @@ public class UpgradeUI : MonoBehaviour
     
     private const string PLAYER_UPGRADE = "PlayerUpgrade";
     private const string CORE_UPGRADE = "CoreUpgrade";
-    private const string PICKAXE_UPGRADE = "PickaxeUpgrade";
+    private const string PICKAXE_UPGRADE = "PickaxeUpgradeSlot";
     private const string UPGRADE_SLOT_PREFAB = "Slots/UpgradeSlot";
     private const string UPGRADE_CONTAINER = "UpgradeContainer";
     
@@ -58,11 +56,10 @@ public class UpgradeUI : MonoBehaviour
         
         _playerUpgrade = Helper_Component.FindChildGameObjectByName(this.gameObject, PLAYER_UPGRADE);
         _coreUpgrade = Helper_Component.FindChildGameObjectByName(this.gameObject, CORE_UPGRADE);
-        _pickaxeUpgrade = Helper_Component.FindChildGameObjectByName(this.gameObject, PICKAXE_UPGRADE);
         _upgradeSlotPrefab = Resources.Load<GameObject>(UPGRADE_SLOT_PREFAB);
         _playerUpgradeContainer = Helper_Component.FindChildComponent<Transform>(_playerUpgrade.transform, UPGRADE_CONTAINER);
         _coreUpgradeContainer = Helper_Component.FindChildComponent<Transform>(_coreUpgrade.transform, UPGRADE_CONTAINER);
-        _pickaxeUpgradeContainer = Helper_Component.FindChildComponent<Transform>(_pickaxeUpgrade.transform, UPGRADE_CONTAINER);
+        _pickaxeUpgradeSlot = Helper_Component.FindChildComponent<PickaxeUpgradeSlot>(this.transform, PICKAXE_UPGRADE);
     }
 
     private void Awake()
@@ -110,6 +107,9 @@ public class UpgradeUI : MonoBehaviour
             slot.SetName(coreUpgrade[i].Key);
             slot.SetSlot(coreUpgrade[i].Value);
         }
+
+        var id = InventoryManager.Instance.Inventory.Pickaxe.Data.id;
+        _pickaxeUpgradeSlot.SetSlot(id);
     }
 
     public void OpenUpgrade()

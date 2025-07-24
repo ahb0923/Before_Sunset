@@ -19,7 +19,7 @@ public class PlayerStatHandler : MonoBehaviour
 
         if (InventoryManager.Instance.Inventory.Pickaxe == null)
         {
-            InventoryManager.Instance.Inventory.InitPickaxe(DataManager.Instance.EquipmentData.GetById(_initialPickaxeId));
+            InventoryManager.Instance.Inventory.SetPickaxe(DataManager.Instance.EquipmentData.GetById(_initialPickaxeId));
         }
     }
 }
