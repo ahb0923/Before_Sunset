@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 _clickDir;
 
     private Coroutine _swingCoroutine;
+    private Coroutine _swingLoopCoroutine;
+    private bool _isSwingButtonHeld = false;
+
     public bool IsSwing => _swingCoroutine != null;
 
     private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
@@ -38,12 +41,36 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_player.IsInBase || IsSwing || IsRecalling) return;
+        if (_player.IsInBase || IsRecalling) return;
+
+        _isSwingButtonHeld = true;
 
         if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.Pickaxe.speed)
             _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.Pickaxe.speed);
 
-        _swingCoroutine = StartCoroutine(C_Swing());
+        // 첫 번째 스윙 실행
+        if (_swingCoroutine == null)
+        {
+            _swingCoroutine = StartCoroutine(C_Swing());
+        }
+
+        // 연속 스윙 코루틴 시작
+        if (_swingLoopCoroutine == null)
+        {
+            _swingLoopCoroutine = StartCoroutine(C_SwingLoop());
+        }
+    }
+
+    private void OnSwingCanceled(InputAction.CallbackContext context)
+    {
+        _isSwingButtonHeld = false;
+
+        // 연속 스윙 코루틴 중지
+        if (_swingLoopCoroutine != null)
+        {
+            StopCoroutine(_swingLoopCoroutine);
+            _swingLoopCoroutine = null;
+        }
     }
     #endregion
 
@@ -55,6 +82,7 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.performed -= OnMovePerformed;
         _actions.Player.Move.canceled -= OnMoveCanceled;
         _actions.Player.Swing.started -= OnSwingStarted;
+        _actions.Player.Swing.canceled -= OnSwingCanceled;
     }
     #endregion
 
@@ -79,6 +107,7 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.performed += OnMovePerformed;
         _actions.Player.Move.canceled += OnMoveCanceled;
         _actions.Player.Swing.started += OnSwingStarted;
+        _actions.Player.Swing.canceled += OnSwingCanceled;
         _actions.Player.Enable();
     }
 
@@ -89,6 +118,31 @@ public class PlayerController : MonoBehaviour
     {
         SetAnimationDirection(_moveDir);
         _player.Rigid.MovePosition(_player.Rigid.position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
+    }
+
+    /// <summary>
+    /// 연속 스윙 처리
+    /// </summary>
+    private IEnumerator C_SwingLoop()
+    {
+        // 첫 번째 스윙이 끝날 때까지 대기
+        yield return new WaitUntil(() => _swingCoroutine == null);
+
+        while (_isSwingButtonHeld)
+        {
+            if (_player.IsInBase || IsRecalling)
+            {
+                break;
+            }
+
+            // 다음 스윙 실행
+            _swingCoroutine = StartCoroutine(C_Swing());
+
+            // 현재 스윙이 끝날 때까지 대기
+            yield return new WaitUntil(() => _swingCoroutine == null);
+        }
+
+        _swingLoopCoroutine = null;
     }
 
     /// <summary>

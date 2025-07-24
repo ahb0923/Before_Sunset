@@ -17,6 +17,7 @@ public class MapManager : MonoSingleton<MapManager>
     private Dictionary<int, int> _mapPrefabIdMap = new Dictionary<int, int>();
 
     private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
+    private Portal.PortalDirection? _firstExitFromBaseDirection = null;
 
     private SpawnManager _spawnManager;
 
@@ -53,6 +54,11 @@ public class MapManager : MonoSingleton<MapManager>
     {
         int current = CurrentMapIndex;
 
+        if (current == 0 && _firstExitFromBaseDirection == null)
+        {
+            _firstExitFromBaseDirection = dir;
+        }
+
         if (_portalMapLinks.TryGetValue((current, dir), out int linkedMapIndex))
         {
             MoveToMap(linkedMapIndex, true);
@@ -87,6 +93,8 @@ public class MapManager : MonoSingleton<MapManager>
     {
         if (CurrentMapIndex == 0) return;
 
+        PortalManager.Instance.LastEnteredPortalDirection = _firstExitFromBaseDirection;
+
         // 활성화된 모든 맵을 풀에 반환
         foreach (var kvp in _activeMapInstances)
         {
@@ -97,11 +105,18 @@ public class MapManager : MonoSingleton<MapManager>
             }
         }
 
-        _activeMapInstances.Clear();
-        _mapHistory.Clear();
-        _mapPrefabIdMap.Clear();
+        if (_firstExitFromBaseDirection.HasValue)
+        {
+            var reversed = PortalManager.Instance.GetOppositeDirection(_firstExitFromBaseDirection.Value);
+            PortalManager.Instance.LastEnteredPortalDirection = reversed;
+        }
+        else
+        {
+            PortalManager.Instance.LastEnteredPortalDirection = null;
+        }
 
         MoveToMap(0, false);
+        _firstExitFromBaseDirection = null;
     }
 
     // 맵이동
