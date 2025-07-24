@@ -106,7 +106,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     }
 
     // 맵이동
-    private void MoveToMap(int targetIndex, bool addToHistory = true)
+    public void MoveToMap(int targetIndex, bool addToHistory = true)
     {
         if (targetIndex == CurrentMapIndex) return;
 
@@ -326,6 +326,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         {
             data.mapLinks.portalMapLinks.Add(pair);
         }
+
+        data.playerPosition = _player.transform.position;
     }
 
     /// <summary>
@@ -352,8 +354,5 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;
         }
-
-        MoveToMap(data.mapLinks.currentMapIndex, false);
-        _player.transform.position = data.playerPosition;
     }
 }

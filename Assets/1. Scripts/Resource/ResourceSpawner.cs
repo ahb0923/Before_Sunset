@@ -137,7 +137,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return default;
     }
 
-    public List<ResourceState> SaveCurrentStates()
+    public List<ResourceState> SaveCurrentStates(bool inactive = true)
     {
         var savedStates = new List<ResourceState>();
         var parent = GetParentTransform();
@@ -161,7 +161,18 @@ public class ResourceSpawner<TData> : MonoBehaviour
             toReturn.Add(parent.GetChild(i));
         }
 
-        foreach (var tr in toReturn)
+        if (inactive)
+            InactiveResources(toReturn);
+
+        return savedStates;
+    }
+
+    /// <summary>
+    /// 저장이 완료된 리소스 오브젝트 비활성화
+    /// </summary>
+    private void InactiveResources(List<Transform> savedResources)
+    {
+        foreach (var tr in savedResources)
         {
             var poolable = tr.GetComponent<IPoolable>();
             if (poolable != null)
@@ -173,8 +184,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 Debug.LogWarning($"[ReturnToPool] IPoolable 컴포넌트가 없습니다: {tr.name}");
             }
         }
-
-        return savedStates;
     }
 
     public List<GameObject> SpawnFromSavedStates(List<ResourceState> savedStates)

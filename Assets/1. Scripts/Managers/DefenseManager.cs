@@ -199,7 +199,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
                     outputItemData = new ItemSaveData(smelter.OutputItem.Data.id, smelter.OutputItem.stack);
                 }
 
-                SmelterSaveData smelterData = new SmelterSaveData(smelter.smelterID, smelter.transform.position, inputItemData, 0f, outputItemData);
+                SmelterSaveData smelterData = new SmelterSaveData(smelter.smelterID, smelter.transform.position, inputItemData, smelter.elapsed, outputItemData);
                 data.constructedSmelters.Add(smelterData);
             }
         }
@@ -263,8 +263,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
                     outputItem.stack = smelterData.outputItem.quantity;
                 }
 
-                smelter.SetInputItem(inputItem);
                 smelter.SetOutputItem(outputItem);
+                smelter.SetInputItem(inputItem, smelterData.smeltedTime);
             }
         }
     }

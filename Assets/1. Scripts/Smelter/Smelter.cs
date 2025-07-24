@@ -16,6 +16,7 @@ public class Smelter : MonoBehaviour, IPoolable
     private Coroutine _smeltCoroutine;
     public bool isSmelting;
     public event Action<float> OnSmeltingProgress;
+    public float elapsed = 0f;
 
     [SerializeField] private Smelter_Interaction _interaction;
 
@@ -35,7 +36,7 @@ public class Smelter : MonoBehaviour, IPoolable
     /// <summary>
     /// 제련 시도 메서드
     /// </summary>
-    public void TrySmelt()
+    public void TrySmelt(float smeltedTime = 0f)
     {
         if (_smeltCoroutine != null)
         {
@@ -44,14 +45,14 @@ public class Smelter : MonoBehaviour, IPoolable
         
         if (!isSmelting)
         {
-            StartSmelting();
+            StartSmelting(smeltedTime);
         }
     }
 
     /// <summary>
     /// 제련 시작 메서드
     /// </summary>
-    private void StartSmelting()
+    private void StartSmelting(float smeltedTime = 0f)
     {
         if (InputItem == null)
         {
@@ -62,7 +63,7 @@ public class Smelter : MonoBehaviour, IPoolable
         
         if (OutputItem == null || mineralData.ingotId == OutputItem.Data.id)
         {
-            _smeltCoroutine = StartCoroutine(C_Smelt(mineralData));
+            _smeltCoroutine = StartCoroutine(C_Smelt(mineralData, smeltedTime));
         }
         else
         {
@@ -75,20 +76,12 @@ public class Smelter : MonoBehaviour, IPoolable
     /// </summary>
     /// <param name="mineralData"></param>
     /// <returns></returns>
-    private IEnumerator C_Smelt(MineralDatabase mineralData, float savedTime = 0f)
-    {
+    private IEnumerator C_Smelt(MineralDatabase mineralData, float smeltedTime)
+    {   
         isSmelting = true;
-        InputItem.stack--;
 
-        if (InputItem.stack <= 0)
-        {
-            InputItem = null;
-        }
-        
-        RefreshUI();
-        
         float duration = mineralData.smeltingTime;
-        float elapsed = savedTime;
+        elapsed = smeltedTime;
 
         while (elapsed < duration)
         {
@@ -99,12 +92,17 @@ public class Smelter : MonoBehaviour, IPoolable
 
             yield return null;
         }
-        
+
+        InputItem.stack--;
+        if (InputItem.stack <= 0)
+        {
+            InputItem = null;
+        }
+
         if (OutputItem == null)
         {
             OutputItem = new Item(DataManager.Instance.ItemData.GetId(mineralData.ingotId));
         }
-        
         OutputItem.stack++;
         _smeltCoroutine = null;
         OnSmeltingProgress?.Invoke(0);
@@ -132,7 +130,7 @@ public class Smelter : MonoBehaviour, IPoolable
     /// 슬롯에서 제련소 아이템을 바꿔줄때 사용될 메서드
     /// </summary>
     /// <param name="item"></param>
-    public void SetInputItem(Item item)
+    public void SetInputItem(Item item, float smeltedTime = 0f)
     {
         InputItem = item;
         TrySmelt();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SpawnManager : MonoBehaviour, ISaveable
 {
@@ -193,10 +194,12 @@ public class SpawnManager : MonoBehaviour, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        foreach(var key in _mapResourceStates.Keys)
-        {
-            MineSaveData mineData = new MineSaveData();
+        MineSaveData mineData;
 
+        // 이전 맵의 리소스 데이터 저장
+        foreach (var key in _mapResourceStates.Keys)
+        {
+            mineData = new MineSaveData();
             mineData.mapId = key;
             foreach(ResourceState resource in _mapResourceStates[key])
             {
@@ -206,6 +209,21 @@ public class SpawnManager : MonoBehaviour, ISaveable
 
             data.spawnedMines.Add(mineData);
         }
+
+        // 현재 맵의 리소스 데이터 저장
+        List<ResourceState> saved = new();
+        saved.AddRange(oreSpawner.SaveCurrentStates(false));
+        saved.AddRange(jewelSpawner.SaveCurrentStates(false));
+
+        mineData = new MineSaveData();
+        mineData.mapId = currentMapIndex;
+        foreach (ResourceState resource in saved)
+        {
+            if (!resource.IsMined)
+                mineData.resources.Add(new ResourceSaveData(resource.Id, resource.Position, resource.HP));
+        }
+
+        data.spawnedMines.Add(mineData);
     }
 
     /// <summary>
