@@ -188,7 +188,6 @@ public class PlayerController : MonoBehaviour
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
 
-        target = _interactor.GetCurrentTarget();
         TryInteractTarget(target);
 
         _swingCoroutine = null;
