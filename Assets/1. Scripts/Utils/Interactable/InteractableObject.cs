@@ -2,10 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public class InteractableState
+{
+    public bool lightingActive;
+    public bool targetActive;
+}
+
 public class InteractableObject : MonoBehaviour, IInteractable
 {
     private Collider2D _collider;
     private float _interactionRange = 5.0f;
+    private float _lastInteractTime = -999f;
+    private float _interactCooldown = 0.5f;
 
     [Header("상호작용 토글 대상")]
     public GameObject targetToToggle;
@@ -17,6 +26,11 @@ public class InteractableObject : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (Time.time - _lastInteractTime < _interactCooldown)
+            return;
+
+        _lastInteractTime = Time.time;
+
         Transform lighting = transform.Find("Lighting");
         if (lighting != null)
             lighting.gameObject.SetActive(!lighting.gameObject.activeSelf);
@@ -40,5 +54,26 @@ public class InteractableObject : MonoBehaviour, IInteractable
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
         return edgeToEdgeDistance <= _interactionRange;
+    }
+
+    public InteractableState SaveState()
+    {
+        var state = new InteractableState();
+
+        Transform lighting = transform.Find("Lighting");
+        state.lightingActive = lighting != null && lighting.gameObject.activeSelf;
+        state.targetActive = targetToToggle != null && targetToToggle.activeSelf;
+
+        return state;
+    }
+
+    public void LoadState(InteractableState state)
+    {
+        Transform lighting = transform.Find("Lighting");
+        if (lighting != null)
+            lighting.gameObject.SetActive(state.lightingActive);
+
+        if (targetToToggle != null)
+            targetToToggle.SetActive(state.targetActive);
     }
 }

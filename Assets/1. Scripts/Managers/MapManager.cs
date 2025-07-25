@@ -19,6 +19,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
     private Portal.PortalDirection? _firstExitFromBaseDirection = null;
+    private Dictionary<int, List<InteractableState>> _interactableStates = new();
 
     private SpawnManager _spawnManager;
 
@@ -134,6 +135,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
         else if (_activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
         {
+            SaveInteractableStates(currentChunk, CurrentMapIndex);
             currentChunk.SetActive(false);
         }
 
@@ -186,6 +188,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
         else if (_activeMapInstances.TryGetValue(targetIndex, out var nextMap))
         {
+            RestoreInteractableStates(nextMap, targetIndex);
             nextMap.SetActive(true);
             Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, PortalManager.Instance.LastEnteredPortalDirection);
             _player.position = spawnPos;
@@ -397,6 +400,30 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         foreach(var pair in data.mapLinks.portalMapLinks)
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;
+        }
+    }
+
+    private void SaveInteractableStates(GameObject map, int mapIndex)
+    {
+        var objs = map.GetComponentsInChildren<InteractableObject>();
+        var states = new List<InteractableState>();
+
+        foreach (var obj in objs)
+        {
+            states.Add(obj.SaveState());
+        }
+
+        _interactableStates[mapIndex] = states;
+    }
+
+    private void RestoreInteractableStates(GameObject map, int mapIndex)
+    {
+        if (!_interactableStates.TryGetValue(mapIndex, out var states)) return;
+
+        var objs = map.GetComponentsInChildren<InteractableObject>();
+        for (int i = 0; i < Mathf.Min(objs.Length, states.Count); i++)
+        {
+            objs[i].LoadState(states[i]);
         }
     }
 }

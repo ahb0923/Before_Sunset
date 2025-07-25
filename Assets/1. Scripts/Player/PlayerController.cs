@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
         while (_isSwingButtonHeld)
         {
-            if (_player.IsInBase || _isRecalling)
+            if (_isRecalling)
             {
                 break;
             }
