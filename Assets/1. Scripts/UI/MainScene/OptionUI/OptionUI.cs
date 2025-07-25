@@ -71,12 +71,14 @@ public class OptionUI : MonoBehaviour
     private void Open()
     {
         _optionRect.OpenAtCenter();
+        TimeManager.Instance.PauseGame(true);
     }
 
     private void Close()
     {
         UIManager.Instance.SaveLoadUI.saveLoadRect.CloseAndRestore();
         _optionRect.CloseAndRestore();
+        TimeManager.Instance.PauseGame(false);
     }
 
     private void OnClickSaveLoadButton()
