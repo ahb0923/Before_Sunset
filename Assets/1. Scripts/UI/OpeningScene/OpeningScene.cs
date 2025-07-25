@@ -1,10 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class OpeningScene : MonoBehaviour
@@ -18,16 +15,21 @@ public class OpeningScene : MonoBehaviour
         "‘나’는 폐허가 된 마을을 헤매다 지하 깊숙한 곳에서 새어나오는 빛의 틈새에 이끌렸다.",
         "그 곳엔 오래전 잊혀진 빛나는 구, “코어”가 있었다.",
         "그 빛은 원념의 존재들에게 강한 저항력을 가진 유일한 힘이었다.",
+        "그러나 빛의 힘은 약해지는 중이었고 어둠은 지하까지 손을 뻗치기 시작한다.",
+        "매일 낮, 빛이 희미하게 남아있는 시간에 자원을 모으고,",
+        "코어의 힘이 약해지는 4일째 밤이 오면 코어를 파괴하려는 몬스터의 공격을 막아내야 한다.",
+        "코어가 멈추는 순간, 마지막 희망마저 사라진다."
+        
     };
-    [SerializeField] private float _textDuration = 1f;
-    [SerializeField] private float _moveDuration = 1f;
-    [SerializeField] private float _moveOffset = 50f;
+    [SerializeField] private float _textDuration = 3f;
+    [SerializeField] private float _moveDuration = 1.5f;
+    [SerializeField] private float _moveOffset = 100f;
     
     [Header("BlinkImage")]
     [SerializeField] private GameObject _blinkGo;
     [SerializeField] private RectTransform _blinkRect;
     [SerializeField] private Image _blinkImage;
-    [SerializeField] private float _blinkDuration = 0.5f;
+    [SerializeField] private float _blinkDuration = 1f;
     [SerializeField] private Vector3 _defaultOffset = new Vector3(10f, 5f, 0f);
     [SerializeField] private Canvas _canvas;
     
@@ -39,7 +41,8 @@ public class OpeningScene : MonoBehaviour
     private Coroutine _textRoutine;
     private Tween _blinkTween;
     private Tween _moveTween;
-    
+
+    private const int MAX_TEXT = 4;
     private const string TEXT_PREFAB = "UI/OpeningText";
     private const string OPENING_TEXT_CONTAINER = "OpeningTextContainer";
     private const string BLINK_IMAGE = "BlinkImage";
@@ -58,13 +61,12 @@ public class OpeningScene : MonoBehaviour
     {
         _blinkGo.SetActive(false);
         InitTexts();
-
         StartCoroutine(C_StartOpening());
     }
 
     private void InitTexts()
     {
-        for (int i = 0; i < _texts.Count; i++)
+        for (int i = 0; i < MAX_TEXT + 1; i++)
         {
             var text = Instantiate(_textPrefab, _openingTextContainer.transform);
             _textPool.Enqueue(text);
@@ -114,6 +116,12 @@ public class OpeningScene : MonoBehaviour
             yield break;
         }
 
+        if (_activeTexts.Count >= MAX_TEXT)
+        {
+            var openingText = _activeTexts.Dequeue();
+            ReturnText(openingText.gameObject);
+        }
+
         foreach (var ot in _activeTexts)
         {
             ot.MoveText(_moveOffset, _moveDuration);
@@ -157,7 +165,9 @@ public class OpeningScene : MonoBehaviour
     
     public void ReturnText(GameObject text)
     {
-        text.gameObject.SetActive(false);
+        var ot = text.GetComponent<OpeningText>();
+        ot.ResetOpeningText();
+        text.SetActive(false);
         _textPool.Enqueue(text);
     }
 }

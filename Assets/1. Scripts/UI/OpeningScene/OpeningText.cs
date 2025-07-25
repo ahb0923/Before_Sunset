@@ -8,8 +8,14 @@ public class OpeningText : MonoBehaviour
     public TextMeshProUGUI textMesh;
     public RectTransform rect;
 
-    private float originSize = 1f;
-    
+    private float _originScale = 1f;
+
+    private void Reset()
+    {
+        textMesh = GetComponent<TextMeshProUGUI>();
+        rect = GetComponent<RectTransform>();
+    }
+
     public IEnumerator C_DOTextMesh(float duration)
     {
         textMesh.maxVisibleCharacters = 0;
@@ -29,13 +35,22 @@ public class OpeningText : MonoBehaviour
         Color startColor = textMesh.color;
         Color endColor = new Color(startColor.r * 0.6f, startColor.g * 0.6f, startColor.b * 0.6f, 1f);
 
-        originSize *= 0.8f;
+        _originScale *= 0.8f;
         
         Sequence seq = DOTween.Sequence();
         seq.Join(rect.DOAnchorPos(ps, duration).SetEase(Ease.OutCubic));
         seq.Join(textMesh.DOColor(endColor, duration).SetEase(Ease.OutCubic));
-        seq.Join(rect.DOScale(originSize, duration).SetEase(Ease.OutCubic));
+        seq.Join(rect.DOScale(_originScale, duration).SetEase(Ease.OutCubic));
 
         seq.Play();
+    }
+
+    public void ResetOpeningText()
+    {
+        textMesh.text = string.Empty;
+        textMesh.color = Color.white;
+        rect.localScale = Vector3.one;
+        rect.anchoredPosition = Vector2.zero;
+        _originScale = 1f;
     }
 }
