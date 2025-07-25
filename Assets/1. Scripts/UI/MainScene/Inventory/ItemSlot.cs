@@ -208,8 +208,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
 
-        DragManager.DraggingItem = null;
-        DragManager.OriginItemSlot = null;
+        DragManager.Clear();
     }
     
     public void OnDrop(PointerEventData eventData)

@@ -34,8 +34,6 @@ public class InventoryUI : MonoBehaviour
     {
         InitSlots();
         
-        _pickaxeSlot.RefreshUI();
-        
         foreach (var itemSlot in itemSlots)
         {
             itemSlot.RefreshUI();
@@ -45,6 +43,8 @@ public class InventoryUI : MonoBehaviour
         {
             this.gameObject.SetActive(false);
         }
+        
+        _pickaxeSlot.RefreshUI();
     }
 
     private void InitSlots()

@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -14,6 +12,8 @@ public class UIManager : MonoSingleton<UIManager>
     public DismantleUI DismantleUI { get; private set; }
     public RecallUI RecallUI { get; private set; }
     public SmelterUI SmelterUI { get; private set; }
+    public UpgradeUI UpgradeUI { get; private set; }
+    public EssenceUI EssenceUI { get; private set; }
 
     protected override void Awake()
     {
@@ -25,10 +25,12 @@ public class UIManager : MonoSingleton<UIManager>
         CraftMaterialArea = Helper_Component.FindChildComponent<CraftMaterialArea>(this.transform, "CraftMaterialArea");
         SaveLoadUI = Helper_Component.FindChildComponent<SaveLoadUI>(this.transform, "SaveLoadBG");
         BattleUI = Helper_Component.FindChildComponent<BattleUI>(this.transform, "BattleUI");
-        TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "UpgradeUI");
+        TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "TowerUpgradeUI");
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
+        UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
+        EssenceUI = Helper_Component.FindChildComponent<EssenceUI>(this.transform, "EssenceUI");
     }
 
     private void Start()

@@ -31,7 +31,7 @@ public class QuickSlotInventoryUI : MonoBehaviour
         
         if (this.gameObject == null)
         {
-            Debug.Log("Quick Slot Inventory is empty");
+            Debug.Log("QuickSlotInventory is empty");
         }
         else
         {
@@ -41,12 +41,12 @@ public class QuickSlotInventoryUI : MonoBehaviour
             }
         }
         
-        _pickaxeSlot.RefreshUI();
-        
         foreach (var itemSlot in quickSlots)
         {
             itemSlot.RefreshUI();
         }
+        
+        _pickaxeSlot.RefreshUI();
     }
 
     private void InitSlots()
