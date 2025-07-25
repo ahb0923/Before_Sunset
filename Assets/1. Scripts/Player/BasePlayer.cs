@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasePlayer : MonoBehaviour, ISaveable
+public class BasePlayer : MonoBehaviour
 {
     public static readonly int MOVE = Animator.StringToHash("Move");
     public static readonly int SWING = Animator.StringToHash("Swing");
@@ -60,21 +60,5 @@ public class BasePlayer : MonoBehaviour, ISaveable
     public void SetPlayerInBase(bool isInBase)
     {
         IsInBase = isInBase;
-    }
-
-    /// <summary>
-    /// 플레이어 위치 저장
-    /// </summary>
-    public void SaveData(GameData data)
-    {
-        data.playerPosition = transform.position;
-    }
-
-    /// <summary>
-    /// 플레이어 위치 로드
-    /// </summary>
-    public void LoadData(GameData data)
-    {
-        transform.position = data.playerPosition;
     }
 }

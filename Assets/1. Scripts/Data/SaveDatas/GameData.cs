@@ -41,9 +41,11 @@ public class GameData
 
     // 2. 디펜스 관련 : 코어 체력 & 타워 정보
     public int coreCurHp;
-    public List<BuildingSaveData> constructedTowers;
+    public List<TowerSaveData> constructedTowers;
+    public List<SmelterSaveData> constructedSmelters;
 
     // 3. 광산 관련 : 소환된 광산 정보 (광석 & 쥬얼도 포함)
+    public MapLinkSaveData mapLinks;
     public List<MineSaveData> spawnedMines;
 
     // 4. 시간 관련 : 인게임 시간 정보 & 저장 버튼 누른 시간
@@ -54,8 +56,10 @@ public class GameData
     public GameData()
     {
         inventory = new InventorySaveData();
-        constructedTowers = new List<BuildingSaveData>();
+        constructedTowers = new List<TowerSaveData>();
+        constructedSmelters = new List<SmelterSaveData>();
         spawnedMines = new List<MineSaveData>();
         lastSaveDateTime = DateTime.UtcNow.ToString("o");
+        mapLinks = new MapLinkSaveData();
     }
 }
