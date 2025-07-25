@@ -16,9 +16,9 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingLoopCoroutine;
     private bool _isSwingButtonHeld = false;
 
-    public bool IsSwing => _swingCoroutine != null;
+    private bool _isSwing => _swingCoroutine != null;
 
-    private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
+    private bool _isRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_player.IsInBase || IsRecalling) return;
+        if (_isRecalling) return;
 
         _isSwingButtonHeld = true;
 
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsSwing || IsRecalling) return;
+        if (_isSwing || _isRecalling) return;
 
         Move();
     }
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
         while (_isSwingButtonHeld)
         {
-            if (_player.IsInBase || IsRecalling)
+            if (_player.IsInBase || _isRecalling)
             {
                 break;
             }
@@ -180,10 +180,8 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
-        if (target is OreController)
-        {
-            AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
-        }
+        // 채광 효과음
+        AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);

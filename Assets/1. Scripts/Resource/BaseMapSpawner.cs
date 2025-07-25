@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Cinemachine.DocumentationSortingAttribute;
 
 
-public class BaseSpawner : MonoBehaviour
+public class BaseMapSpawner : MonoBehaviour
 {
     [SerializeField] private string[] _zoneLayerNames = { "Zone1", "Zone2", "Zone3" };
     [SerializeField] private float _tileSize = 1.0f;
@@ -16,6 +17,8 @@ public class BaseSpawner : MonoBehaviour
 
     private List<GameObject> _spawnedObjects = new();
     private HashSet<Vector3> _usedTilePositions = new();
+
+    private Transform _baseResourceParent;
 
     private void Start()
     {
@@ -32,6 +35,20 @@ public class BaseSpawner : MonoBehaviour
 
         _oreHandler = DataManager.Instance.OreData;
         _jewelHandler = DataManager.Instance.JewelData;
+
+        GameObject baseMapGO = GameObject.Find("BaseMap");
+        if (baseMapGO == null)
+        {
+            Debug.LogError("BaseMap 오브젝트를 찾을 수 없습니다.");
+            yield break;
+        }
+
+        _baseResourceParent = baseMapGO.transform.Find("BaseMapResource");
+        if (_baseResourceParent == null)
+        {
+            Debug.LogError("BaseMap 안에서 BaseMapResource 오브젝트를 찾을 수 없습니다.");
+            yield break;
+        }
 
         SpawnAllZones();
     }
@@ -92,7 +109,9 @@ public class BaseSpawner : MonoBehaviour
                 Vector3? pos = GetRandomTileCenterPosition(bounds);
                 if (pos.HasValue)
                 {
-                    _spawnedObjects.Add(_jewelSpawner.SpawnSingle(jewel, pos.Value));
+                    var obj = _jewelSpawner.SpawnSingle(jewel, pos.Value);
+                    obj.transform.SetParent(_baseResourceParent);
+                    _spawnedObjects.Add(obj);
                 }
                 else
                 {
@@ -122,7 +141,9 @@ public class BaseSpawner : MonoBehaviour
                 Vector3? pos = GetRandomTileCenterPosition(bounds);
                 if (pos.HasValue)
                 {
-                    _spawnedObjects.Add(_oreSpawner.SpawnSingle(ore, pos.Value));
+                    var obj = _oreSpawner.SpawnSingle(ore, pos.Value);
+                    obj.transform.SetParent(_baseResourceParent);
+                    _spawnedObjects.Add(obj);
                 }
                 else
                 {
