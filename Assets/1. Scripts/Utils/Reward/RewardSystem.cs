@@ -29,8 +29,8 @@ public class RewardSystem : PlainSingleton<RewardSystem>
         switch (reward.rewardType)
         {
             case MONSTER_REWARD_TYPE.EssenceShard:
+                UpgradeManager.Instance.AddEssencePiece(quantity);
                 // 여기는 이펙트 필요
-                Debug.Log("[Reward] 샤드 보상");
                 break;
 
             case MONSTER_REWARD_TYPE.Mineral:
