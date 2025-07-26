@@ -19,6 +19,7 @@ public class TowerDatabase
     public TOWER_ATTACK_TYPE attackType;
     public int? nextUpgradeId;
     public int projectileId;
+    public int debuffId;
 
     public int level;
     public float towerHp;

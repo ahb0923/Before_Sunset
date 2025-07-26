@@ -175,7 +175,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             //Debug.Log("[C_Attack] 공격 진입 직후 1회 스킵");
             _isFirstAttack = false;
-            yield return _tower.attackStrategy.Attack(_tower);
+            //yield return _tower.attackStrategy.Attack(_tower);
+            yield return Helper_Coroutine.WaitSeconds(1.0f);
         }
 
         if (_tower.attackSensor.CurrentTarget == null || !_tower.attackSensor.CurrentTarget.activeSelf)
@@ -192,7 +193,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                 yield break;
             }
 
-            switch (_tower.statHandler.attackType)
+            switch (_tower.statHandler.AttackType)
             {
                 case TOWER_ATTACK_TYPE.Projectile:
                     _tower.attackSensor.CheckTargetValid();

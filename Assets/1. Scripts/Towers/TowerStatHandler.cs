@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.AddressableAssets.Build.Layout;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -17,10 +18,12 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
 
     public int ID { get; private set; }
     public int ProjectileID { get; private set; }
+    public int DebuffID { get; private set; }
     public int Level { get; private set; }
     public string TowerName { get; private set; }
 
-    public TOWER_ATTACK_TYPE attackType { get; private set; }
+    public TOWER_ATTACK_TYPE AttackType { get; private set; }
+    public TOWER_BUILD_TYPE BuildType { get; private set; }
 
     public string FlavorText { get; private set; }
 
@@ -63,9 +66,11 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         }
         ID = _data.id;
         ProjectileID = _data.projectileId;
+        DebuffID = _data.debuffId;
         Level = _data.level;
         TowerName = _data.towerName;
-        attackType = _data.attackType;
+        AttackType = _data.attackType;
+        BuildType = _data.buildType;
         FlavorText = _data.flavorText;
         MaxHp = _data.towerHp;
         // C_Construction 최대 HP 비례해서 회복시킬 예정 => 기획변동 없을시 초기화에서 최대값으로

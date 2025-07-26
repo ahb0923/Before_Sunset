@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4551609607560423749}
   - component: {fileID: 8459309262913598922}
   m_Layer: 6
-  m_Name: Tower_Opal
+  m_Name: Tower_Aquamarine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -115,8 +115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13f239bd4219a1b48ab1ad0d7ea58c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerType: 5
-  towerId: 420
+  towerType: 7
+  towerId: 470
   buildSize: {x: 3, y: 3}
   mainCollider: {fileID: 2988486009109016483}
   _attackCollider: {fileID: 5111005074308737201}
@@ -563,7 +563,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d4d8ebb0b1a62840b2fef8044c1aac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 420
+  id: 470
   buildSize: {x: 3, y: 3}
   spriteRenderer: {fileID: 1109353221721809788}
 --- !u!1 &7063769191260737672
@@ -794,7 +794,7 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 20
-  m_Sprite: {fileID: 21300000, guid: afd58c327b02a774a976c0d4f8b425c5, type: 2}
+  m_Sprite: {fileID: 21300000, guid: ffd718865810a1d48a8a0d4871189892, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

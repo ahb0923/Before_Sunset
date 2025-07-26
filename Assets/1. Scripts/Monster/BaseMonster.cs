@@ -35,8 +35,8 @@ public class BaseMonster : MonoBehaviour, IPoolable
     // 자신을 타게팅하고 있는 타워들
     private HashSet<TowerAttackSensor> _registeredSensors = new();
 
-    // 디버프 상태인지 체크하는 함수
-    public bool isDebuffed = false;
+    // 디버프 상태인지 체크
+    private Dictionary<DEBUFF_TYPE, BaseDebuff> _activeDebuffs = new();
 
     public Action<Damaged> OnBeforeDamaged; 
 
@@ -76,7 +76,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
         Stat.SetFullHp();
         HpBar.SetFullHpBar();
         Ai.InitExploreState();
-        isDebuffed = false;
     }
 
     /// <summary>
@@ -84,6 +83,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnReturnToPool()
     {
+        ForceRemoveAllDebuffs();
         NotifyDeath();
         Ai.ChangeState(MONSTER_STATE.Invalid);
         Detector.DetectedObstacles.Clear();
@@ -128,5 +128,40 @@ public class BaseMonster : MonoBehaviour, IPoolable
         _registeredSensors.Remove(sensor);
     }
 
+    public bool HasDebuff(DEBUFF_TYPE type)
+    {
+        return _activeDebuffs.ContainsKey(type);
+    }
 
+    public void RegisterDebuff(BaseDebuff debuff)
+    {
+        var type = debuff.DebuffType;
+
+        if (_activeDebuffs.ContainsKey(type))
+        {
+            _activeDebuffs[type].Remove();
+            PoolManager.Instance.ReturnToPool(_activeDebuffs[type].DebuffId, _activeDebuffs[type].gameObject);
+        }
+
+        _activeDebuffs[type] = debuff;
+    }
+
+    public void UnregisterDebuff(BaseDebuff debuff)
+    {
+        if (_activeDebuffs.ContainsKey(debuff.DebuffType))
+        {
+            _activeDebuffs.Remove(debuff.DebuffType);
+        }
+    }
+    public void ForceRemoveAllDebuffs()
+    {
+        var debuffs = new List<BaseDebuff>(_activeDebuffs.Values);
+
+        foreach (var debuff in debuffs)
+        {
+            debuff.Remove();
+            PoolManager.Instance.ReturnToPool(debuff.DebuffId, debuff.gameObject);
+        }
+        _activeDebuffs.Clear();
+    }
 }

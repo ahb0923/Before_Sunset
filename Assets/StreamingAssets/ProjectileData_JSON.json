@@ -13,9 +13,9 @@
   },
   {
     "id": 802,
-    "projectileName": "Opal Burst",
-    "prefabName": "Projectile_Opal",
-    "moveSpeed": 0.0
+    "projectileName": "Bounce Shot",
+    "prefabName": "Projectile_Diaprism",
+    "moveSpeed": 2.0
   },
   {
     "id": 803,
@@ -40,5 +40,23 @@
     "projectileName": "Magnetic Wave",
     "prefabName": "Projectile_Magnet",
     "moveSpeed": 0.0
+  },
+  {
+    "id": 849,
+    "projectileName": "Core Shot",
+    "prefabName": "Projectile_Core",
+    "moveSpeed": 10.0
+  },
+  {
+    "id": 850,
+    "projectileName": "Drizzle Shot",
+    "prefabName": "Projectile_Drizzle",
+    "moveSpeed": 10.0
+  },
+  {
+    "id": 851,
+    "projectileName": "Flitter Shot",
+    "prefabName": "Projectile_Flitter",
+    "moveSpeed": 10.0
   }
 ]

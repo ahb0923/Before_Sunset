@@ -16,6 +16,8 @@ public class Debuff_Burn : BaseDebuff
 
         for (int i = 0; i < tickCount; i++)
         {
+            if (target == null || !target.gameObject.activeInHierarchy) break;
+
             DamagedSystem.Instance.Send(new Damaged
             {
                 Attacker = gameObject,
@@ -25,7 +27,7 @@ public class Debuff_Burn : BaseDebuff
                 Multiplier = 1.0f
             });
 
-            yield return new WaitForSeconds(1);
+            yield return Helper_Coroutine.WaitSeconds(1.0F);
         }
 
         Remove(); 

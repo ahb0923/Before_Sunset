@@ -1,0 +1,39 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AttackStrategy_TopazTower : IAttackStrategy
+{
+    public IEnumerator Attack(BaseTower tower)
+    {
+        float radius = tower.statHandler.AttackRange;
+        float pullSpeed = tower.statHandler.AttackPower;
+        Vector3 centerPos = tower.transform.position;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
+
+        List<GameObject> candidates = new();
+        foreach (var h in hits)
+        {
+            if (h == null || !h.gameObject.activeSelf) continue;
+            candidates.Add(h.gameObject);
+        }
+
+        foreach (var enemy in candidates)
+        {
+            if (!enemy.TryGetComponent(out BaseMonster monster)) continue;
+
+            if (monster.HasDebuff(DEBUFF_TYPE.Electricshock)) continue;
+            // if (monster.HasDebuff(DEBUFF_TYPE.Electricshock) && tower.statHandler.BuildType == TOWER_BUILD_TYPE.Base) continue;
+
+            var debuffObject = PoolManager.Instance.GetFromPool(tower.statHandler.DebuffID, enemy.transform.position, enemy.transform);
+            if (!debuffObject.TryGetComponent(out BaseDebuff debuff)) continue;
+
+            debuff.Apply(monster);
+        }
+
+        yield return new WaitForSeconds(tower.statHandler.AttackSpeed);
+    }
+}
+
+

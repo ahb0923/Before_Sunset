@@ -12,10 +12,10 @@ public enum DEBUFF_TYPE
 public abstract class BaseDebuff : MonoBehaviour, IPoolable
 {
     [SerializeField] private int debuffId;
-    public int DebuffId { get { return debuffId; } }
+    public int DebuffId => debuffId;
 
     [SerializeField] private DEBUFF_TYPE debuffType;
-    public DEBUFF_TYPE DebuffType { get { return debuffType; } }
+    public DEBUFF_TYPE DebuffType => debuffType;
 
     public bool IsActive { get; protected set; }
 
@@ -28,28 +28,34 @@ public abstract class BaseDebuff : MonoBehaviour, IPoolable
     public void InitSetting()
     {
         var data = DataManager.Instance.DebuffData.GetById(debuffId);
-
         value = data.effectValue;
         duration = data.duration;
     }
 
     /// <summary>
-    /// 
+    /// 디버프 적용 시도
     /// </summary>
-    /// <param name="target"></param>
     public virtual void Apply(BaseMonster target)
     {
         if (IsActive) return;
 
         this.target = target;
-        target.isDebuffed = true;
+
+        // 동일 타입의 디버프가 이미 있다면 제거 후 교체
+        target.RegisterDebuff(this);
+
         IsActive = true;
         runningCoroutine = target.StartCoroutine(C_Effect());
     }
 
+    /// <summary>
+    /// 디버프 효과 코루틴
+    /// </summary>
     protected abstract IEnumerator C_Effect();
 
-
+    /// <summary>
+    /// 디버프 종료 처리
+    /// </summary>
     public virtual void Remove()
     {
         if (!IsActive) return;
@@ -59,14 +65,12 @@ public abstract class BaseDebuff : MonoBehaviour, IPoolable
             target.StopCoroutine(runningCoroutine);
             runningCoroutine = null;
         }
-        target.isDebuffed = false;
+
         IsActive = false;
+        target.UnregisterDebuff(this); // 🔄 등록 해제
     }
 
-    public int GetId()
-    {
-        return debuffId;
-    }
+    public int GetId() => debuffId;
 
     public void OnInstantiate()
     {
@@ -75,10 +79,14 @@ public abstract class BaseDebuff : MonoBehaviour, IPoolable
 
     public void OnGetFromPool()
     {
+        IsActive = false;
+        runningCoroutine = null;
     }
 
     public void OnReturnToPool()
     {
+        // 풀로 갈 때 강제 종료
+        Remove();
         target = null;
     }
 }

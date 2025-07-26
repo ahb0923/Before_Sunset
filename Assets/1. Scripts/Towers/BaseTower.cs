@@ -17,7 +17,9 @@ public enum TOWER_TYPE
     DiaprismTower,
     HealTower,
     MagnetTower,
-    OpalTower
+    TopazTower,
+    RubyTower,
+    AquamarineTower
 }
 public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 {
@@ -104,8 +106,14 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
             case TOWER_TYPE.MagnetTower:
                 attackStrategy = new AttackStrategy_MagnetTower();
                 break;
-            case TOWER_TYPE.OpalTower:
-                attackStrategy = new AttackStrategy_OpalTower();
+            case TOWER_TYPE.TopazTower:
+                attackStrategy = new AttackStrategy_TopazTower();
+                break;
+            case TOWER_TYPE.RubyTower:
+                attackStrategy = new AttackStrategy_RubyTower();
+                break;
+            case TOWER_TYPE.AquamarineTower:
+                attackStrategy = new AttackStrategy_AquamarineTower();
                 break;
         }
     }
