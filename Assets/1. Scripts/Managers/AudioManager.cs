@@ -114,6 +114,12 @@ public class AudioManager : MonoBehaviour
         PlaySFX(sfxName);
     }
 
+    public void PlayMonsterSFX(string monsterKey, string action)
+    {
+        string clipName = $"{monsterKey}_{action}";
+        PlaySFX(clipName);
+    }
+
     private AudioSource GetAvailableSFXSource()
     {
         AudioSource source = _sfxPool.Dequeue();

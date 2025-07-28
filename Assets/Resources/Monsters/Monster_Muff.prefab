@@ -309,6 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e9dd189854c75499f01dee4e284305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MonsterSoundKey: Flitter
   _id: 600
   _obstacleLayer:
     serializedVersion: 2
@@ -328,6 +329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _curState: 0
   _prevState: 0
+  _deadAnimDuration: 0.5
 --- !u!114 &8189292471688351104
 MonoBehaviour:
   m_ObjectHideFlags: 0

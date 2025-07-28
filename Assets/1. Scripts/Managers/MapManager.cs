@@ -328,7 +328,13 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private void ChangeMapBGM(int mapIndex)
     {
-        int mapId = (mapIndex == 0) ? 0 : _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
+        if (mapIndex == 0)
+        {
+            AudioManager.Instance.PlayBGM("NormalBase");
+            return;
+        }
+
+        int mapId = _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
 
         var mapData = DataManager.Instance.MapData.GetById(mapId);
         if (mapData == null)
@@ -339,9 +345,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
         switch (mapData.mapType)
         {
-            case MAP_TYPE.Base:
-                AudioManager.Instance.PlayBGM("NormalBase");
-                break;
             case MAP_TYPE.MineSmall:
                 AudioManager.Instance.PlayBGM("BasicMine1");
                 break;

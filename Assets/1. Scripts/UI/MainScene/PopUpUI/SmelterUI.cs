@@ -63,7 +63,9 @@ public class SmelterUI : MonoBehaviour
         {
             _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
         }
-        
+
+        AudioManager.Instance.PlaySFX("OpenSmelter");
+
         _rect.OpenAtCenter();
         _currentSmelter = smelter;
         SetSmelterUI();

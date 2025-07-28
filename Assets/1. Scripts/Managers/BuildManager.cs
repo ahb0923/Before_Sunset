@@ -82,6 +82,11 @@ public class BuildManager : MonoSingleton<BuildManager>
     {
         if (TryBuildTower(_buildInfo, worldPos))
         {
+            if (_buildPrefab.name.Contains("Tower"))
+                AudioManager.Instance.PlaySFX("CreateTower");
+            else if (_buildPrefab.name.Contains("Smelter"))
+                AudioManager.Instance.PlaySFX("CreateSmelter");
+
             Debug.Log("설치 성공");
         }
         else { Debug.Log("설치 실패"); }

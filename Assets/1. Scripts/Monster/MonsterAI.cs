@@ -257,6 +257,10 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             SetMonsterDirection(Target.position);
             _animator?.SetTrigger(BaseMonster.ATTACK);
 
+            // 공격 효과음 재생
+            AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Attack");
+
+
             // 공격 타입에 따른 원/근거리 공격
             switch (_monster.Stat.AttackType)
             {
@@ -316,6 +320,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         _monster.NotifyDeath(); // 자신을 감지하던 모든 타워에 몬스터 사망 알림
         _monster.Detector.DetectedObstacles.Clear(); // 몬스터가 감지한 타워 초기화
         DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(_monster); // 몬스터 스포너에게 몬스터 사망 알림
+
+        AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Dead"); // 사망 효과음 재생
 
         yield return C_DeadAnimation();
 
