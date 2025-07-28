@@ -83,6 +83,18 @@ public class OptionUI : MonoBehaviour
 
     private void OnClickSaveLoadButton()
     {
+        if (GameManager.Instance.IsTutorial)
+        {
+            ToastManager.Instance.ShowToast("튜토리얼 중에는 세이브를 할 수 없습니다!");
+            return;
+        }
+
+        if (DefenseManager.Instance.MonsterSpawner.IsMonsterAlive)
+        {
+            ToastManager.Instance.ShowToast("몬스터 디펜스 중에는 세이브를 할 수 없습니다!");
+            return;
+        }
+
         UIManager.Instance.SaveLoadUI.saveLoadRect.OpenAtCenter();
     }
 
@@ -100,6 +112,7 @@ public class OptionUI : MonoBehaviour
 
     private void MainMenu()
     {
+        TimeManager.Instance.PauseGame(false);
         LoadingSceneController.LoadScene("StartScene");
     }
     

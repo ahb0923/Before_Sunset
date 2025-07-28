@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &101451399052104537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7887210581875740298}
+  - component: {fileID: 3107970109780134207}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7887210581875740298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101451399052104537}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3107970109780134207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101451399052104537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e4a50039881a2943b49073f8cef0db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quests:
+  - <Type>k__BackingField: 0
+    <Title>k__BackingField: "\uAD11\uC0B0 \uC785\uC7A5"
+    <Description>k__BackingField: "\uD654\uC0B4\uD45C\uB97C \uB530\uB77C \uAD11\uC0B0\uC5D0
+      \uC785\uC7A5\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 1
+    <Title>k__BackingField: "\uCC44\uAD11 (1)"
+    <Description>k__BackingField: "\uB3CC\uC744 5\uAC1C \uCC44\uAD11\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 5
+  - <Type>k__BackingField: 1
+    <Title>k__BackingField: "\uCC44\uAD11 (2)"
+    <Description>k__BackingField: "\uAD6C\uB9AC \uAD11\uC11D\uC744 5\uAC1C \uCC44\uAD11\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 5
+  - <Type>k__BackingField: 0
+    <Title>k__BackingField: "\uB2E4\uC74C \uAD11\uC0B0 \uC774\uB3D9"
+    <Description>k__BackingField: "\uB2E4\uC74C \uAD11\uC0B0\uC73C\uB85C \uC774\uB3D9\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 2
+    <Title>k__BackingField: "\uAE30\uC9C0 \uADC0\uD658"
+    <Description>k__BackingField: "R\uD0A4\uB97C \uAFB9 \uB20C\uB7EC \uAE30\uC9C0\uB85C
+      \uADC0\uD658\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 3
+    <Title>k__BackingField: "\uC81C\uB828\uC18C \uC124\uCE58"
+    <Description>k__BackingField: "\uCF54\uC5B4 \uC8FC\uBCC0 \uC790\uC6D0\uC744 \uD68D\uB4DD\uD574
+      \uD558\uAE09 \uC81C\uB828\uC18C\uB97C \uC124\uCE58\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 1
+    <Title>k__BackingField: "\uC81C\uB828"
+    <Description>k__BackingField: "\uAD6C\uB9AC \uAD11\uC11D\uC744 5\uAC1C \uC81C\uB828\uD574
+      \uAD6C\uB9AC \uC8FC\uAD34 5\uAC1C\uB97C \uD68D\uB4DD\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 5
+  - <Type>k__BackingField: 3
+    <Title>k__BackingField: "\uD0C0\uC6CC \uC124\uCE58"
+    <Description>k__BackingField: "\uAD6C\uB9AC \uBC1C\uC0AC\uAE30 2\uAC1C\uB97C
+      \uC124\uCE58\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 2
+  - <Type>k__BackingField: 4
+    <Title>k__BackingField: "\uD0C0\uC6CC \uC5C5\uADF8\uB808\uC774\uB4DC"
+    <Description>k__BackingField: "\uAD6C\uB9AC \uBC1C\uC0AC\uAE30\uB97C \uD074\uB9AD\uD558\uC5EC
+      \uC5C5\uADF8\uB808\uC774\uB4DC \uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 5
+    <Title>k__BackingField: "\uD0C0\uC784 \uC2A4\uD0B5"
+    <Description>k__BackingField: "\uC67C\uCABD\uC758 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC5EC,
+      4\uC77C\uC9F8 \uBC24\uC73C\uB85C \uC774\uB3D9\uD558\uC138\uC694"
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 6
+    <Title>k__BackingField: "\uBAAC\uC2A4\uD130 \uCC98\uCE58"
+    <Description>k__BackingField: "\uBAAC\uC2A4\uD130 10\uB9C8\uB9AC\uB97C \uCC98\uCE58\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 10
+  - <Type>k__BackingField: 7
+    <Title>k__BackingField: "\uAC74\uBB3C \uD574\uCCB4"
+    <Description>k__BackingField: "X\uD0A4\uB97C \uB20C\uB7EC \uD574\uCCB4 \uBAA8\uB4DC\uC5D0
+      \uB4E4\uC5B4\uAC00, \uAC74\uBB3C\uC744 \uD574\uCCB4\uD558\uC138\uC694."
+    <ClearAmount>k__BackingField: 1
+  - <Type>k__BackingField: 8
+    <Title>k__BackingField: "\uCF54\uC5B4 \uC5C5\uADF8\uB808\uC774\uB4DC"
+    <Description>k__BackingField: "\uCF54\uC5B4\uB97C \uD074\uB9AD\uD558\uC5EC \uC5C5\uADF8\uB808\uC774\uB4DC\uB97C
+      \uC9C4\uD589\uD574 \uBCF4\uC138\uC694."
+    <ClearAmount>k__BackingField: 1

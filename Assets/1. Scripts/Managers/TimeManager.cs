@@ -134,6 +134,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         {
             _dailyTimer = _realSecDayLength * 0.5f;
         }
+
+        QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.TimeSkip);
     }
 
     /// <summary>

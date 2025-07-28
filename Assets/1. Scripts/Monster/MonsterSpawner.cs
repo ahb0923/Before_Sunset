@@ -17,6 +17,7 @@ public class MonsterSpawner : MonoBehaviour
     public void RemoveDeadMonster(BaseMonster monster)
     {
         _aliveMonsterSet.Remove(monster);
+        QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.KillMonster);
     }
 
     /// <summary>

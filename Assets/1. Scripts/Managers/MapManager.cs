@@ -184,6 +184,11 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             _mapHistory.Push(CurrentMapIndex);
 
         CurrentMapIndex = targetIndex;
+
+        if (targetIndex != 0)
+            QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.MoveToMine);
+        else
+            QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.GoToBase);
     }
 
     // 랜덤 맵 프리팹 ID 선택 (스몰 60%, 빅 30%, 레어 10%)
