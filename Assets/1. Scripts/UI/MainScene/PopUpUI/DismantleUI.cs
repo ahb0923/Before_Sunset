@@ -18,6 +18,7 @@ public class DismantleUI : MonoBehaviour
     [SerializeField] private List<BuildingMaterialSlot> _slots = new List<BuildingMaterialSlot>();
     
     private RectTransform _rect;
+    private BaseTower _selectedTower;
     
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string BUILT_TIME_TEXT = "BuiltTimeText";
@@ -49,6 +50,7 @@ public class DismantleUI : MonoBehaviour
     private void Dismantle()
     {
         // 타워 해체 매서드
+        _selectedTower.DestroyTower();
     }
 
     private void Cancel()
@@ -58,12 +60,12 @@ public class DismantleUI : MonoBehaviour
         Close();
     }
 
-    public void OpenDismantleUI(TowerDatabase data)
+    public void OpenDismantleUI(BaseTower tower)
     {
         _rect.OpenAtCenter();
-        InitSlots(data);
-        SetSlot(data);
-        SetDismantleUI(data);
+        InitSlots(tower);
+        SetSlot(tower);
+        SetDismantleUI(tower);
     }
 
     private void Close()
@@ -71,49 +73,52 @@ public class DismantleUI : MonoBehaviour
         _rect.CloseAndRestore();
     }
 
-    private void InitSlots(TowerDatabase data)
+    private void InitSlots(BaseTower tower)
     {
-        if (_slots.Count >= data.buildRequirements.Count)
-        {
-            return;
-        }
-        else
-        {
-            int num = data.buildRequirements.Count - _slots.Count;
-            for (int i = 0; i < num; i++)
-            {
-                var slot = Instantiate(_slotPrefab, _slotArea.transform);
-                var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
-                _slots.Add(slotComponent);
-                slotComponent.InitIndex(i);
-            }
-        }
-    }
-    
-    private void SetSlot(TowerDatabase data)
-    {
-        var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
-        
-        List<KeyValuePair<string, int>> dataList = upgradeTowerData.buildRequirements.ToList();
-        List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
-        
-        foreach (var slot in _slots)
-        {
-            slot.ClearSlot();
+        _selectedTower = tower;
 
-            if (slot.Index < dataList.Count)
-            {
-                var dataName = dataList[slot.Index].Key;
-                var dataAmount = dataList[slot.Index].Value;
-                
-                slot.SetSlot(dataName, dataAmount, items);
-            }
+        int neededCount = tower.statHandler.AccumulatedCosts.Count;
+
+        if (_slots.Count >= neededCount)
+            return;
+
+        int toAdd = neededCount - _slots.Count;
+
+        for (int i = 0; i < toAdd; i++)
+        {
+            var slot = Instantiate(_slotPrefab, _slotArea.transform);
+            var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
+            _slots.Add(slotComponent);
+            slotComponent.InitIndex(_slots.Count - 1); // Index 재정렬
         }
     }
     
-    public void SetDismantleUI(TowerDatabase data)
+    private void SetSlot(BaseTower tower)
     {
-        _targetNameText.text = data.towerName;
+        var costs = _selectedTower.statHandler.AccumulatedCosts.ToList();
+        var ratio = _selectedTower.GetRefundRatio(_selectedTower.statHandler.CurrHp / _selectedTower.statHandler.MaxHp);
+
+        for (int i = 0; i < costs.Count; i++)
+        {
+            var dataName = costs[i].Key;
+            var dataAmount = (int)(costs[i].Value * ratio);
+
+            if (i < _slots.Count)
+            {
+                _slots[i].ClearSlot();
+                _slots[i].SetSlotDismantle(dataName, dataAmount);
+            }
+        }
+       
+        for (int i = costs.Count; i < _slots.Count; i++)
+        {
+            _slots[i].ClearSlot();
+        }
+    }
+    
+    public void SetDismantleUI(BaseTower tower)
+    {
+        _targetNameText.text = tower.statHandler.TowerName;
     }
     
     // TODO 타워 설치된 시간 표시 어디서 가져오지 (?)

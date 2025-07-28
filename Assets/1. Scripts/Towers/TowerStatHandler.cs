@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.AddressableAssets.Build.Layout;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -46,7 +47,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
 
     // 투사체 속도 => projectile로 이동
     public float ProjectileSpeed { get; set; }
-    //public ResourceRequirement BuildRequirements { get; private set; }
+    public Dictionary<string, int> BuildRequirements { get; private set; }
+    public Dictionary<string, int> AccumulatedCosts { get; set; }
 
     //private bool isFixingDelay = false;
 
@@ -80,6 +82,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         AttackPower = _data.damage;
         AttackSpeed = _data.aps;
         AttackRange = _data.range;
+        BuildRequirements = _data.buildRequirements;
+        AccumulatedCosts = new Dictionary<string, int>(BuildRequirements);
     }
 
     /// <summary>
@@ -118,8 +122,6 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         if (NextupgradeID == null)
             return;
 
-
-
         var upgradeData = DataManager.Instance.TowerData.GetById((int)NextupgradeID);
 
         ID = upgradeData.id;
@@ -139,6 +141,14 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         if (ProjectileID != null)
         {
             ProjectileID = upgradeData.projectileId;
+        }
+
+        foreach (var kvp in upgradeData.buildRequirements)
+        {
+            if (AccumulatedCosts.ContainsKey(kvp.Key))
+                AccumulatedCosts[kvp.Key] += kvp.Value;
+            else
+                AccumulatedCosts[kvp.Key] = kvp.Value;
         }
 
     }

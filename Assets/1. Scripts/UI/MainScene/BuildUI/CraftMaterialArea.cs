@@ -43,7 +43,7 @@ public class CraftMaterialArea : MonoBehaviour
                 var dataName = dataList[slot.Index].Key;
                 var dataAmount = dataList[slot.Index].Value;
                 
-                slot.SetSlot(dataName, dataAmount, items);
+                slot.SetSlotUpgrade(dataName, dataAmount, items);
             }
         }
     }
@@ -62,7 +62,7 @@ public class CraftMaterialArea : MonoBehaviour
                 var dataName = dataList[slot.Index].Key;
                 var dataAmount = dataList[slot.Index].Value;
             
-                slot.SetSlot(dataName, dataAmount, items);
+                slot.SetSlotUpgrade(dataName, dataAmount, items);
             }
         }
     }

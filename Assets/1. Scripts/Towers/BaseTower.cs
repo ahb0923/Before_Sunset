@@ -156,9 +156,10 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        // 현재 타워 파괴 옵션이 켜진 상태인지
         if (BuildManager.Instance.isOnDestroy)
         {
-            DestroyTower();
+            UIManager.Instance.DismantleUI.OpenDismantleUI(this);
         }
         else
         {
@@ -183,14 +184,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
         float hpRatio = statHandler.CurrHp / statHandler.MaxHp;
         float refundRatio = 0f;
 
-        if (towerData.buildType == TOWER_BUILD_TYPE.Upgrade)
-        {
-            refundRatio = GetRefundRatio(hpRatio, upgradeOnly: true);
-        }
-        else
-        {
-            refundRatio = GetRefundRatio(hpRatio);
-        }
+        refundRatio = GetRefundRatio(hpRatio);
 
         // 환급
         RefundResources(req, refundRatio);
@@ -205,14 +199,8 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
     /// <param name="hpRatio">체력 비율 계산</param>
     /// <param name="upgradeOnly">업그레이드 타워인지 베이스 타워인지</param>
     /// <returns>환급 비율</returns>
-    private float GetRefundRatio(float hpRatio, bool upgradeOnly = false)
+    public float GetRefundRatio(float hpRatio)
     {
-        if (upgradeOnly)
-        {
-            // 여기 어떻게할지
-            return 1.0f;
-        }
-
         if (hpRatio >= 0.8f)
             return 0.9f;
         else if (hpRatio >= 0.5f)

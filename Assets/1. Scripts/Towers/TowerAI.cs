@@ -166,7 +166,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             //Debug.Log("[C_Attack] 공격 진입 직후 1회 스킵");
             _isFirstAttack = false;
-            //yield return _tower.attackStrategy.Attack(_tower);
+            //yield return Helper_Coroutine.WaitSeconds(_tower.statHandler.AttackSpeed);
             yield return Helper_Coroutine.WaitSeconds(1.0f);
         }
         if (CurState == TOWER_STATE.Destroy)

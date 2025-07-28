@@ -31,7 +31,7 @@ public class BuildingMaterialSlot : MonoBehaviour
         _originalColor = _amountText.color;
     }
     
-    public void SetSlot(string dataName, int requiredAmount, List<Item> items)
+    public void SetSlotUpgrade(string dataName, int requiredAmount, List<Item> items)
     {
         var data = DataManager.Instance.ItemData.GetByName(dataName);
         var amount = CountMaterial(dataName, items);
@@ -52,7 +52,18 @@ public class BuildingMaterialSlot : MonoBehaviour
         
         gameObject.SetActive(true);
     }
-    
+
+    public void SetSlotDismantle(string dataName, int requiredAmount)
+    {
+        var data = DataManager.Instance.ItemData.GetByName(dataName);
+
+        _materialName.text = dataName;
+        _amountText.text = $"{requiredAmount}";
+        SetImage(data);
+
+        gameObject.SetActive(true);
+    }
+
     private void SetImage(ItemDatabase data)
     {
         if (data.id >= 100 && data.id < 200)
