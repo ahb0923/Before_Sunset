@@ -33,7 +33,7 @@ public class BuildingMaterialSlot : MonoBehaviour
     
     public void SetSlot(string dataName, int requiredAmount, List<Item> items)
     {
-        var data = DataManager.Instance.ItemData.GetName(dataName);
+        var data = DataManager.Instance.ItemData.GetByName(dataName);
         var amount = CountMaterial(dataName, items);
         
         _materialName.text = dataName;

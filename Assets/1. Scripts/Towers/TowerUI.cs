@@ -24,12 +24,14 @@ public class TowerUI : MonoBehaviour
     public Image hpBar_immediate;
     private CanvasGroup _hpBarCanvasGroup;
     public SpriteRenderer effectArea;
+    public Animator animator;
 
 
     private void Reset()
     {
         canvas = Helper_Component.GetComponentInChildren<Canvas>(gameObject, "UI");
         icon = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
+        animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
         hpBar = Helper_Component.FindChildByName(transform, "HpBar").gameObject;
         hpBar_delay = Helper_Component.FindChildComponent<Image>(transform, "HpBar_Delay"); 
         hpBar_immediate = Helper_Component.FindChildComponent<Image>(transform, "HpBar_Immediate");

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoSingleton<GameManager>
 {
+    [SerializeField] public bool GOD_MODE = false;
 
     // private async void Start()
     // {

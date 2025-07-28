@@ -147,18 +147,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
     protected virtual IEnumerator C_Idle()
     {
-        /*
-        if (_isNowBuilding)
-        {
-            _isNowBuilding = false;
-            _tower.attackSensor.ScanInitialEnemies();
-
-            if (_tower.attackSensor.HasDetectedEnemy())
-                CurState = TOWER_STATE.Attack;
-            else
-                CurState = TOWER_STATE.Idle;
-        }
-        yield return null;*/
         _tower.attackSensor.ScanInitialEnemies();
 
         if (_tower.attackSensor.HasDetectedEnemy())
@@ -171,6 +159,9 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     protected virtual IEnumerator C_Attack()
     {
+        if (CurState == TOWER_STATE.Destroy)
+            yield break;
+
         if (_isFirstAttack)
         {
             //Debug.Log("[C_Attack] 공격 진입 직후 1회 스킵");
@@ -178,6 +169,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             //yield return _tower.attackStrategy.Attack(_tower);
             yield return Helper_Coroutine.WaitSeconds(1.0f);
         }
+        if (CurState == TOWER_STATE.Destroy)
+            yield break;
 
         if (_tower.attackSensor.CurrentTarget == null || !_tower.attackSensor.CurrentTarget.activeSelf)
         {
@@ -187,7 +180,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
         while (true)
         {
-            if (IsInterrupted)
+            if (IsInterrupted || CurState == TOWER_STATE.Destroy)
             {
                // Debug.Log("[C_Attack] 상태 중단 감지");
                 yield break;

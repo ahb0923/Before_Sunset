@@ -17,8 +17,9 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     //public Coroutine fixCoroutine;
 
     public int ID { get; private set; }
-    public int ProjectileID { get; private set; }
-    public int DebuffID { get; private set; }
+    public int? ProjectileID { get; private set; }
+    public int? DebuffID { get; private set; }
+    public int? NextupgradeID { get; private set; }
     public int Level { get; private set; }
     public string TowerName { get; private set; }
 
@@ -67,6 +68,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         ID = _data.id;
         ProjectileID = _data.projectileId;
         DebuffID = _data.debuffId;
+        NextupgradeID = _data.nextUpgradeId;
         Level = _data.level;
         TowerName = _data.towerName;
         AttackType = _data.attackType;
@@ -107,6 +109,41 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     {
         CurrHp = Mathf.Min(CurrHp + amount, MaxHp);
     }
+
+    /// <summary>
+    /// 타워 업그레이드 로직
+    /// </summary>
+    public void UpgradeTowerStat()
+    {
+        if (NextupgradeID == null)
+            return;
+
+
+
+        var upgradeData = DataManager.Instance.TowerData.GetById((int)NextupgradeID);
+
+        ID = upgradeData.id;
+        Level = upgradeData.level;
+        CurrHp += upgradeData.towerHp;
+        MaxHp += upgradeData.towerHp;
+        AttackPower += upgradeData.damage;
+        AttackSpeed += upgradeData.aps;
+        AttackRange += upgradeData.range;
+
+        NextupgradeID = upgradeData.nextUpgradeId;
+
+        if (DebuffID != null)
+        {
+            DebuffID = upgradeData.debuffId;
+        }
+        if (ProjectileID != null)
+        {
+            ProjectileID = upgradeData.projectileId;
+        }
+
+    }
+
+
 
     /// <summary>
     /// 데미지 테스팅 메서드

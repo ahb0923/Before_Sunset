@@ -26,7 +26,7 @@ public class AttackStrategy_TopazTower : IAttackStrategy
             if (monster.HasDebuff(DEBUFF_TYPE.Electricshock)) continue;
             // if (monster.HasDebuff(DEBUFF_TYPE.Electricshock) && tower.statHandler.BuildType == TOWER_BUILD_TYPE.Base) continue;
 
-            var debuffObject = PoolManager.Instance.GetFromPool(tower.statHandler.DebuffID, enemy.transform.position, enemy.transform);
+            var debuffObject = PoolManager.Instance.GetFromPool((int)tower.statHandler.DebuffID, enemy.transform.position, enemy.transform);
             if (!debuffObject.TryGetComponent(out BaseDebuff debuff)) continue;
 
             debuff.Apply(monster);

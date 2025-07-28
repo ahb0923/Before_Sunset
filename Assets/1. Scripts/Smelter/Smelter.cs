@@ -102,7 +102,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         
         if (OutputItem == null)
         {
-            OutputItem = new Item(DataManager.Instance.ItemData.GetId(mineralData.ingotId));
+            OutputItem = new Item(DataManager.Instance.ItemData.GetById(mineralData.ingotId));
         }
         
         OutputItem.stack++;

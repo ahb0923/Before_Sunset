@@ -16,6 +16,8 @@ public class AttackStrategy_HealTower : IAttackStrategy
         {
             if (hit.gameObject == tower.gameObject) continue;
 
+            var towerAI = hit.GetComponent<TowerAI>();
+            if (towerAI != null && towerAI.CurState == TOWER_STATE.Destroy) continue;
 
             var hitStat = Helper_Component.GetComponent<TowerStatHandler>(hit);
             if (hitStat != null && hitStat.CurrHp < hitStat.MaxHp)

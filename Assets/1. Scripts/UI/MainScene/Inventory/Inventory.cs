@@ -78,7 +78,7 @@ public class Inventory : MonoBehaviour, ISaveable
     /// <returns></returns>
     private Item CreateItem(int id)
     {
-        Item item = new Item(DataManager.Instance.ItemData.GetId(id));
+        Item item = new Item(DataManager.Instance.ItemData.GetById(id));
         return item;
     }
 
@@ -259,6 +259,24 @@ public class Inventory : MonoBehaviour, ISaveable
     }
 
     /// <summary>
+    /// 『효빈』아이템 갯수 체크 메서드 
+    /// </summary>
+    /// <param name="itemName">아이템 이름</param>
+    /// <returns>갯수값 리턴</returns>
+    public int GetItemCount(string itemName)
+    {
+        int count = 0;
+        foreach (var item in Items)
+        {
+            if (item != null && item.Data.itemName == itemName)
+            {
+                count += item.stack;
+            }
+        }
+        return count;
+    }
+
+    /// <summary>
     /// 아이템 사용 메서드
     /// </summary>
     /// <param name="id">사용할 아이템의 아이디</param>
@@ -313,6 +331,8 @@ public class Inventory : MonoBehaviour, ISaveable
         QuickSlotInventoryUI.RefreshUI(Items);
         return true;
     }
+
+
 
     /// <summary>
     /// 아이템 사용 메서드

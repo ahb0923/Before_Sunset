@@ -14,7 +14,7 @@ public class AttackStrategy_DiaprismTower : IAttackStrategy
             tower.ai.SetState(TOWER_STATE.Idle);
             yield break;
         }
-        GameObject projObj = PoolManager.Instance.GetFromPool(stat.ProjectileID, tower.transform.position + Vector3.up * 2f, tower.transform);
+        GameObject projObj = PoolManager.Instance.GetFromPool((int)stat.ProjectileID, tower.transform.position + Vector3.up * 2f, tower.transform);
         Projectile proj = Helper_Component.GetComponent<Projectile>(projObj);
 
         var attackSettings = new ProjectileAttackSettings

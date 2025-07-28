@@ -1,7 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {
@@ -14,6 +15,8 @@ public class BuildManager : MonoSingleton<BuildManager>
     private bool _isPlacing;
     public bool IsPlacing => _isPlacing;
 
+    // 파괴 선택
+    public bool isOnDestroy = false;
 
     private void Start()
     {
@@ -121,8 +124,23 @@ public class BuildManager : MonoSingleton<BuildManager>
             return false;
         }
 
-        // 인벤토리 재화 체크
-        // => 이곳에 코드 구현
+        if (!GameManager.Instance.GOD_MODE)
+        {
+            // 인벤토리 재화 사용
+            var towerDb = DataManager.Instance.TowerData.GetById(_buildInfo.id);
+            if (towerDb != null)
+            {
+                foreach (var item in towerDb.buildRequirements)
+                    InventoryManager.Instance.Inventory.UseItem(item.Key, item.Value);
+            }
+            else
+            {
+                var smelterDb = DataManager.Instance.SmelterData.GetById(_buildInfo.id);
+                foreach (var item in smelterDb.buildRequirements)
+                    InventoryManager.Instance.Inventory.UseItem(item.Key, item.Value);
+            }
+        }
+
 
         // 배치 성공
         var obj = PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool);

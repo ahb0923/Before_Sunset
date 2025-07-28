@@ -93,8 +93,8 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     private string SetSmelt(SmelterDatabase data)
     {
         return $"제련 가능 광물\n" +
-                    $"{DataManager.Instance.ItemData.GetId(data.smeltingIdList[0]).itemName}, " +
-                    $"{DataManager.Instance.ItemData.GetId(data.smeltingIdList[1]).itemName}";
+                    $"{DataManager.Instance.ItemData.GetById(data.smeltingIdList[0]).itemName}, " +
+                    $"{DataManager.Instance.ItemData.GetById(data.smeltingIdList[1]).itemName}";
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -127,7 +127,37 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             if (!BuildManager.Instance.IsPlacing)
             {
-                BuildManager.Instance.StartPlacing(currentBuildID);
+                bool checkRequirements = true;
+                if (!GameManager.Instance.GOD_MODE)
+                {
+
+                    if (_towerData == null)
+                    {
+                        var buildRequirements = DataManager.Instance.SmelterData.GetById(currentBuildID).buildRequirements;
+                        foreach (var item in buildRequirements)
+                        {
+                            if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
+                            {
+                                Debug.Log("설치 실패: 자원이 부족합니다.");
+                                checkRequirements = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var buildRequirements = DataManager.Instance.TowerData.GetById(currentBuildID).buildRequirements;
+                        foreach (var item in buildRequirements)
+                        {
+                            if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
+                            {
+                                Debug.Log("설치 실패: 자원이 부족합니다.");
+                                checkRequirements = false;
+                            }
+                        }
+                    }
+                }
+                if(checkRequirements)
+                    BuildManager.Instance.StartPlacing(currentBuildID);
             }
         }
         // 우클릭시

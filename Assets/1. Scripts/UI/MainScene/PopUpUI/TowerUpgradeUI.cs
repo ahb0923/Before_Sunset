@@ -20,6 +20,8 @@ public class TowerUpgradeUI : MonoBehaviour
     [SerializeField] private List<BuildingMaterialSlot> _slots = new List<BuildingMaterialSlot>();
 
     private RectTransform _rect;
+    private BaseTower _selectedTower;
+
 
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string TARGET_INFO_TEXT = "TargetInfoText";
@@ -54,22 +56,33 @@ public class TowerUpgradeUI : MonoBehaviour
     private void Upgrade()
     {
         // 타워업그레이드 메서드
+        _selectedTower.statHandler.UpgradeTowerStat();
     }
-
+    /*
     public void OpenUpgradeUI(TowerDatabase data)
     {
         _rect.OpenAtCenter();
         InitSlots(data);
         SetSlot(data);
         SetUpgradeUI(data);
+    }*/
+
+    public void OpenUpgradeUI(BaseTower tower)
+    {
+        _rect.OpenAtCenter();
+        InitSlots(tower);
+        SetSlot(tower);
+        SetUpgradeUI(tower);
     }
+
+
 
     public void CloseUpgradeUI()
     {
         ClearUI();
         _rect.CloseAndRestore();
     }
-
+    /*
     private void InitSlots(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
@@ -89,8 +102,37 @@ public class TowerUpgradeUI : MonoBehaviour
                 slotComponent.InitIndex(i);
             }
         }
-    }
+    }*/
+    private void InitSlots(BaseTower tower)
+    {
+        _selectedTower = tower;
+        if (tower.statHandler.NextupgradeID == null)
+        {
+            Debug.Log("다음 업그레이드가 없음!");
+        }
+        else
+        {
+            var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)tower.statHandler.NextupgradeID);
 
+            if (_slots.Count >= upgradeTowerData.buildRequirements.Count)
+            {
+                return;
+            }
+            else
+            {
+                int num = upgradeTowerData.buildRequirements.Count - _slots.Count;
+                for (int i = 0; i < num; i++)
+                {
+                    var slot = Instantiate(_slotPrefab, _slotArea.transform);
+                    var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
+                    _slots.Add(slotComponent);
+                    slotComponent.InitIndex(i);
+                }
+            }
+        }
+            
+    }
+    /*
     private void SetSlot(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
@@ -110,8 +152,35 @@ public class TowerUpgradeUI : MonoBehaviour
                 slot.SetSlot(dataName, dataAmount, items);
             }
         }
-    }
+    }*/
+    private void SetSlot(BaseTower tower)
+    {
+        if (tower.statHandler.NextupgradeID == null)
+        {
+            Debug.Log("다음 업그레이드가 없음!");
+        }
+        else
+        {
+            var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)tower.statHandler.NextupgradeID);
 
+            List<KeyValuePair<string, int>> dataList = upgradeTowerData.buildRequirements.ToList();
+            List<Item> items = InventoryManager.Instance.Inventory.Items.ToList();
+
+            foreach (var slot in _slots)
+            {
+                slot.ClearSlot();
+
+                if (slot.Index < dataList.Count)
+                {
+                    var dataName = dataList[slot.Index].Key;
+                    var dataAmount = dataList[slot.Index].Value;
+
+                    slot.SetSlot(dataName, dataAmount, items);
+                }
+            }
+        }
+    }
+    /*
     private void SetUpgradeUI(TowerDatabase data)
     {
         var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)data.nextUpgradeId);
@@ -127,8 +196,32 @@ public class TowerUpgradeUI : MonoBehaviour
                                 $"공격력 : {data.damage + upgradeTowerData.damage}\n" +
                                 $"사거리 : {data.range + upgradeTowerData.range}\n" +
                                 $"쿨타임 : {data.aps + upgradeTowerData.aps}";
-    }
+    }*/
 
+    private void SetUpgradeUI(BaseTower tower)
+    {
+        if (tower.statHandler.NextupgradeID == null)
+        {
+            Debug.Log("다음 업그레이드가 없음!");
+        }
+        else
+        {
+            var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)tower.statHandler.NextupgradeID);
+
+            _targetNameText.text = tower.statHandler.TowerName;
+            _targetInfoText.text = tower.statHandler.FlavorText;
+            _upgradeTargetNameText.text = upgradeTowerData.towerName;
+            _targetStatText.text = $"MaxHP : {tower.statHandler.MaxHp}\n" +
+                                   $"공격력 : {tower.statHandler.AttackPower}\n" +
+                                   $"사거리 : {tower.statHandler.AttackRange}\n" +
+                                   $"쿨타임 : {tower.statHandler.AttackSpeed}";
+            _upgradeStatText.text = $"MaxHP : {tower.statHandler.MaxHp + upgradeTowerData.towerHp}\n" +
+                                    $"공격력 : {tower.statHandler.AttackPower + upgradeTowerData.damage}\n" +
+                                    $"사거리 : {tower.statHandler.AttackRange + upgradeTowerData.range}\n" +
+                                    $"쿨타임 : {tower.statHandler.AttackSpeed + upgradeTowerData.aps}";
+        }
+           
+    }
     private void ClearUI()
     {
         _targetNameText.text = "";

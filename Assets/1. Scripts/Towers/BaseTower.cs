@@ -68,7 +68,6 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
         _buildCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "BuildArea");
 
 
-
         ai = Helper_Component.GetComponent<TowerAI>(gameObject);
         statHandler = Helper_Component.GetComponent<TowerStatHandler>(gameObject);
         attackSensor = Helper_Component.GetComponentInChildren<TowerAttackSensor>(gameObject);
@@ -157,12 +156,88 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right)
+        if (BuildManager.Instance.isOnDestroy)
         {
-            if (BuildManager.Instance.IsPlacing) return;
+            DestroyTower();
+        }
+        else
+        {
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                if (BuildManager.Instance.IsPlacing) return;
 
-            var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
-            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(data);
+                //var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
+                UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+            }
+        }
+    }
+    /// <summary>
+    /// 파괴 메서드
+    /// </summary>
+    public void DestroyTower()
+    {
+        var id = statHandler.ID;
+        var towerData = DataManager.Instance.TowerData.GetById(id);
+        var req = towerData.buildRequirements;
+
+        float hpRatio = statHandler.CurrHp / statHandler.MaxHp;
+        float refundRatio = 0f;
+
+        if (towerData.buildType == TOWER_BUILD_TYPE.Upgrade)
+        {
+            refundRatio = GetRefundRatio(hpRatio, upgradeOnly: true);
+        }
+        else
+        {
+            refundRatio = GetRefundRatio(hpRatio);
+        }
+
+        // 환급
+        RefundResources(req, refundRatio);
+
+        // 실제 파괴 처리
+        DefenseManager.Instance.RemoveObstacle(transform);
+        PoolManager.Instance.ReturnToPool(id, gameObject);
+    }
+    /// <summary>
+    /// 환급 비율 계산 메서드
+    /// </summary>
+    /// <param name="hpRatio">체력 비율 계산</param>
+    /// <param name="upgradeOnly">업그레이드 타워인지 베이스 타워인지</param>
+    /// <returns>환급 비율</returns>
+    private float GetRefundRatio(float hpRatio, bool upgradeOnly = false)
+    {
+        if (upgradeOnly)
+        {
+            // 여기 어떻게할지
+            return 1.0f;
+        }
+
+        if (hpRatio >= 0.8f)
+            return 0.9f;
+        else if (hpRatio >= 0.5f)
+            return 0.7f;
+        else
+            return 0.35f;
+    }
+
+    /// <summary>
+    /// 인벤토리에 해체된 아이템 넣어주기
+    /// </summary>
+    /// <param name="cost">buildrequirements정보</param>
+    /// <param name="refundRatio">환급 비율</param>
+    private void RefundResources(Dictionary<string, int> cost, float refundRatio)
+    {
+        foreach (var kvp in cost)
+        {
+            int refundAmount = Mathf.FloorToInt(kvp.Value * refundRatio);
+            if (refundAmount > 0)
+            {
+                InventoryManager.Instance.Inventory.AddItem(
+                    DataManager.Instance.ItemData.GetIdByName(kvp.Key),
+                    refundAmount
+                );
+            }
         }
     }
 }
