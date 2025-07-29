@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OptionUI : MonoBehaviour
@@ -100,6 +101,7 @@ public class OptionUI : MonoBehaviour
 
     private void MainMenu()
     {
+        TimeManager.Instance.PauseGame(false);
         LoadingSceneController.LoadScene("StartScene");
     }
     

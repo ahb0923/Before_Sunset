@@ -21,10 +21,29 @@ public class OpeningText : MonoBehaviour
         textMesh.maxVisibleCharacters = 0;
 
         Tween tween = DOTween.To(x => textMesh.maxVisibleCharacters = (int)x,
-            0f, textMesh.text.Length, duration).SetEase(Ease.Linear);
-        yield return tween.WaitForCompletion();
+            0f, textMesh.text.Length, duration).SetEase(Ease.Linear).SetAutoKill(false);
+
+        yield return new WaitForSeconds(0.7f);
+        bool isSkipped = false;
+        while (tween.IsPlaying() && !isSkipped)
+        {
+            if (Input.GetMouseButtonDown(0) ||
+                Input.GetKeyDown(KeyCode.Space) ||
+                Input.GetKeyDown(KeyCode.Return))
+            {
+                tween.Complete();
+                isSkipped = true;
+            }
+            yield return null;
+        }
+
+        if (!isSkipped)
+        {
+            yield return tween.WaitForCompletion();
+        }
         
         textMesh.maxVisibleCharacters = int.MaxValue;
+        tween.Kill();
     }
     
     public void MoveText(float moveAmount, float duration)

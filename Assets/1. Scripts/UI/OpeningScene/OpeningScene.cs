@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OpeningScene : MonoBehaviour
@@ -33,10 +34,13 @@ public class OpeningScene : MonoBehaviour
     [SerializeField] private Vector3 _defaultOffset = new Vector3(10f, 5f, 0f);
     [SerializeField] private Canvas _canvas;
     
+    [Header("FadeIn")]
+    [SerializeField] private GameObject _fadeInGo;
+    [SerializeField] private Image _fadeInImage;
+    
     private Queue<OpeningText> _activeTexts = new Queue<OpeningText>();
     private Queue<GameObject> _textPool = new Queue<GameObject>();
 
-    public bool isPlayed;
     private Coroutine _seqRoutine;
     private Coroutine _textRoutine;
     private Tween _blinkTween;
@@ -46,6 +50,7 @@ public class OpeningScene : MonoBehaviour
     private const string TEXT_PREFAB = "UI/OpeningText";
     private const string OPENING_TEXT_CONTAINER = "OpeningTextContainer";
     private const string BLINK_IMAGE = "BlinkImage";
+    private const string FADE_IN = "FadeIn";
     
     private void Reset()
     {
@@ -55,10 +60,14 @@ public class OpeningScene : MonoBehaviour
         _blinkRect = _blinkGo.GetComponent<RectTransform>();
         _blinkImage = _blinkGo.GetComponent<Image>();
         _canvas = GetComponent<Canvas>();
+        _fadeInGo = Helper_Component.FindChildGameObjectByName(this.gameObject, FADE_IN);
+        _fadeInImage = _fadeInGo.GetComponent<Image>();
     }
 
-    private void Awake()
+    private void Start()
     {
+        _fadeInImage.color = new Color(0f, 0f, 0f, 0f);
+        _fadeInGo.SetActive(false);
         _blinkGo.SetActive(false);
         InitTexts();
         StartCoroutine(C_StartOpening());
@@ -81,7 +90,11 @@ public class OpeningScene : MonoBehaviour
             _seqRoutine = StartCoroutine(C_Sequence(i));
             yield return _seqRoutine;
         }
-        LoadingSceneController.LoadScene("MainScene");
+
+        _blinkTween.Kill();
+        _blinkTween = null;
+        _fadeInGo.SetActive(true);
+        _fadeInImage.DOFade(1f, 2f).OnComplete(() => SceneManager.LoadScene("MainScene"));
     }
     
     private IEnumerator C_Sequence(int i)
@@ -89,6 +102,7 @@ public class OpeningScene : MonoBehaviour
         var go = GetText();
         var text = go.GetComponent<OpeningText>();
         _activeTexts.Enqueue(text);
+        text.ResetOpeningText();
         
         text.textMesh.text = _texts[i];
         _textRoutine = StartCoroutine(text.C_DOTextMesh(_textDuration));
@@ -96,7 +110,7 @@ public class OpeningScene : MonoBehaviour
         
         BlinkTransform(text.rect);
         Blink();
-        while (_blinkTween != null)
+        while (_blinkTween.IsPlaying())
         {
             if (Input.GetMouseButtonDown(0) ||
                 Input.GetKeyDown(KeyCode.Space) ||
@@ -112,7 +126,7 @@ public class OpeningScene : MonoBehaviour
 
         if (i == _texts.Count - 1)
         {
-            isPlayed = true;
+            GlobalState.HasPlayedOpening = true;
             yield break;
         }
 
@@ -126,6 +140,8 @@ public class OpeningScene : MonoBehaviour
         {
             ot.MoveText(_moveOffset, _moveDuration);
         }
+        
+        yield return new WaitForSeconds(0.2f);
     }
 
     private void Blink()
@@ -162,11 +178,9 @@ public class OpeningScene : MonoBehaviour
 
         return Instantiate(_textPrefab, _openingTextContainer.transform);
     }
-    
-    public void ReturnText(GameObject text)
+
+    private void ReturnText(GameObject text)
     {
-        var ot = text.GetComponent<OpeningText>();
-        ot.ResetOpeningText();
         text.SetActive(false);
         _textPool.Enqueue(text);
     }
