@@ -12,9 +12,15 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
 
     private SpriteRenderer _spriter;
 
+    private CoreStatHandler _statHandler;
+    private CoreUpgradeStats Stats => _statHandler.Stats;
+
+    private int[] _upgradeCostPerLevel;
+
     private void Awake()
     {
         _spriter = GetComponentInChildren<SpriteRenderer>();
+        _statHandler = GetComponent<CoreStatHandler>();
 
         SetFullHp();
     }
@@ -61,11 +67,30 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     }
 
     /// <summary>
+    /// 업그레이드
+    /// </summary>
+    public bool TryUpgrade()
+    {
+        int nextLevel = Stats.Level + 1;
+        //if (nextLevel >= _upgradeCostPerLevel.Length) return false;
+
+        //int cost = _upgradeCostPerLevel[nextLevel];
+        // 정수 차감  return false;
+
+        _statHandler.Upgrade();
+
+        SetHp(Stats.MaxHp);
+        return true;
+    }
+
+
+    /// <summary>
     /// 코어 체력 저장
     /// </summary>
     public void SaveData(GameData data)
     {
         data.coreCurHp = CurHp;
+        // data.coreLevel = _stats.Level; 데이터에 추가해야됨
     }
 
     /// <summary>
@@ -73,6 +98,16 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
+        //_stats.Level = data.coreLevel;
+        //// 레벨에 따른 스탯 갱신
+        //for (int i = 1; i < data.coreLevel; i++)
+        //{
+        //    _stats.MaxHp += 200;
+        //    _stats.AttackPower += 5f;
+        //    _stats.AttackRange += 1f;
+        //    _stats.AttackCooldown = Mathf.Max(0.5f, _stats.AttackCooldown - 0.2f);
+        //}
+
         SetHp(data.coreCurHp);
     }
 }
