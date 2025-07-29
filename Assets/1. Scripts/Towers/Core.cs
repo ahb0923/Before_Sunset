@@ -11,18 +11,28 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     public bool IsDead { get; private set; }
 
     private SpriteRenderer _spriter;
-
     private CoreStatHandler _statHandler;
     private CoreUpgradeStats Stats => _statHandler.Stats;
-
-    private int[] _upgradeCostPerLevel;
 
     private void Awake()
     {
         _spriter = GetComponentInChildren<SpriteRenderer>();
         _statHandler = GetComponent<CoreStatHandler>();
-
         SetFullHp();
+    }
+
+    /// <summary>
+    /// 최대 체력
+    /// </summary>
+    public void UpdateMaxHp(int newMaxHp)
+    {
+        int hpDifference = newMaxHp - _maxHp;
+        _maxHp = newMaxHp;
+
+        // 현재 체력도 증가분만큼 증가 (체력 업그레이드시 즉시 회복)
+        SetHp(CurHp + hpDifference);
+
+        Debug.Log($"코어 최대 체력 업데이트: {_maxHp}, 현재 체력: {CurHp}");
     }
 
     /// <summary>
@@ -62,27 +72,9 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     /// </summary>
     private void SetHp(int hp)
     {
-        CurHp = hp;
+        CurHp = Mathf.Clamp(hp, 0, _maxHp);
         _hpBar.fillAmount = (float)CurHp / _maxHp;
     }
-
-    /// <summary>
-    /// 업그레이드
-    /// </summary>
-    public bool TryUpgrade()
-    {
-        int nextLevel = Stats.Level + 1;
-        //if (nextLevel >= _upgradeCostPerLevel.Length) return false;
-
-        //int cost = _upgradeCostPerLevel[nextLevel];
-        // 정수 차감  return false;
-
-        _statHandler.Upgrade();
-
-        SetHp(Stats.MaxHp);
-        return true;
-    }
-
 
     /// <summary>
     /// 코어 체력 저장
@@ -90,7 +82,6 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     public void SaveData(GameData data)
     {
         data.coreCurHp = CurHp;
-        // data.coreLevel = _stats.Level; 데이터에 추가해야됨
     }
 
     /// <summary>
@@ -98,16 +89,6 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        //_stats.Level = data.coreLevel;
-        //// 레벨에 따른 스탯 갱신
-        //for (int i = 1; i < data.coreLevel; i++)
-        //{
-        //    _stats.MaxHp += 200;
-        //    _stats.AttackPower += 5f;
-        //    _stats.AttackRange += 1f;
-        //    _stats.AttackCooldown = Mathf.Max(0.5f, _stats.AttackCooldown - 0.2f);
-        //}
-
         SetHp(data.coreCurHp);
     }
 }
