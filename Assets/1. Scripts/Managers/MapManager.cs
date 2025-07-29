@@ -9,6 +9,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private GameObject _baseMap;
     private Transform _player;
+    private Transform _core;
 
     [SerializeField] private float _mapSpacing = 100f;
 
@@ -18,7 +19,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     private Dictionary<int, int> _mapPrefabIdMap = new Dictionary<int, int>();
 
     private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
-    private Portal.PortalDirection? _firstExitFromBaseDirection = null;
     private Dictionary<int, List<InteractableState>> _interactableStates = new();
 
     private SpawnManager _spawnManager;
@@ -27,7 +27,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     {
         base.Awake();
 
-        // BaseMap과 Player를 이름으로 찾아서 자동 할당
         if (_baseMap == null)
         {
             var baseMapGO = GameObject.Find("BaseMap");
@@ -36,7 +35,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             else
                 Debug.LogError("BaseMap 오브젝트를 찾을 수 없습니다. 이름이 'BaseMap'인지 확인하세요.");
         }
-
         if (_player == null)
         {
             var playerGO = GameObject.Find("Player");
@@ -44,6 +42,14 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
                 _player = playerGO.transform;
             else
                 Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 이름이 'Player'인지 확인하세요.");
+        }
+        if (_core == null)
+        {
+            var coreGO = GameObject.Find("Core");
+            if (coreGO != null)
+                _core = coreGO.transform;
+            else
+                Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
         }
 
         _baseMap.SetActive(true);
@@ -55,11 +61,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     public void MoveToMapByDirection(Portal.PortalDirection dir)
     {
         int current = CurrentMapIndex;
-
-        if (current == 0 && _firstExitFromBaseDirection == null)
-        {
-            _firstExitFromBaseDirection = dir;
-        }
 
         if (_portalMapLinks.TryGetValue((current, dir), out int linkedMapIndex))
         {
@@ -95,8 +96,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     {
         if (CurrentMapIndex == 0) return;
 
-        PortalManager.Instance.LastEnteredPortalDirection = _firstExitFromBaseDirection;
-
         // 활성화된 모든 맵을 풀에 반환
         foreach (var kvp in _activeMapInstances)
         {
@@ -107,18 +106,20 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             }
         }
 
-        if (_firstExitFromBaseDirection.HasValue)
+        MoveToMap(0, false);
+        _player.position = GetRandomPositionNearCore(1.0f);
+    }
+
+    private Vector3 GetRandomPositionNearCore(float radius = 1.0f)
+    {
+        if (_core == null)
         {
-            var reversed = PortalManager.Instance.GetOppositeDirection(_firstExitFromBaseDirection.Value);
-            PortalManager.Instance.LastEnteredPortalDirection = reversed;
-        }
-        else
-        {
-            PortalManager.Instance.LastEnteredPortalDirection = null;
+            Debug.LogWarning("Core가 설정되지 않아 기본 위치 반환");
+            return _baseMap.transform.position;
         }
 
-        MoveToMap(0, false);
-        _firstExitFromBaseDirection = null;
+        Vector2 offset = Random.insideUnitCircle.normalized * Random.Range(0.3f, radius);
+        return _core.position + new Vector3(offset.x, offset.y, 0f);
     }
 
     // 맵이동
@@ -133,10 +134,20 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         {
             _baseMap.SetActive(false);
         }
-        else if (_activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
+        else if (CurrentMapIndex != 0 && _activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
         {
             SaveInteractableStates(currentChunk, CurrentMapIndex);
-            currentChunk.SetActive(false);
+
+            if (_mapPrefabIdMap.ContainsKey(CurrentMapIndex))
+            {
+                int prefabId = _mapPrefabIdMap[CurrentMapIndex];
+                PoolManager.Instance.ReturnToPool(prefabId, currentChunk);
+                _activeMapInstances.Remove(CurrentMapIndex);
+            }
+            else
+            {
+                currentChunk.SetActive(false);
+            }
         }
 
         // 타겟 맵 활성화 또는 생성
@@ -157,6 +168,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
             if (mapInstance != null)
             {
+                mapInstance.transform.SetParent(this.transform);
                 mapInstance.SetActive(false);
 
                 // Cinemachine 카메라 설정

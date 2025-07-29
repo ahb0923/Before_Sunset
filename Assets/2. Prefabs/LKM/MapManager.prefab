@@ -144,7 +144,10 @@ MonoBehaviour:
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 268436736
+    m_Bits: 250613776
+  _spawnZoneLayer:
+    serializedVersion: 2
+    m_Bits: 268435456
 --- !u!1 &2967901326904584771
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,11 +192,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1fb26c60c6fbb245a0af50103c1b05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCount: 40
+  spawnCount: 35
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 268436736
+    m_Bits: 250613776
+  _spawnZoneLayer:
+    serializedVersion: 2
+    m_Bits: 268435456
 --- !u!1 &5312562281314221255
 GameObject:
   m_ObjectHideFlags: 0

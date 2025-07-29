@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7104076274220234564}
-  - component: {fileID: 5080727689215684317}
-  - component: {fileID: -4826578254387843137}
-  - component: {fileID: 500277172002488279}
+  - component: {fileID: -4869048470315247189}
+  - component: {fileID: -4474334031157301946}
+  - component: {fileID: 2979169425591860178}
   m_Layer: 21
-  m_Name: Jewel_Diamond
+  m_Name: Jewel_Aquamarine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,7 +34,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5080727689215684317
+--- !u!114 &-4869048470315247189
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f82f488759539a4ea406f2fc6e3b5d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: -4826578254387843137}
-  _id: 203
---- !u!61 &-4826578254387843137
+  _collider: {fileID: -4474334031157301946}
+  _id: 205
+--- !u!61 &-4474334031157301946
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,9 +91,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3206663, y: 0.3206663}
+  m_Size: {x: 0.3206662, y: 0.3206662}
   m_EdgeRadius: 0
---- !u!212 &500277172002488279
+--- !u!212 &2979169425591860178
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,7 +134,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 51
-  m_Sprite: {fileID: 21300000, guid: d27d009abf6773f449beda3cd1466b06, type: 2}
+  m_Sprite: {fileID: 21300000, guid: 841a327d5a8d21a4ea67d96d3c1756a8, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

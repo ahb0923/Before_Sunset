@@ -8,14 +8,10 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private Vector3 spawnAreaCenter3D;
     private Vector2 spawnAreaSize = new Vector2(57f, 31f);
 
-    [Header("스폰 개수")]
     [SerializeField] private int spawnCount = 20;
-
-    [Header("중복 방지 반지름")]
     [SerializeField] private float overlapRadius = 1.0f;
-
-    [Header("장애물 레이어 마스크")]
     [SerializeField] private LayerMask obstacleLayerMask;
+    [SerializeField] private LayerMask _spawnZoneLayer;
 
     public Func<TData, int> GetId;
     public Func<TData, int> GetSpawnStage;
@@ -49,44 +45,81 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         foreach (var data in dataList)
         {
-            if (currentStage >= GetSpawnStage(data))
+            int id = GetId(data);
+
+            if ( id >= 200 || currentStage >= GetSpawnStage(data))
                 spawnableList.Add(data);
         }
 
         if (spawnableList.Count == 0) return;
 
-        int placed = 0;
-        int attempts = 0;
-        int maxAttempts = spawnCount * 10;
-
-        while (placed < spawnCount && attempts < maxAttempts)
+        if (typeof(TData) == typeof(JewelDatabase))
         {
-            attempts++;
+            foreach (var data in spawnableList)
+            {
+                float probability = GetProbability(data) / 100f;
+                if (UnityEngine.Random.value > probability)
+                    continue;
+
+                TryPlaceSingle(data);
+            }
+        }
+        else // Ore: 가중치 기반
+        {
+            int placed = 0;
+            int attempts = 0;
+            int maxAttempts = spawnCount * 10;
+
+            while (placed < spawnCount && attempts < maxAttempts)
+            {
+                attempts++;
+                Vector3 pos = GetRandomPositionInArea();
+
+                if (!IsValidSpawnPosition(pos)) continue;
+                if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
+                if (IsTooClose(pos)) continue;
+
+                TData selected = GetRandomByProbability();
+                if (selected == null) continue;
+
+                if (TryPlace(selected, pos))
+                    placed++;
+            }
+        }
+    }
+
+    private bool TryPlace(TData data, Vector3 pos)
+    {
+        int id = GetId(data);
+        GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
+        if (obj == null)
+        {
+            Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
+            return false;
+        }
+
+        if (parentTransform != null)
+            obj.transform.SetParent(parentTransform, false);
+
+        obj.transform.position = pos;
+        obj.GetComponent<IPoolable>()?.OnGetFromPool();
+        placedPositions.Add(pos);
+        return true;
+    }
+
+    private void TryPlaceSingle(TData data)
+    {
+        int maxAttempts = 10;
+        for (int i = 0; i < maxAttempts; i++)
+        {
             Vector3 pos = GetRandomPositionInArea();
 
+            if (!IsValidSpawnPosition(pos)) continue;
             if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
             if (IsTooClose(pos)) continue;
 
-            TData selected = GetRandomByProbability();
-            if (selected == null) continue;
-
-            int id = GetId(selected);
-
-            GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
-            if (obj == null)
-            {
-                Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
-                continue;
-            }
-
-            if (parentTransform != null)
-                obj.transform.SetParent(parentTransform, false);
-
-            obj.transform.position = pos;
-            obj.GetComponent<IPoolable>()?.OnGetFromPool();
-
-            placedPositions.Add(pos);
-            placed++;
+            TryPlace(data, pos);
+            break;
         }
     }
 
@@ -107,6 +140,12 @@ public class ResourceSpawner<TData> : MonoBehaviour
         y = Mathf.Floor(y) + 0.5f;
 
         return new Vector3(x, y, z);
+    }
+
+    private bool IsValidSpawnPosition(Vector3 position)
+    {
+        Collider2D collider = Physics2D.OverlapPoint(position, _spawnZoneLayer);
+        return collider != null;
     }
 
     private bool IsTooClose(Vector3 pos)
