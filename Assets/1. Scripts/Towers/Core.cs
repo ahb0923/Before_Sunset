@@ -63,7 +63,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
         {
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
-            TimeManager.Instance.TestGameOver();
+            TimeManager.Instance.PauseGame(true); // 일단 게임 오버 시에 정지
         }
     }
 

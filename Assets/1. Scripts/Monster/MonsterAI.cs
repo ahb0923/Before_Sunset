@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public enum MONSTER_STATE
 {
@@ -325,6 +326,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         yield return C_DeadAnimation();
 
+        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform.position);
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
     }
 

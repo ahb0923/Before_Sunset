@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,8 +20,18 @@ public enum CORE_STATUS_TYPE
 
 public class UpgradeManager : MonoSingleton<UpgradeManager>
 {
-    public Dictionary<PLAYER_STATUS_TYPE, int> PlayerStatus { get; private set; }
-    public Dictionary<CORE_STATUS_TYPE, int> CoreStatus { get; private set; }
+    public Dictionary<string, int> BaseUpgrade { get; private set; }
+    public Dictionary<string, int> FixedUpgrade { get; private set; }
+    public Dictionary<string, int> VirtualUpgrade { get; private set; }
+    
+    public int Essence { get; private set; }
+    public int EssencePiece { get; private set; }
+    public int VirtualEssence { get; private set; }
+
+    public int UsedEssence { get; private set; }
+    public int VirtualUsedEssence { get; private set; }
+    public int ResetCounter { get; private set; }
+    public int ResetCost => 1 + ResetCounter;
 
     private UpgradeDataHandler _upgradeDataHandler;
     private PlayerStatHandler _playerStatHandler;
@@ -36,22 +45,23 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
         _upgradeDataHandler = DataManager.Instance.UpgradeData;
         _playerStatHandler = FindObjectOfType<PlayerStatHandler>();
         _coreStatHandler = FindObjectOfType<CoreStatHandler>();
+        
+        InitUpgrade();
+        BaseUpgrade = new Dictionary<string, int>(FixedUpgrade);
     }
 
-    private void InitStatus()
+    public void InitUpgrade()
     {
-        PlayerStatus = new Dictionary<PLAYER_STATUS_TYPE, int>();
-        int ps = Enum.GetValues(typeof(PLAYER_STATUS_TYPE)).Length;
-        for (int i = 0; i < ps; i++)
+        if (FixedUpgrade != null)
+            FixedUpgrade = null;
+        
+        List<UpgradeDatabase> upgradeList = DataManager.Instance.UpgradeData.GetAllItems();
+        List<UpgradeDatabase> upgrades = upgradeList.Where(u => u.level == 0).ToList();
+        
+        FixedUpgrade = new Dictionary<string, int>();
+        for (int i = 0; i < upgrades.Count; i++)
         {
-            PlayerStatus.Add((PLAYER_STATUS_TYPE)i, 0);
-        }
-
-        CoreStatus = new Dictionary<CORE_STATUS_TYPE, int>();
-        int cs = Enum.GetValues(typeof(CORE_STATUS_TYPE)).Length;
-        for (int i = 0; i < cs; i++)
-        {
-            CoreStatus.Add((CORE_STATUS_TYPE)i, 0);
+            FixedUpgrade.Add(upgrades[i].upgradeName, upgrades[i].id);
         }
     }
 
@@ -282,5 +292,63 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
     {
         // TODO: 실제 에센스 매니저와 연동
         Debug.Log($"에센스 {cost} 소모");
+    }
+
+    public void SetVirtualUpgrade()
+    {
+        VirtualUpgrade = new Dictionary<string, int>(FixedUpgrade);
+    }
+
+    public void DiscardVirtualUpgrade()
+    {
+        VirtualUpgrade = null;
+    }
+
+    public void ChangeVirtualUpgrade(string upgradeName, int id)
+    {
+        VirtualUpgrade[upgradeName] = id;
+    }
+
+    public void FixUpgrade()
+    {
+        FixedUpgrade = VirtualUpgrade;
+    }
+    
+    public void AddEssencePiece(int amount)
+    {
+        EssencePiece += amount;
+
+        if (EssencePiece >= 30)
+        {
+            Essence += EssencePiece / 30;
+            EssencePiece %= 30;
+        }
+        
+        UIManager.Instance.EssenceUI.Refresh();
+    }
+
+    public void SetVirtualEssence()
+    {
+        VirtualEssence = Essence;
+        VirtualUsedEssence = UsedEssence;
+    }
+
+    public void UseVirtualEssence(int amount)
+    {
+        VirtualEssence -= amount;
+        VirtualUsedEssence += amount;
+    }
+
+    public void FixEssence()
+    {
+        Essence = VirtualEssence;
+        UsedEssence = VirtualUsedEssence;
+    }
+
+    public void FixResetCounter()
+    {
+        Essence = VirtualEssence + UsedEssence - ResetCost;
+        ResetCounter++;
+        UsedEssence = 0;
     }
 }

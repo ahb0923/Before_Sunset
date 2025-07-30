@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OptionUI : MonoBehaviour
@@ -71,12 +72,14 @@ public class OptionUI : MonoBehaviour
     private void Open()
     {
         _optionRect.OpenAtCenter();
+        TimeManager.Instance.PauseGame(true);
     }
 
     private void Close()
     {
         UIManager.Instance.SaveLoadUI.saveLoadRect.CloseAndRestore();
         _optionRect.CloseAndRestore();
+        TimeManager.Instance.PauseGame(false);
     }
 
     private void OnClickSaveLoadButton()
@@ -98,6 +101,7 @@ public class OptionUI : MonoBehaviour
 
     private void MainMenu()
     {
+        TimeManager.Instance.PauseGame(false);
         LoadingSceneController.LoadScene("StartScene");
     }
     

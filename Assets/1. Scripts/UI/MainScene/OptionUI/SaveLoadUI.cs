@@ -11,8 +11,8 @@ public class SaveLoadUI : MonoBehaviour
     private void Awake()
     {
         Button exitSaveLoadButton = GetComponentInChildren<Button>();
-        exitSaveLoadButton.onClick.AddListener(Close);
         saveLoadRect = GetComponent<RectTransform>();
+        exitSaveLoadButton.onClick.AddListener(Close);
     }
 
     private void Close()

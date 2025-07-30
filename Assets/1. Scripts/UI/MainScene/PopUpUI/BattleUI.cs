@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using DG.Tweening;
@@ -7,16 +6,21 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour
 {
+    [Header("복귀UI")]
     [SerializeField] private GameObject _returnGameObject;
     [SerializeField] private TextMeshProUGUI _returnText;
     [SerializeField] private Image _returnProgressBar;
+    
+    [Header("전투시작경고UI")]
     [SerializeField] private GameObject _warningGameObject;
+    [SerializeField] private Image _warningImage;
     [SerializeField] private TextMeshProUGUI _warningText;
     
     private RectTransform _returnRect;
     private RectTransform _warningRect;
     private Coroutine _dotRoutine;
     private Coroutine _returnRoutine;
+    private Tween _imageTween;
     private Tween _textTween;
     private bool isRoutineDone;
     
@@ -28,6 +32,7 @@ public class BattleUI : MonoBehaviour
     private const string RETURN_TEXT = "ReturnText";
     private const string RETURN_PROGRESS_BAR = "ReturnProgressBar";
     private const string WARNING = "Warning";
+    private const string WARNING_IMAGE = "WarningBG";
     private const string WARNING_TEXT = "WarningText";
 
     private void Reset()
@@ -36,6 +41,7 @@ public class BattleUI : MonoBehaviour
         _returnText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, RETURN_TEXT);
         _returnProgressBar = Helper_Component.FindChildComponent<Image>(this.transform, RETURN_PROGRESS_BAR);
         _warningGameObject = Helper_Component.FindChildGameObjectByName(this.gameObject, WARNING);
+        _warningImage = Helper_Component.FindChildComponent<Image>(this.transform, WARNING_IMAGE);
         _warningText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, WARNING_TEXT);
     }
 
@@ -148,18 +154,28 @@ public class BattleUI : MonoBehaviour
         }
         
         OpenWarning();
+        _imageTween = _warningImage.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(11, LoopType.Yoyo);
         _textTween = _warningText.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(11, LoopType.Yoyo).OnComplete(StopWarning);
     }
 
     public void StopWarning()
     {
-        if (_textTween != null)
+        if (_textTween != null || _imageTween != null)
         {
+            _imageTween.Kill();
+            _imageTween = null;
+            
             _textTween.Kill();
             _textTween = null;
+            
+            Color colorImage = _warningImage.color;
+            colorImage.a = 0.9f;
+            _warningImage.color = colorImage;
+            
             Color color = _warningText.color;
             color.a = 1f;
             _warningText.color = color;
+            
             CloseWarning();
         }
     }
