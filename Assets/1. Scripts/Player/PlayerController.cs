@@ -45,8 +45,8 @@ public class PlayerController : MonoBehaviour
 
         _isSwingButtonHeld = true;
 
-        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.Pickaxe.speed)
-            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.Pickaxe.speed);
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed)
+            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.MiningSpeed);
 
         // 첫 번째 스윙 실행
         if (_swingCoroutine == null)
@@ -184,7 +184,7 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
-        yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
+        yield return Helper_Coroutine.WaitSeconds(1f / _player.Stat.MiningSpeed);
 
         TryInteractTarget(target);
 

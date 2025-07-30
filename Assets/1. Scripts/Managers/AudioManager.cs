@@ -7,7 +7,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     private float _bgmVolume = 0.5f;
-    private float _sfxVolume = 1f;
+    private float _sfxVolume = 0.2f;
 
     [Header("BGM")]
     public AudioSource bgmSource;

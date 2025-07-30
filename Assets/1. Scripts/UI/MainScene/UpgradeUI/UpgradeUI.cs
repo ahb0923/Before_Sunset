@@ -211,6 +211,7 @@ public class UpgradeUI : MonoBehaviour
         {
             UpgradeManager.Instance.FixUpgrade();
             UpgradeManager.Instance.FixEssence();
+            UpgradeManager.Instance.ApplyAllUpgradesToAll();
             IsChange = false;
             UIManager.Instance.EssenceUI.Refresh();
             ToastManager.Instance.ShowToast("적용하기 완료!");

@@ -6,6 +6,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     [SerializeField] private int _size;
     public int Size => _size;
     [SerializeField] private int _maxHp = 500;
+    public int MaxHp => _maxHp;
     public int CurHp { private set; get; }
     [SerializeField] private Image _hpBar;
     public bool IsDead { get; private set; }

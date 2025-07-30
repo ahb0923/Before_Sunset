@@ -18,11 +18,14 @@ public class CoreStatHandler : MonoBehaviour
 
     public CoreUpgradeStats Stats { get; private set; } = new CoreUpgradeStats();
 
+    private Core _core;
+    private Transform _lighting;
+
     // 기본 스탯
     private int _baseMaxHp = 500;
     private float _baseAttackPower = 10f;
     private float _baseAttackRange = 5f;
-    private float _baseSightRange = 8f;
+    private float _baseSightRange = 5f;
 
     // 현재 적용된 보너스
     private float _currentHpBonus = 0f;
@@ -33,6 +36,9 @@ public class CoreStatHandler : MonoBehaviour
     private void Awake()
     {
         Stats = new CoreUpgradeStats();
+        _core = GetComponent<Core>();
+        _lighting = transform.Find("Lighting");
+
         // 게임 시작시 현재 업그레이드 레벨에 맞춰 스탯 적용
         Invoke(nameof(ApplyAllUpgrades), 0.1f); // UpgradeManager 초기화 후에 실행
     }
@@ -40,7 +46,7 @@ public class CoreStatHandler : MonoBehaviour
     /// <summary>
     /// 모든 업그레이드를 다시 적용 (게임 로드시 사용)
     /// </summary>
-    private void ApplyAllUpgrades()
+    public void ApplyAllUpgrades()
     {
         if (UpgradeManager.Instance == null) return;
 
@@ -80,20 +86,30 @@ public class CoreStatHandler : MonoBehaviour
         UpdateStats();
     }
 
-    public void ApplySightRangeUpgrade(float increaseAmount)
+    public void ApplySightRangeUpgrade(float bonus)
     {
-        _currentSightRangeBonus += increaseAmount;
+        _currentSightRangeBonus = bonus;
+        float finalRange = _baseSightRange + _currentSightRangeBonus;
+
+        if (_lighting != null)
+        {
+            _lighting.localScale = new Vector3(finalRange, finalRange, 1f);
+        }
+
+        Debug.Log($"[Core] 시야 범위 적용됨: {finalRange}");
     }
 
     private void UpdateStats()
     {
+        int oldMaxHp = Stats.MaxHp;
+
         Stats.MaxHp = Mathf.RoundToInt(_baseMaxHp + _currentHpBonus);
         Stats.AttackPower = _baseAttackPower + _currentAttackPowerBonus;
         Stats.AttackRange = _baseAttackRange + _currentAttackRangeBonus;
-    }
 
-    public float GetSightRange()
-    {
-        return _baseSightRange + _currentSightRangeBonus;
+        if (_core != null && oldMaxHp != Stats.MaxHp)
+        {
+            _core.UpdateMaxHp(Stats.MaxHp);
+        }
     }
 }

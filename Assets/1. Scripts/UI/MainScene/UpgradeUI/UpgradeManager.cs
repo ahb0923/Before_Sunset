@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -20,6 +21,8 @@ public enum CORE_STATUS_TYPE
 
 public class UpgradeManager : MonoSingleton<UpgradeManager>
 {
+    public Dictionary<PLAYER_STATUS_TYPE, int> PlayerStatus { get; private set; } = new();
+    public Dictionary<CORE_STATUS_TYPE, int> CoreStatus { get; private set; } = new();
     public Dictionary<string, int> BaseUpgrade { get; private set; }
     public Dictionary<string, int> FixedUpgrade { get; private set; }
     public Dictionary<string, int> VirtualUpgrade { get; private set; }
@@ -50,11 +53,30 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
         BaseUpgrade = new Dictionary<string, int>(FixedUpgrade);
     }
 
+    private void InitStatus()
+    {
+        PlayerStatus = new()
+    {
+        { PLAYER_STATUS_TYPE.MoveSpeed, 0 },
+        { PLAYER_STATUS_TYPE.MiningSpeed, 0 },
+        { PLAYER_STATUS_TYPE.DropRate, 0 },
+        { PLAYER_STATUS_TYPE.SightRange, 0 }
+    };
+
+        CoreStatus = new()
+    {
+        { CORE_STATUS_TYPE.HP, 0 },
+        { CORE_STATUS_TYPE.AttackRange, 0 },
+        { CORE_STATUS_TYPE.AttackDamage, 0 },
+        { CORE_STATUS_TYPE.SightRange, 0 }
+    };
+    }
+
     public void InitUpgrade()
     {
-        if (FixedUpgrade != null)
-            FixedUpgrade = null;
-        
+        if (FixedUpgrade != null && FixedUpgrade.Count > 0)
+            return;
+
         List<UpgradeDatabase> upgradeList = DataManager.Instance.UpgradeData.GetAllItems();
         List<UpgradeDatabase> upgrades = upgradeList.Where(u => u.level == 0).ToList();
         
@@ -281,6 +303,51 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
         return currentUpgrade?.increaseRate ?? 0f;
     }
 
+    public void ApplyAllUpgradesToAll()
+    {
+        _playerStatHandler?.ApplyAllUpgrades();
+        _coreStatHandler?.ApplyAllUpgrades();
+    }
+
+    private void UpdateStatusFromFixedUpgrade()
+    {
+        PlayerStatus.Clear();
+        CoreStatus.Clear();
+
+        foreach (var pair in FixedUpgrade)
+        {
+            var data = DataManager.Instance.UpgradeData.GetById(pair.Value);
+            if (data == null) continue;
+
+            if (data.category == UPGRADE_CATEGORY.Player)
+            {
+                var type = data.statType switch
+                {
+                    UPGRADE_TYPE.MoveSpeed => PLAYER_STATUS_TYPE.MoveSpeed,
+                    UPGRADE_TYPE.MiningSpeed => PLAYER_STATUS_TYPE.MiningSpeed,
+                    UPGRADE_TYPE.DropRate => PLAYER_STATUS_TYPE.DropRate,
+                    UPGRADE_TYPE.SightRange => PLAYER_STATUS_TYPE.SightRange,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                PlayerStatus[type] = data.level;
+            }
+            else if (data.category == UPGRADE_CATEGORY.Core)
+            {
+                var type = data.statType switch
+                {
+                    UPGRADE_TYPE.HP => CORE_STATUS_TYPE.HP,
+                    UPGRADE_TYPE.AttackRange => CORE_STATUS_TYPE.AttackRange,
+                    UPGRADE_TYPE.AttackPower => CORE_STATUS_TYPE.AttackDamage,
+                    UPGRADE_TYPE.SightRange => CORE_STATUS_TYPE.SightRange,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                CoreStatus[type] = data.level;
+            }
+        }
+    }
+
     // 에센스 관련 메서드들 (실제 구현에서는 별도 매니저로 분리)
     private bool HasEnoughEssence(int cost)
     {
@@ -311,7 +378,9 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
 
     public void FixUpgrade()
     {
-        FixedUpgrade = VirtualUpgrade;
+        FixedUpgrade = new Dictionary<string, int>(VirtualUpgrade);
+
+        UpdateStatusFromFixedUpgrade();
     }
     
     public void AddEssencePiece(int amount)

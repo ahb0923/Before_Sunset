@@ -3,16 +3,18 @@ using UnityEngine;
 public class PlayerStatHandler : MonoBehaviour
 {
     private BasePlayer _player;
+    private Transform _lighting;
 
     [SerializeField] private int _initialPickaxeId = 700;
     public EquipmentDatabase Pickaxe => (EquipmentDatabase)InventoryManager.Instance.Inventory.Pickaxe.Data;
 
-    [SerializeField] private float _baseMoveSpeed = 2.0f;
-    [SerializeField] private float _baseMiningSpeed = 1.0f;
-    [SerializeField] private float _baseDropRate = 0.0f;
-    [SerializeField] private float _baseSightRange = 5.0f;
+    // 기본 스텟
+    private float _baseMoveSpeed = 2.0f;
+    private float _baseMiningSpeed = 1.0f;
+    private float _baseDropRate = 1.0f;
+    private float _baseSightRange = 5.0f;
 
-    // 현재 적용된 스탯들 (업그레이드 반영)
+    // 업그레이드 반영
     private float _currentMoveSpeedMultiplier = 1.0f;
     private float _currentMiningSpeedMultiplier = 1.0f;
     private float _currentDropRateBonus = 0.0f;
@@ -23,6 +25,11 @@ public class PlayerStatHandler : MonoBehaviour
     public float MiningSpeed => _baseMiningSpeed * _currentMiningSpeedMultiplier;
     public float DropRate => _baseDropRate + _currentDropRateBonus;
     public float SightRange => _baseSightRange * _currentSightRangeMultiplier;
+
+    private void Awake()
+    {
+        _lighting = transform.Find("Lighting");
+    }
 
     public void Init(BasePlayer player)
     {
@@ -39,7 +46,7 @@ public class PlayerStatHandler : MonoBehaviour
     /// <summary>
     /// 모든 업그레이드를 다시 적용 (게임 로드시 사용)
     /// </summary>
-    private void ApplyAllUpgrades()
+    public void ApplyAllUpgrades()
     {
         ResetToBaseStats();
 
@@ -62,24 +69,27 @@ public class PlayerStatHandler : MonoBehaviour
     public void ApplyMoveSpeedUpgrade(float increaseRate)
     {
         _currentMoveSpeedMultiplier = 1.0f + increaseRate;
-        Debug.Log($"이동속도 업그레이드 적용: {MoveSpeed}");
     }
 
     public void ApplyMiningSpeedUpgrade(float increaseRate)
     {
         _currentMiningSpeedMultiplier = 1.0f + increaseRate;
-        Debug.Log($"채굴속도 업그레이드 적용: {MiningSpeed}");
     }
 
     public void ApplyDropRateUpgrade(float increaseRate)
     {
         _currentDropRateBonus += increaseRate;
-        Debug.Log($"드랍률 업그레이드 적용: {DropRate}%");
     }
 
     public void ApplySightRangeUpgrade(float increaseRate)
     {
         _currentSightRangeMultiplier = 1.0f + increaseRate;
-        Debug.Log($"시야범위 업그레이드 적용: {SightRange}");
+
+        float finalRange = SightRange;
+
+        if (_lighting != null)
+        {
+            _lighting.localScale = new Vector3(finalRange, finalRange, 1f);
+        }
     }
 }

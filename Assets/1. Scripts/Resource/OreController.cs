@@ -29,16 +29,38 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     public void OnInstantiate()
     {
         _data = DataManager.Instance.OreData.GetById(_id);
+        FindPlayer();
+        Init(_player);
     }
 
     public void OnGetFromPool()
     {
         _currentHP = _data.hp;
+        FindPlayer();
+        Init(_player);
     }
 
     public void OnReturnToPool()
     {
         //
+    }
+    private void FindPlayer()
+    {
+        if (_player == null)
+        {
+            // 방법 1: BasePlayer로 찾기
+            _player = FindObjectOfType<BasePlayer>();
+
+            // 방법 2: 태그로 찾기 (BasePlayer가 안되면)
+            if (_player == null)
+            {
+                GameObject playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null)
+                {
+                    _player = playerObj.GetComponent<BasePlayer>();
+                }
+            }
+        }
     }
 
     public ResourceState SaveState()
@@ -81,7 +103,34 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         int dropId = _data.dropMineralId;
 
-        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, transform.position);
+        // 기본 드랍
+        SpawnDrop(dropId, Vector3.zero);
+
+        if (_player == null)
+        {
+            Debug.LogError("[OreController] 플레이어를 찾을 수 없습니다.");
+        }
+
+        // 확률 계산
+        float dropRate = _player.Stat.DropRate;
+        float bonusRate = dropRate - 1.0f;
+
+        if (bonusRate > 0f)
+        {
+            float rand = Random.Range(0f, 1f);
+            if (rand < bonusRate)
+            {
+                Vector3 offset = new Vector3(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 0f);
+                SpawnDrop(dropId, offset);
+            }
+        }
+    }
+
+    private void SpawnDrop(int dropId, Vector3 positionOffset)
+    {
+        Vector3 spawnPos = transform.position + positionOffset;
+
+        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos);
 
         if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
         {
