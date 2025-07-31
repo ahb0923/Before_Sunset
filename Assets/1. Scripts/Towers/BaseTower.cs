@@ -19,7 +19,8 @@ public enum TOWER_TYPE
     MagnetTower,
     TopazTower,
     RubyTower,
-    AquamarineTower
+    AquamarineTower,
+    Electricline
 }
 public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 {
@@ -141,6 +142,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
         ai.ResetStateMachine();
         ai.SetState(TOWER_STATE.Construction, true);
         ui.ResetHpBar();
+       
         RenderUtil.SetSortingOrderByY(ui.icon);
     }
 
@@ -156,19 +158,34 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // 현재 타워 파괴 옵션이 켜진 상태인지
+        // 파괴 옵션 on일 경우
         if (BuildManager.Instance.isOnDestroy)
         {
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+            return;
         }
-        else
-        {
-            if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                if (BuildManager.Instance.IsPlacing) return;
 
-                //var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
-                UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+        // 우클릭 업그레이드 UI
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (BuildManager.Instance.IsPlacing) return;
+            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+        }
+
+        // 좌클릭 전깃줄 연결 시도
+        else if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            if (LineDragConnector.Instance.IsDragging) return;
+
+            if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
+            {
+                if (wireTower.IsConnected)
+                    ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
+                else
+                {
+                    if (!LineDragConnector.Instance.IsDragging)
+                        LineDragConnector.Instance.BeginDrag(wireTower);
+                }
             }
         }
     }

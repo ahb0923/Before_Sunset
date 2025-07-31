@@ -152,12 +152,12 @@ TextureImporter:
       name: tower_1_destroy_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 12
-        width: 28
-        height: 86
+        x: 0
+        y: 0
+        width: 64
+        height: 128
       alignment: 9
-      pivot: {x: 0.5, y: 0.13953489}
+      pivot: {x: 0.5, y: 0.165}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -173,12 +173,12 @@ TextureImporter:
       name: tower_1_destroy_1
       rect:
         serializedVersion: 2
-        x: 82
-        y: 12
-        width: 28
-        height: 77
+        x: 64
+        y: 0
+        width: 64
+        height: 128
       alignment: 9
-      pivot: {x: 0.5, y: 0.15584415}
+      pivot: {x: 0.5, y: 0.165}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -194,12 +194,12 @@ TextureImporter:
       name: tower_1_destroy_2
       rect:
         serializedVersion: 2
-        x: 146
-        y: 12
-        width: 30
-        height: 68
+        x: 128
+        y: 0
+        width: 64
+        height: 128
       alignment: 9
-      pivot: {x: 0.5, y: 0.1764706}
+      pivot: {x: 0.5, y: 0.165}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -212,43 +212,43 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tower_1_destroy_5
+      name: tower_1_destroy_3
       rect:
         serializedVersion: 2
-        x: 208
-        y: 12
-        width: 32
-        height: 60
+        x: 192
+        y: 0
+        width: 64
+        height: 128
       alignment: 9
-      pivot: {x: 0.5, y: 0.14814815}
+      pivot: {x: 0.5, y: 0.165}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6e54405673ec0b04c900df67a4106034
-      internalID: -1247691313
+      spriteID: 09f4a9f7e6104da4a939f41e196048d6
+      internalID: 1431579318
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tower_1_destroy_6
+      name: tower_1_destroy_4
       rect:
         serializedVersion: 2
-        x: 269
-        y: 12
-        width: 33
-        height: 62
+        x: 256
+        y: 0
+        width: 64
+        height: 128
       alignment: 9
-      pivot: {x: 0.5, y: 0.19354838}
+      pivot: {x: 0.5, y: 0.165}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 87abeb3db53a76e4c8a46c416ff65bcc
-      internalID: 1339615769
+      spriteID: 0cff5c90ab6d3d94691cf3a4bbb59c1d
+      internalID: -206023419
       vertices: []
       indices: 
       edges: []
@@ -269,11 +269,6 @@ TextureImporter:
       tower_1_destroy_2: -227825797
       tower_1_destroy_3: 1431579318
       tower_1_destroy_4: -206023419
-      tower_1_destroy_5: -1247691313
-      tower_1_destroy_6: 1339615769
-      tower_1_destroy_7: -934143850
-      tower_1_destroy_8: -671919414
-      tower_1_destroy_9: 708295356
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

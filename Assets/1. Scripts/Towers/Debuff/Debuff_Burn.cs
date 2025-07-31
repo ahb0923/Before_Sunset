@@ -26,7 +26,6 @@ public class Debuff_Burn : BaseDebuff
                 IgnoreDefense = false,
                 Multiplier = 1.0f
             });
-
             yield return Helper_Coroutine.WaitSeconds(1.0F);
         }
 

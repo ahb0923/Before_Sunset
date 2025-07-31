@@ -10,6 +10,8 @@ public interface IPoolable
     void OnReturnToPool();
 }
 
+
+
 [System.Serializable]
 public class ObjectPoolData
 {
@@ -21,8 +23,12 @@ public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
 
+    [SerializeField] private GameObject _electircline;
+    [SerializeField] private GameObject _aoeEffect;
+
     private bool _isSet;
 
+    // 임시방편 코드 추후 데이터 제작 논의
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
@@ -67,6 +73,20 @@ public class PoolManager : MonoSingleton<PoolManager>
     public void SettingPrefab()
     {
         _objectPoolDatas.Clear();
+
+        // 이부분 일단 하드코딩입니다.////////////////////
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _electircline,
+            count = 10
+        });
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _aoeEffect,
+            count = 10
+        });
+        // 여기까지 ///////////////////////////////////////
+
         foreach (var data in DataManager.Instance.MonsterData.GetAllItems())
         {
             var prefab = DataManager.Instance.MonsterData.GetPrefabById(data.id);
@@ -87,7 +107,7 @@ public class PoolManager : MonoSingleton<PoolManager>
                 _objectPoolDatas.Add(new ObjectPoolData
                 {
                     prefab = prefab,
-                    count = 5
+                    count = 1
                 });
             }
         }

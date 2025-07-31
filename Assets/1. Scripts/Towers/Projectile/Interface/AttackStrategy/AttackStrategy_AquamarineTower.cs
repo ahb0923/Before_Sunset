@@ -10,6 +10,12 @@ public class AttackStrategy_AquamarineTower : IAttackStrategy
         float pullSpeed = tower.statHandler.AttackPower;
         Vector3 centerPos = tower.transform.position;
 
+        if (tower.ai.CurState == TOWER_STATE.Destroy)
+            yield break;
+
+        tower.ui.animator.SetTrigger("IsAttack");
+        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(30f / 255f, 160f / 255f, 120f / 255f, 50f/ 255f));
+        
         Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
 
         List<GameObject> candidates = new();
@@ -32,7 +38,7 @@ public class AttackStrategy_AquamarineTower : IAttackStrategy
             debuff.Apply(monster);
         }
 
-        yield return new WaitForSeconds(tower.statHandler.AttackSpeed);
+        yield return null;
     }
 }
 

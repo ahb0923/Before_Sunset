@@ -18,7 +18,7 @@ public class BuildInfo : MonoBehaviour, IBuildable
     public void Init(int id, Vector2Int buildSize)
     {
         this.id = id;
-        this.buildSize = buildSize;
+        //this.buildSize = buildSize;
     }
 
     public void SettingSpriteOrder()

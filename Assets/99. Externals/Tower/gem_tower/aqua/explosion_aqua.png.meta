@@ -152,10 +152,10 @@ TextureImporter:
       name: explosion_aqua_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 23
-        width: 20
-        height: 19
+        x: 0
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,10 +173,10 @@ TextureImporter:
       name: explosion_aqua_1
       rect:
         serializedVersion: 2
-        x: 84
-        y: 23
-        width: 23
-        height: 21
+        x: 64
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,10 +194,10 @@ TextureImporter:
       name: explosion_aqua_2
       rect:
         serializedVersion: 2
-        x: 147
-        y: 22
-        width: 26
-        height: 25
+        x: 128
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -212,13 +212,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: explosion_aqua_5
+      name: explosion_aqua_3
       rect:
         serializedVersion: 2
-        x: 271
-        y: 18
-        width: 34
-        height: 30
+        x: 192
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -226,20 +226,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d1a13f0cb8ac71a4aa1474c0d21c499c
-      internalID: -620010291
+      spriteID: 90fcea5753178b843884d676407f5aa0
+      internalID: 2083502360
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: explosion_aqua_6
+      name: explosion_aqua_4
       rect:
         serializedVersion: 2
-        x: 209
-        y: 18
-        width: 31
-        height: 29
+        x: 256
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -247,8 +247,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1680960b87a73c2409aa0e37a7e61912
-      internalID: -44037641
+      spriteID: ac52a2a47719637458b5cd9dd2cdc2fc
+      internalID: -2026392978
       vertices: []
       indices: 
       edges: []
@@ -269,9 +269,6 @@ TextureImporter:
       explosion_aqua_2: -649447654
       explosion_aqua_3: 2083502360
       explosion_aqua_4: -2026392978
-      explosion_aqua_5: -620010291
-      explosion_aqua_6: -44037641
-      explosion_aqua_7: -1941537258
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

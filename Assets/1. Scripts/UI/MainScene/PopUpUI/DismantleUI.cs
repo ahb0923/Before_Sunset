@@ -89,7 +89,7 @@ public class DismantleUI : MonoBehaviour
             var slot = Instantiate(_slotPrefab, _slotArea.transform);
             var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
             _slots.Add(slotComponent);
-            slotComponent.InitIndex(_slots.Count - 1); // Index 재정렬
+            slotComponent.InitIndex(_slots.Count - 1);
         }
     }
     
@@ -120,6 +120,4 @@ public class DismantleUI : MonoBehaviour
     {
         _targetNameText.text = tower.statHandler.TowerName;
     }
-    
-    // TODO 타워 설치된 시간 표시 어디서 가져오지 (?)
 }

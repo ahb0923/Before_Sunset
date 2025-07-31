@@ -40,7 +40,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         DefenseManager.Instance.DragIcon.Show();
         DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
     }
-
+    
     public void CancelPlacing()
     {
         _isPlacing = false;
@@ -49,8 +49,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         DefenseManager.Instance.DragIcon.Hide();
         DefenseManager.Instance.BuildPreview.Clear();
     }
-
-
+    
     private void Update()
     {
         // 이미지를 드래그중인 상황이 아니라면 update 실행x => 성능 개선용
@@ -81,13 +80,14 @@ public class BuildManager : MonoSingleton<BuildManager>
             CancelPlacing();
         }
     }
+
     private void TryPlace(Vector3 worldPos)
     {
         if (TryBuildTower(_buildInfo, worldPos))
         {
             Debug.Log("설치 성공");
         }
-        else { Debug.Log("설치 실패"); }
+        else { ToastManager.Instance.ShowToast("해당 구역에는 설치할 수 없습니다."); }
 
         CancelPlacing();
     }
@@ -150,6 +150,7 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// <summary>
     /// 현재 viewport에 보이는(화면에 실제로 보이는) 위치의 worldPosition값<br/>
     /// 추후에 『카메라의 비추는 전체 범위 => 플레이어의 시야 범위』로 변경할 경우 코드 수정
+    /// 플레이어 중심으로부터 원형으로 7칸까지 설치 범위
     /// </summary>
     /// <returns></returns>
     private BoundsInt GetVisibleTileBounds(Tilemap tilemap)

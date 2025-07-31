@@ -59,7 +59,7 @@ public class TowerUI : MonoBehaviour
     {
         float hp = Mathf.Lerp(0, _tower.statHandler.MaxHp, progress);
         UpdateHpBar(hp, _tower.statHandler.MaxHp);
-        icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, Mathf.Lerp(0.5f, 1f, progress));
+        //icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, Mathf.Lerp(0.5f, 1f, progress));
     }
 
     /// <summary>
@@ -150,5 +150,9 @@ public class TowerUI : MonoBehaviour
 
         _hpBarCanvasGroup.alpha = 0f;
     }
-
+    public void ResetAnimation()
+    {
+        animator.Rebind();      // 트랜스폼 포함 초기화
+        animator.Update(0f);    // 즉시 적용
+    }
 }

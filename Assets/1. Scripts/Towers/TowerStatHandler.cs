@@ -93,6 +93,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     /// <param name="damaged">받은 데미지 정보</param>
     public void OnDamaged(Damaged damaged)
     {
+        if (_tower.ai.CurState == TOWER_STATE.Destroy) return;
+
         if (damaged.Attacker == null)
         {
             Debug.LogWarning("타격 대상 못찾음!");
@@ -111,6 +113,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     }
     public void OnFixed(float amount)
     {
+        if (_tower.ai.CurState == TOWER_STATE.Destroy) return;
         CurrHp = Mathf.Min(CurrHp + amount, MaxHp);
     }
 
