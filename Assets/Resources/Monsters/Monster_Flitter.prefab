@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1257880583, guid: ec9ba170efd183a42ba9636b1f5d32bb, type: 3}
+  m_Sprite: {fileID: -857193459, guid: 0ec77df4e93d3a9449f22bad7ca0bb14, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -95,7 +95,7 @@ Animator:
   m_GameObject: {fileID: 2615177644808902849}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a21c4b2f95b97124886180f0c9f1ba99, type: 2}
+  m_Controller: {fileID: 22100000, guid: 5546056c3143e5d4d9d2063a06c9213f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -204,7 +204,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.25068653}
+  m_Offset: {x: 0, y: -0.3588184}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -215,7 +215,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.3712325}
+  m_Size: {x: 0.4, y: 0.40939674}
   m_EdgeRadius: 0
 --- !u!114 &3537268559729682308
 MonoBehaviour:
@@ -234,7 +234,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 8512
-  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
+  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: a5186f7d00cfe4c4c8cd45d30ca7a6aa, type: 3}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,7 +399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 80
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_LocalPosition.x

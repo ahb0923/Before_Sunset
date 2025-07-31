@@ -89,6 +89,18 @@ public class OptionUI : MonoBehaviour, ICloseableUI
 
     private void OnClickSaveLoadButton()
     {
+        if (GameManager.Instance.IsTutorial)
+        {
+            ToastManager.Instance.ShowToast("튜토리얼 중에는 세이브를 할 수 없습니다!");
+            return;
+        }
+
+        if (DefenseManager.Instance.MonsterSpawner.IsMonsterAlive)
+        {
+            ToastManager.Instance.ShowToast("몬스터 디펜스 중에는 세이브를 할 수 없습니다!");
+            return;
+        }
+
         UIManager.Instance.SaveLoadUI.Open();
     }
 

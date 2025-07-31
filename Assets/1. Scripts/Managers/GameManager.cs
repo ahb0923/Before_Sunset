@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] public bool GOD_MODE = false;
+    public bool IsTutorial {  get; private set; }
     public float InitProgress { get; private set; }
 
     // private async void Start()
@@ -36,5 +37,13 @@ public class GameManager : MonoSingleton<GameManager>
         
         await Task.Delay(200);
         InitProgress = 1f;
+    }
+
+    /// <summary>
+    /// 튜토리얼인지 설정
+    /// </summary>
+    public void SetTutorial(bool isTutorial)
+    {
+        IsTutorial = isTutorial;
     }
 }

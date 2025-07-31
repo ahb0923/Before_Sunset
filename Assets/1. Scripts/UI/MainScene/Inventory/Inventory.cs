@@ -116,6 +116,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
     }
 
     /// <summary>

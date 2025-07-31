@@ -88,6 +88,12 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         if (!_distFromCoreDict.ContainsKey(dist)) _distFromCoreDict[dist] = new List<Transform>();
         _distFromCoreDict[dist].Add(obstacle);
 
+        // 퀘스트 매니저에 건물 설치 알림
+        if(obstacle.TryGetComponent<IPoolable>(out var poolable))
+        {
+            QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.PlaceBuilding, poolable.GetId());
+        }
+
         // 몬스터 경로 재탐색 이벤트 호출
         MonsterSpawner.OnObstacleChanged();
     }
