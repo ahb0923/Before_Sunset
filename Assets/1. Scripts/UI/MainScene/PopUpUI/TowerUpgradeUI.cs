@@ -57,29 +57,13 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
         // 타워업그레이드 메서드
         _selectedTower.statHandler.UpgradeTowerStat();
     }
-    /*
-    public void OpenUpgradeUI(TowerDatabase data)
-    
-    public void Open(TowerDatabase data)
-    {
-        InitSlots(data);
-        SetSlot(data);
-        SetUpgradeUI(data);
-    }*/
 
     public void OpenUpgradeUI(BaseTower tower)
     {
-        _rect.OpenAtCenter();
+        UIManager.Instance.OpenUI(this);
         InitSlots(tower);
         SetSlot(tower);
         SetUpgradeUI(tower);
-    }
-
-
-
-    public void CloseUpgradeUI()
-    {
-        UIManager.Instance.OpenUI(this);
     }
 
     public void Open()

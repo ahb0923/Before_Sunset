@@ -88,15 +88,6 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void Close()
     {
-        smelterInputSlot.ClearSlot();
-        smelterOutputSlot.ClearSlot();
-        DeactivateReceiveButton();
-        InventoryManager.Instance.Inventory.InventoryUI.Close();
-        InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Open();
-        
-        _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
-        
-        _currentSmelter = null;
         UIManager.Instance.CloseUI(this);
     }
 
@@ -107,7 +98,15 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void CloseUI()
     {
+        smelterInputSlot.ClearSlot();
+        smelterOutputSlot.ClearSlot();
+        DeactivateReceiveButton();
+        InventoryManager.Instance.Inventory.InventoryUI.Close();
+        InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Open();
         
+        _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
+        
+        _currentSmelter = null;
         _rect.CloseAndRestore();
     }
 

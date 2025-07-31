@@ -62,11 +62,10 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void OpenDismantleUI(BaseTower tower)
     {
-        _rect.OpenAtCenter();
+        UIManager.Instance.OpenUI(this);
         InitSlots(tower);
         SetSlot(tower);
         SetDismantleUI(tower);
-        // UIManager => 호출출
     }
 
     public void Open()
