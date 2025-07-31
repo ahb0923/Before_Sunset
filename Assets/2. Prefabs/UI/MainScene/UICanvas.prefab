@@ -424,7 +424,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7148670511215547073}
   m_Layer: 5
-  m_Name: RetryArea
+  m_Name: LoadArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2178,7 +2178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 1782}
   m_SizeDelta: {x: 800, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5750947531721603166
@@ -2202,15 +2202,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
+  m_Color: {r: 0.38679248, g: 0.28190014, b: 0.18062478, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 1105972151, guid: ff224063d1f76f64f9e2e82947616ced, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4918,7 +4918,7 @@ GameObject:
   - component: {fileID: 6275156607758339868}
   - component: {fileID: 1279842856867071165}
   m_Layer: 5
-  m_Name: RetryButton
+  m_Name: LoadButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5542,7 +5542,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3618415114474178563}
   m_Layer: 5
-  m_Name: FailRetryArea
+  m_Name: FailButtonArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6070,9 +6070,9 @@ RectTransform:
   - {fileID: 6254612726273709361}
   m_Father: {fileID: 1350270042997854497}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 265, y: -70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 530, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8132033444233416720
@@ -10777,15 +10777,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
+  m_Color: {r: 0.38679248, g: 0.28190014, b: 0.18062478, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 1105972151, guid: ff224063d1f76f64f9e2e82947616ced, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -11174,13 +11174,13 @@ RectTransform:
   m_Children:
   - {fileID: 14925671784567516}
   - {fileID: 6048415696665172253}
-  - {fileID: 4482578017959434970}
   - {fileID: 286814534526898211}
   - {fileID: 3344046997669720999}
   - {fileID: 3458683454109860661}
   - {fileID: 2988609130945291778}
   - {fileID: 5488331080908901240}
   - {fileID: 6618811464923205489}
+  - {fileID: 4482578017959434970}
   - {fileID: 1722661760106533465}
   - {fileID: 6777432720740804925}
   - {fileID: 1154190174377811532}
