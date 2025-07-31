@@ -7,7 +7,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tower_Cooper_Destroy
+  m_Name: Tower_Iron_Destroy
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -20,7 +20,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 03d436277a37591439fb58db45e8c17c, type: 2}
+  m_Motion: {fileID: 7400000, guid: 33a354b53c5700642b0c6abe00bd2ccf, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -139,7 +139,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tower_Cooper_Construction
+  m_Name: Tower_Iron_Construction
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -153,7 +153,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 380ba47202fd8594ead169ddb3c01250, type: 2}
+  m_Motion: {fileID: 7400000, guid: 319f8ee9e9056d140b104c9a3df070cf, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -188,7 +188,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tower_Cooper_Attack
+  m_Name: Tower_Iron_Attack
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -202,7 +202,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d6ea2748eba6cdc4b8ce30aa8600880b, type: 2}
+  m_Motion: {fileID: 7400000, guid: 62847dda8f5d81646a5f3dfdbb5f167c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -247,7 +247,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tower_Cooper_Idle
+  m_Name: Tower_Iron_Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -261,7 +261,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 56f37e6eb592ee74db28b5ade219e03d, type: 2}
+  m_Motion: {fileID: 7400000, guid: 694f631a833bd214abc7784f90184d33, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
