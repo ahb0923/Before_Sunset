@@ -49,7 +49,7 @@ public class UIDebugWindow : EditorWindow
         
         if (GUILayout.Button("업그레이드창 열기"))
         {
-            UIManager.Instance.UpgradeUI.OpenUpgrade();
+            UIManager.Instance.UpgradeUI.Open();
         }
         
         if (GUILayout.Button("정수 4개 추가"))

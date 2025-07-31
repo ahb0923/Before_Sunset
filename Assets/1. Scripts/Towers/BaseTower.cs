@@ -151,7 +151,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
             if (BuildManager.Instance.IsPlacing) return;
 
             var data = DataManager.Instance.TowerData.GetByName(statHandler.TowerName);
-            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(data);
+            UIManager.Instance.TowerUpgradeUI.Open(data);
         }
     }
 }

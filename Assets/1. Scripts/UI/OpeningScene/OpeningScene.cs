@@ -94,7 +94,15 @@ public class OpeningScene : MonoBehaviour
         _blinkTween.Kill();
         _blinkTween = null;
         _fadeInGo.SetActive(true);
-        _fadeInImage.DOFade(1f, 2f).OnComplete(() => SceneManager.LoadScene("MainScene"));
+        _fadeInImage.DOFade(1f, 2f).OnComplete(LoadScene);
+    }
+
+    private void LoadScene()
+    {
+        if (GlobalState.ToTutorial)
+            SceneManager.LoadScene("TutorialScene");
+        else
+            SceneManager.LoadScene("MainScene");
     }
     
     private IEnumerator C_Sequence(int i)

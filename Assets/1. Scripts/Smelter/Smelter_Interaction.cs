@@ -15,6 +15,6 @@ public class Smelter_Interaction : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        UIManager.Instance.SmelterUI.OpenSmelter(_smelter);
+        UIManager.Instance.SmelterUI.Open(_smelter);
     }
 }

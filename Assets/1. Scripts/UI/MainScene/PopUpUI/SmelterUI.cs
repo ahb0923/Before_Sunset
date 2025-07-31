@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SmelterUI : MonoBehaviour
+public class SmelterUI : MonoBehaviour, ICloseableUI
 {
     [SerializeField] private Smelter _currentSmelter;
     [SerializeField] private TextMeshProUGUI _smelterNameText;
@@ -43,7 +43,7 @@ public class SmelterUI : MonoBehaviour
         smelterInputSlot.InitInputSlot(true);
         smelterOutputSlot.InitInputSlot(false);
         _receiveButton.onClick.AddListener(ReceiveItem);
-        _closeButton.onClick.AddListener(CloseSmelter);
+        _closeButton.onClick.AddListener(Close);
         _smeltProgressBar.fillAmount = 0f;
         DeactivateReceiveButton();
     }
@@ -53,21 +53,16 @@ public class SmelterUI : MonoBehaviour
         _rect.CloseAndRestore();
     }
 
-    /// <summary>
-    /// 제련소 열때 사용하는 메서드
-    /// </summary>
-    /// <param name="smelter"></param>
-    public void OpenSmelter(Smelter smelter)
+    public void Open(Smelter smelter)
     {
         if (_currentSmelter != null)
         {
             _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
         }
-
-        AudioManager.Instance.PlaySFX("OpenSmelter");
-
-        _rect.OpenAtCenter();
+        
+        
         _currentSmelter = smelter;
+        UIManager.Instance.OpenUI(this);
         SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();
         InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Close();
@@ -83,12 +78,15 @@ public class SmelterUI : MonoBehaviour
         {
             ActivateReceiveButton();
         }
+        
     }
 
-    /// <summary>
-    /// 제련소 닫을때 사용하는 메서드
-    /// </summary>
-    private void CloseSmelter()
+    public void Open()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Close()
     {
         smelterInputSlot.ClearSlot();
         smelterOutputSlot.ClearSlot();
@@ -99,6 +97,17 @@ public class SmelterUI : MonoBehaviour
         _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
         
         _currentSmelter = null;
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        _rect.OpenAtCenter();
+    }
+
+    public void CloseUI()
+    {
+        
         _rect.CloseAndRestore();
     }
 

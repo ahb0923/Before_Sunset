@@ -28,8 +28,6 @@ public class SaveManager : MonoSingleton<SaveManager>
 
     private void Start()
     {
-        Debug.Log(GlobalState.Index);
-        
         if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3)
         {
             LoadGameFromSlot(GlobalState.Index);

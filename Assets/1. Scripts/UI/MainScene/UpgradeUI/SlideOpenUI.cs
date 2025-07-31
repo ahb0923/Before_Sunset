@@ -58,7 +58,7 @@ public class SlideOpenUI : MonoBehaviour
                 value => _layoutElement.preferredHeight = value,
                 targetHeight,
                 _animationDuration
-            ).SetEase(Ease.OutCubic);
+            ).SetEase(Ease.OutCubic).SetUpdate(true);
         }
         else
         {
@@ -67,7 +67,7 @@ public class SlideOpenUI : MonoBehaviour
                     value => _layoutElement.preferredHeight = value,
                     _layoutElement.minHeight,
                     _animationDuration
-                ).SetEase(Ease.InCubic)
+                ).SetEase(Ease.InCubic).SetUpdate(true)
                 .OnComplete(() =>
                 {
                     _upgradeContainer.SetActive(false);
@@ -77,7 +77,7 @@ public class SlideOpenUI : MonoBehaviour
         float targetRotation = _isOpen ? 180f : 0f;
         
         _buttonTween = _toggleButtonRectTransform.DORotate(new Vector3(0, 0, targetRotation), _rotationDuration)
-            .SetEase(Ease.OutCubic);
+            .SetEase(Ease.OutCubic).SetUpdate(true);
     }
 
     private float GetTargetHeight()
