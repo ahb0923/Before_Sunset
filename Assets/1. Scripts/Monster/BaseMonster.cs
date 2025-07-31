@@ -86,8 +86,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
         ForceRemoveAllDebuffs();
         NotifyDeath();
         Ai.ChangeState(MONSTER_STATE.Invalid);
-        Detector.DetectedObstacles.Clear();
-        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(this);
     }
 
     /// <summary>
@@ -111,6 +109,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
         }
         _registeredSensors.Clear();
     }
+
     /// <summary>
     /// 타워 공격목록 해시셋에 자신 등록
     /// </summary>
@@ -119,6 +118,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     {
         _registeredSensors.Add(sensor);
     }
+
     /// <summary>
     /// 타워 공격목록 해시셋에 자신 제거 
     /// </summary>

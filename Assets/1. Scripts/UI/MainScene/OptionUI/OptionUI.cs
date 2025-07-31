@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class OptionUI : MonoBehaviour
+public class OptionUI : MonoBehaviour, ICloseableUI
 {
-    [SerializeField] private GameObject _saveLoadGameObject;
     [SerializeField] private Slider _wholeSoundSlider;
     [SerializeField] private Slider _bGSoundSlider;
     [SerializeField] private Slider _effectSoundSlider;
@@ -15,7 +14,6 @@ public class OptionUI : MonoBehaviour
     private string _quitText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 종료하시겠습니까?";
     private string _mainMenuText = "마지막 저장은 자동 저장된 내용입니다.\n저장하지 않고 메인메뉴로 나가시겠습니까?";
     
-    private const string SAVE_LOAD_GAMEOBJECT = "SaveLoadBG";
     private const string WHOLE_SOUND_SLIDER = "WholeSoundSlider";
     private const string BG_SOUND_SLIDER = "BGSoundSlider";
     private const string EFFECT_SOUND_SLIDER = "EffectSoundSlider";
@@ -29,7 +27,6 @@ public class OptionUI : MonoBehaviour
 
     private void Reset()
     {
-        _saveLoadGameObject = Helper_Component.FindChildGameObjectByName(this.gameObject, SAVE_LOAD_GAMEOBJECT);
         _wholeSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, WHOLE_SOUND_SLIDER);
         _bGSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, BG_SOUND_SLIDER);
         _effectSoundSlider = Helper_Component.FindChildComponent<Slider>(this.transform, EFFECT_SOUND_SLIDER);
@@ -56,32 +53,43 @@ public class OptionUI : MonoBehaviour
     
     private void Start()
     {
-        // _wholeSoundSlider.value = AudioManager.Instance().Volume;
-        // _bGSoundSlider.value = AudioManager.Instance().BgmVolume;
-        // _effectSoundSlider.value = AudioManager.Instance().SfxVolume;
+        _wholeSoundSlider.value = AudioManager.Instance.GetWholeVolume();
+        _bGSoundSlider.value = AudioManager.Instance.GetBGMVolume();
+        _effectSoundSlider.value = AudioManager.Instance.GetSFXVolume();
     }
 
     private void Update()
     {
-        // AudioManager.Instance().SetVolume(_wholeSoundSlider.value);
-        // AudioManager.Instance().SetBGMVolume(_bGSoundSlider.value);
-        // AudioManager.Instance().SetSFXVolume(_effectSoundSlider.value);
+        AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
+        AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
+        AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
     }
 
-    private void Open()
+    public void Open()
+    {
+        UIManager.Instance.OpenUI(this);
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
     {
         _optionRect.OpenAtCenter();
+        TimeManager.Instance.PauseGame(true);
     }
 
-    private void Close()
+    public void CloseUI()
     {
-        UIManager.Instance.SaveLoadUI.saveLoadRect.CloseAndRestore();
         _optionRect.CloseAndRestore();
+        TimeManager.Instance.PauseGame(false);
     }
 
     private void OnClickSaveLoadButton()
     {
-        UIManager.Instance.SaveLoadUI.saveLoadRect.OpenAtCenter();
+        UIManager.Instance.SaveLoadUI.Open();
     }
 
     private void OnClickMainMenuButton()
@@ -98,7 +106,8 @@ public class OptionUI : MonoBehaviour
 
     private void MainMenu()
     {
-        LoadingSceneController.LoadScene("StartScene");
+        TimeManager.Instance.PauseGame(false);
+        SceneManager.LoadScene("StartScene");
     }
     
     private void Quit()

@@ -59,15 +59,15 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourc
         }
     }
 
-    public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
     {
         Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
-        Vector2 closestPointToPlayer = _collider.ClosestPoint(playerPos2D);
-        float centerToEdge = Vector2.Distance(playerPos2D, closestPointToPlayer);
+        Vector2 closestPoint = _collider.ClosestPoint(playerPos2D);
+        float centerToEdge = Vector2.Distance(playerPos2D, closestPoint);
 
-        float playerRadius = playerCollider.radius * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
+        float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        return edgeToEdgeDistance <= range;
+        return edgeToEdgeDistance <= 1.5f;
     }
 }

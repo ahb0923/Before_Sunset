@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DismantleUI : MonoBehaviour
+public class DismantleUI : MonoBehaviour, ICloseableUI
 {
     [SerializeField] private TextMeshProUGUI _targetNameText;
     [SerializeField] private TextMeshProUGUI _builtTimeText;
@@ -66,9 +66,25 @@ public class DismantleUI : MonoBehaviour
         InitSlots(tower);
         SetSlot(tower);
         SetDismantleUI(tower);
+        // UIManager => 호출출
     }
 
-    private void Close()
+    public void Open()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        _rect.OpenAtCenter();
+    }
+
+    public void CloseUI()
     {
         _rect.CloseAndRestore();
     }

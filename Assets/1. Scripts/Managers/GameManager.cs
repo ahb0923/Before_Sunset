@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] public bool GOD_MODE = false;
+    public float InitProgress { get; private set; }
 
     // private async void Start()
     // {
@@ -24,7 +25,16 @@ public class GameManager : MonoSingleton<GameManager>
 
     public async Task InitAsync()
     {
+        InitProgress = 0f;
+        
+        await Task.Delay(200);
+        InitProgress = 0.2f;
+        
         await DataManager.Instance.InitCheck();
+        InitProgress = 0.8f;
         PoolManager.Instance.InitPool();
+        
+        await Task.Delay(200);
+        InitProgress = 1f;
     }
 }

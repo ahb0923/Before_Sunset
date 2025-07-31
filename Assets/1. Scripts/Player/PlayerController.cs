@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private BasePlayer _player;
+    private PlayerInteractor _interactor;
     private PlayerInputActions _actions;
     private EquipmentDatabase _equippedPickaxe;
 
@@ -12,9 +13,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 _clickDir;
 
     private Coroutine _swingCoroutine;
-    public bool IsSwing => _swingCoroutine != null;
+    private Coroutine _swingLoopCoroutine;
+    private bool _isSwingButtonHeld = false;
 
-    private bool IsRecalling => PlayerInputHandler._isRecallInProgress;
+    private bool _isSwing => _swingCoroutine != null;
+
+    private bool _isRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
@@ -37,12 +41,36 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_player.IsInBase || IsSwing || IsRecalling) return;
+        if (_isRecalling) return;
 
-        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.Pickaxe.speed)
-            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.Pickaxe.speed);
+        _isSwingButtonHeld = true;
 
-        _swingCoroutine = StartCoroutine(C_Swing());
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed)
+            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.MiningSpeed);
+
+        // 첫 번째 스윙 실행
+        if (_swingCoroutine == null)
+        {
+            _swingCoroutine = StartCoroutine(C_Swing());
+        }
+
+        // 연속 스윙 코루틴 시작
+        if (_swingLoopCoroutine == null)
+        {
+            _swingLoopCoroutine = StartCoroutine(C_SwingLoop());
+        }
+    }
+
+    private void OnSwingCanceled(InputAction.CallbackContext context)
+    {
+        _isSwingButtonHeld = false;
+
+        // 연속 스윙 코루틴 중지
+        if (_swingLoopCoroutine != null)
+        {
+            StopCoroutine(_swingLoopCoroutine);
+            _swingLoopCoroutine = null;
+        }
     }
     #endregion
 
@@ -54,12 +82,13 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.performed -= OnMovePerformed;
         _actions.Player.Move.canceled -= OnMoveCanceled;
         _actions.Player.Swing.started -= OnSwingStarted;
+        _actions.Player.Swing.canceled -= OnSwingCanceled;
     }
     #endregion
 
     private void FixedUpdate()
     {
-        if(IsSwing || IsRecalling) return;
+        if (_isSwing || _isRecalling) return;
 
         Move();
     }
@@ -70,6 +99,7 @@ public class PlayerController : MonoBehaviour
     public void Init(BasePlayer player)
     {
         _player = player;
+        _interactor = GetComponent<PlayerInteractor>();
         _equippedPickaxe = player.Stat.Pickaxe;
 
         _actions = player.InputActions;
@@ -77,6 +107,7 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.performed += OnMovePerformed;
         _actions.Player.Move.canceled += OnMoveCanceled;
         _actions.Player.Swing.started += OnSwingStarted;
+        _actions.Player.Swing.canceled += OnSwingCanceled;
         _actions.Player.Enable();
     }
 
@@ -86,7 +117,32 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         SetAnimationDirection(_moveDir);
-        _player.Rigid.MovePosition(_player.Rigid .position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
+        _player.Rigid.MovePosition(_player.Rigid.position + _moveDir * Time.fixedDeltaTime * _player.Stat.MoveSpeed);
+    }
+
+    /// <summary>
+    /// 연속 스윙 처리
+    /// </summary>
+    private IEnumerator C_SwingLoop()
+    {
+        // 첫 번째 스윙이 끝날 때까지 대기
+        yield return new WaitUntil(() => _swingCoroutine == null);
+
+        while (_isSwingButtonHeld)
+        {
+            if (_isRecalling)
+            {
+                break;
+            }
+
+            // 다음 스윙 실행
+            _swingCoroutine = StartCoroutine(C_Swing());
+
+            // 현재 스윙이 끝날 때까지 대기
+            yield return new WaitUntil(() => _swingCoroutine == null);
+        }
+
+        _swingLoopCoroutine = null;
     }
 
     /// <summary>
@@ -105,10 +161,14 @@ public class PlayerController : MonoBehaviour
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
 
-        Collider2D col = Physics2D.OverlapPoint(clickPos);
-        IInteractable target = null;
-        if (col != null)
-            col.TryGetComponent<IInteractable>(out target);
+        IInteractable target = _interactor.GetCurrentTarget();
+
+        if (target != null && !(target is OreController) && !(target is JewelController))
+        {
+            TryInteractTarget(target);
+            _swingCoroutine = null;
+            yield break;
+        }
 
         // 플레이어 기준으로 클릭의 방향 벡터 구하기
         _clickDir = (clickPos - _player.Animator.transform.position).normalized;
@@ -120,10 +180,13 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetFloat(BasePlayer.Y, _clickDir.y);
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
-        // 애니메이션 끝나는 걸 기다렸다가 채광 시도
-        yield return Helper_Coroutine.WaitSeconds(1f / _equippedPickaxe.speed);
+        // 채광 효과음
+        AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
 
-        TryMineTarget(target);
+        // 애니메이션 끝나는 걸 기다렸다가 채광 시도
+        yield return Helper_Coroutine.WaitSeconds(1f / _player.Stat.MiningSpeed);
+
+        TryInteractTarget(target);
 
         _swingCoroutine = null;
     }
@@ -131,22 +194,51 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 채광 시도
     /// </summary>
-    private void TryMineTarget(IInteractable target)
+    private void TryInteractTarget(IInteractable target)
     {
         if (target == null) return;
 
-        if (_equippedPickaxe == null) return;
+        float range = (target is OreController || target is JewelController) ? 1.5f : 5.0f;
+
+        if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
+            return;
 
         if (target is OreController ore)
         {
-            ore.Init(_player);
-            ore.Interact();
+            int wallLayerMask = LayerMask.GetMask("Wall");
+            Vector2 playerPos = _player.transform.position;
+            Vector2 orePos = ore.transform.position;
+
+            if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
+            {
+                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                return;
+            }
+
+            if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
+            {
+                Debug.Log("곡괭이 힘이 부족합니다.");
+                return;
+            }
+
+            ore.Mine(_player.Stat.Pickaxe.damage);
         }
         else if (target is JewelController jewel)
         {
-            jewel.Interact();
+            int wallLayerMask = LayerMask.GetMask("Wall");
+            Vector2 playerPos = _player.transform.position;
+            Vector2 jewelPos = jewel.transform.position;
+
+            if (Physics2D.Linecast(playerPos, jewelPos, wallLayerMask))
+            {
+                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                return;
+            }
         }
+
+        target.Interact();
     }
+
 
     /// <summary>
     /// 애니메이션 방향 설정

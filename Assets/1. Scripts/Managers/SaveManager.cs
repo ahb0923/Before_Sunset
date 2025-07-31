@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public interface ISaveable
 {
@@ -12,12 +14,25 @@ public interface ISaveable
 public class SaveManager : MonoSingleton<SaveManager>
 {
     private const string SAVE_KEY_OFFSET = "SaveSlot_";
-    
+
+    private BasePlayer _player;
+
     private HashSet<ISaveable> saveables = new HashSet<ISaveable>();
 
     protected override void Awake()
     {
         base.Awake();
+
+        _player = FindObjectOfType<BasePlayer>();
+    }
+
+    private void Start()
+    {
+        if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3)
+        {
+            LoadGameFromSlot(GlobalState.Index);
+            GlobalState.Index = -1;
+        }
     }
 
     /// <summary>
@@ -103,8 +118,45 @@ public class SaveManager : MonoSingleton<SaveManager>
         {
             saveable.LoadData(data);
         }
+
+        // 플레이어 위치 로드
+        MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
+        _player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
+        _player.transform.position = data.playerPosition;
+
         Debug.Log($"{slotIndex}번 슬롯에서 게임 불러오기 완료");
     }
+    
+    /// <summary>
+    /// 저장 슬롯에서 게임 로드
+    /// </summary>
+    public void LoadGameFromSlotInStartScene(int slotIndex)
+    {
+        GlobalState.Index = slotIndex;
+        LoadingSceneController.LoadScene("MainScene");
+    }
+
+
+    // private void OnSceneLoad()
+    // {
+    //     UpdateSavebles();
+    //
+    //     // 저장 슬롯에서 게임 데이터 가져오기
+    //     GameData data = GetGameDataFromSlot(index);
+    //
+    //     // 게임 내 데이터 로드
+    //     foreach (ISaveable saveable in saveables)
+    //     {
+    //         saveable.LoadData(data);
+    //     }
+    //
+    //     // 플레이어 위치 로드
+    //     MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
+    //     _player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
+    //     _player.transform.position = data.playerPosition;
+    //
+    //     Debug.Log($"{index}번 슬롯에서 게임 불러오기 완료");
+    // }
 
     /// <summary>
     /// 저장 슬롯에서 게임 데이터 로드

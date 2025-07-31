@@ -66,12 +66,20 @@ public class PlayerItemCollect : MonoBehaviour
 
     private void MoveAndCollect(Transform itemTransform, int itemId, GameObject itemObject)
     {
-        itemTransform.position = Vector3.MoveTowards(itemTransform.position, transform.position, moveSpeed * Time.deltaTime);
+        Vector3 targetPosition = transform.position + new Vector3(0, 0.6f, 0);
 
-        if (Vector3.Distance(itemTransform.position, transform.position) <= 0.1f)
+        itemTransform.position = Vector3.MoveTowards(itemTransform.position, targetPosition, moveSpeed * Time.deltaTime);
+
+        if (Vector3.Distance(itemTransform.position, targetPosition) <= 0.1f)
         {
+            if (itemObject.TryGetComponent(out JewelController jewel))
+            {
+                AudioManager.Instance.PlaySFX("JewelPickUp");
+            }
+
             InventoryManager.Instance.Inventory.AddItem(itemId, 1);
             PoolManager.Instance.ReturnToPool(itemId, itemObject);
         }
     }
+
 }

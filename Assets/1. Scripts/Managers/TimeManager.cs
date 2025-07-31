@@ -21,19 +21,16 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private bool _isSpawnOver;
     public bool IsStageClear => _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
-    public bool IsGamePause { get; private set; }
-
     private void Start()
     {
         // 일단 start에서 초기화 → 나중에 게임 매니저에서 관리
-        InitGameTime();
+        // 이 if문은 스타트씬에서 저장된 데이터를 로드했을때 호출이 되지않도록 만들어둔것입니다.
+        if (GlobalState.Index == 0)
+            InitGameTime();
     }
 
     private void Update()
     {
-        // 게임 매니저에서 게임이 시작되면 타이머 돌아가도록 해야 함
-        if (IsGamePause) return;
-
         _dailyTimer += Time.deltaTime;
 
         if(_dailyTimer >= _realSecDayLength)
@@ -51,14 +48,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// <summary>
     /// 게임 시간 초기화
     /// </summary>
-    public void InitGameTime()
+    public void InitGameTime(float dailyTime = 0f, int day = 1, int stage = 1)
     {
-        _dailyTimer = 0f;
-        Day = 1;
-        Stage = 1;
+        _dailyTimer = dailyTime;
+        Day = day;
+        Stage = stage;
 
-        IsGamePause = false;
         UIManager.Instance.GameTimeUI.SetDayPieces();
+        UIManager.Instance.GameTimeUI.SetStageText();
     }
 
     /// <summary>
@@ -77,7 +74,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             else
             {
                 // 패배 시에 일시 정지 & 엔티티 움직임 정지
-                TestGameOver();
+                PauseGame(true);
             }
         }
         else
@@ -95,7 +92,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         if(Stage == _maxStage)
         {
-            ControlPause(true);
+            PauseGame(true);
             // 승리
         }
         else
@@ -118,24 +115,12 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     }
 
     /// <summary>
-    /// 게임 진행 중에는 일시정지로, 일시정지 중에는 게임 진행 상태로 변경
+    /// true면 일시 정지, false면 일시 정지 해제
     /// </summary>
-    public void ControlPause()
+    public void PauseGame(bool doPause)
     {
-        ControlPause(!IsGamePause);
-    }
-    public void ControlPause(bool doPause)
-    {
-        IsGamePause = doPause;
-        Debug.Log($"게임 일시 정지 : {IsGamePause}");
-    }
-
-    /// <summary>
-    /// 게임 오버 시 일단 몬스터 정지<br/>
-    /// ※ 이거는 나중에 게임 매니저에 옮겨도 될 듯
-    /// </summary>
-    public void TestGameOver()
-    {
+        Time.timeScale = doPause ? 0f : 1f;
+        Debug.Log($"게임 일시 정지 : {doPause}");
     }
 
     /// <summary>
@@ -166,11 +151,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        Stage = data.timeData.stage;
-        Day = data.timeData.day;
-        _dailyTimer = data.timeData.dailyTime;
-
-        UIManager.Instance.GameTimeUI.SetDayPieces();
-        UIManager.Instance.GameTimeUI.SetStageText();
+        InitGameTime(data.timeData.dailyTime, data.timeData.day, data.timeData.stage);
     }
 }

@@ -41,13 +41,6 @@ public class GameTimeUI : MonoBehaviour
     /// </summary>
     private void UpdateSkipButtonState()
     {
-        // 일시정지 시에는 비활성화
-        if (TimeManager.Instance.IsGamePause)
-        {
-            _daySkipBtn.interactable = false;
-            _halfDaySkipBtn.interactable = false;
-        }
-
         // 몬스터 소환 전(1 ~ 3일차)에는 활성화
         if(TimeManager.Instance.Day <= TimeManager.Instance.MaxDay - 2)
         {
@@ -95,6 +88,7 @@ public class GameTimeUI : MonoBehaviour
     /// </summary>
     public void SetStageText()
     {
-        _stageText.text = $"{TimeManager.Instance.Stage} Stage";
+        Debug.Log("실행되야함");
+        _stageText.text = $"{TimeManager.Instance.Stage} 주차";
     }
 }

@@ -173,6 +173,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             //yield return Helper_Coroutine.WaitSeconds(_tower.statHandler.AttackSpeed);
             yield return Helper_Coroutine.WaitSeconds(1.0f);
         }
+
         if (CurState == TOWER_STATE.Destroy)
             yield break;
 
@@ -181,6 +182,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             _tower.attackSensor.CheckTargetValid();
             yield break; // 상태 Idle로 전환될 것
         }
+ 
+        AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
 
         while (true)
         {
@@ -221,6 +224,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             _animator.SetTrigger("IsDestroy");
         }
+        AudioManager.Instance.PlaySFX(_tower.statHandler.name);
         yield return Helper_Coroutine.WaitSeconds(0.4f);
 
         _isDestroy = true;

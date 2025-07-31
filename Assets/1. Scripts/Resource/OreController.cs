@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceStateSavable
 {
     public OreDatabase _data { get; private set; }
 
-    public BasePlayer _player;
+    private BasePlayer _player;
+
+    private Collider2D _collider;
 
     private int _currentHP;
 
     [SerializeField] private int _id;
     public int GetId() => _id;
 
-    private Collider2D _collider;
 
     private void Awake()
     {
@@ -27,15 +29,38 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     public void OnInstantiate()
     {
         _data = DataManager.Instance.OreData.GetById(_id);
+        FindPlayer();
+        Init(_player);
     }
 
     public void OnGetFromPool()
     {
         _currentHP = _data.hp;
+        FindPlayer();
+        Init(_player);
     }
 
     public void OnReturnToPool()
     {
+        //
+    }
+    private void FindPlayer()
+    {
+        if (_player == null)
+        {
+            // 방법 1: BasePlayer로 찾기
+            _player = FindObjectOfType<BasePlayer>();
+
+            // 방법 2: 태그로 찾기 (BasePlayer가 안되면)
+            if (_player == null)
+            {
+                GameObject playerObj = GameObject.FindWithTag("Player");
+                if (playerObj != null)
+                {
+                    _player = playerObj.GetComponent<BasePlayer>();
+                }
+            }
+        }
     }
 
     public ResourceState SaveState()
@@ -78,7 +103,34 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         int dropId = _data.dropMineralId;
 
-        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, transform.position);
+        // 기본 드랍
+        SpawnDrop(dropId, Vector3.zero);
+
+        if (_player == null)
+        {
+            Debug.LogError("[OreController] 플레이어를 찾을 수 없습니다.");
+        }
+
+        // 확률 계산
+        float dropRate = _player.Stat.DropRate;
+        float bonusRate = dropRate - 1.0f;
+
+        if (bonusRate > 0f)
+        {
+            float rand = Random.Range(0f, 1f);
+            if (rand < bonusRate)
+            {
+                Vector3 offset = new Vector3(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 0f);
+                SpawnDrop(dropId, offset);
+            }
+        }
+    }
+
+    private void SpawnDrop(int dropId, Vector3 positionOffset)
+    {
+        Vector3 spawnPos = transform.position + positionOffset;
+
+        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos);
 
         if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
         {
@@ -92,42 +144,19 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void Interact()
     {
-        Vector2 playerPos = _player.transform.position;
-        Vector2 orePos = transform.position;
-
-        int wallLayerMask = LayerMask.GetMask("Wall");
-        if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
-        {
-            Debug.Log("벽에 막혀 채굴할 수 없습니다.");
-            return;
-        }
-
-        int pickaxePower = _player.Stat.Pickaxe.crushingForce;
-        int damage = _player.Stat.Pickaxe.damage;
-
-        if (!CanBeMined(pickaxePower))
-        {
-            Debug.Log("곡괭이 힘이 부족합니다.");
-            return;
-        }
-
-        bool destroyed = Mine(damage);
     }
 
-    public bool IsInteractable(Vector3 playerPos, float range, CircleCollider2D playerCollider)
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
     {
-        if (_collider == null || playerCollider == null)
-            return false;
+        if (_collider == null) return false;
 
         Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
-        Vector2 closestPointToPlayer = _collider.ClosestPoint(playerPos2D);
-        float centerToEdge = Vector2.Distance(playerPos2D, closestPointToPlayer);
+        Vector2 closestPoint = _collider.ClosestPoint(playerPos2D);
+        float centerToEdge = Vector2.Distance(playerPos2D, closestPoint);
 
-        float playerRadius = playerCollider.radius * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
+        float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        Debug.Log($"[Ore IsInteractable] dist: {edgeToEdgeDistance}, radius: {playerRadius}, edgeToEdge: {centerToEdge}, range: {range}");
-
-        return edgeToEdgeDistance <= range;
+        return edgeToEdgeDistance <= 1.5f;
     }
 }

@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.Linq;
 
-public class MapManager : MonoSingleton<MapManager>
+public class MapManager : MonoSingleton<MapManager>, ISaveable
 {
     public int CurrentMapIndex { get; private set; } = 0;
 
     private GameObject _baseMap;
     private Transform _player;
+    private Transform _core;
 
     [SerializeField] private float _mapSpacing = 100f;
 
@@ -17,6 +19,7 @@ public class MapManager : MonoSingleton<MapManager>
     private Dictionary<int, int> _mapPrefabIdMap = new Dictionary<int, int>();
 
     private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
+    private Dictionary<int, List<InteractableState>> _interactableStates = new();
 
     private SpawnManager _spawnManager;
 
@@ -24,7 +27,6 @@ public class MapManager : MonoSingleton<MapManager>
     {
         base.Awake();
 
-        // BaseMap과 Player를 이름으로 찾아서 자동 할당
         if (_baseMap == null)
         {
             var baseMapGO = GameObject.Find("BaseMap");
@@ -33,7 +35,6 @@ public class MapManager : MonoSingleton<MapManager>
             else
                 Debug.LogError("BaseMap 오브젝트를 찾을 수 없습니다. 이름이 'BaseMap'인지 확인하세요.");
         }
-
         if (_player == null)
         {
             var playerGO = GameObject.Find("Player");
@@ -41,6 +42,14 @@ public class MapManager : MonoSingleton<MapManager>
                 _player = playerGO.transform;
             else
                 Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 이름이 'Player'인지 확인하세요.");
+        }
+        if (_core == null)
+        {
+            var coreGO = GameObject.Find("Core");
+            if (coreGO != null)
+                _core = coreGO.transform;
+            else
+                Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
         }
 
         _baseMap.SetActive(true);
@@ -97,15 +106,24 @@ public class MapManager : MonoSingleton<MapManager>
             }
         }
 
-        _activeMapInstances.Clear();
-        _mapHistory.Clear();
-        _mapPrefabIdMap.Clear();
-
         MoveToMap(0, false);
+        _player.position = GetRandomPositionNearCore(1.0f);
+    }
+
+    private Vector3 GetRandomPositionNearCore(float radius = 1.0f)
+    {
+        if (_core == null)
+        {
+            Debug.LogWarning("Core가 설정되지 않아 기본 위치 반환");
+            return _baseMap.transform.position;
+        }
+
+        Vector2 offset = Random.insideUnitCircle.normalized * Random.Range(0.3f, radius);
+        return _core.position + new Vector3(offset.x, offset.y, 0f);
     }
 
     // 맵이동
-    private void MoveToMap(int targetIndex, bool addToHistory = true)
+    public void MoveToMap(int targetIndex, bool addToHistory = true)
     {
         if (targetIndex == CurrentMapIndex) return;
 
@@ -116,9 +134,20 @@ public class MapManager : MonoSingleton<MapManager>
         {
             _baseMap.SetActive(false);
         }
-        else if (_activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
+        else if (CurrentMapIndex != 0 && _activeMapInstances.TryGetValue(CurrentMapIndex, out var currentChunk))
         {
-            currentChunk.SetActive(false);
+            SaveInteractableStates(currentChunk, CurrentMapIndex);
+
+            if (_mapPrefabIdMap.ContainsKey(CurrentMapIndex))
+            {
+                int prefabId = _mapPrefabIdMap[CurrentMapIndex];
+                PoolManager.Instance.ReturnToPool(prefabId, currentChunk);
+                _activeMapInstances.Remove(CurrentMapIndex);
+            }
+            else
+            {
+                currentChunk.SetActive(false);
+            }
         }
 
         // 타겟 맵 활성화 또는 생성
@@ -139,6 +168,7 @@ public class MapManager : MonoSingleton<MapManager>
 
             if (mapInstance != null)
             {
+                mapInstance.transform.SetParent(this.transform);
                 mapInstance.SetActive(false);
 
                 // Cinemachine 카메라 설정
@@ -170,6 +200,7 @@ public class MapManager : MonoSingleton<MapManager>
         }
         else if (_activeMapInstances.TryGetValue(targetIndex, out var nextMap))
         {
+            RestoreInteractableStates(nextMap, targetIndex);
             nextMap.SetActive(true);
             Vector3 spawnPos = GetSpawnPositionByEnteredPortal(nextMap, PortalManager.Instance.LastEnteredPortalDirection);
             _player.position = spawnPos;
@@ -182,6 +213,7 @@ public class MapManager : MonoSingleton<MapManager>
         if (addToHistory)
             _mapHistory.Push(CurrentMapIndex);
 
+        ChangeMapBGM(targetIndex);
         CurrentMapIndex = targetIndex;
     }
 
@@ -304,5 +336,109 @@ public class MapManager : MonoSingleton<MapManager>
         }
 
         return mapInstance.transform.position;
+    }
+
+    private void ChangeMapBGM(int mapIndex)
+    {
+        if (mapIndex == 0)
+        {
+            AudioManager.Instance.PlayBGM("NormalBase");
+            return;
+        }
+
+        int mapId = _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
+
+        var mapData = DataManager.Instance.MapData.GetById(mapId);
+        if (mapData == null)
+        {
+            Debug.LogWarning("맵 데이터를 찾을 수 없어 BGM을 변경할 수 없습니다.");
+            return;
+        }
+
+        switch (mapData.mapType)
+        {
+            case MAP_TYPE.MineSmall:
+                AudioManager.Instance.PlayBGM("BasicMine1");
+                break;
+            case MAP_TYPE.MineLarge:
+                AudioManager.Instance.PlayBGM("BasicMine1");
+                break;
+            case MAP_TYPE.MineRare:
+                AudioManager.Instance.PlayBGM("RareMine1");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 맵 링크 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        data.mapLinks.currentMapIndex = CurrentMapIndex;
+        data.mapLinks.nextMapIndex = _nextMapIndex;
+        
+        data.mapLinks.mapHistory = _mapHistory.ToList();
+        
+        foreach(var pair in _mapPrefabIdMap)
+        {
+            data.mapLinks.prefabIdDict.Add(pair);
+        }
+
+        foreach(var pair in _portalMapLinks)
+        {
+            data.mapLinks.portalMapLinks.Add(pair);
+        }
+
+        data.playerPosition = _player.transform.position;
+    }
+
+    /// <summary>
+    /// 맵 링크 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        _nextMapIndex = data.mapLinks.nextMapIndex;
+
+        _mapHistory.Clear();
+        foreach(int stack in data.mapLinks.mapHistory)
+        {
+            _mapHistory.Push(stack);
+        }
+
+        _mapPrefabIdMap.Clear();
+        foreach(var pair in data.mapLinks.prefabIdDict)
+        {
+            _mapPrefabIdMap[pair.key] = pair.value;
+        }
+
+        _portalMapLinks.Clear();
+        foreach(var pair in data.mapLinks.portalMapLinks)
+        {
+            _portalMapLinks[(pair.key, pair.direction)] = pair.value;
+        }
+    }
+
+    private void SaveInteractableStates(GameObject map, int mapIndex)
+    {
+        var objs = map.GetComponentsInChildren<InteractableObject>();
+        var states = new List<InteractableState>();
+
+        foreach (var obj in objs)
+        {
+            states.Add(obj.SaveState());
+        }
+
+        _interactableStates[mapIndex] = states;
+    }
+
+    private void RestoreInteractableStates(GameObject map, int mapIndex)
+    {
+        if (!_interactableStates.TryGetValue(mapIndex, out var states)) return;
+
+        var objs = map.GetComponentsInChildren<InteractableObject>();
+        for (int i = 0; i < Mathf.Min(objs.Length, states.Count); i++)
+        {
+            objs[i].LoadState(states[i]);
+        }
     }
 }

@@ -6,17 +6,34 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     [SerializeField] private int _size;
     public int Size => _size;
     [SerializeField] private int _maxHp = 500;
+    public int MaxHp => _maxHp;
     public int CurHp { private set; get; }
     [SerializeField] private Image _hpBar;
     public bool IsDead { get; private set; }
 
     private SpriteRenderer _spriter;
+    private CoreStatHandler _statHandler;
+    private CoreUpgradeStats Stats => _statHandler.Stats;
 
     private void Awake()
     {
         _spriter = GetComponentInChildren<SpriteRenderer>();
-
+        _statHandler = GetComponent<CoreStatHandler>();
         SetFullHp();
+    }
+
+    /// <summary>
+    /// 최대 체력
+    /// </summary>
+    public void UpdateMaxHp(int newMaxHp)
+    {
+        int hpDifference = newMaxHp - _maxHp;
+        _maxHp = newMaxHp;
+
+        // 현재 체력도 증가분만큼 증가 (체력 업그레이드시 즉시 회복)
+        SetHp(CurHp + hpDifference);
+
+        Debug.Log($"코어 최대 체력 업데이트: {_maxHp}, 현재 체력: {CurHp}");
     }
 
     /// <summary>
@@ -47,7 +64,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
         {
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
-            TimeManager.Instance.TestGameOver();
+            TimeManager.Instance.PauseGame(true); // 일단 게임 오버 시에 정지
         }
     }
 
@@ -56,7 +73,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     /// </summary>
     private void SetHp(int hp)
     {
-        CurHp = hp;
+        CurHp = Mathf.Clamp(hp, 0, _maxHp);
         _hpBar.fillAmount = (float)CurHp / _maxHp;
     }
 

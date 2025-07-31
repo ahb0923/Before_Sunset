@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasePlayer : MonoBehaviour, ISaveable
+public class BasePlayer : MonoBehaviour
 {
     public static readonly int MOVE = Animator.StringToHash("Move");
     public static readonly int SWING = Animator.StringToHash("Swing");
@@ -15,6 +15,7 @@ public class BasePlayer : MonoBehaviour, ISaveable
     [SerializeField] private SpriteRenderer _effectDownRenderer;
 
     public Rigidbody2D Rigid { get; private set; }
+    public BoxCollider2D PlayerCollider { get; private set; }
     public PlayerController Controller { get; private set; }
     public PlayerInputHandler InputHandler { get; private set; }
     public PlayerStatHandler Stat { get; private set; }
@@ -26,6 +27,7 @@ public class BasePlayer : MonoBehaviour, ISaveable
     private void Awake()
     {
         Rigid = GetComponent<Rigidbody2D>();
+        PlayerCollider = GetComponent<BoxCollider2D>();
         Controller = GetComponent<PlayerController>();
         InputHandler = GetComponent<PlayerInputHandler>();
         Stat = GetComponent<PlayerStatHandler>();
@@ -60,21 +62,5 @@ public class BasePlayer : MonoBehaviour, ISaveable
     public void SetPlayerInBase(bool isInBase)
     {
         IsInBase = isInBase;
-    }
-
-    /// <summary>
-    /// 플레이어 위치 저장
-    /// </summary>
-    public void SaveData(GameData data)
-    {
-        data.playerPosition = transform.position;
-    }
-
-    /// <summary>
-    /// 플레이어 위치 로드
-    /// </summary>
-    public void LoadData(GameData data)
-    {
-        transform.position = data.playerPosition;
     }
 }

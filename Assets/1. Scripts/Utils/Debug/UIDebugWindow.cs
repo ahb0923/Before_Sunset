@@ -42,24 +42,24 @@ public class UIDebugWindow : EditorWindow
             }
         }
         
-        if (GUILayout.Button("200번 아이템 추가"))
+        if (GUILayout.Button("111번 아이템 추가"))
         {
-            InventoryManager.Instance.Inventory.AddItem(200,3);
+            InventoryManager.Instance.Inventory.AddItem(111,20);
         }
         
-        if (GUILayout.Button("제련소 열기"))
+        if (GUILayout.Button("업그레이드창 열기"))
         {
-            // UIManager.Instance.SmelterUI.OpenSmelter();
+            UIManager.Instance.UpgradeUI.Open();
         }
         
-        if (GUILayout.Button("코루틴 테스트"))
+        if (GUILayout.Button("정수 4개 추가"))
         {
-            UIManager.Instance.BattleUI.ShowReturnUI();
+            UpgradeManager.Instance.AddEssencePiece(120);
         }
         
-        if (GUILayout.Button("하급제련소강제주입"))
+        if (GUILayout.Button("정수조각 4개 추가"))
         {
-            // UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
+            UpgradeManager.Instance.AddEssencePiece(4);
         }
     }
 }

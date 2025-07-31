@@ -2,110 +2,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class PlayerInteractor : MonoBehaviour
 {
-    public Camera mainCamera;
     public Texture2D defaultCursor;
     public Texture2D interactCursor;
     public Texture2D outOfRangeCursor;
-    public float interactionRange = 5.0f;
 
-    private Texture2D currentCursor;
-    private Vector2 lastMousePos;
-    private Vector3 lastPlayerPos;
+    [Header("Interaction Layers")]
+    public LayerMask interactableLayerMask = -1;
 
-    private BasePlayer _player;
-    private CircleCollider2D playerCollider;
-
-    private IInteractable currentTarget;
-    public IInteractable CurrentTarget => currentTarget;
+    private Camera _mainCamera;
+    private BoxCollider2D _playerCollider;
+    private IInteractable _currentTarget;
 
     void Awake()
     {
-        _player = GetComponent<BasePlayer>();
-        playerCollider = GetComponent<CircleCollider2D>();
+        _mainCamera = Camera.main;
+        _playerCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
     {
-        Vector2 currentMousePos = Mouse.current.position.ReadValue();
-        Vector3 currentPlayerPos = transform.position;
-
-        if (currentMousePos != lastMousePos || currentPlayerPos != lastPlayerPos)
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            UpdateCursor(currentMousePos, currentPlayerPos);
-            lastMousePos = currentMousePos;
-            lastPlayerPos = currentPlayerPos;
-        }
-    }
-
-    void UpdateCursor(Vector2 screenPos, Vector3 playerPos)
-    {
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(screenPos);
-        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
-
-        float currentRange = GetEffectiveRange();
-
-        Collider2D col = Physics2D.OverlapPoint(mousePos2D);
-        if (col != null && col.TryGetComponent<IInteractable>(out var interactable))
-        {
-            float distanceToEdge = GetDistanceToColliderEdge(col, playerPos);
-            if (distanceToEdge <= currentRange)
-            {
-                currentTarget = interactable;
-                SetCustomCursor(interactCursor);
-            }
-            else
-            {
-                currentTarget = null;
-                SetCustomCursor(outOfRangeCursor);
-            }
+            Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.Auto);
+            _currentTarget = null;
             return;
         }
 
-        currentTarget = null;
-        SetCustomCursor(defaultCursor);
-    }
+        Vector3 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
 
-    void SetCustomCursor(Texture2D cursor)
-    {
-        if (currentCursor != cursor)
+        Collider2D col = Physics2D.OverlapPoint(mousePos2D, interactableLayerMask);
+
+        if (col != null && col.TryGetComponent(out IInteractable interactable))
         {
-            Vector2 hotspot = Vector2.zero;
+            float range = (interactable is OreController || interactable is JewelController) ? 1.5f : 5.0f;
 
-            if (cursor != defaultCursor)
+            if (interactable.IsInteractable(transform.position, range, _playerCollider))
             {
-                hotspot = new Vector2(cursor.width / 2f, cursor.height / 2f);
+                Vector2 hotspot = new Vector2(interactCursor.width * 0.5f, interactCursor.height * 0.5f);
+                Cursor.SetCursor(interactCursor, hotspot, CursorMode.Auto);
+                _currentTarget = interactable;
+                return;
             }
             else
             {
-                hotspot = Vector2.zero;
+                Vector2 hotspot = new Vector2(outOfRangeCursor.width * 0.5f, outOfRangeCursor.height * 0.5f);
+                Cursor.SetCursor(outOfRangeCursor, hotspot, CursorMode.Auto);
+                _currentTarget = null;
+                return;
             }
-
-            Cursor.SetCursor(cursor, hotspot, CursorMode.Auto);
-            currentCursor = cursor;
-        }
-    }
-
-
-    float GetEffectiveRange()
-    {
-        return (_player != null && !_player.IsInBase) ? 1f : interactionRange;
-    }
-
-    float GetDistanceToColliderEdge(Collider2D col, Vector3 fromPos)
-    {
-        Vector2 fromPos2D = new Vector2(fromPos.x, fromPos.y);
-        Vector2 closest = col.ClosestPoint(fromPos2D);
-        float distance = Vector2.Distance(fromPos2D, closest);
-
-        if (playerCollider != null)
-        {
-            float playerRadius = playerCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
-            distance -= playerRadius;
         }
 
-        return Mathf.Max(0f, distance);
+        Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.Auto);
+        _currentTarget = null;
     }
+
+    public IInteractable GetCurrentTarget() => _currentTarget;
 }

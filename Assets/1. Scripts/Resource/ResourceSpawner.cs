@@ -8,14 +8,10 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private Vector3 spawnAreaCenter3D;
     private Vector2 spawnAreaSize = new Vector2(57f, 31f);
 
-    [Header("스폰 개수")]
     [SerializeField] private int spawnCount = 20;
-
-    [Header("중복 방지 반지름")]
     [SerializeField] private float overlapRadius = 1.0f;
-
-    [Header("장애물 레이어 마스크")]
     [SerializeField] private LayerMask obstacleLayerMask;
+    [SerializeField] private LayerMask _spawnZoneLayer;
 
     public Func<TData, int> GetId;
     public Func<TData, int> GetSpawnStage;
@@ -49,44 +45,81 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         foreach (var data in dataList)
         {
-            if (currentStage >= GetSpawnStage(data))
+            int id = GetId(data);
+
+            if ( id >= 200 || currentStage >= GetSpawnStage(data))
                 spawnableList.Add(data);
         }
 
         if (spawnableList.Count == 0) return;
 
-        int placed = 0;
-        int attempts = 0;
-        int maxAttempts = spawnCount * 10;
-
-        while (placed < spawnCount && attempts < maxAttempts)
+        if (typeof(TData) == typeof(JewelDatabase))
         {
-            attempts++;
+            foreach (var data in spawnableList)
+            {
+                float probability = GetProbability(data) / 100f;
+                if (UnityEngine.Random.value > probability)
+                    continue;
+
+                TryPlaceSingle(data);
+            }
+        }
+        else // Ore: 가중치 기반
+        {
+            int placed = 0;
+            int attempts = 0;
+            int maxAttempts = spawnCount * 10;
+
+            while (placed < spawnCount && attempts < maxAttempts)
+            {
+                attempts++;
+                Vector3 pos = GetRandomPositionInArea();
+
+                if (!IsValidSpawnPosition(pos)) continue;
+                if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
+                if (IsTooClose(pos)) continue;
+
+                TData selected = GetRandomByProbability();
+                if (selected == null) continue;
+
+                if (TryPlace(selected, pos))
+                    placed++;
+            }
+        }
+    }
+
+    private bool TryPlace(TData data, Vector3 pos)
+    {
+        int id = GetId(data);
+        GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
+        if (obj == null)
+        {
+            Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
+            return false;
+        }
+
+        if (parentTransform != null)
+            obj.transform.SetParent(parentTransform, false);
+
+        obj.transform.position = pos;
+        obj.GetComponent<IPoolable>()?.OnGetFromPool();
+        placedPositions.Add(pos);
+        return true;
+    }
+
+    private void TryPlaceSingle(TData data)
+    {
+        int maxAttempts = 10;
+        for (int i = 0; i < maxAttempts; i++)
+        {
             Vector3 pos = GetRandomPositionInArea();
 
+            if (!IsValidSpawnPosition(pos)) continue;
             if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
             if (IsTooClose(pos)) continue;
 
-            TData selected = GetRandomByProbability();
-            if (selected == null) continue;
-
-            int id = GetId(selected);
-
-            GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
-            if (obj == null)
-            {
-                Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
-                continue;
-            }
-
-            if (parentTransform != null)
-                obj.transform.SetParent(parentTransform, false);
-
-            obj.transform.position = pos;
-            obj.GetComponent<IPoolable>()?.OnGetFromPool();
-
-            placedPositions.Add(pos);
-            placed++;
+            TryPlace(data, pos);
+            break;
         }
     }
 
@@ -107,6 +140,12 @@ public class ResourceSpawner<TData> : MonoBehaviour
         y = Mathf.Floor(y) + 0.5f;
 
         return new Vector3(x, y, z);
+    }
+
+    private bool IsValidSpawnPosition(Vector3 position)
+    {
+        Collider2D collider = Physics2D.OverlapPoint(position, _spawnZoneLayer);
+        return collider != null;
     }
 
     private bool IsTooClose(Vector3 pos)
@@ -137,7 +176,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return default;
     }
 
-    public List<ResourceState> SaveCurrentStates()
+    public List<ResourceState> SaveCurrentStates(bool inactive = true)
     {
         var savedStates = new List<ResourceState>();
         var parent = GetParentTransform();
@@ -161,7 +200,18 @@ public class ResourceSpawner<TData> : MonoBehaviour
             toReturn.Add(parent.GetChild(i));
         }
 
-        foreach (var tr in toReturn)
+        if (inactive)
+            InactiveResources(toReturn);
+
+        return savedStates;
+    }
+
+    /// <summary>
+    /// 저장이 완료된 리소스 오브젝트 비활성화
+    /// </summary>
+    private void InactiveResources(List<Transform> savedResources)
+    {
+        foreach (var tr in savedResources)
         {
             var poolable = tr.GetComponent<IPoolable>();
             if (poolable != null)
@@ -173,8 +223,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 Debug.LogWarning($"[ReturnToPool] IPoolable 컴포넌트가 없습니다: {tr.name}");
             }
         }
-
-        return savedStates;
     }
 
     public List<GameObject> SpawnFromSavedStates(List<ResourceState> savedStates)
@@ -205,5 +253,39 @@ public class ResourceSpawner<TData> : MonoBehaviour
         }
 
         return spawnedObjects;
+    }
+
+    public GameObject SpawnSingle(TData data, Vector3 position)
+    {
+        int id = GetId(data);
+        GameObject obj = PoolManager.Instance.GetFromPool(id, position);
+
+        if (obj == null)
+        {
+            Debug.LogWarning($"[SpawnSingle] Pool에서 오브젝트를 가져오지 못함. ID: {id}");
+            return null;
+        }
+
+        if (parentTransform != null)
+            obj.transform.SetParent(parentTransform, false);
+
+        obj.transform.position = position;
+
+        if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
+        {
+            if (resource is OreController ore)
+            {
+                ore.OnInstantiate();
+            }
+            else if (resource is JewelController jewel)
+            {
+                jewel.OnGetFromPool();
+            }
+
+            resource.OnGetFromPool();
+        }
+
+        obj.SetActive(true);
+        return obj;
     }
 }

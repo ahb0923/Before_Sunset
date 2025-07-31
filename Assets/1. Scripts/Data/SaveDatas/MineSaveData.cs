@@ -19,9 +19,10 @@ public class ResourceSaveData
     public SerializableVector3 position;
     public int curHp;
 
-    public ResourceSaveData(int resourceId, SerializableVector3 position)
+    public ResourceSaveData(int resourceId, SerializableVector3 position, int curHp)
     {
         this.resourceId = resourceId;
         this.position = position;
+        this.curHp = curHp;
     }
 }
