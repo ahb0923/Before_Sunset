@@ -49,7 +49,7 @@ public class MonsterSpawner : MonoBehaviour
         {
             for (int i = 0; i < 10; i++)
             {
-                yield return Helper_Coroutine.WaitSeconds(0.3f);
+                yield return Helper_Coroutine.WaitSeconds(0.5f);
                 
                 // 코어가 부서지면, 스폰 중지
                 if (DefenseManager.Instance.Core.IsDead)

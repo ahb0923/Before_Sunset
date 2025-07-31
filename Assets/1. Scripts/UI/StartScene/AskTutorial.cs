@@ -31,12 +31,14 @@ public class AskTutorial : MonoBehaviour
     private void Tutorial()
     {
         Close();
-        LoadingSceneController.LoadScene("OpeningScene");
+        GameManager.Instance.SetTutorial(true);
+        LoadingSceneController.LoadScene("TutorialScene");
     }
 
     private void NoTutorial()
     {
         Close();
+        GameManager.Instance.SetTutorial(false);
         if (GlobalState.HasPlayedOpening)
             LoadingSceneController.LoadScene("MainScene");
         else

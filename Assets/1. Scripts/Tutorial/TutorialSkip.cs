@@ -20,6 +20,7 @@ public class TutorialSkip : MonoBehaviour
     private void OnSkip()
     {
         TimeManager.Instance.PauseGame(false);
-        GameManager.Instance.StartNewGame();
+        GameManager.Instance.SetTutorial(false);
+        LoadingSceneController.LoadScene("MainScene");
     }
 }
