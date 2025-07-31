@@ -17,7 +17,7 @@ public class MonsterSpawner : MonoBehaviour
     public void RemoveDeadMonster(BaseMonster monster)
     {
         _aliveMonsterSet.Remove(monster);
-        QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.KillMonster);
+        QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.KillMonster, monster.GetId());
     }
 
     /// <summary>
@@ -45,31 +45,50 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     private IEnumerator C_SpawnMonsters(int stage)
     {
-        int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(stage);
-        for (int i = 1; i <= waveCount; i++)
+        if (GameManager.Instance.IsTutorial)
         {
-            // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
-            WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
-
-            // 다음 웨이브 기다림
-            yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
-
-            // 몬스터 웨이브 소환
-            foreach (var pair in currentWaveData.waveInfo)
+            for (int i = 0; i < 10; i++)
             {
-                int monsterID = DataManager.Instance.MonsterData.GetByName(pair.Key).id;
-                int spawnCount = pair.Value;
-
-                for (int j = 0; j < spawnCount; j++)
+                yield return Helper_Coroutine.WaitSeconds(0.3f);
+                
+                // 코어가 부서지면, 스폰 중지
+                if (DefenseManager.Instance.Core.IsDead)
                 {
-                    // 코어가 부서지면, 스폰 중지
-                    if (DefenseManager.Instance.Core.IsDead)
-                    {
-                        yield break;
-                    }
+                    yield break;
+                }
 
-                    SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt), currentWaveData.isAttackCore);
-                    yield return null;
+                // 머프 10마리만 소환
+                SpawnMonster(600, Random.Range(0, _spawnPointLimt), true);
+            }
+        }
+        else
+        {
+            int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(stage);
+            for (int i = 1; i <= waveCount; i++)
+            {
+                // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
+                WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
+
+                // 다음 웨이브 기다림
+                yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
+
+                // 몬스터 웨이브 소환
+                foreach (var pair in currentWaveData.waveInfo)
+                {
+                    int monsterID = DataManager.Instance.MonsterData.GetByName(pair.Key).id;
+                    int spawnCount = pair.Value;
+
+                    for (int j = 0; j < spawnCount; j++)
+                    {
+                        // 코어가 부서지면, 스폰 중지
+                        if (DefenseManager.Instance.Core.IsDead)
+                        {
+                            yield break;
+                        }
+
+                        SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt), currentWaveData.isAttackCore);
+                        yield return null;
+                    }
                 }
             }
         }

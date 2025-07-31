@@ -127,7 +127,6 @@ public class BuildManager : MonoSingleton<BuildManager>
         // 배치 성공
         var obj = PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool);
         DefenseManager.Instance.AddObstacle(obj.transform, 1); // 일단 1x1이니까 1로 두었음
-        QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.PlaceBuilding);
         return true;
     }
     /// <summary>

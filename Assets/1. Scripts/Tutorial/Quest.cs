@@ -21,12 +21,16 @@ public class Quest
     [field: SerializeField] public string Title { get; private set; }
     [field: SerializeField] public string Description { get; private set; }
 
-    [field: SerializeField] public int ClearAmount { get; private set; }
-    private int curAmount;
-    public bool isClear => ClearAmount <= curAmount;
+    [field: SerializeField] public int InventoryItemId { get; private set; } = -1;
+    [field: SerializeField] public int InventoryItemAmount { get; private set; }
 
-    public void AddAmount(int amount)
+    [field: SerializeField] public int objectId { get; private set; }
+    [field: SerializeField] public int ClearAmount { get; private set; }
+    public int CurAmount { get; private set; }
+    public bool isClear => ClearAmount <= CurAmount;
+
+    public void SetAmount(int amount)
     {
-        curAmount += amount;
+        CurAmount = amount;
     }
 }

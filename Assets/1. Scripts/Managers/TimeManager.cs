@@ -11,7 +11,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     [SerializeField] private int _maxStage = 3;
 
     private float _dailyTimer;
-    public bool IsNight => _dailyTimer > _realSecDayLength * 0.5f;
+    public bool IsNight => _dailyTimer >= _realSecDayLength * 0.5f;
     public float DailyPercent => _dailyTimer / _realSecDayLength;
 
     public int Day { get; private set; }
@@ -81,6 +81,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
 
         UIManager.Instance.GameTimeUI.SetDayPieces();
+        QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, (Day - 1) * 2 + (IsNight ? 2 : 1));
     }
 
     /// <summary>
@@ -135,7 +136,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             _dailyTimer = _realSecDayLength * 0.5f;
         }
 
-        QuestManager.Instance?.AddQuestClearAmount(QUEST_TYPE.TimeSkip);
+        QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, (Day - 1) * 2 + (IsNight ? 2 : 1));
+        Debug.Log((Day - 1) * 2 + (IsNight ? 2 : 1));
     }
 
     /// <summary>

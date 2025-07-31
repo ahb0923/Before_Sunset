@@ -115,10 +115,16 @@ public class PlayerInputHandler : MonoBehaviour
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
             UIManager.Instance.RecallUI.CloseRecall();
-            MapManager.Instance.ReturnToHomeMap();
+
+            if (GameManager.Instance.IsTutorial)
+                transform.position = new Vector3(0, 2, 0);
+            else
+                MapManager.Instance.ReturnToHomeMap();
+
             _player.SetPlayerInBase(true);
         }));
 
+        QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GoToBase);
         _isRecallStarted = false;
         _isRecallInProgress = false;
     }
