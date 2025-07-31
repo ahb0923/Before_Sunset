@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AskPopUpUI : MonoBehaviour
+public class AskPopUpUI : MonoBehaviour, ICloseableUI
 {
     [SerializeField] private Button _yesButton;
     [SerializeField] private Button _noButton;
@@ -54,11 +54,26 @@ public class AskPopUpUI : MonoBehaviour
         _askText.text = askText;
         _onYesAction = onYesAction;
         _onNoAction = onNoAction;
-        
+
+        UIManager.Instance.OpenUI(this);
+    }
+
+    public void Open()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
         _askRect.OpenAtCenter();
     }
 
-    private void Close()
+    public void CloseUI()
     {
         _askRect.CloseAndRestore();
     }

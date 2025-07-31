@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TowerUpgradeUI : MonoBehaviour
+public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 {
     [SerializeField] private TextMeshProUGUI _targetNameText;
     [SerializeField] private TextMeshProUGUI _targetInfoText;
@@ -48,25 +47,40 @@ public class TowerUpgradeUI : MonoBehaviour
     {
         _rect = GetComponent<RectTransform>();
         _upgradeButton.onClick.AddListener(Upgrade);
-        _cancelButton.onClick.AddListener(CloseUpgradeUI);
+        _cancelButton.onClick.AddListener(Close);
     }
 
     private void Upgrade()
     {
         // 타워업그레이드 메서드
     }
-
-    public void OpenUpgradeUI(TowerDatabase data)
+    
+    public void Open(TowerDatabase data)
     {
-        _rect.OpenAtCenter();
         InitSlots(data);
         SetSlot(data);
         SetUpgradeUI(data);
+        UIManager.Instance.OpenUI(this);
     }
 
-    public void CloseUpgradeUI()
+    public void Open()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Close()
     {
         ClearUI();
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        _rect.OpenAtCenter();
+    }
+
+    public void CloseUI()
+    {
         _rect.CloseAndRestore();
     }
 
@@ -137,4 +151,5 @@ public class TowerUpgradeUI : MonoBehaviour
         _targetStatText.text = "";
         _upgradeStatText.text = "";
     }
+
 }

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class CraftArea : MonoBehaviour
+public class CraftArea : MonoBehaviour, ICloseableUI
 {
     [SerializeField] private Button _buildButton;
     [SerializeField] private Button _towerButton;
@@ -109,26 +107,38 @@ public class CraftArea : MonoBehaviour
         }
     }
     
-    public void ToggleCraftArea()
+    public void Open()
     {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            //Toggle();
-        }
+        UIManager.Instance.OpenUI(this);
+    }
+    
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+        UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
+        
+        ResetUI();
     }
 
+    public void OpenUI()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    public void CloseUI()
+    {
+        this.gameObject.SetActive(false);
+    }
+    
     public void Toggle()
     {
         if (this.gameObject.activeSelf)
         {
-            this.gameObject.SetActive(false);
-            UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
-            
-            ResetUI();
+            Close();
         }
         else
         {
-            this.gameObject.SetActive(true);
+            Open();
         }
     }
 
@@ -145,4 +155,5 @@ public class CraftArea : MonoBehaviour
                 TooltipManager.Instance.HideTooltip();
         }
     }
+
 }
