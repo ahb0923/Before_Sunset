@@ -125,11 +125,13 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
 
     public void Open()
     {
+        TimeManager.Instance.PauseGame(true);
         UIManager.Instance.OpenUI(this);
     }
     
     public void Close()
     {
+        TimeManager.Instance.PauseGame(false);
         UIManager.Instance.CloseUI(this);
     }
 

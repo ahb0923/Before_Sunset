@@ -20,10 +20,7 @@ public class ToastUI : MonoBehaviour
     private RectTransform _rect;
     private Vector2 _originalPosition;
     private float _goalPosition;
-    private Coroutine _toastCoroutine;
-    private Tween _fadeTween;
-    private Tween _moveTween;
-    private Tween _fadeBGTween;
+    private Sequence _sequence;
     
     private const string TOAST_BG = "ToastBG";
     private const string TOAST_TEXT = "ToastText";
@@ -47,11 +44,8 @@ public class ToastUI : MonoBehaviour
     {
         Open();
         
-        _fadeTween?.Kill();
-        _fadeBGTween?.Kill();
-        _moveTween?.Kill();
-        if (_toastCoroutine != null)
-            StopCoroutine(_toastCoroutine);
+        _sequence?.Kill();
+        _sequence = null;
         
         _toastText.text = toastText;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_toastRect);
@@ -62,20 +56,18 @@ public class ToastUI : MonoBehaviour
         _toastText.alpha = 1f;
         
         _toastBGRect.anchoredPosition = _originalPosition;
-        _toastCoroutine = StartCoroutine(C_ShowToast());
+        
+        _sequence = DOTween.Sequence();
+        _sequence.SetUpdate(true);
+        _sequence.AppendInterval(_delay);
+        _sequence.Append(_toastText.DOFade(0f, _fadeDuration));
+        _sequence.Join(_toastImage.DOFade(0f, _fadeDuration));
+        _sequence.Join(_toastBGRect.DOAnchorPosY(_goalPosition, _fadeDuration).SetEase(Ease.OutCubic).OnComplete(OnToastComplete));
     }
 
-    private IEnumerator C_ShowToast()
+    private void OnToastComplete()
     {
-        yield return Helper_Coroutine.WaitSeconds(_delay);
-        
-        _fadeTween = _toastText.DOFade(0f, _fadeDuration);
-        _fadeBGTween = _toastImage.DOFade(0f, _fadeDuration);
-        _moveTween = _toastBGRect.DOAnchorPosY(_goalPosition, _fadeDuration).SetEase(Ease.OutCubic);
-
-        yield return _moveTween.WaitForCompletion();
-
-        _toastCoroutine = null;
+        _sequence?.Kill();
         Close();
         ToastManager.Instance.ReturnToast(this.gameObject);
     }
