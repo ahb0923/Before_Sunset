@@ -78,6 +78,7 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
 
     public void CloseUpgradeUI()
+    {
         UIManager.Instance.OpenUI(this);
     }
 

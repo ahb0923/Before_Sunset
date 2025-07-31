@@ -252,14 +252,14 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
                 Item inputItem = null;
                 if(smelterData.inputItem.itemId != 0)
                 {
-                    inputItem = new Item(DataManager.Instance.ItemData.GetId(smelterData.inputItem.itemId));
+                    inputItem = new Item(DataManager.Instance.ItemData.GetById(smelterData.inputItem.itemId));
                     inputItem.stack = smelterData.inputItem.quantity;
                 }
 
                 Item outputItem = null;
                 if (smelterData.outputItem.itemId != 0)
                 {
-                    outputItem = new Item(DataManager.Instance.ItemData.GetId(smelterData.outputItem.itemId));
+                    outputItem = new Item(DataManager.Instance.ItemData.GetById(smelterData.outputItem.itemId));
                     outputItem.stack = smelterData.outputItem.quantity;
                 }
 
