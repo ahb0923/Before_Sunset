@@ -15,7 +15,6 @@ public class TutorialSpawn : MonoBehaviour
         foreach(var position in stonePositions)
         {
             PoolManager.Instance.GetFromPool(0, position, transform);
-            Debug.Log("spawn");
         }
 
         // 구리 소환

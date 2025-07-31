@@ -37,6 +37,8 @@ public class QuestManager : MonoSingleton<QuestManager>
     /// </summary>
     public void AddQuestAmount(QUEST_TYPE type, int id = -1,int amount = 1)
     {
+        if (!GameManager.Instance.IsTutorial) return;
+
         SetQuestAmount(type, id, quests[curIndex].CurAmount + amount);
     }
 
@@ -45,6 +47,8 @@ public class QuestManager : MonoSingleton<QuestManager>
     /// </summary>
     public void SetQuestAmount(QUEST_TYPE type, int id = -1, int amount = 1)
     {
+        if (!GameManager.Instance.IsTutorial) return;
+
         if (type == quests[curIndex].Type && id == quests[curIndex].objectId)
         {
             quests[curIndex].SetAmount(amount);

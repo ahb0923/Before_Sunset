@@ -43,7 +43,7 @@ public class UIManager : MonoSingleton<UIManager>
         CraftMaterialArea.gameObject.SetActive(false);
         
         TutorialSkipButton?.gameObject.SetActive(GameManager.Instance.IsTutorial);
-        QuestUI.gameObject.SetActive(GameManager.Instance.IsTutorial);
+        QuestUI?.gameObject.SetActive(GameManager.Instance.IsTutorial);
     }
 
     private void Update()
