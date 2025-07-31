@@ -205,6 +205,9 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
 
         // 환급
         RefundResources(req, refundRatio);
+        
+        // 퀘스트 매니지먼트
+        QuestManager.Instance.AddQuestAmount(QUEST_TYPE.DestroyBuilding);
 
         // 실제 파괴 처리
         DefenseManager.Instance.RemoveObstacle(transform);

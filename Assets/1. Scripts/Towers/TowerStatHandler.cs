@@ -126,6 +126,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             return;
 
         var upgradeData = DataManager.Instance.TowerData.GetById((int)NextupgradeID);
+        QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeTower, NextupgradeID ?? -1);
 
         ID = upgradeData.id;
         Level = upgradeData.level;
@@ -153,7 +154,6 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             else
                 AccumulatedCosts[kvp.Key] = kvp.Value;
         }
-
     }
 
 

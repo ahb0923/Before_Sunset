@@ -307,6 +307,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
     {
         _playerStatHandler?.ApplyAllUpgrades();
         _coreStatHandler?.ApplyAllUpgrades();
+        QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeCore);
     }
 
     private void UpdateStatusFromFixedUpgrade()

@@ -9,7 +9,7 @@ public class PlayerStatHandler : MonoBehaviour
     public EquipmentDatabase Pickaxe => (EquipmentDatabase)InventoryManager.Instance.Inventory.Pickaxe.Data;
 
     // 기본 스텟
-    private float _baseMoveSpeed = 2.0f;
+    [SerializeField] private float _baseMoveSpeed = 2.0f;
     private float _baseMiningSpeed = 1.0f;
     private float _baseDropRate = 1.0f;
     private float _baseSightRange = 5.0f;
