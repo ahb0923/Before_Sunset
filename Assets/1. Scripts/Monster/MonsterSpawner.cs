@@ -6,7 +6,7 @@ public class MonsterSpawner : MonoBehaviour
 {
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
-    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 3 + 1, _spawnPoints.Count - 1);
+    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 2, _spawnPoints.Count - 1);
     [SerializeField] private Transform _monsterParent;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
@@ -58,7 +58,7 @@ public class MonsterSpawner : MonoBehaviour
                 }
 
                 // 머프 10마리만 소환
-                SpawnMonster(600, Random.Range(0, _spawnPointLimt), true);
+                SpawnMonster(600, 0, true);
             }
         }
         else
@@ -78,16 +78,20 @@ public class MonsterSpawner : MonoBehaviour
                     int monsterID = DataManager.Instance.MonsterData.GetByName(pair.Key).id;
                     int spawnCount = pair.Value;
 
-                    for (int j = 0; j < spawnCount; j++)
+                    // 열려있는 모든 방향에서 소환
+                    for (int spawnIndex = 0;  spawnIndex <= _spawnPointLimt; spawnIndex++)
                     {
-                        // 코어가 부서지면, 스폰 중지
-                        if (DefenseManager.Instance.Core.IsDead)
+                        for (int j = 0; j < spawnCount; j++)
                         {
-                            yield break;
-                        }
+                            // 코어가 부서지면, 스폰 중지
+                            if (DefenseManager.Instance.Core.IsDead)
+                            {
+                                yield break;
+                            }
 
-                        SpawnMonster(monsterID, Random.Range(0, _spawnPointLimt), currentWaveData.isAttackCore);
-                        yield return null;
+                            SpawnMonster(monsterID, spawnIndex, currentWaveData.isAttackCore);
+                            yield return null;
+                        }
                     }
                 }
             }

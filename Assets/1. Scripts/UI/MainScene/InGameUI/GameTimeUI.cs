@@ -88,7 +88,6 @@ public class GameTimeUI : MonoBehaviour
     /// </summary>
     public void SetStageText()
     {
-        Debug.Log("실행되야함");
         _stageText.text = $"{TimeManager.Instance.Stage} 주차";
     }
 }

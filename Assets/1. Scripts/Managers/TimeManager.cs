@@ -138,7 +138,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
 
         QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, (Day - 1) * 2 + (IsNight ? 2 : 1));
-        Debug.Log((Day - 1) * 2 + (IsNight ? 2 : 1));
     }
 
     /// <summary>
