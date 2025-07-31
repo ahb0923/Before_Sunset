@@ -4,11 +4,10 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 12;
-    [SerializeField] private bool _isSec; // test용
-    private int _realSecDayLength => _realMinDayLength * (_isSec ? 1 : 60);
+    private int _realSecDayLength => _realMinDayLength * 60;
     [SerializeField] private int _maxDay = 5;
     public int MaxDay => _maxDay;
-    [SerializeField] private int _maxStage = 3;
+    [SerializeField] private int _maxStage = 10;
 
     private float _dailyTimer;
     public bool IsNight => _dailyTimer >= _realSecDayLength * 0.5f;
