@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeUI : MonoBehaviour
+public class UpgradeUI : MonoBehaviour, ICloseableUI
 {
     [Header("Upgrade UI")]
     [SerializeField] private TextMeshProUGUI _essenceText;
@@ -111,16 +110,6 @@ public class UpgradeUI : MonoBehaviour
         var id = InventoryManager.Instance.Inventory.Pickaxe.Data.id;
         _pickaxeUpgradeSlot.SetSlot(id);
     }
-
-    public void OpenUpgrade()
-    {
-        UpgradeManager.Instance.SetVirtualUpgrade();
-        UpgradeManager.Instance.SetVirtualEssence();
-        
-        Refresh();
-        
-        _rect.OpenAtCenter();
-    }
     
     private void CloseUpgrade()
     {
@@ -134,7 +123,27 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    private void Close()
+    public void Open()
+    {
+        UIManager.Instance.OpenUI(this);
+    }
+    
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        UpgradeManager.Instance.SetVirtualUpgrade();
+        UpgradeManager.Instance.SetVirtualEssence();
+        
+        Refresh();
+        
+        _rect.OpenAtCenter();
+    }
+
+    public void CloseUI()
     {
         UpgradeManager.Instance.DiscardVirtualUpgrade();
         UpgradeManager.Instance.SetVirtualEssence();
