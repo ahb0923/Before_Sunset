@@ -24,7 +24,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private void Start()
     {
         // 일단 start에서 초기화 → 나중에 게임 매니저에서 관리
-        InitGameTime();
+        // 이 if문은 스타트씬에서 저장된 데이터를 로드했을때 호출이 되지않도록 만들어둔것입니다.
+        if (GlobalState.Index == 0)
+            InitGameTime();
     }
 
     private void Update()

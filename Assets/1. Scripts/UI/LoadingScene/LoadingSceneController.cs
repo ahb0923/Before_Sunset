@@ -27,6 +27,11 @@ public class LoadingSceneController : MonoBehaviour
         "팁: 이쁘게 봐주세요. 이것은 강요입니다.",
     };
     
+    private AsyncOperation _op;
+    private Coroutine _fadeCoroutine;
+    private Coroutine _loadingCoroutine;
+    private Tween _fade;
+    
     private const string LOADING_SCENE = "LoadingScene";
     private const string LOADING_BAR = "LoadingBar";
     //private const string LOADING_ANIMATOR = "LoadingAnimation";
@@ -47,8 +52,9 @@ public class LoadingSceneController : MonoBehaviour
     {
         _fadeImage.color = new Color(0, 0, 0, 0);
         _fadeImage.gameObject.SetActive(false);
-        
-        StartCoroutine(C_LoadSceneProcess());
+        _fadeCoroutine = null;
+        _loadingCoroutine = null;
+        _loadingCoroutine = StartCoroutine(C_LoadSceneProcess());
         ShowRandomTip();
         PlayRandomAnimation();
     }
@@ -59,6 +65,7 @@ public class LoadingSceneController : MonoBehaviour
         SceneManager.LoadScene(LOADING_SCENE);
     }
 
+    
     private IEnumerator C_LoadSceneProcess()
     {
         var initTask = GameManager.Instance.InitAsync();
@@ -72,21 +79,25 @@ public class LoadingSceneController : MonoBehaviour
         
         yield return initTask.AsCoroutine();
         
-        AsyncOperation op = SceneManager.LoadSceneAsync(NEXT_SCENE);
-        op.allowSceneActivation = false;
+        _op = SceneManager.LoadSceneAsync(NEXT_SCENE);
+        
+        if (_op == null)
+            Debug.Log("op없음");
+        
+        _op.allowSceneActivation = false;
 
         float timer = 0f;
         float minLoadingTime = 1f;
         
-        while (!op.isDone)
+        while (!_op.isDone)
         {
             yield return null;
 
             ShowPercentage();
             
-            if (op.progress < 0.9f)
+            if (_op.progress < 0.9f)
             {
-                _loadingBar.fillAmount = op.progress;
+                _loadingBar.fillAmount = _op.progress;
             }
             else
             {
@@ -97,22 +108,25 @@ public class LoadingSceneController : MonoBehaviour
                 {
                     yield return new WaitForSecondsRealtime(0.5f);
                     _loadingPercent.text = "100.00%";
-                    StartCoroutine(C_FadeOutBeforeScene(op));
+                    _fadeCoroutine = StartCoroutine(C_FadeOutBeforeScene(_op));
                     yield break;
                 }
             }
         }
     }
 
+    
     private IEnumerator C_FadeOutBeforeScene(AsyncOperation op)
     {
         float fadeDuration = 1f;
 
         _fadeImage.gameObject.SetActive(true);
         
-        Tween fade = _fadeImage.DOFade(1f, fadeDuration);
+        _fade = _fadeImage.DOFade(1f, fadeDuration);
 
-        yield return fade.WaitForCompletion();
+        yield return _fade.WaitForCompletion();
+        _fade.Kill();
+        _fade = null;
 
         op.allowSceneActivation = true;
     }
