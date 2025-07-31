@@ -154,7 +154,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 470364528, guid: bb5929e55704f8743ab70a48566dd396, type: 3}
+  m_Sprite: {fileID: -160894505, guid: cef8fb18647036c48a03d352d8940d9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -175,7 +175,7 @@ Animator:
   m_GameObject: {fileID: 2615177644808902849}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: f05e1f5b555a8fa41b96ddf2c27e3d54, type: 2}
+  m_Controller: {fileID: 22100000, guid: b5331f04dfb3cac4383910aafa51e069, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -284,7 +284,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.18460724}
+  m_Offset: {x: 0.002548799, y: -0.32640672}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -295,7 +295,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.41628575, y: 0.4692145}
+  m_Size: {x: 0.44177374, y: 0.35520065}
   m_EdgeRadius: 0
 --- !u!114 &3537268559729682308
 MonoBehaviour:
@@ -313,7 +313,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 8512
-  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: 7f15766bf9f35fc40a69f65c5a0306a1, type: 3}
+  <Projectile>k__BackingField: {fileID: 1135823945734847574, guid: d44b049223881e947bb8d4c8f96e8824, type: 3}
 --- !u!114 &1101116313627243319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +328,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _curState: 0
   _prevState: 0
+  _deadAnimDuration: 0.5
 --- !u!114 &8189292471688351104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 130
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5133519077431306552, guid: a8604a92f8a59574996ed448fc8d8746, type: 3}
       propertyPath: m_LocalPosition.x
