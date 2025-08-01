@@ -112,6 +112,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         if (_towerData != null)
         {
             UIManager.Instance.CraftMaterialArea.SetMaterialSlot(_towerData);
+            TooltipManager.Instance.ShowTooltip(_towerData.towerName, _towerData.flavorText);
         }
         else if (_smelterData != null)
         {
@@ -159,6 +160,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
                 }
                 if(checkRequirements)
                     BuildManager.Instance.StartPlacing(currentBuildID);
+                UIManager.Instance.CraftArea.Close();
             }
         }
         // 우클릭시

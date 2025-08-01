@@ -95,6 +95,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         else { ToastManager.Instance.ShowToast("해당 구역에는 설치할 수 없습니다."); }
 
         CancelPlacing();
+        UIManager.Instance.CraftArea.Open();
     }
     /// <summary>
     /// 1) tile의 유효성을 검사(tile이 존재하는지 & 설치가능한 지역인지)
