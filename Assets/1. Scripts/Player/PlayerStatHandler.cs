@@ -9,22 +9,22 @@ public class PlayerStatHandler : MonoBehaviour
     public EquipmentDatabase Pickaxe => (EquipmentDatabase)InventoryManager.Instance.Inventory.Pickaxe.Data;
 
     // 기본 스텟
-    [SerializeField] private float _baseMoveSpeed = 2.0f;
+    private float _baseMoveSpeed = 3.0f;
     private float _baseMiningSpeed = 1.0f;
     private float _baseDropRate = 1.0f;
     private float _baseSightRange = 5.0f;
 
     // 업그레이드 반영
-    private float _currentMoveSpeedMultiplier = 1.0f;
-    private float _currentMiningSpeedMultiplier = 1.0f;
+    private float _currentMoveSpeedBonus = 0.5f;
+    private float _currentMiningSpeedBonus = 0.5f;
     private float _currentDropRateBonus = 0.0f;
-    private float _currentSightRangeMultiplier = 1.0f;
+    private float _currentSightRangeBonus = 1.0f;
 
     // 최종 스탯 프로퍼티들
-    public float MoveSpeed => _baseMoveSpeed * _currentMoveSpeedMultiplier;
-    public float MiningSpeed => _baseMiningSpeed * _currentMiningSpeedMultiplier;
+    public float MoveSpeed => _baseMoveSpeed + _currentMoveSpeedBonus;
+    public float MiningSpeed => _baseMiningSpeed + _currentMiningSpeedBonus;
     public float DropRate => _baseDropRate + _currentDropRateBonus;
-    public float SightRange => _baseSightRange * _currentSightRangeMultiplier;
+    public float SightRange => _baseSightRange + _currentSightRangeBonus;
 
     private void Awake()
     {
@@ -59,31 +59,31 @@ public class PlayerStatHandler : MonoBehaviour
 
     private void ResetToBaseStats()
     {
-        _currentMoveSpeedMultiplier = 1.0f;
-        _currentMiningSpeedMultiplier = 1.0f;
+        _currentMoveSpeedBonus = 0.0f;
+        _currentMiningSpeedBonus = 0.0f;
         _currentDropRateBonus = 0.0f;
-        _currentSightRangeMultiplier = 1.0f;
+        _currentSightRangeBonus = 0.0f;
     }
 
     // 업그레이드 적용 메서드들
     public void ApplyMoveSpeedUpgrade(float increaseRate)
     {
-        _currentMoveSpeedMultiplier = 1.0f + increaseRate;
+        _currentMoveSpeedBonus = increaseRate;
     }
 
     public void ApplyMiningSpeedUpgrade(float increaseRate)
     {
-        _currentMiningSpeedMultiplier = 1.0f + increaseRate;
+        _currentMiningSpeedBonus = increaseRate;
     }
 
     public void ApplyDropRateUpgrade(float increaseRate)
     {
-        _currentDropRateBonus += increaseRate;
+        _currentDropRateBonus = increaseRate;
     }
 
     public void ApplySightRangeUpgrade(float increaseRate)
     {
-        _currentSightRangeMultiplier = 1.0f + increaseRate;
+        _currentSightRangeBonus = increaseRate;
 
         float finalRange = SightRange;
 

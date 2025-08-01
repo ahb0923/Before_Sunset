@@ -71,13 +71,26 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         }
     }
     
+    public void StopSmelting()
+    {
+        if (_smeltCoroutine != null)
+        {
+            StopCoroutine(_smeltCoroutine);
+            _smeltCoroutine = null;
+        }
+        
+        isSmelting = false;
+        OnSmeltingProgress?.Invoke(0);
+        RefreshUI();
+    }
+    
     /// <summary>
     /// 제련 메서드
     /// </summary>
     /// <param name="mineralData"></param>
     /// <returns></returns>
     private IEnumerator C_Smelt(MineralDatabase mineralData, float smeltedTime)
-    {   
+    {
         isSmelting = true;
 
         float duration = mineralData.smeltingTime;
@@ -85,6 +98,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
 
         while (elapsed < duration)
         {
+            if (InputItem == null) yield break;
             elapsed += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsed / duration);
 
@@ -103,6 +117,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         {
             OutputItem = new Item(DataManager.Instance.ItemData.GetById(mineralData.ingotId));
         }
+
         OutputItem.stack++;
         _smeltCoroutine = null;
         OnSmeltingProgress?.Invoke(0);
@@ -133,7 +148,10 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
     public void SetInputItem(Item item, float smeltedTime = 0f)
     {
         InputItem = item;
-        TrySmelt();
+        if (InputItem == null)
+            StopSmelting();
+        else
+            TrySmelt();
     }
 
     /// <summary>

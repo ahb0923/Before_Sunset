@@ -5,7 +5,7 @@ using UnityEngine;
 public class ClearRewardDatabase
 {
     public int stageId;
-    public string jewelReward;
+    public List<string> jewelReward;
     public int minQuantity;
     public int maxQuantity;
     public int essenceShardReward;
