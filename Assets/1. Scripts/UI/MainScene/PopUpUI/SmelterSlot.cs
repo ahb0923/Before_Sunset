@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -174,6 +175,17 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void SetItem(Item item)
     {
         _currentSmelter.SetInputItem(item);
+    }
+
+    private void OnDisable()
+    {
+        if (_tween != null)
+        {
+            _tween.Kill();
+            _tween = null;
+        }
+        _highlightImage.color = new Color(1f, 1f, 0f, 0f);
+        _highlight.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

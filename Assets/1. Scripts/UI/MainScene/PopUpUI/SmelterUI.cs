@@ -55,14 +55,27 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void Open(Smelter smelter)
     {
+        _currentSmelter = smelter;
+        UIManager.Instance.OpenUI(this);
+    }
+
+    public void Open()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
         if (_currentSmelter != null)
         {
             _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
         }
         
-        
-        _currentSmelter = smelter;
-        UIManager.Instance.OpenUI(this);
         SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();
         InventoryManager.Instance.Inventory.QuickSlotInventoryUI.Close();
@@ -78,21 +91,6 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
         {
             ActivateReceiveButton();
         }
-        
-    }
-
-    public void Open()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void Close()
-    {
-        UIManager.Instance.CloseUI(this);
-    }
-
-    public void OpenUI()
-    {
         _rect.OpenAtCenter();
     }
 

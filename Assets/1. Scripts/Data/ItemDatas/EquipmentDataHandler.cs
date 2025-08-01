@@ -9,7 +9,7 @@ public class EquipmentDataHandler : BaseDataHandler<EquipmentDatabase>
     protected override string GetName(EquipmentDatabase data) => data.itemName;
 
     private Dictionary<int, Sprite> _spriteDictionary = new();
-    public Dictionary<int, Sprite> spriteDictionary => _spriteDictionary;
+    public Dictionary<int, Sprite> SpriteDictionary => _spriteDictionary;
 
     protected override void AfterLoaded()
     {
@@ -32,5 +32,11 @@ public class EquipmentDataHandler : BaseDataHandler<EquipmentDatabase>
             }
         }
         Debug.Log($"[Setting Prefab] 전체 장비(곡괭이) 이미지 데이터 ({_spriteDictionary.Count}개):");
+    }
+
+    public Sprite GetSpriteById(int id)
+    {
+        SpriteDictionary.TryGetValue(id, out Sprite sprite);
+        return sprite;
     }
 }

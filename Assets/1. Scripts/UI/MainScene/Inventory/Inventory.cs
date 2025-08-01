@@ -12,6 +12,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     [field: SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
     [SerializeField] private Button _inventoryButton;
     private HashSet<int> _addedSlotIndex = new HashSet<int>();
+    public bool IsInventoryFull { get; private set; } = false;
 
     private const string SORT_BUTTON = "SortButton";
     private const string INVENTORY_BUTTON = "InventoryButton";
@@ -139,8 +140,15 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
         QuickSlotInventoryUI.RefreshUI(Items);
         foreach (var index in _addedSlotIndex)
         {
-            InventoryUI.itemSlots[index].AddAnimation();
-            QuickSlotInventoryUI.quickSlots[index].AddAnimation();
+            if (index < QuickSlotInventoryUI.quickSlots.Count)
+            {
+                InventoryUI.itemSlots[index].AddAnimation();
+                QuickSlotInventoryUI.quickSlots[index].AddAnimation();
+            }
+            else
+            {
+                InventoryUI.itemSlots[index].AddAnimation();
+            }
         }
         _addedSlotIndex.Clear();
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
@@ -173,7 +181,8 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
             int emptyIndex = GetEmptySlotIndex();
             if (emptyIndex == -1)
             {
-                Debug.LogWarning("추가 불가능");
+                ToastManager.Instance.ShowToast("인벤토리가 가득 찼습니다.");
+                IsInventoryFull = true;
             }
             else
             {
@@ -206,7 +215,8 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
         int emptyIndex = GetEmptySlotIndex();
         if (emptyIndex == -1)
         {
-            Debug.LogWarning("추가 불가능");
+            ToastManager.Instance.ShowToast("인벤토리가 가득 찼습니다.");
+            IsInventoryFull = true;
         }
         else
         {
@@ -291,7 +301,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
 
-        ToastManager.Instance.ShowToast("정렬 완료!!");
+        ToastManager.Instance.ShowToast("정렬 완료");
     }
 
     /// <summary>

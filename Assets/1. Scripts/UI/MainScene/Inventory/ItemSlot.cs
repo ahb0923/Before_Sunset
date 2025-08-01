@@ -13,7 +13,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] private GameObject _highlight;
     [SerializeField] private TextMeshProUGUI _itemAmountText;
     
-    [SerializeField] private float _scaleAmount = 1.2f;
+    [SerializeField] private float _scaleAmount = 1.5f;
     [SerializeField] private float _scaleDuration = 0.3f;
     private Tween _tween;
     private Sequence _sequence;
@@ -90,7 +90,16 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _sequence.Kill();
             _sequence = null;
+            _itemRect.localScale = Vector3.one;
         }
+        
+        if (_tween != null)
+        {
+            _tween.Kill();
+            _tween = null;
+        }
+        _highlightImage.color = new Color(1f, 1f, 0f, 0f);
+        _highlight.SetActive(false);
     }
 
     private void SetImage(Item item)

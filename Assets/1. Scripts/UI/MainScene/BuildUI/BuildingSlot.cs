@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 using UnityEngine.Serialization;
 
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
@@ -66,8 +67,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             currentBuildID = data.id;
 
             buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(currentBuildID);
-
-            // _buildingIcon.sprite = Helper_Component.FindChildComponent<SpriteRenderer>(buildingPrefab.transform, "Image").sprite;
+            
             _buildingIcon.sprite = Helper_Component.GetComponentInChildren<SpriteRenderer>(buildingPrefab).sprite;
             _buildingIcon.preserveAspect = true;
             _buildingName.text = data.smelterName;
@@ -178,11 +178,22 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         if (_tween != null)
         {
             _tween.Kill();
+            _tween = null;
         }
         
         _tween = bgImage.DOColor(_originalColor, 0.2f);
         
         TooltipManager.Instance.HideTooltip();
         UIManager.Instance.CraftMaterialArea.Close();
+    }
+
+    private void OnDisable()
+    {
+        if (_tween != null)
+        {
+            _tween.Kill();
+            _tween = null;
+        }
+        bgImage.color = _originalColor;
     }
 }
