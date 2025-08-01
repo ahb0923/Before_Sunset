@@ -23,6 +23,9 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private SpawnManager _spawnManager;
 
+    [SerializeField] private Transform _itemParent;
+    public Transform ItemParent => _itemParent.transform;
+
     protected override void Awake()
     {
         base.Awake();
@@ -50,6 +53,14 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
                 _core = coreGO.transform;
             else
                 Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
+        }
+        if(_itemParent == null)
+        {
+            GameObject itemParentObj = GameObject.Find("ItemParent");
+            if(itemParentObj != null)
+                _itemParent = itemParentObj.transform;
+            else
+                Debug.LogError("[MapManager] ItemParent 오브젝트를 찾을 수 없습니다.");
         }
 
         _baseMap.SetActive(true);
@@ -370,7 +381,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     }
 
     /// <summary>
-    /// 맵 링크 데이터 저장
+    /// 맵 링크 데이터 / 드랍 아이템 저장
     /// </summary>
     public void SaveData(GameData data)
     {
@@ -390,10 +401,19 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
 
         data.playerPosition = _player.transform.position;
+
+        foreach(var obj in _itemParent.GetComponentsInChildren<Transform>())
+        {
+            if(obj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                DropItemSaveData item = new DropItemSaveData(poolable.GetId(), obj.position);
+                data.dropItems.Add(item);
+            }
+        }
     }
 
     /// <summary>
-    /// 맵 링크 데이터 로드
+    /// 맵 링크 데이터 / 드랍 아이템 로드
     /// </summary>
     public void LoadData(GameData data)
     {
@@ -415,6 +435,25 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         foreach(var pair in data.mapLinks.portalMapLinks)
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;
+        }
+
+        // 떨어져 있는 드랍 아이템들 비활성화
+        foreach (var obj in _itemParent.GetComponentsInChildren<Transform>())
+        {
+            if (obj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                PoolManager.Instance.ReturnToPool(poolable.GetId(), obj.gameObject);
+            }
+        }
+
+        // 로드한 드랍 아이템 활성화
+        foreach (var item in data.dropItems)
+        {
+            GameObject obj = PoolManager.Instance.GetFromPool(item.id, item.position, _itemParent);
+            if(obj.TryGetComponent<JewelController>(out var jewel))
+            {
+                jewel.Interact();
+            }
         }
     }
 

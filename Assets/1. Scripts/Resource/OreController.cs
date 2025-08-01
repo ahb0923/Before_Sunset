@@ -130,7 +130,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         Vector3 spawnPos = transform.position + positionOffset;
 
-        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos);
+        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos, MapManager.Instance.ItemParent);
 
         if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
         {
