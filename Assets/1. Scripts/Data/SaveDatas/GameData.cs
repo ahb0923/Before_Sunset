@@ -52,14 +52,18 @@ public class GameData
     public TimeSaveData timeData;
     public string lastSaveDateTime;
 
+    // 5. 업그레이드 관련 : 코어 & 플레이어 업그레이드 정보 / 샤드 개수
+    public EssenceSaveData esenceSaveData;
+
     // 생성 시 기본적인 리스트만 초기화 (인벤토리 세이브 데이터도 안에는 리스트 초기화임)
     public GameData()
     {
         inventory = new InventorySaveData();
         constructedTowers = new List<TowerSaveData>();
         constructedSmelters = new List<SmelterSaveData>();
+        mapLinks = new MapLinkSaveData();
         spawnedMines = new List<MineSaveData>();
         lastSaveDateTime = DateTime.UtcNow.ToString("o");
-        mapLinks = new MapLinkSaveData();
+        esenceSaveData = new EssenceSaveData();
     }
 }

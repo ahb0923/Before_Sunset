@@ -188,7 +188,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
             if (constructed.TryGetComponent<TowerStatHandler>(out var tower))
             {
                 // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
-                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, BUILDING_TYPE.Normal, (int)tower.CurrHp);
+                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, tower.BuildType, (int)tower.CurrHp);
                 data.constructedTowers.Add(towerData);
             }
             else if(constructed.TryGetComponent<Smelter>(out var smelter))
@@ -237,20 +237,23 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         // 로드된 타워 설치
         foreach (TowerSaveData towerData in data.constructedTowers)
         {
-            GameObject obj = PoolManager.Instance.GetFromPool(towerData.towerId, towerData.position);
+            GameObject obj = PoolManager.Instance.GetFromPool(towerData.towerId, towerData.position, BuildManager.Instance.BuildablePool);
             AddObstacle(obj.transform, 1); // 타워 & 제련소 사이즈 현재는 1
 
             if (obj.TryGetComponent<TowerStatHandler>(out var tower))
             {
                 tower.CurrHp = towerData.curHp;
-                // 일단, 업그레이드 관련 정보가 없어서 로드는 안하고 있음
+                if(towerData.upgrade == TOWER_BUILD_TYPE.Upgrade)
+                {
+                    tower.UpgradeTowerStat();
+                }
             }
         }
 
         // 로드된 제련소 설치
         foreach (SmelterSaveData smelterData in data.constructedSmelters)
         {
-            GameObject obj = PoolManager.Instance.GetFromPool(smelterData.smelterId, smelterData.position);
+            GameObject obj = PoolManager.Instance.GetFromPool(smelterData.smelterId, smelterData.position, BuildManager.Instance.BuildablePool);
             AddObstacle(obj.transform, 1); // 타워 & 제련소 사이즈 현재는 1
 
             if (obj.TryGetComponent<Smelter>(out var smelter))

@@ -8,6 +8,7 @@ public class BuildManager : MonoSingleton<BuildManager>
 {
     [SerializeField] private LayerMask _buildingLayer;
     [SerializeField] private Transform _buildablePool;
+    public Transform BuildablePool => _buildablePool;
 
     private Tilemap _groundTilemap;
     private GameObject _buildPrefab;
