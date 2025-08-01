@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Smelter : MonoBehaviour, IPoolable, IDamageable
+public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 {
     public int smelterID;
     public SmelterDatabase smelterData;
@@ -192,5 +192,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
 
         StopAllCoroutines();
         PoolManager.Instance.ReturnToPool(smelterID, gameObject);
+    }
+
+    public void Interact()
+    {
+        UIManager.Instance.SmelterUI.Open();
+    }
+
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
+    {
+        return true;
     }
 }

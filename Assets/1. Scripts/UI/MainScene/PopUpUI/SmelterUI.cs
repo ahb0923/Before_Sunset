@@ -83,6 +83,7 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void Open()
     {
+        AudioManager.Instance.PlaySFX("OpenSmelter");
         throw new System.NotImplementedException();
     }
 

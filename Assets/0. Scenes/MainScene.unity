@@ -735,9 +735,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6590933842250423535, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
-      propertyPath: mainCamera
-      value: 
-      objectReference: {fileID: 969134075631786501}
+      propertyPath: interactableLayerMask.m_Bits
+      value: 3158272
+      objectReference: {fileID: 0}
     - target: {fileID: 7508487163038984533, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_Name
       value: Player

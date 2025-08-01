@@ -167,7 +167,7 @@ public class BaseMapSpawner : MonoBehaviour
         {
             for (float y = startY; y < bounds.max.y; y += _tileSize)
             {
-                Vector3 tileCenter = new Vector3(x, y, 0f);
+                Vector3 tileCenter = new Vector3(x + 0.5f, y + 0.5f, 0f);
                 if (bounds.Contains(tileCenter))
                 {
                     potentialTileCenters.Add(tileCenter);

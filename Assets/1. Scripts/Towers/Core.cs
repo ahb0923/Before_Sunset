@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Core : MonoBehaviour, IDamageable, ISaveable
+public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
 {
     [SerializeField] private int _size;
     public int Size => _size;
@@ -20,6 +20,16 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
         _spriter = GetComponentInChildren<SpriteRenderer>();
         _statHandler = GetComponent<CoreStatHandler>();
         SetFullHp();
+    }
+
+    public void Interact()
+    {
+        UIManager.Instance.UpgradeUI.Open();
+    }
+
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
+    {
+        return true;
     }
 
     /// <summary>

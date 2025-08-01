@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingCoroutine;
     private Coroutine _swingLoopCoroutine;
     private bool _isSwingButtonHeld = false;
+    private bool _wasPointerOverUIOnSwingStart = false;
 
     private bool _isSwing => _swingCoroutine != null;
 
@@ -41,7 +43,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling) return;
+        if (_isRecalling || BuildManager.Instance.IsPlacing) return;
+
+        _wasPointerOverUIOnSwingStart = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+
+        if (_wasPointerOverUIOnSwingStart) return;
 
         _isSwingButtonHeld = true;
 
@@ -152,6 +158,12 @@ public class PlayerController : MonoBehaviour
     {
         // UI 클릭 체크
         if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
+
+        if (_wasPointerOverUIOnSwingStart)
         {
             _swingCoroutine = null;
             yield break;
