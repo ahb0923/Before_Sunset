@@ -19,9 +19,11 @@ public class BaseMapSpawner : MonoBehaviour
     private HashSet<Vector3> _usedTilePositions = new();
 
     private Transform _baseResourceParent;
+    private int _wallLayer;
 
     private void Start()
     {
+        _wallLayer = LayerMask.NameToLayer("Wall");
         StartCoroutine(WaitForInit());
     }
 
@@ -86,13 +88,13 @@ public class BaseMapSpawner : MonoBehaviour
                 {
                     case 0:
                         SpawnJewels(bounds, 2);
-                        SpawnOres(bounds, 2, 2, 3, 5, 7);
+                        SpawnOres(bounds, 0, 0, 0, 8, 10);
                         break;
                     case 1:
-                        SpawnOres(bounds, 5, 10, 20, 20, 5);
+                        SpawnOres(bounds, 3, 5, 25, 20, 5);
                         break;
                     case 2:
-                        SpawnOres(bounds, 55, 35, 20, 5, 0);
+                        SpawnOres(bounds, 59, 40, 0, 0, 0);
                         break;
                 }
             }
@@ -154,7 +156,7 @@ public class BaseMapSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// 영역 내에서 타일 중앙 위치 중복x
+    /// 영역 내에서 타일 중앙 위치 중복x, Wall 레이어 제외
     /// </summary>
     private Vector3? GetRandomTileCenterPosition(Bounds bounds)
     {
@@ -168,7 +170,7 @@ public class BaseMapSpawner : MonoBehaviour
             for (float y = startY; y < bounds.max.y; y += _tileSize)
             {
                 Vector3 tileCenter = new Vector3(x + 0.5f, y + 0.5f, 0f);
-                if (bounds.Contains(tileCenter))
+                if (bounds.Contains(tileCenter) && !IsPositionOnWallLayer(tileCenter))
                 {
                     potentialTileCenters.Add(tileCenter);
                 }
@@ -187,5 +189,16 @@ public class BaseMapSpawner : MonoBehaviour
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// 해당 위치가 Wall 레이어의 콜라이더와 겹치는지 확인
+    /// </summary>
+    private bool IsPositionOnWallLayer(Vector3 position)
+    {
+        if (_wallLayer < 0) return false;
+
+        Collider2D wallCollider = Physics2D.OverlapPoint(position, 1 << _wallLayer);
+        return wallCollider != null;
     }
 }

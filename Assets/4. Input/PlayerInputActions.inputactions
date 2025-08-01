@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "143538fb-6aa4-4b15-8444-0a1a4de0ef98",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -82,8 +91,8 @@
                 },
                 {
                     "name": "",
-                    "id": "ef5c74cf-375c-42a3-b859-3489634eff4a",
-                    "path": "<Keyboard>/space",
+                    "id": "75a3a18b-13f5-4635-97b8-0c107b256712",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -93,12 +102,12 @@
                 },
                 {
                     "name": "",
-                    "id": "75a3a18b-13f5-4635-97b8-0c107b256712",
-                    "path": "<Mouse>/leftButton",
+                    "id": "25f9283d-5037-40e6-810b-f435504b582e",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Swing",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

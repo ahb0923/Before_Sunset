@@ -39,6 +39,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
         if(Day == _maxDay - 1 && IsNight && !_isSpawned)
         {
+            Recall();
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
         }
@@ -154,5 +155,17 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     public void LoadData(GameData data)
     {
         InitGameTime(data.timeData.dailyTime, data.timeData.day, data.timeData.stage);
+    }
+
+    private void Recall()
+    {
+        BasePlayer player = FindObjectOfType<BasePlayer>();
+        if (player.IsInBase)
+        {
+            Debug.Log("기지에요");
+            return;
+        }
+
+        player.InputHandler.StartRecall();
     }
 }

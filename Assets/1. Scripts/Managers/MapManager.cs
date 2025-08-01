@@ -338,6 +338,41 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         return mapInstance.transform.position;
     }
 
+    /// <summary>
+    /// 맵 초기화
+    /// </summary>
+    public void ResetAllMaps()
+    {
+        // 활성화 맵 풀 반환
+        foreach (var kvp in _activeMapInstances)
+        {
+            if (kvp.Key != 0 && _mapPrefabIdMap.ContainsKey(kvp.Key))
+            {
+                int prefabId = _mapPrefabIdMap[kvp.Key];
+                PoolManager.Instance.ReturnToPool(prefabId, kvp.Value);
+            }
+            else if (kvp.Key != 0)
+            {
+                kvp.Value.SetActive(false);
+            }
+        }
+
+        // 초기화
+        _activeMapInstances.Clear();
+        _mapHistory.Clear();
+        _mapPrefabIdMap.Clear();
+        _portalMapLinks.Clear();
+        _interactableStates.Clear();
+
+        CurrentMapIndex = 0;
+        _nextMapIndex = 1;
+
+        if (PortalManager.Instance != null)
+        {
+            PortalManager.Instance.LastEnteredPortalDirection = null;
+        }
+    }
+
     private void ChangeMapBGM(int mapIndex)
     {
         if (mapIndex == 0)

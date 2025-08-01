@@ -18,16 +18,11 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public event Action<float> OnSmeltingProgress;
     public float elapsed = 0f;
 
-    [SerializeField] private Smelter_Interaction _interaction;
-
     public SpriteRenderer spriteRenderer;
     
     private void Awake()
     {
         smelterData = DataManager.Instance.SmelterData.GetById(smelterID);
-        if(_interaction==null)
-            _interaction = Helper_Component.GetComponentInChildren<Smelter_Interaction>(gameObject);
-        _interaction.Init(this);
         if (_buildInfo == null)
             _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
         _buildInfo.Init(smelterID, size);
@@ -196,7 +191,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 
     public void Interact()
     {
-        UIManager.Instance.SmelterUI.Open();
+        UIManager.Instance.SmelterUI.Open(this);
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)

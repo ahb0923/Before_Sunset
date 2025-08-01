@@ -16,7 +16,7 @@
     "spriteName": "Tower_Cooper_Sprite",
     "prefabName": "Tower_Cooper",
     "buildRequirements": {
-      "구리주괴": 15
+      "구리주괴": 10
     }
   },
   {
@@ -37,7 +37,7 @@
     "prefabName": null,
     "buildRequirements": {
       "구리주괴": 15,
-      "철주괴": 20
+      "철주괴": 5
     }
   },
   {
@@ -52,13 +52,13 @@
     "level": 1,
     "towerHp": 50.0,
     "damage": 8.0,
-    "aps": 2.0,
+    "aps": 2.3,
     "range": 5.0,
     "spriteName": "Tower_Iron_Sprite",
     "prefabName": "Tower_Iron",
     "buildRequirements": {
       "구리주괴": 10,
-      "철주괴": 30
+      "철주괴": 15
     }
   },
   {
@@ -78,7 +78,7 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "은주괴": 20,
+      "은주괴": 15,
       "철주괴": 30
     }
   },
@@ -86,7 +86,7 @@
     "id": 420,
     "towerName": "전깃줄 타워",
     "flavorText": "작성예정",
-    "buildType": 0,
+    "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": 461,
     "projectileId": null,
@@ -127,7 +127,7 @@
   {
     "id": 430,
     "towerName": "다이아 프리즘",
-    "flavorText": "통통통통통통통통통 사후르",
+    "flavorText": "고대 마법이 깃든 보석들로 만든 공격수단.\n적을 타격한 뒤, 주위 적에게 튕겨 피해를 입힌다.",
     "buildType": 0,
     "attackType": 0,
     "nextUpgradeId": 431,
@@ -148,7 +148,7 @@
   {
     "id": 431,
     "towerName": "다이아 프리즘+",
-    "flavorText": "작성예정",
+    "flavorText": "마법의 힘이 충만해진 개량형 다이아 프리즘.\n적을 타격한 뒤, 주위 적에게 더 많은 피해를 튕겨낸다.",
     "buildType": 1,
     "attackType": 0,
     "nextUpgradeId": null,
@@ -169,7 +169,7 @@
   {
     "id": 440,
     "towerName": "재생 타워",
-    "flavorText": "다친 타워 3개까지 고침 ㄹㅇ(코어는 못함 ㅋ)",
+    "flavorText": "옥의 생명력을 이용한 회복 장치.\n가장 많은 피해를 입은 타워 3개를 선택해 치료한다.",
     "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 441,
@@ -184,13 +184,13 @@
     "prefabName": "Tower_Heal",
     "buildRequirements": {
       "옥": 5,
-      "철주괴": 20
+      "철주괴": 15
     }
   },
   {
     "id": 441,
     "towerName": "재생 타워+",
-    "flavorText": "작성예정",
+    "flavorText": "옥의 생명력을 응축한 개량형 재생 타워.\n보다 높은 회복력으로 아군 타워를 치료한다.",
     "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": null,
@@ -211,7 +211,7 @@
   {
     "id": 450,
     "towerName": "자력 타워",
-    "flavorText": "몬스터 고장내기 1황",
+    "flavorText": "자수정의 자력을 활용한 견제형 타워.\n근처의 적을 끌어당겨 진형을 흐트려 놓는다.",
     "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 451,
@@ -225,14 +225,14 @@
     "spriteName": "Tower_Magnet_Sprite",
     "prefabName": "Tower_Magnet",
     "buildRequirements": {
-      "금주괴": 20,
+      "금주괴": 15,
       "자수정": 4
     }
   },
   {
     "id": 451,
     "towerName": "자력 타워+",
-    "flavorText": "작성예정",
+    "flavorText": "강한 자력으로 개량 된 자력 타워.\n더 넓은 범위의 적을 끌어당긴다.",
     "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": null,
@@ -246,14 +246,14 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "금주괴": 30,
+      "금주괴": 20,
       "자수정": 8
     }
   },
   {
     "id": 460,
     "towerName": "토파즈 필드",
-    "flavorText": "감전 타워",
+    "flavorText": "토파즈의 예리함을 닮아 적의 약점을 감지하는 타워.\n피격 된 적에게 취약 상태를 부여해 추가 피해를 받도록 한다.",
     "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 461,
@@ -274,7 +274,7 @@
   {
     "id": 461,
     "towerName": "토파즈 필드+",
-    "flavorText": "감전 타워",
+    "flavorText": "토파즈의 예리함을 극대화 한 개량형 토파즈 필드.\n취약 상태의 지속 시간이 늘어나고 피해량이 증가한다.",
     "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": null,
@@ -288,14 +288,14 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "금주괴": 40,
+      "금주괴": 30,
       "토파즈": 10
     }
   },
   {
     "id": 470,
     "towerName": "아쿠아마린 필드",
-    "flavorText": "빙결 타워",
+    "flavorText": "아쿠아마린의 찬 기운을 활용한 타워.\n적의 이동속도를 일시적으로 감소시킨다.",
     "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 471,
@@ -316,7 +316,7 @@
   {
     "id": 471,
     "towerName": "아쿠아마린 필드+",
-    "flavorText": "빙결 타워",
+    "flavorText": "냉기의 힘이 강화 된 개량형 아쿠아 필드.\n강화 된 지속시간과 감속능력으로 적을 방해한다.",
     "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": null,
@@ -330,14 +330,14 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "금주괴": 40,
+      "금주괴": 30,
       "아쿠아마린": 10
     }
   },
   {
     "id": 480,
     "towerName": "루비 필드",
-    "flavorText": "화상 타워",
+    "flavorText": "루비의 열기를 담아 적을 태워내는 타워.\n피격 된 적에게 일정 시간 동안 지속 피해를 입힌다.",
     "buildType": 0,
     "attackType": 1,
     "nextUpgradeId": 481,
@@ -358,7 +358,7 @@
   {
     "id": 481,
     "towerName": "루비 필드+",
-    "flavorText": "화상 타워",
+    "flavorText": "강한 열기로 주변을 뜨겁게 달구는 개량형 루비 필드.\n더 강한 지속 피해를 입힌다.",
     "buildType": 1,
     "attackType": 1,
     "nextUpgradeId": null,
@@ -372,7 +372,7 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "금주괴": 40,
+      "금주괴": 30,
       "루비": 10
     }
   }
