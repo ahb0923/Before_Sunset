@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 394897764748576237}
   - component: {fileID: 8436871664904391964}
   m_Layer: 5
-  m_Name: BestRecordText
+  m_Name: FailBestRecordText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22409,7 +22409,7 @@ GameObject:
   - component: {fileID: 2883869777609786481}
   - component: {fileID: 5048888902444132425}
   m_Layer: 5
-  m_Name: CurrentRecordText
+  m_Name: FailCurrentRecordText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26659,6 +26659,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4482578017959434970}
+  - component: {fileID: 5601815348706323656}
   m_Layer: 5
   m_Name: ResultUI
   m_TagString: Untagged
@@ -26687,6 +26688,30 @@ RectTransform:
   m_AnchoredPosition: {x: 2246, y: 2326}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5601815348706323656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424933822270587093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e00d33fb312606439e5a60ff3267ef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clearResultRect: {fileID: 8033584273974703594}
+  _bestRecordText: {fileID: 5654413973375234474}
+  _currentRecordText: {fileID: 5032543625332006580}
+  _slotArea: {fileID: 4045002077320391243}
+  _slotPrefab: {fileID: 8035240939471779267, guid: 30c770e1ca7a3d24c9f6e6e1fb10ad3b, type: 3}
+  _slots: []
+  _rewardButton: {fileID: 3666940630368854770}
+  _failResultRect: {fileID: 2735619265829437016}
+  _failBestRecordText: {fileID: 8436871664904391964}
+  _failCurrentRecordText: {fileID: 5048888902444132425}
+  _loadButton: {fileID: 1279842856867071165}
+  _exitButton: {fileID: 2429671794942024625}
 --- !u!1 &8454722428661029064
 GameObject:
   m_ObjectHideFlags: 0

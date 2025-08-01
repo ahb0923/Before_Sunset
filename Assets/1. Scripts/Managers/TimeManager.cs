@@ -7,7 +7,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private int _realSecDayLength => _realMinDayLength * 60;
     [SerializeField] private int _maxDay = 5;
     public int MaxDay => _maxDay;
-    [SerializeField] private int _maxStage = 10;
+    private int _maxStage;
 
     private float _dailyTimer;
     public bool IsNight => _dailyTimer >= _realSecDayLength * 0.5f;
@@ -22,6 +22,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     private void Start()
     {
+        _maxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
         // 일단 start에서 초기화 → 나중에 게임 매니저에서 관리
         // 이 if문은 스타트씬에서 저장된 데이터를 로드했을때 호출이 되지않도록 만들어둔것입니다.
         if (GlobalState.Index == 0)
@@ -41,6 +42,12 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         {
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
+        }
+
+        if (IsStageClear && !UIManager.Instance.ResultUI.IsOpen && !UIManager.Instance.ResultUI.StageRewarded[Stage])
+        {
+            PauseGame(true);
+            UIManager.Instance.ResultUI.OpenClear(Stage);
         }
     }
 
@@ -74,6 +81,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             {
                 // 패배 시에 일시 정지 & 엔티티 움직임 정지
                 PauseGame(true);
+                UIManager.Instance.ResultUI.OpenFail();
             }
         }
         else
@@ -88,9 +96,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// <summary>
     /// 다음 스테이지로 변경
     /// </summary>
-    private void NextStage()
+    public void NextStage()
     {
-        if(Stage == _maxStage)
+        if(Stage == _maxStage + 1)
         {
             PauseGame(true);
             // 승리

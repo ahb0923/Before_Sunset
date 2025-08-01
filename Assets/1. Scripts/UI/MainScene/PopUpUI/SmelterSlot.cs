@@ -358,7 +358,8 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
         RefreshUI();
         
-        TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
+        if (DragManager.DraggingItem != null)
+            TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
 
         DragManager.Clear();
     }

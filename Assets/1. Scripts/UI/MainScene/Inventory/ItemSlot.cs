@@ -306,7 +306,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
         smelterSlot.RefreshUI();
         
-        TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
+        if (DragManager.DraggingItem != null)
+            TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
 
         DragManager.Clear();
     }
