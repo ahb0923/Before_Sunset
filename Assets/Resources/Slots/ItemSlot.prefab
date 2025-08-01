@@ -203,10 +203,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b51fcb679ab76942a4d2db3dbd21b3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _itemRect: {fileID: 4167954544713788875}
   _itemImage: {fileID: 4019141032180033023}
   _highlightImage: {fileID: 6375778393819978029}
   _highlight: {fileID: 4686439691879044362}
   _itemAmountText: {fileID: 5107309572671174926}
+  _scaleAmount: 1.5
 --- !u!222 &2148054424183753749
 CanvasRenderer:
   m_ObjectHideFlags: 0

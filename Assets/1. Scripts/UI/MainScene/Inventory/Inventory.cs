@@ -11,6 +11,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     [field: SerializeField] public InventoryUI InventoryUI { get; private set; }
     [field: SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
     [SerializeField] private Button _inventoryButton;
+    private HashSet<int> _addedSlotIndex = new HashSet<int>();
 
     private const string SORT_BUTTON = "SortButton";
     private const string INVENTORY_BUTTON = "InventoryButton";
@@ -136,6 +137,12 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
 
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        foreach (var index in _addedSlotIndex)
+        {
+            InventoryUI.itemSlots[index].AddAnimation();
+            QuickSlotInventoryUI.quickSlots[index].AddAnimation();
+        }
+        _addedSlotIndex.Clear();
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
     }
 
@@ -156,6 +163,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
             if (Items[i].Data.itemName == item.Data.itemName)
             {
                 savedItem = Items[i];
+                _addedSlotIndex.Add(i);
                 break;
             }
         }
@@ -171,6 +179,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
             {
                 item.stack += quantity;
                 Items[emptyIndex] = item;
+                _addedSlotIndex.Add(emptyIndex);
             }
         }
         // 기존에 겹칠수 있는 아이템이 있을 경우
@@ -202,6 +211,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
         else
         {
             Items[emptyIndex] = item;
+            _addedSlotIndex.Add(emptyIndex);
         }
     }
 
