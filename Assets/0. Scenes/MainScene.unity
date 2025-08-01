@@ -694,6 +694,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1462642776862271142, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1462642776862271142, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.06
@@ -1595,6 +1603,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1330875540549330006, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: _maxHp
+      value: 50000
+      objectReference: {fileID: 0}
     - target: {fileID: 2228362763006179773, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_Follow
       value: 
@@ -1610,6 +1622,14 @@ PrefabInstance:
     - target: {fileID: 2858331322705488155, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_Name
       value: DefenseManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389695997708435787, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389695997708435787, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5766557494927778212, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1931,6 +1951,22 @@ PrefabInstance:
     - target: {fileID: 860210020518893294, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Intensity
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7228851773964612195, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
       propertyPath: m_Name
