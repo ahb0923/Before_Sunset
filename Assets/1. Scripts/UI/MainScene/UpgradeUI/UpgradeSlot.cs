@@ -12,6 +12,8 @@ public class UpgradeSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nextValueText;
     [SerializeField] private TextMeshProUGUI _upgradeCostText;
     [SerializeField] private Button _upgradeButton;
+    [SerializeField] private GameObject _maxUpgradeText;
+    [SerializeField] private GameObject _arrow;
     
     public string UpgradeName { get; private set; }
 
@@ -22,6 +24,8 @@ public class UpgradeSlot : MonoBehaviour
     private const string NEXT_VALUE_TEXT = "NextValueText";
     private const string UPGRADE_COST_TEXT = "UpgradeCostText";
     private const string UPGRADE_BUTTON = "UpgradeButton";
+    private const string MAX_UPGRADE_TEXT = "MaxUpgradeText";
+    private const string ARROW = "Arrow";
 
     private void Reset()
     {
@@ -32,11 +36,14 @@ public class UpgradeSlot : MonoBehaviour
         _nextValueText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, NEXT_VALUE_TEXT);
         _upgradeCostText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, UPGRADE_COST_TEXT);
         _upgradeButton = Helper_Component.FindChildComponent<Button>(this.transform, UPGRADE_BUTTON);
+        _maxUpgradeText = Helper_Component.FindChildGameObjectByName(this.gameObject, MAX_UPGRADE_TEXT);
+        _arrow = Helper_Component.FindChildGameObjectByName(this.gameObject, ARROW);
     }
     
     private void Awake()
     {
         _upgradeButton.onClick.AddListener(VirtualUpgrade);
+        EnableUpgrade();
     }
 
     public void SetName(string upgradeName)
@@ -52,36 +59,63 @@ public class UpgradeSlot : MonoBehaviour
         _upgradeContentText.text = data.upgradeName;
         _currentLevelText.text = $"Lv. 0{data.level}";
 
-        if (nextData == null)
-            nextData = data;
-
-        _nextLevelText.text = $"Lv. 0{nextData.level}";
-        _upgradeCostText.text = nextData.essenceCost.ToString();
-
-        switch (data.statType)
+        if (nextData != null)
         {
-            case UPGRADE_TYPE.MoveSpeed:
-            case UPGRADE_TYPE.MiningSpeed:
-            case UPGRADE_TYPE.DropRate:
-                _currentValueText.text = $"+{data.increaseRate} %";
-                _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} %";
-                break;
+            EnableUpgrade();
+            _nextLevelText.text = $"Lv. 0{nextData.level}";
+            _upgradeCostText.text = nextData.essenceCost.ToString();
 
-            case UPGRADE_TYPE.SightRange:
-            case UPGRADE_TYPE.AttackRange:
-                _currentValueText.text = $"+{data.increaseRate} 칸";
-                _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} 칸";
-                break;
-                
-            case UPGRADE_TYPE.HP:
-            case UPGRADE_TYPE.AttackPower:
-                _currentValueText.text = $"+{data.increaseRate}";
-                _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate}";
-                break;
+            switch (data.statType)
+            {
+                case UPGRADE_TYPE.MoveSpeed:
+                case UPGRADE_TYPE.MiningSpeed:
+                case UPGRADE_TYPE.DropRate:
+                    _currentValueText.text = $"+{data.increaseRate} %";
+                    _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} %";
+                    break;
 
-            default:
-                Debug.LogWarning("정의되지 않은 업그레이드 타입입니다.");
-                break;
+                case UPGRADE_TYPE.SightRange:
+                case UPGRADE_TYPE.AttackRange:
+                    _currentValueText.text = $"+{data.increaseRate} 칸";
+                    _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} 칸";
+                    break;
+
+                case UPGRADE_TYPE.HP:
+                case UPGRADE_TYPE.AttackPower:
+                    _currentValueText.text = $"+{data.increaseRate}";
+                    _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate}";
+                    break;
+
+                default:
+                    Debug.LogWarning("정의되지 않은 업그레이드 타입입니다.");
+                    break;
+            }
+        }
+        else
+        {
+            DisableUpgrade();
+            switch (data.statType)
+            {
+                case UPGRADE_TYPE.MoveSpeed:
+                case UPGRADE_TYPE.MiningSpeed:
+                case UPGRADE_TYPE.DropRate:
+                    _currentValueText.text = $"+{data.increaseRate} %";
+                    break;
+
+                case UPGRADE_TYPE.SightRange:
+                case UPGRADE_TYPE.AttackRange:
+                    _currentValueText.text = $"+{data.increaseRate} 칸";
+                    break;
+
+                case UPGRADE_TYPE.HP:
+                case UPGRADE_TYPE.AttackPower:
+                    _currentValueText.text = $"+{data.increaseRate}";
+                    break;
+
+                default:
+                    Debug.LogWarning("정의되지 않은 업그레이드 타입입니다.");
+                    break;
+            }
         }
     }
     
@@ -118,5 +152,19 @@ public class UpgradeSlot : MonoBehaviour
     public void RefreshSlot(int id)
     {
         SetSlot(id);
+    }
+
+    private void DisableUpgrade()
+    {
+        _upgradeButton.gameObject.SetActive(false);
+        _arrow.gameObject.SetActive(false);
+        _maxUpgradeText.gameObject.SetActive(true);
+    }
+
+    private void EnableUpgrade()
+    {
+        _upgradeButton.gameObject.SetActive(true);
+        _arrow.gameObject.SetActive(true);
+        _maxUpgradeText.gameObject.SetActive(false);
     }
 }

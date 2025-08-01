@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour, ISaveable
+public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
 {
     public Item Pickaxe { get; private set; }
     public Item[] Items { get; private set; } = new Item[29];
@@ -37,27 +37,47 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (InventoryUI.gameObject.activeSelf)
         {
-            InventoryUI.gameObject.SetActive(false);
-            QuickSlotInventoryUI.gameObject.SetActive(true);
-
-            foreach (var slot in InventoryUI.itemSlots)
-            {
-                slot.DisableHighlight();
-            }
+            Close();
         }
         else
         {
-            InventoryUI.gameObject.SetActive(true);
-            QuickSlotInventoryUI.gameObject.SetActive(false);
-
-            foreach (var slot in QuickSlotInventoryUI.quickSlots)
-            {
-                slot.DisableHighlight();
-            }
+            Open();
         }
 
         if (TooltipManager.Instance != null)
             TooltipManager.Instance.HideTooltip();
+    }
+    
+    public void Open()
+    {
+        UIManager.Instance.OpenUI(this);
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        InventoryUI.gameObject.SetActive(true);
+        QuickSlotInventoryUI.gameObject.SetActive(false);
+
+        foreach (var slot in QuickSlotInventoryUI.quickSlots)
+        {
+            slot.DisableHighlight();
+        }
+    }
+
+    public void CloseUI()
+    {
+        InventoryUI.gameObject.SetActive(false);
+        QuickSlotInventoryUI.gameObject.SetActive(true);
+
+        foreach (var slot in InventoryUI.itemSlots)
+        {
+            slot.DisableHighlight();
+        }
     }
 
     /// <summary>

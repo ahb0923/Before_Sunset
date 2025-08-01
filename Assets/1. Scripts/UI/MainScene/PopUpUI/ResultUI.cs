@@ -13,6 +13,7 @@ public class ResultUI : MonoBehaviour
     [SerializeField] private GameObject _slotArea;
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private List<RewardSlot> _slots = new List<RewardSlot>();
+    [SerializeField] private TextMeshProUGUI _shardAmountText;
     [SerializeField] private Button _rewardButton;
 
     [Header("FailResult")]
@@ -30,6 +31,7 @@ public class ResultUI : MonoBehaviour
     private const string FAIL_BEST_RECORD_TEXT = "FailBestRecordText";
     private const string CURRENT_RECORD_TEXT = "CurrentRecordText";
     private const string FAIL_CURRENT_RECORD_TEXT = "FailCurrentRecordText";
+    private const string SHARD_AMOUNT_TEXT = "ShardAmountText";
     private const string CLEAR_RESULT = "ClearResult";
     private const string REWARD_BUTTON = "RewardButton";
     private const string SLOT_AREA = "ClearRewardSlotArea";
@@ -45,6 +47,7 @@ public class ResultUI : MonoBehaviour
         _currentRecordText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, CURRENT_RECORD_TEXT);
         _slotArea = Helper_Component.FindChildGameObjectByName(this.gameObject, SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(SLOT_PREFAB);
+        _shardAmountText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, SHARD_AMOUNT_TEXT);
         _rewardButton = Helper_Component.FindChildComponent<Button>(this.transform, REWARD_BUTTON);
         
         _failResultRect = Helper_Component.FindChildComponent<RectTransform>(this.transform, FAIL_RESULT);
@@ -64,7 +67,7 @@ public class ResultUI : MonoBehaviour
 
     private void Start()
     {
-        int count = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
+        int count = DataManager.Instance.ClearRewardData.GetAllItems().Count;
 
         for (int i = 0; i < count; i++)
         {
@@ -95,6 +98,7 @@ public class ResultUI : MonoBehaviour
         IsOpen = true;
         InitSlots(stage);
         RefreshSlots(stage);
+        RefreshShard(stage);
         RefreshClear();
         _rect.OpenAtCenter();
         _clearResultRect.OpenAtCenter();
@@ -171,9 +175,10 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    private void RefreshShard()
+    private void RefreshShard(int stage)
     {
-        
+        var data = DataManager.Instance.ClearRewardData.GetAllItems()[stage];
+        _shardAmountText.text = data.essenceShardReward.ToString("D2");
     }
     
     private void RefreshFail()
