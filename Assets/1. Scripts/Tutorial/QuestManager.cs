@@ -23,9 +23,17 @@ public class QuestManager : MonoSingleton<QuestManager>
         {
             curIndex++;
             curQuest = quests[curIndex];
+
+            // 타워 건설 전에는 필요 아이템 추가
             if(curQuest.InventoryItemId != -1)
             {
                 InventoryManager.Instance.Inventory.AddItem(curQuest.InventoryItemId, curQuest.InventoryItemAmount);
+            }
+
+            // 코어 업그레이드 전에 정수 추가
+            if(curQuest.Type == QUEST_TYPE.UpgradeCore)
+            {
+                UpgradeManager.Instance.AddEssencePiece(300);
             }
         }
 

@@ -47,7 +47,7 @@ public class MonsterSpawner : MonoBehaviour
     {
         if (GameManager.Instance.IsTutorial)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 yield return Helper_Coroutine.WaitSeconds(0.5f);
                 
