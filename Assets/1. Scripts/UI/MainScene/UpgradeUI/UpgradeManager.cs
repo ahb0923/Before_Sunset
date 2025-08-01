@@ -441,6 +441,11 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         {
             data.esenceSaveData.coreUpgradeDict.Add(pair);
         }
+
+        foreach(var pair in FixedUpgrade)
+        {
+            data.esenceSaveData.doneUpgradeDict.Add(pair);
+        }
     }
 
     /// <summary>
@@ -463,6 +468,12 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             CoreStatus[pair.key] = pair.value;
         }
 
+        foreach(var pair in data.esenceSaveData.doneUpgradeDict)
+        {
+            FixedUpgrade[pair.key] = pair.value;
+        }
+
         ApplyAllUpgradesToAll();
+        UIManager.Instance.EssenceUI.Refresh();
     }
 }

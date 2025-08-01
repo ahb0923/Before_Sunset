@@ -40,6 +40,25 @@ public class CoreUpgradePair
 }
 
 [System.Serializable]
+public class StringIntPair
+{
+    public string key;
+    public int value;
+
+    public StringIntPair(string key, int value)
+    {
+        this.key = key;
+        this.value = value;
+    }
+
+    // 암시적 변환
+    public static implicit operator StringIntPair(KeyValuePair<string, int> pair)
+    {
+        return new StringIntPair(pair.Key, pair.Value);
+    }
+}
+
+[System.Serializable]
 public class EssenceSaveData
 {
     public int essence;
@@ -48,10 +67,12 @@ public class EssenceSaveData
     public int resetCounter;
     public List<PlayerUpgradePair> playerUpgradeDict;
     public List<CoreUpgradePair> coreUpgradeDict;
+    public List<StringIntPair> doneUpgradeDict;
 
     public EssenceSaveData()
     {
         playerUpgradeDict = new List<PlayerUpgradePair>();
         coreUpgradeDict = new List<CoreUpgradePair>();
+        doneUpgradeDict = new List<StringIntPair>();
     }
 }

@@ -141,7 +141,8 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
         UpgradeManager.Instance.SetVirtualEssence();
         
         Refresh();
-        
+        RefreshSlot();
+
         _rect.OpenAtCenter();
     }
 
