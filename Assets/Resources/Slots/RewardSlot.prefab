@@ -145,6 +145,7 @@ GameObject:
   - component: {fileID: 5029412502037159139}
   - component: {fileID: 6292091175010491935}
   - component: {fileID: 3639275542779818409}
+  - component: {fileID: 8214478792425005077}
   m_Layer: 5
   m_Name: RewardSlot
   m_TagString: Untagged
@@ -211,6 +212,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8214478792425005077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8035240939471779267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d52742a023019442b7ebfba95895926, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _jewelImage: {fileID: 4641948017682759442}
+  _amountText: {fileID: 6484075155680706820}
 --- !u!1 &8388917360819057117
 GameObject:
   m_ObjectHideFlags: 0

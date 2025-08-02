@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour, ISaveable
+public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
 {
     public Item Pickaxe { get; private set; }
     public Item[] Items { get; private set; } = new Item[29];
@@ -11,6 +11,8 @@ public class Inventory : MonoBehaviour, ISaveable
     [field: SerializeField] public InventoryUI InventoryUI { get; private set; }
     [field: SerializeField] public QuickSlotInventoryUI QuickSlotInventoryUI { get; private set; }
     [SerializeField] private Button _inventoryButton;
+    private HashSet<int> _addedSlotIndex = new HashSet<int>();
+    public bool IsInventoryFull { get; private set; } = false;
 
     private const string SORT_BUTTON = "SortButton";
     private const string INVENTORY_BUTTON = "InventoryButton";
@@ -37,27 +39,47 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (InventoryUI.gameObject.activeSelf)
         {
-            InventoryUI.gameObject.SetActive(false);
-            QuickSlotInventoryUI.gameObject.SetActive(true);
-
-            foreach (var slot in InventoryUI.itemSlots)
-            {
-                slot.DisableHighlight();
-            }
+            Close();
         }
         else
         {
-            InventoryUI.gameObject.SetActive(true);
-            QuickSlotInventoryUI.gameObject.SetActive(false);
-
-            foreach (var slot in QuickSlotInventoryUI.quickSlots)
-            {
-                slot.DisableHighlight();
-            }
+            Open();
         }
 
         if (TooltipManager.Instance != null)
             TooltipManager.Instance.HideTooltip();
+    }
+    
+    public void Open()
+    {
+        UIManager.Instance.OpenUI(this);
+    }
+
+    public void Close()
+    {
+        UIManager.Instance.CloseUI(this);
+    }
+
+    public void OpenUI()
+    {
+        InventoryUI.gameObject.SetActive(true);
+        QuickSlotInventoryUI.gameObject.SetActive(false);
+
+        foreach (var slot in QuickSlotInventoryUI.quickSlots)
+        {
+            slot.DisableHighlight();
+        }
+    }
+
+    public void CloseUI()
+    {
+        InventoryUI.gameObject.SetActive(false);
+        QuickSlotInventoryUI.gameObject.SetActive(true);
+
+        foreach (var slot in InventoryUI.itemSlots)
+        {
+            slot.DisableHighlight();
+        }
     }
 
     /// <summary>
@@ -116,6 +138,19 @@ public class Inventory : MonoBehaviour, ISaveable
 
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        foreach (var index in _addedSlotIndex)
+        {
+            if (index < QuickSlotInventoryUI.quickSlots.Count)
+            {
+                InventoryUI.itemSlots[index].AddAnimation();
+                QuickSlotInventoryUI.quickSlots[index].AddAnimation();
+            }
+            else
+            {
+                InventoryUI.itemSlots[index].AddAnimation();
+            }
+        }
+        _addedSlotIndex.Clear();
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
     }
 
@@ -136,6 +171,7 @@ public class Inventory : MonoBehaviour, ISaveable
             if (Items[i].Data.itemName == item.Data.itemName)
             {
                 savedItem = Items[i];
+                _addedSlotIndex.Add(i);
                 break;
             }
         }
@@ -145,12 +181,14 @@ public class Inventory : MonoBehaviour, ISaveable
             int emptyIndex = GetEmptySlotIndex();
             if (emptyIndex == -1)
             {
-                Debug.LogWarning("추가 불가능");
+                ToastManager.Instance.ShowToast("인벤토리가 가득 찼습니다.");
+                IsInventoryFull = true;
             }
             else
             {
                 item.stack += quantity;
                 Items[emptyIndex] = item;
+                _addedSlotIndex.Add(emptyIndex);
             }
         }
         // 기존에 겹칠수 있는 아이템이 있을 경우
@@ -177,11 +215,13 @@ public class Inventory : MonoBehaviour, ISaveable
         int emptyIndex = GetEmptySlotIndex();
         if (emptyIndex == -1)
         {
-            Debug.LogWarning("추가 불가능");
+            ToastManager.Instance.ShowToast("인벤토리가 가득 찼습니다.");
+            IsInventoryFull = true;
         }
         else
         {
             Items[emptyIndex] = item;
+            _addedSlotIndex.Add(emptyIndex);
         }
     }
 
@@ -261,7 +301,7 @@ public class Inventory : MonoBehaviour, ISaveable
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
 
-        ToastManager.Instance.ShowToast("정렬 완료!!");
+        ToastManager.Instance.ShowToast("정렬 완료");
     }
 
     /// <summary>

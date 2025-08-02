@@ -223,13 +223,13 @@ public class PlayerController : MonoBehaviour
 
             if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
             {
-                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
                 return;
             }
 
             if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
             {
-                Debug.Log("곡괭이 힘이 부족합니다.");
+                ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
                 return;
             }
 
@@ -243,7 +243,7 @@ public class PlayerController : MonoBehaviour
 
             if (Physics2D.Linecast(playerPos, jewelPos, wallLayerMask))
             {
-                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
                 return;
             }
         }
