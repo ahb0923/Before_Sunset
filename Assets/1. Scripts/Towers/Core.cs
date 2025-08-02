@@ -92,4 +92,9 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     {
         SetHp(data.coreCurHp);
     }
+    public float GetLightAreaRadius()
+    {
+        return _statHandler.GetSight();
+    }
+
 }

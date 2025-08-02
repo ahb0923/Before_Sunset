@@ -112,4 +112,9 @@ public class CoreStatHandler : MonoBehaviour
             _core.UpdateMaxHp(Stats.MaxHp);
         }
     }
+
+    public float GetSight()
+    {
+        return _baseSightRange + _currentSightRangeBonus;
+    }
 }

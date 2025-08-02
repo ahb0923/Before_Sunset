@@ -65,7 +65,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         // 프리뷰 표시 (셀 중심으로)
         DefenseManager.Instance.DragIcon.SetPosition(Camera.main.WorldToScreenPoint(cellCenter));
         DefenseManager.Instance.BuildPreview.ShowPreview(cellCenter, _buildInfo.buildSize);
-        // 프리뷰 표시
+        // 프리뷰 표시 (마우스 포인터)
         //DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
         //DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.buildSize);
 
@@ -89,8 +89,6 @@ public class BuildManager : MonoSingleton<BuildManager>
                 AudioManager.Instance.PlaySFX("CreateTower");
             else if (_buildPrefab.name.Contains("Smelter"))
                 AudioManager.Instance.PlaySFX("CreateSmelter");
-
-            Debug.Log("설치 성공");
         }
         else { ToastManager.Instance.ShowToast("해당 구역에는 설치할 수 없습니다."); }
 
@@ -108,7 +106,8 @@ public class BuildManager : MonoSingleton<BuildManager>
     public bool TryBuildTower(BuildInfo prefab, Vector3 worldPos)
     {
         Vector3Int originCell = _groundTilemap.WorldToCell(worldPos);
-        BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap);
+        //BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap);
+        BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap, DefenseManager.Instance.Core.transform, DefenseManager.Instance.Core.GetLightAreaRadius());
 
         // 모든 타일이 화면 안에 있고, 존재하는지 확인
         for (int x = 0; x < prefab.buildSize.x; x++)
@@ -156,7 +155,7 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// <summary>
     /// 현재 viewport에 보이는(화면에 실제로 보이는) 위치의 worldPosition값<br/>
     /// 추후에 『카메라의 비추는 전체 범위 => 플레이어의 시야 범위』로 변경할 경우 코드 수정
-    /// 플레이어 중심으로부터 원형으로 7칸까지 설치 범위
+    /// 코어 중심으로부터 원형으로 7칸까지 설치 범위
     /// </summary>
     /// <returns></returns>
     private BoundsInt GetVisibleTileBounds(Tilemap tilemap)
@@ -173,5 +172,42 @@ public class BuildManager : MonoSingleton<BuildManager>
         Vector3Int size = maxCell - minCell + Vector3Int.one;
 
         return new BoundsInt(minCell, size);
+    }
+
+    private BoundsInt GetVisibleTileBounds(Tilemap tilemap, Transform target, float radius)
+    {
+        Camera cam = Camera.main;
+        float distance = -cam.transform.position.z;
+
+        //카메라 뷰포트 → 월드 좌표
+        Vector3 worldMin = cam.ViewportToWorldPoint(new Vector3(0, 0, distance));
+        Vector3 worldMax = cam.ViewportToWorldPoint(new Vector3(1, 1, distance));
+
+        //월드 → 셀 좌표
+        Vector3Int minCell = tilemap.WorldToCell(worldMin);
+        Vector3Int maxCell = tilemap.WorldToCell(worldMax);
+
+        Vector3Int size = maxCell - minCell + Vector3Int.one;
+        BoundsInt bounds = new BoundsInt(minCell, size);
+
+        //설치 가능 여부 판단
+        Vector3 center = target.position;
+        float sqrRadius = radius * radius;
+
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        {
+            // 타일 중심 계산
+            Vector3 cellCenter = tilemap.GetCellCenterWorld(pos);
+
+            // 반지름 안에 있는지 체크
+            if ((cellCenter - center).sqrMagnitude <= sqrRadius)
+            {
+                // ✅ 설치 가능 위치 처리
+                // ex) 설치 가능 타일 표시, 리스트에 저장, 임시 Tile 바꾸기 등
+                // tilemap.SetTile(pos, highlightTile);
+            }
+        }
+
+        return bounds;
     }
 }
