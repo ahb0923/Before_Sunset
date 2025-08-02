@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private BasePlayer _player;
     private PlayerInteractor _interactor;
     private PlayerInputActions _actions;
+    private PlayerEffect _playerEffect;
     private EquipmentDatabase _equippedPickaxe;
 
     private Vector2 _moveDir;
@@ -18,32 +19,47 @@ public class PlayerController : MonoBehaviour
     private bool _isSwingButtonHeld = false;
     private bool _wasPointerOverUIOnSwingStart = false;
 
-    private bool _isSwing => _swingCoroutine != null;
+    private bool _isDashing = false;
+    private float _lastDashTime = -10f;
+    private Vector2 _dashDirection;
 
+    private bool _isSwing => _swingCoroutine != null;
     private bool _isRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
-        if (PlayerInputHandler._isRecallInProgress) return;
+        if (PlayerInputHandler._isRecallInProgress || _isDashing) return;
 
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
+        if (_isDashing) return;
         _moveDir = context.ReadValue<Vector2>().normalized;
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
+        if (_isDashing) return;
         _moveDir = Vector2.zero;
         _player.Animator.SetBool(BasePlayer.MOVE, false);
     }
 
+    private void OnDashStarted(InputAction.CallbackContext context)
+    {
+        if (_isRecalling || _isDashing || BuildManager.Instance.IsPlacing) return;
+
+        // 쿨타임 체크
+        if (Time.time - _lastDashTime < _player.Stat.DashCooldown) return;
+
+        TryDash();
+    }
+
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling || BuildManager.Instance.IsPlacing) return;
+        if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing) return;
 
         _wasPointerOverUIOnSwingStart = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
@@ -89,6 +105,7 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.canceled -= OnMoveCanceled;
         _actions.Player.Swing.started -= OnSwingStarted;
         _actions.Player.Swing.canceled -= OnSwingCanceled;
+        _actions.Player.Dash.started -= OnDashStarted;
     }
     #endregion
 
@@ -96,7 +113,10 @@ public class PlayerController : MonoBehaviour
     {
         if (_isSwing || _isRecalling) return;
 
-        Move();
+        if (!_isDashing)
+        {
+            Move();
+        }
     }
 
     /// <summary>
@@ -106,6 +126,7 @@ public class PlayerController : MonoBehaviour
     {
         _player = player;
         _interactor = GetComponent<PlayerInteractor>();
+        _playerEffect = GetComponent<PlayerEffect>();
         _equippedPickaxe = player.Stat.Pickaxe;
 
         _actions = player.InputActions;
@@ -114,6 +135,7 @@ public class PlayerController : MonoBehaviour
         _actions.Player.Move.canceled += OnMoveCanceled;
         _actions.Player.Swing.started += OnSwingStarted;
         _actions.Player.Swing.canceled += OnSwingCanceled;
+        _actions.Player.Dash.started += OnDashStarted;
         _actions.Player.Enable();
     }
 
@@ -127,6 +149,72 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// 대시
+    /// </summary>
+    private void TryDash()
+    {
+        if (_moveDir != Vector2.zero)
+        {
+            _dashDirection = _moveDir.normalized;
+        }
+        else
+        {
+            // 현재 애니메이터의 방향 값을 가져와서 대시 방향 설정
+            float x = _player.Animator.GetFloat(BasePlayer.X);
+            float y = _player.Animator.GetFloat(BasePlayer.Y);
+            _dashDirection = new Vector2(x, y).normalized;
+        }
+
+        StartCoroutine(C_Dash());
+    }
+
+    /// <summary>
+    /// 대시 실행 코루틴
+    /// </summary>
+    private IEnumerator C_Dash()
+    {
+        _isDashing = true;
+        _lastDashTime = Time.time;
+
+        // 대시 애니메이션 방향 설정
+        SetAnimationDirection(_dashDirection);
+
+        // 대시 사운드
+        // AudioManager.Instance.PlaySFX("Dash");
+
+        // 대시 이펙트
+        _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
+
+        float elapsed = 0f;
+        Vector2 startPos = _player.Rigid.position;
+
+        while (elapsed < _player.Stat.DashDuration)
+        {
+            elapsed += Time.fixedDeltaTime;
+
+            // 대시 이동
+            Vector2 dashMovement = _dashDirection * _player.Stat.DashSpeed * Time.fixedDeltaTime;
+            _player.Rigid.MovePosition(_player.Rigid.position + dashMovement);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        _isDashing = false;
+        Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
+        _moveDir = currentInput;
+
+        if (_moveDir != Vector2.zero)
+        {
+            _player.Animator.SetBool(BasePlayer.MOVE, true);
+            SetAnimationDirection(_moveDir);
+        }
+        else
+        {
+            _player.Animator.SetBool(BasePlayer.MOVE, false);
+        }
+    }
+
+    /// <summary>
     /// 연속 스윙 처리
     /// </summary>
     private IEnumerator C_SwingLoop()
@@ -136,7 +224,7 @@ public class PlayerController : MonoBehaviour
 
         while (_isSwingButtonHeld)
         {
-            if (_isRecalling)
+            if (_isRecalling || _isDashing)
             {
                 break;
             }
@@ -196,7 +284,7 @@ public class PlayerController : MonoBehaviour
         AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
-        yield return Helper_Coroutine.WaitSeconds(1f / _player.Stat.MiningSpeed);
+        yield return Helper_Coroutine.WaitSeconds(0.5f / _player.Stat.MiningSpeed);
 
         TryInteractTarget(target);
 
@@ -250,7 +338,6 @@ public class PlayerController : MonoBehaviour
 
         target.Interact();
     }
-
 
     /// <summary>
     /// 애니메이션 방향 설정

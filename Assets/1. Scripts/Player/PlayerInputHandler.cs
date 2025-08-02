@@ -42,6 +42,7 @@ public class PlayerInputHandler : MonoBehaviour
         UIManager.Instance.RecallUI.UpdateHoldProgress(0f);
         _isHeldReturnKey = false;
     }
+
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
         Vector3 clickWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -62,6 +63,10 @@ public class PlayerInputHandler : MonoBehaviour
 
         target.Interact();
     }
+
+    private void OnDashPerformed(InputAction.CallbackContext context)
+    {
+    }
     #endregion
 
     #region Event Unsubscriptions
@@ -73,6 +78,7 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Interaction.Build.started -= OnBuildStarted;
         _actions.Interaction.DestroyMode.started -= OnDestroyModeStarted;
         _actions.Interaction.ReturnHome.performed -= OnReturnHomeStarted;
+        _actions.Player.Dash.performed -= OnDashPerformed;
     }
     #endregion
 
@@ -83,7 +89,7 @@ public class PlayerInputHandler : MonoBehaviour
         _heldTimer += Time.deltaTime;
         UIManager.Instance.RecallUI.UpdateHoldProgress(_heldTimer / _returnKeyHeldTime);
 
-        if(_heldTimer >= _returnKeyHeldTime)
+        if (_heldTimer >= _returnKeyHeldTime)
         {
             StartRecall();
         }
@@ -103,6 +109,7 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Interaction.DestroyMode.started += OnDestroyModeStarted;
         _actions.Interaction.ReturnHome.started += OnReturnHomeStarted;
         _actions.Interaction.ReturnHome.canceled += OnReturnHomeCanceled;
+        _actions.Player.Dash.performed += OnDashPerformed;
         _actions.Interaction.Enable();
 
         UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
@@ -131,6 +138,7 @@ public class PlayerInputHandler : MonoBehaviour
     {
         StartCoroutine(C_Recall());
     }
+
     private IEnumerator C_Recall()
     {
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>

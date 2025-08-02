@@ -13,18 +13,27 @@ public class PlayerStatHandler : MonoBehaviour
     private float _baseMiningSpeed = 1.0f;
     private float _baseDropRate = 1.0f;
     private float _baseSightRange = 2.0f;
+    private float _baseDashSpeed = 8.0f;
+    private float _baseDashDuration = 0.3f;
+    private float _baseDashCooldown = 1.5f;
 
     // 업그레이드 반영
     private float _currentMoveSpeedBonus = 0.5f;
     private float _currentMiningSpeedBonus = 0.5f;
     private float _currentDropRateBonus = 0.0f;
     private float _currentSightRangeBonus = 1.0f;
+    private float _currentDashSpeedBonus = 0f;
+    private float _currentDashDurationBonus = 0f;
+    private float _currentDashCooldownBonus = 0f;
 
     // 최종 스탯 프로퍼티들
     public float MoveSpeed => _baseMoveSpeed + _currentMoveSpeedBonus;
     public float MiningSpeed => _baseMiningSpeed + _currentMiningSpeedBonus;
     public float DropRate => _baseDropRate + _currentDropRateBonus;
     public float SightRange => _baseSightRange + _currentSightRangeBonus;
+    public float DashSpeed => _baseDashSpeed + _currentDashSpeedBonus;
+    public float DashDuration => _baseDashDuration + _currentDashDurationBonus;
+    public float DashCooldown => Mathf.Max(0.2f, _baseDashCooldown - _currentDashCooldownBonus);
 
     private void Awake()
     {
@@ -63,12 +72,17 @@ public class PlayerStatHandler : MonoBehaviour
         _currentMiningSpeedBonus = 0.0f;
         _currentDropRateBonus = 0.0f;
         _currentSightRangeBonus = 0.0f;
+        _currentDashSpeedBonus = 0f;
+        _currentDashDurationBonus = 0f;
+        _currentDashCooldownBonus = 0f;
     }
 
     // 업그레이드 적용 메서드들
     public void ApplyMoveSpeedUpgrade(float increaseRate)
     {
         _currentMoveSpeedBonus = increaseRate;
+        //_currentDashSpeedBonus = increaseRate;
+        //_currentDashCooldownBonus = increaseRate;
     }
 
     public void ApplyMiningSpeedUpgrade(float increaseRate)
