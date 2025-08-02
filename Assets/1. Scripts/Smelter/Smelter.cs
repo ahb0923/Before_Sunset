@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
 public class Smelter : MonoBehaviour, IPoolable, IDamageable
 {
     public int smelterID;
@@ -20,6 +19,14 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
 
     [SerializeField] private Smelter_Interaction _interaction;
 
+    public Animator animator;
+    /// <summary>
+    /// animator.SetTrigger("IsMelting");   아이템 넣어서 녹는 작업이 진행중일 경우
+    /// animator.SetTrigger("IsDone");      아이템이 전부 녹아서 작업이 중단될 경우 & 인풋에서 아이템을 꺼내서 강제종료 + output에 녹아있는거 있음
+    /// animator.SetTrigger("IsCancel");    인풋에서 아이템을 꺼내서 작업이 중단 + output에 녹아있는거 없음
+    /// animator.SetTrigger("IsDestroy");
+    /// </summary>
+
     public SpriteRenderer spriteRenderer;
     
     private void Awake()
@@ -31,6 +38,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         if (_buildInfo == null)
             _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
         _buildInfo.Init(smelterID, size);
+        animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
     }
 
     /// <summary>
@@ -63,6 +71,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         
         if (OutputItem == null || mineralData.ingotId == OutputItem.Data.id)
         {
+            animator.SetTrigger("IsMelting");
             _smeltCoroutine = StartCoroutine(C_Smelt(mineralData, smeltedTime));
         }
         else
@@ -78,7 +87,12 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
             StopCoroutine(_smeltCoroutine);
             _smeltCoroutine = null;
         }
-        
+
+        if (OutputItem == null)
+            animator.SetTrigger("IsCancel");
+        else 
+            animator.SetTrigger("IsDone");
+
         isSmelting = false;
         OnSmeltingProgress?.Invoke(0);
         RefreshUI();
@@ -130,6 +144,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         else
         {
             isSmelting = false;
+            animator.SetTrigger("IsDone");
         }
     }
 
