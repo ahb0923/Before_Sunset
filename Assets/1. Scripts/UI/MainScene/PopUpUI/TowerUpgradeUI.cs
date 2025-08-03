@@ -17,10 +17,11 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
     [SerializeField] private GameObject _slotArea;
     [SerializeField] private GameObject _slotPrefab;
     [SerializeField] private List<BuildingMaterialSlot> _slots = new List<BuildingMaterialSlot>();
+    [SerializeField] private GameObject _maxUpgrade;
+    [SerializeField] private GameObject _arrow;
 
     private RectTransform _rect;
     private BaseTower _selectedTower;
-
 
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string TARGET_INFO_TEXT = "TargetInfoText";
@@ -31,6 +32,8 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
     private const string CANCEL_BUTTON = "BackGroundCancelButton";
     private const string UPGRADE_REQUIREMENT_SLOT_AREA = "UpgradeRequirementSlotArea";
     private const string BUILDING_MATERIAL_SLOT = "Slots/BuildingMaterialSlot";
+    private const string MAX_UPGRADE = "MaxUpgrade";
+    private const string ARROW = "Arrow";
 
     private void Reset()
     {
@@ -43,6 +46,8 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
         _cancelButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_BUTTON);
         _slotArea = Helper_Component.FindChildGameObjectByName(this.gameObject, UPGRADE_REQUIREMENT_SLOT_AREA);
         _slotPrefab = Resources.Load<GameObject>(BUILDING_MATERIAL_SLOT);
+        _maxUpgrade = Helper_Component.FindChildGameObjectByName(this.gameObject, MAX_UPGRADE);
+        _arrow = Helper_Component.FindChildGameObjectByName(this.gameObject, ARROW);
     }
 
     private void Awake()
@@ -54,8 +59,10 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
     private void Upgrade()
     {
-        // 타워업그레이드 메서드
         _selectedTower.statHandler.UpgradeTowerStat();
+        InitSlots(_selectedTower);
+        SetSlot(_selectedTower);
+        SetUpgradeUI(_selectedTower);
     }
 
     public void OpenUpgradeUI(BaseTower tower)
@@ -92,7 +99,7 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
         _selectedTower = tower;
         if (tower.statHandler.NextupgradeID == null)
         {
-            Debug.Log("다음 업그레이드가 없음!");
+            return;
         }
         else
         {
@@ -114,14 +121,13 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
                 }
             }
         }
-            
     }
 
     private void SetSlot(BaseTower tower)
     {
         if (tower.statHandler.NextupgradeID == null)
         {
-            Debug.Log("다음 업그레이드가 없음!");
+            return;
         }
         else
         {
@@ -149,12 +155,21 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
     {
         if (tower.statHandler.NextupgradeID == null)
         {
-            Debug.Log("다음 업그레이드가 없음!");
+            _targetNameText.text = tower.statHandler.TowerName;
+            _targetInfoText.text = tower.statHandler.FlavorText;
+            _upgradeTargetNameText.text = "";
+            _targetStatText.text = $"MaxHP : {tower.statHandler.MaxHp}\n" +
+                                   $"공격력 : {tower.statHandler.AttackPower}\n" +
+                                   $"사거리 : {tower.statHandler.AttackRange}\n" +
+                                   $"쿨타임 : {tower.statHandler.AttackSpeed}";
+            _upgradeStatText.text = "";
+            _maxUpgrade.SetActive(true);
+            _arrow.SetActive(false);
         }
         else
         {
             var upgradeTowerData = DataManager.Instance.TowerData.GetById((int)tower.statHandler.NextupgradeID);
-
+            
             _targetNameText.text = tower.statHandler.TowerName;
             _targetInfoText.text = tower.statHandler.FlavorText;
             _upgradeTargetNameText.text = upgradeTowerData.towerName;
@@ -166,9 +181,11 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
                                     $"공격력 : {tower.statHandler.AttackPower + upgradeTowerData.damage}\n" +
                                     $"사거리 : {tower.statHandler.AttackRange + upgradeTowerData.range}\n" +
                                     $"쿨타임 : {tower.statHandler.AttackSpeed + upgradeTowerData.aps}";
+            _maxUpgrade.SetActive(false);
+            _arrow.SetActive(true);
         }
-           
     }
+    
     private void ClearUI()
     {
         _targetNameText.text = "";

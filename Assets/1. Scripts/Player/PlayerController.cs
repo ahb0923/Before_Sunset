@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Coroutine _swingCoroutine;
     private Coroutine _swingLoopCoroutine;
     private bool _isSwingButtonHeld = false;
+    private bool _wasPointerOverUIOnSwingStart = false;
 
     private bool _isSwing => _swingCoroutine != null;
 
@@ -41,7 +43,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling) return;
+        if (_isRecalling || BuildManager.Instance.IsPlacing) return;
+
+        _wasPointerOverUIOnSwingStart = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+
+        if (_wasPointerOverUIOnSwingStart) return;
 
         _isSwingButtonHeld = true;
 
@@ -157,6 +163,12 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
+        if (_wasPointerOverUIOnSwingStart)
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
+
         // 클릭 월드 포지션 구하기
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
@@ -211,13 +223,13 @@ public class PlayerController : MonoBehaviour
 
             if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
             {
-                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
                 return;
             }
 
             if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
             {
-                Debug.Log("곡괭이 힘이 부족합니다.");
+                ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
                 return;
             }
 
@@ -231,7 +243,7 @@ public class PlayerController : MonoBehaviour
 
             if (Physics2D.Linecast(playerPos, jewelPos, wallLayerMask))
             {
-                Debug.Log("벽에 막혀 채굴할 수 없습니다.");
+                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
                 return;
             }
         }

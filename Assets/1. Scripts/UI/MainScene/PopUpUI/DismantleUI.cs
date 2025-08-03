@@ -43,20 +43,13 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     {
         _rect = GetComponent<RectTransform>();
         _dismantleButton.onClick.AddListener(Dismantle);
-        _cancelDismantleButton.onClick.AddListener(Cancel);
-        _cancelButton.onClick.AddListener(Cancel);
+        _cancelDismantleButton.onClick.AddListener(Close);
+        _cancelButton.onClick.AddListener(Close);
     }
 
     private void Dismantle()
     {
-        // 타워 해체 매서드
         _selectedTower.DestroyTower();
-    }
-
-    private void Cancel()
-    {
-        _targetNameText.text = "";
-        _builtTimeText.text = "";
         Close();
     }
 
