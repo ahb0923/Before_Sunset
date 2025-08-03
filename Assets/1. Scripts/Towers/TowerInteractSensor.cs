@@ -19,23 +19,9 @@ public class TowerInteractSensor : MonoBehaviour
         _tower = Helper_Component.GetComponentInParent<BaseTower>(this.gameObject);
         ScanInitial();
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            Debug.Log("Set alpha 0.3f");
-            _sprite.color = new Color(1f, 1f, 1f, 0.3f);
-        }
-    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        /*
-        if (((1 << other.gameObject.layer) & _layer) != 0)
-        {
-            if (_inside.Add(other.gameObject))
-                SetSpriteAlpha(0.5f);
-        }*/
-
         Debug.Log($"[Enter] {other.gameObject.name}");
         if (((1 << other.gameObject.layer) & _layer) != 0)
         {

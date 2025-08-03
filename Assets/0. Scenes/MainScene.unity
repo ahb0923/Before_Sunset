@@ -932,7 +932,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1349318923785594099, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.0005493164
       objectReference: {fileID: 0}
     - target: {fileID: 1350270042997854497, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1000,6 +1000,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2589592176759440752, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2589592176759440752, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2650811011501266253, guid: 77c22645ff1152141853b782277d3133, type: 3}
@@ -1404,7 +1408,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074921222671413708, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00002670288
+      value: 0.000017344952
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1575,6 +1579,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2103580726821641170, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LightCookieSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6fb88cfecd48484408bdab89fbb3ad26, type: 3}
+    - target: {fileID: 2103580726821641170, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalBounds.m_Center.x
+      value: 0.0031249821
+      objectReference: {fileID: 0}
+    - target: {fileID: 2103580726821641170, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalBounds.m_Extent.x
+      value: 0.81875
+      objectReference: {fileID: 0}
+    - target: {fileID: 2103580726821641170, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalBounds.m_Extent.y
+      value: 0.81875
+      objectReference: {fileID: 0}
     - target: {fileID: 2228362763006179773, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_Follow
       value: 
