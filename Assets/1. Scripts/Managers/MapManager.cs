@@ -66,6 +66,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         _baseMap.SetActive(true);
         _spawnManager = FindObjectOfType<SpawnManager>();
         MoveToMap(0, false);
+        AudioManager.Instance.PlayBGM("NormalBase");
     }
 
     // 포탈 방향 받아서 맵 이동
@@ -386,6 +387,11 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private void ChangeMapBGM(int mapIndex)
     {
+        if (TimeManager.Instance.Day == 4 && TimeManager.Instance.IsNight)
+        {
+            return;
+        }
+
         if (mapIndex == 0)
         {
             AudioManager.Instance.PlayBGM("NormalBase");

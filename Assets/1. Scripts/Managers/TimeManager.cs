@@ -36,6 +36,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             Recall();
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
+            AudioManager.Instance.PlayBGM("DefenseBase");
         }
 
         // 해당 날짜 클리어 

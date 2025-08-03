@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8982954443098823865
+--- !u!1 &6701766422832686690
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1407578063612986942}
-  - component: {fileID: 4123195208248050296}
+  - component: {fileID: 6153028758276916793}
+  - component: {fileID: 7179991878806534322}
   m_Layer: 0
-  m_Name: RecallUIHandler
+  m_Name: UpgradeManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1407578063612986942
+--- !u!4 &6153028758276916793
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8982954443098823865}
+  m_GameObject: {fileID: 6701766422832686690}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,20 +32,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4123195208248050296
+--- !u!114 &7179991878806534322
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8982954443098823865}
+  m_GameObject: {fileID: 6701766422832686690}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05d80fc7f180be945b3eec76bf0e6d67, type: 3}
+  m_Script: {fileID: 11500000, guid: a989860e723c92a4894a24ce5a33d749, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recallIconGroup: {fileID: 0}
-  holdCircleImage: {fileID: 0}
-  countdownSlider: {fileID: 0}
-  playerTransform: {fileID: 0}
-  sliderOffset: {x: 0, y: -1, z: 0}

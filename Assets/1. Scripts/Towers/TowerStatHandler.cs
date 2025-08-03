@@ -124,35 +124,54 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
     {
         if (NextupgradeID == null)
             return;
-
         var upgradeData = DataManager.Instance.TowerData.GetById((int)NextupgradeID);
-        QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeTower, NextupgradeID ?? -1);
+        bool checkRequirements = true;
 
-        ID = upgradeData.id;
-        Level = upgradeData.level;
-        CurrHp += upgradeData.towerHp;
-        MaxHp += upgradeData.towerHp;
-        AttackPower += upgradeData.damage;
-        AttackSpeed += upgradeData.aps;
-        AttackRange += upgradeData.range;
-
-        NextupgradeID = upgradeData.nextUpgradeId;
-
-        if (DebuffID != null)
+        var buildRequirements = upgradeData.buildRequirements;
+        if (!GameManager.Instance.GOD_MODE)
         {
-            DebuffID = upgradeData.debuffId;
-        }
-        if (ProjectileID != null)
-        {
-            ProjectileID = upgradeData.projectileId;
+            foreach (var item in buildRequirements)
+            {
+                if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
+                {
+                    ToastManager.Instance.ShowToast("자원이 부족합니다!");
+                    checkRequirements = false;
+                }
+            }
         }
 
-        foreach (var kvp in upgradeData.buildRequirements)
+        if (checkRequirements)
         {
-            if (AccumulatedCosts.ContainsKey(kvp.Key))
-                AccumulatedCosts[kvp.Key] += kvp.Value;
-            else
-                AccumulatedCosts[kvp.Key] = kvp.Value;
+            foreach (var item in upgradeData.buildRequirements)
+                InventoryManager.Instance.Inventory.UseItem(item.Key, item.Value);
+            QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeTower, NextupgradeID ?? -1);
+
+            ID = upgradeData.id;
+            Level = upgradeData.level;
+            CurrHp += upgradeData.towerHp;
+            MaxHp += upgradeData.towerHp;
+            AttackPower += upgradeData.damage;
+            AttackSpeed += upgradeData.aps;
+            AttackRange += upgradeData.range;
+
+            NextupgradeID = upgradeData.nextUpgradeId;
+
+            if (DebuffID != null)
+            {
+                DebuffID = upgradeData.debuffId;
+            }
+            if (ProjectileID != null)
+            {
+                ProjectileID = upgradeData.projectileId;
+            }
+
+            foreach (var kvp in upgradeData.buildRequirements)
+            {
+                if (AccumulatedCosts.ContainsKey(kvp.Key))
+                    AccumulatedCosts[kvp.Key] += kvp.Value;
+                else
+                    AccumulatedCosts[kvp.Key] = kvp.Value;
+            }
         }
     }
 

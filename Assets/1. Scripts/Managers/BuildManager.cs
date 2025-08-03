@@ -26,6 +26,8 @@ public class BuildManager : MonoSingleton<BuildManager>
     public bool IsOnDestroy = false;
 
     private readonly HashSet<Vector3Int> _buildableTiles = new();
+    public HashSet<Vector3Int> BuildableTiles => _buildableTiles;   
+
     private readonly List<Vector3Int> _highlightedTiles = new();
 
     private float _lastRadius = -1f;
@@ -179,8 +181,6 @@ public class BuildManager : MonoSingleton<BuildManager>
     {
         _buildableTiles.Clear();
         _highlightedTiles.Clear();
-
-        Debug.Log(target.position);
 
         Vector3 centerWorld = target.position;
         float sqrRadius = radius * radius;
