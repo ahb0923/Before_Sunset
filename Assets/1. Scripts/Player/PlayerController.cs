@@ -115,6 +115,16 @@ public class PlayerController : MonoBehaviour
 
         if (!_isDashing)
         {
+            if (_moveDir != Vector2.zero)
+            {
+                _player.Animator.SetBool(BasePlayer.MOVE, true);
+                SetAnimationDirection(_moveDir);
+            }
+            else
+            {
+                _player.Animator.SetBool(BasePlayer.MOVE, false);
+            }
+
             Move();
         }
     }
