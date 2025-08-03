@@ -94,7 +94,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable
     }
     public float GetLightAreaRadius()
     {
-        return _statHandler.GetSight();
+        return _statHandler.GetSight() + 1.5f;
     }
 
 }

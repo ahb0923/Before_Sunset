@@ -28,7 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDestroyModeStarted(InputAction.CallbackContext context)
     {
-        BuildManager.Instance.isOnDestroy = !BuildManager.Instance.isOnDestroy;
+        BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
     }
 
     private void OnReturnHomeStarted(InputAction.CallbackContext context)

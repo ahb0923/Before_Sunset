@@ -25,7 +25,7 @@ public class CoreStatHandler : MonoBehaviour
     private int _baseMaxHp = 500;
     private float _baseAttackPower = 10f;
     private float _baseAttackRange = 5f;
-    private float _baseSightRange = 5f;
+    private float _baseSightRange = 7f;
 
     // 현재 적용된 보너스
     private float _currentHpBonus = 0f;

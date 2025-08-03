@@ -12,7 +12,7 @@ public class PlayerStatHandler : MonoBehaviour
     private float _baseMoveSpeed = 3.0f;
     private float _baseMiningSpeed = 1.0f;
     private float _baseDropRate = 1.0f;
-    private float _baseSightRange = 5.0f;
+    private float _baseSightRange = 1.5f;
 
     // 업그레이드 반영
     private float _currentMoveSpeedBonus = 0.5f;
