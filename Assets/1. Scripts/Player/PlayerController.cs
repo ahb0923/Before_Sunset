@@ -267,6 +267,12 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
+        if (_player.IsInBase)
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
+
         // 클릭 월드 포지션 구하기
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
@@ -291,7 +297,15 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
         // 채광 효과음
-        AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
+        if (target == null || !(target is OreController) && !(target is JewelController) && !target.IsInteractable(_player.transform.position, 5f, _player.PlayerCollider))
+        {
+            // 헛스윙
+            AudioManager.Instance.PlaySFX("SwingMiss");
+        }
+        else
+        {
+            AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
+        }
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(0.5f / _player.Stat.MiningSpeed);
