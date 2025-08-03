@@ -19,13 +19,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public float elapsed = 0f;
 
     public SpriteRenderer spriteRenderer;
-    
+    public Animator animator;
+
     private void Awake()
     {
         smelterData = DataManager.Instance.SmelterData.GetById(smelterID);
         if (_buildInfo == null)
             _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
         _buildInfo.Init(smelterID, size);
+        animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
     }
 
     /// <summary>
@@ -58,6 +60,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         
         if (OutputItem == null || mineralData.ingotId == OutputItem.Data.id)
         {
+            animator.SetTrigger("IsMelting");
             _smeltCoroutine = StartCoroutine(C_Smelt(mineralData, smeltedTime));
         }
         else
@@ -73,7 +76,12 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
             StopCoroutine(_smeltCoroutine);
             _smeltCoroutine = null;
         }
-        
+
+        if (OutputItem == null)
+            animator.SetTrigger("IsCancel");
+        else 
+            animator.SetTrigger("IsDone");
+
         isSmelting = false;
         OnSmeltingProgress?.Invoke(0);
         RefreshUI();
@@ -125,6 +133,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         else
         {
             isSmelting = false;
+            animator.SetTrigger("IsDone");
         }
     }
 

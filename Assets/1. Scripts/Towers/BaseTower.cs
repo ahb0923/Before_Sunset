@@ -159,7 +159,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     public void Interact()
     {
         // 파괴 옵션 on일 경우
-        if (BuildManager.Instance.isOnDestroy)
+        if (BuildManager.Instance.IsOnDestroy)
         {
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
             return;

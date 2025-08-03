@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 900
-  buildSize: {x: 3, y: 3}
+  buildSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 7547968999694799401}
 --- !u!114 &2537354958269238092
 MonoBehaviour:
@@ -139,12 +139,12 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4584001840792588798, guid: ca1fe683d8872314481b6dbcd87cb1d1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bf5bc63e5b1837a4ca243428812bd6ca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.14}
+  m_Size: {x: 1.6, y: 1.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -158,9 +158,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570845869665552353}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b6c12ce3ae930d24d9b1af47212a1070, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -265,10 +265,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smelterID: 900
-  size: {x: 3, y: 3}
+  size: {x: 1, y: 1}
   isSmelting: 0
   elapsed: 0
   spriteRenderer: {fileID: 7547968999694799401}
+  animator: {fileID: 5346647228943257301}
 --- !u!1 &1411796654157379378
 GameObject:
   m_ObjectHideFlags: 0
