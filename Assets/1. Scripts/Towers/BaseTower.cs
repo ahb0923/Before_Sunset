@@ -142,7 +142,8 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         ai.ResetStateMachine();
         ai.SetState(TOWER_STATE.Construction, true);
         ui.ResetHpBar();
-       
+
+        PoolManager.Instance.GetFromPool(10002, transform.position+Vector3.up);
         RenderUtil.SetSortingOrderByY(ui.icon);
     }
 
@@ -152,6 +153,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     public void OnReturnToPool()
     {
         ai.SetState(TOWER_STATE.None, true);
+        ui.icon.color = Color.white;
         gameObject.SetActive(false);
     }
     // =======================================

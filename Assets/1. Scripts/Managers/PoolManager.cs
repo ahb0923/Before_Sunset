@@ -23,8 +23,10 @@ public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
 
+    // 추후에 정리해서 데이터로 만들것.
     [SerializeField] private GameObject _electircline;
     [SerializeField] private GameObject _aoeEffect;
+    [SerializeField] private GameObject _buildGuage;
 
     private bool _isSet;
 
@@ -83,6 +85,12 @@ public class PoolManager : MonoSingleton<PoolManager>
         _objectPoolDatas.Add(new ObjectPoolData
         {
             prefab = _aoeEffect,
+            count = 10
+        });
+        
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _buildGuage,
             count = 10
         });
         // 여기까지 ///////////////////////////////////////
