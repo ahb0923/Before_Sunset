@@ -19,7 +19,8 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public float elapsed = 0f;
 
     public SpriteRenderer spriteRenderer;
-    
+    public Animator animator;
+
     private void Awake()
     {
         smelterData = DataManager.Instance.SmelterData.GetById(smelterID);

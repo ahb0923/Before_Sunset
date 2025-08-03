@@ -182,7 +182,6 @@ GameObject:
   - component: {fileID: 2078991498260920185}
   - component: {fileID: 6080508498196729439}
   - component: {fileID: 3951482302717768146}
-  - component: {fileID: 3513235183300782215}
   m_Layer: 13
   m_Name: Smelter_Lower
   m_TagString: Untagged
@@ -269,21 +268,8 @@ MonoBehaviour:
   size: {x: 1, y: 1}
   isSmelting: 0
   elapsed: 0
-  _interaction: {fileID: 3513235183300782215}
-  animator: {fileID: 5346647228943257301}
   spriteRenderer: {fileID: 7547968999694799401}
---- !u!114 &3513235183300782215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1185829061793917326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec5a5da6296a63942a588c0e0849e21e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  animator: {fileID: 5346647228943257301}
 --- !u!1 &1411796654157379378
 GameObject:
   m_ObjectHideFlags: 0
