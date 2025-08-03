@@ -96,7 +96,8 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     {
         isSmelting = true;
 
-        float duration = mineralData.smeltingTime;
+        //float duration = mineralData.smeltingTime;
+        float duration = 1.0f;
         elapsed = smeltedTime;
 
         while (elapsed < duration)
