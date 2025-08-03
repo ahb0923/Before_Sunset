@@ -245,6 +245,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TooltipCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3216633002290419277, guid: fd8b02d526d8f934882c9c4a404f343b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3817472047561541165, guid: fd8b02d526d8f934882c9c4a404f343b, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -509,17 +513,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 752522750499344861, guid: d54af51b15d4b9145814b8329c466131, type: 3}
-      propertyPath: _towerPool
-      value: 
-      objectReference: {fileID: 778339307}
-    - target: {fileID: 752522750499344861, guid: d54af51b15d4b9145814b8329c466131, type: 3}
       propertyPath: _buildablePool
       value: 
       objectReference: {fileID: 778339307}
     - target: {fileID: 752522750499344861, guid: d54af51b15d4b9145814b8329c466131, type: 3}
-      propertyPath: _buildingLayer.m_Bits
-      value: 3170752
-      objectReference: {fileID: 0}
+      propertyPath: highlightTilemap
+      value: 
+      objectReference: {fileID: 1354303541}
     - target: {fileID: 7257501209349996822, guid: d54af51b15d4b9145814b8329c466131, type: 3}
       propertyPath: m_Name
       value: BuildManager
@@ -676,11 +676,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.06
+      value: -2.08
       objectReference: {fileID: 0}
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.58
+      value: -1.17
       objectReference: {fileID: 0}
     - target: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_LocalPosition.z
@@ -714,10 +714,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6590933842250423535, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
-      propertyPath: mainCamera
-      value: 
-      objectReference: {fileID: 969134075631786501}
     - target: {fileID: 7508487163038984533, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
       propertyPath: m_Name
       value: Player
@@ -731,6 +727,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
   m_PrefabInstance: {fileID: 1143093276}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1354303541 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8484203939201315522, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+  m_PrefabInstance: {fileID: 31084890357813854}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1467080908
 PrefabInstance:
@@ -1068,6 +1069,10 @@ PrefabInstance:
     - target: {fileID: 3597868014110273802, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_Name
       value: UICanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3597868014110273802, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3818716589062175449, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1588,21 +1593,25 @@ PrefabInstance:
       propertyPath: m_LookAt
       value: 
       objectReference: {fileID: 1143093277}
-    - target: {fileID: 2621096651291739764, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
-      propertyPath: _layerMask.m_Bits
-      value: 3154368
-      objectReference: {fileID: 0}
     - target: {fileID: 2858331322705488155, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_Name
       value: DefenseManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4389695997708435787, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389695997708435787, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5766557494927778212, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.06
+      value: -2.08
       objectReference: {fileID: 0}
     - target: {fileID: 5766557494927778212, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.58
+      value: -1.17
       objectReference: {fileID: 0}
     - target: {fileID: 6330539489808714407, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1644,6 +1653,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8604364049964492508, guid: d13f58f048f9bd84b8c58dc837649a94, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d7bb37608ad5ca2489fbf2f90eb1bcbd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1917,6 +1930,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3834707018027298456, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
+      propertyPath: m_Intensity
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7228851773964612195, guid: ca87dc0c0255c5049a101e7112bb33ca, type: 3}
       propertyPath: m_Name
       value: GlobalLight
@@ -2003,7 +2032,7 @@ Transform:
   m_GameObject: {fileID: 4881548125829083928}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.06, y: -2.58, z: -10}
+  m_LocalPosition: {x: -2.08, y: -1.17, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

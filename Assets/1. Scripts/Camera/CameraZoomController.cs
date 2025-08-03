@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
@@ -8,8 +8,8 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera virtualCam;
 
     [SerializeField] private float zoomSpeed = 10f;
-    [SerializeField] private float minZoom = 3f;
-    [SerializeField] private float maxZoom = 10f;
+    [SerializeField] private float minZoom = 10f;
+    [SerializeField] private float maxZoom = 20f;
     [SerializeField] private float zoomSmoothSpeed = 0.2f;
 
     private float _targetZoom;

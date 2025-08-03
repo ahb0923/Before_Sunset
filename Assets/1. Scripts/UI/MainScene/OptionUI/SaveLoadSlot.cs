@@ -39,7 +39,10 @@ public class SaveLoadSlot : MonoBehaviour
     private void Load()
     {
         if (SaveManager.Instance.DoesSaveSlotExist(slotIndex))
+        {
             SaveManager.Instance.LoadGameFromSlot(slotIndex);
+            UIManager.Instance.CloseEveryUI();
+        }
         else
             Debug.LogWarning($"{slotIndex}번 슬롯에는 저장된 데이터가 없습니다!");
     }

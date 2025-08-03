@@ -22,7 +22,7 @@ public enum TOWER_TYPE
     AquamarineTower,
     Electricline
 }
-public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
+public class BaseTower : MonoBehaviour, IPoolable, IInteractable
 {
     [Header(" [에디터 할당] ")]
     public TOWER_TYPE towerType;
@@ -156,39 +156,56 @@ public class BaseTower : MonoBehaviour, IPoolable, IPointerClickHandler
     }
     // =======================================
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void Interact()
     {
         // 파괴 옵션 on일 경우
-        if (BuildManager.Instance.isOnDestroy)
+        if (BuildManager.Instance.IsOnDestroy)
         {
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
             return;
         }
 
-        // 우클릭 업그레이드 UI
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            if (BuildManager.Instance.IsPlacing) return;
-            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
-        }
-
-        // 좌클릭 전깃줄 연결 시도
-        else if (eventData.button == PointerEventData.InputButton.Left)
-        {
-            if (LineDragConnector.Instance.IsDragging) return;
-
-            if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
-            {
-                if (wireTower.IsConnected)
-                    ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
-                else
-                {
-                    if (!LineDragConnector.Instance.IsDragging)
-                        LineDragConnector.Instance.BeginDrag(wireTower);
-                }
-            }
-        }
+        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
     }
+
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
+    {
+        return true;
+    }
+
+    //public void OnPointerClick(PointerEventData eventData)
+    //{
+    //    // 파괴 옵션 on일 경우
+    //    if (BuildManager.Instance.isOnDestroy)
+    //    {
+    //        UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+    //        return;
+    //    }
+
+    //    // 우클릭 업그레이드 UI
+    //    if (eventData.button == PointerEventData.InputButton.Right)
+    //    {
+    //        if (BuildManager.Instance.IsPlacing) return;
+    //        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+    //    }
+
+    //    // 좌클릭 전깃줄 연결 시도
+    //    else if (eventData.button == PointerEventData.InputButton.Left)
+    //    {
+    //        if (LineDragConnector.Instance.IsDragging) return;
+
+    //        if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
+    //        {
+    //            if (wireTower.IsConnected)
+    //                ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
+    //            else
+    //            {
+    //                if (!LineDragConnector.Instance.IsDragging)
+    //                    LineDragConnector.Instance.BeginDrag(wireTower);
+    //            }
+    //        }
+    //    }
+    //}
     /// <summary>
     /// 파괴 메서드
     /// </summary>

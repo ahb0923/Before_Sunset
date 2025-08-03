@@ -16,6 +16,7 @@ public class UIManager : MonoSingleton<UIManager>
     public TowerUpgradeUI TowerUpgradeUI { get; private set; }
     public DismantleUI DismantleUI { get; private set; }
     public RecallUI RecallUI { get; private set; }
+    public ResultUI ResultUI { get; private set; }
     public SmelterUI SmelterUI { get; private set; }
     public UpgradeUI UpgradeUI { get; private set; }
     public EssenceUI EssenceUI { get; private set; }
@@ -36,6 +37,7 @@ public class UIManager : MonoSingleton<UIManager>
         TowerUpgradeUI = Helper_Component.FindChildComponent<TowerUpgradeUI>(this.transform, "TowerUpgradeUI");
         DismantleUI = Helper_Component.FindChildComponent<DismantleUI>(this.transform, "DismantleUI");
         RecallUI = Helper_Component.FindChildComponent<RecallUI>(this.transform, "RecallUI");
+        ResultUI = Helper_Component.FindChildComponent<ResultUI>(this.transform, "ResultUI");
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
         UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
         EssenceUI = Helper_Component.FindChildComponent<EssenceUI>(this.transform, "EssenceUI");
@@ -108,5 +110,14 @@ public class UIManager : MonoSingleton<UIManager>
                 _uiStack.Push(stack.Pop());
             }
         }
+    }
+
+    public void CloseEveryUI()
+    {
+        foreach (var ui in _uiStack)
+        {
+            ui.CloseUI();
+        }
+        _uiStack.Clear();
     }
 }

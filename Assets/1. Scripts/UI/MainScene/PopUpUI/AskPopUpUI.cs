@@ -24,10 +24,6 @@ public class AskPopUpUI : MonoBehaviour, ICloseableUI
         _noButton = Helper_Component.FindChildComponent<Button>(this.transform, NO_BUTTON);
         _askText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, ASK_TEXT);
     }
-
-    /*
-     *"기존 저장 데이터를 덮어쓰게 됩니다.\n계속하시겠습니까?"
-     */
     
     private void Awake()
     {

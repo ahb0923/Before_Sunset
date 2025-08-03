@@ -28,7 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDestroyModeStarted(InputAction.CallbackContext context)
     {
-        BuildManager.Instance.isOnDestroy = !BuildManager.Instance.isOnDestroy;
+        BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
     }
 
     private void OnReturnHomeStarted(InputAction.CallbackContext context)
@@ -42,13 +42,33 @@ public class PlayerInputHandler : MonoBehaviour
         UIManager.Instance.RecallUI.UpdateHoldProgress(0f);
         _isHeldReturnKey = false;
     }
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        Vector3 clickWorldPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        clickWorldPos.z = 0f;
+
+        // interactable 레이어에서 충돌체 검색
+        LayerMask interactableLayer = LayerMask.GetMask("Tower", "Core", "Smelter", "Interactable");
+        Collider2D col = Physics2D.OverlapPoint(clickWorldPos, interactableLayer);
+
+        if (col == null) return;
+
+        IInteractable target = col.GetComponent<IInteractable>();
+        if (target == null) return;
+
+        // 플레이어 위치에서 상호작용 가능한지 검사
+        if (!target.IsInteractable(_player.transform.position, 5f, _player.PlayerCollider))
+            return;
+
+        target.Interact();
+    }
     #endregion
 
     #region Event Unsubscriptions
     private void OnDisable()
     {
         _actions.Interaction.Disable();
-
+        _actions.Player.Interact.performed -= OnInteractPerformed;
         _actions.Interaction.Inventory.started -= OnInventoryStarted;
         _actions.Interaction.Build.started -= OnBuildStarted;
         _actions.Interaction.DestroyMode.started -= OnDestroyModeStarted;
@@ -77,6 +97,7 @@ public class PlayerInputHandler : MonoBehaviour
         _player = player;
 
         _actions = player.InputActions;
+        _actions.Player.Interact.performed += OnInteractPerformed;
         _actions.Interaction.Inventory.started += OnInventoryStarted;
         _actions.Interaction.Build.started += OnBuildStarted;
         _actions.Interaction.DestroyMode.started += OnDestroyModeStarted;
@@ -94,7 +115,7 @@ public class PlayerInputHandler : MonoBehaviour
     /// <summary>
     /// 귀환 키보드 일정 시간 눌렀을 때, 귀환 시작
     /// </summary>
-    private void StartRecall()
+    public void StartRecall()
     {
         _isRecallStarted = true;
         _isRecallInProgress = true;
@@ -119,7 +140,15 @@ public class PlayerInputHandler : MonoBehaviour
             if (GameManager.Instance.IsTutorial)
                 transform.position = new Vector3(0, 2, 0);
             else
+            {
                 MapManager.Instance.ReturnToHomeMap();
+
+                // 4일차 밤 맵 초기화
+                if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && TimeManager.Instance.IsNight)
+                {
+                    MapManager.Instance.ResetAllMaps();
+                }
+            }
 
             _player.SetPlayerInBase(true);
         }));

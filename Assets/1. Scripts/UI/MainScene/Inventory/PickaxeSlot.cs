@@ -29,9 +29,9 @@ public class PickaxeSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     /// </summary>
     public void RefreshUI()
     {
+        var id = InventoryManager.Instance.Inventory.Pickaxe.Data.id;
         _itemImage.enabled = true;
-            
-        /*_itemImage.sprite = item.Data.icon;*/
+        _itemImage.sprite = DataManager.Instance.EquipmentData.GetSpriteById(id);
     }
 
     public void DisableHighlight()

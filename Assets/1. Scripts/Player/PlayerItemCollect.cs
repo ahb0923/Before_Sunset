@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerItemCollect : MonoBehaviour
 {
-    [SerializeField] private float pickupRadius = 3f;
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float delayBeforeAttract = 0.5f;
+    private float pickupRadius = 3f;
+    private float moveSpeed = 5f;
+    private float delayBeforeAttract = 0.5f;
+    private Dictionary<Transform, float> attractionSpeedMap = new Dictionary<Transform, float>();
 
     [Tooltip("감지할 드롭 아이템 레이어 이름들")]
     [SerializeField] private List<string> dropItemLayerNames;
@@ -68,7 +69,17 @@ public class PlayerItemCollect : MonoBehaviour
     {
         Vector3 targetPosition = transform.position + new Vector3(0, 0.6f, 0);
 
-        itemTransform.position = Vector3.MoveTowards(itemTransform.position, targetPosition, moveSpeed * Time.deltaTime);
+        // 속도 초기화
+        if (!attractionSpeedMap.ContainsKey(itemTransform))
+        {
+            attractionSpeedMap[itemTransform] = 0f;
+        }
+
+        // 점점 빨라지기
+        attractionSpeedMap[itemTransform] += moveSpeed * 3f * Time.deltaTime;
+
+        float currentSpeed = attractionSpeedMap[itemTransform];
+        itemTransform.position = Vector3.MoveTowards(itemTransform.position, targetPosition, currentSpeed * Time.deltaTime);
 
         if (Vector3.Distance(itemTransform.position, targetPosition) <= 0.1f)
         {
@@ -79,7 +90,8 @@ public class PlayerItemCollect : MonoBehaviour
 
             InventoryManager.Instance.Inventory.AddItem(itemId, 1);
             PoolManager.Instance.ReturnToPool(itemId, itemObject);
+
+            attractionSpeedMap.Remove(itemTransform);
         }
     }
-
 }

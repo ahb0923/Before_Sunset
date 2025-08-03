@@ -3,29 +3,30 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
+    [SerializeField] private RectTransform _itemRect;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _highlightImage;
     [SerializeField] private GameObject _highlight;
     [SerializeField] private TextMeshProUGUI _itemAmountText;
     
+    [SerializeField] private float _scaleAmount = 1.5f;
+    [SerializeField] private float _scaleDuration = 0.3f;
     private Tween _tween;
+    private Sequence _sequence;
     
     public int SlotIndex { get; private set; }
     
     private const string ITEM_IMAGE = "IconImage";
     private const string HIGHLIGHT_IMAGE = "HighlightImage";
     private const string ITEM_AMOUNT_TEXT = "AmountText";
-    private const string DRAGGING_ICON = "DraggingIcon";
-    
-    private static GameObject _draggingItemIcon;
-    private static Item _draggingItem;
-    private static ItemSlot _draggingOriginSlot;
 
     private void Reset()
     {
+        _itemRect = Helper_Component.FindChildComponent<RectTransform>(this.transform, ITEM_IMAGE);
         _itemImage = Helper_Component.FindChildComponent<Image>(this.transform, ITEM_IMAGE);
         _highlightImage = Helper_Component.FindChildComponent<Image>(this.transform, HIGHLIGHT_IMAGE);
         _highlight = Helper_Component.FindChildGameObjectByName(this.gameObject, HIGHLIGHT_IMAGE);
@@ -62,6 +63,42 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void DisableHighlight()
     {
+        _highlight.SetActive(false);
+    }
+
+    public void AddAnimation()
+    {
+        if (_sequence != null)
+            return;
+        
+        if (this.gameObject.activeInHierarchy)
+        {
+            _sequence = DOTween.Sequence();
+            _sequence.Append(_itemRect.DOScale(_scaleAmount, _scaleDuration).SetEase(Ease.InCubic));
+            _sequence.Append(_itemRect.DOScale(1f, _scaleDuration).SetEase(Ease.OutCubic)).
+                OnComplete(() =>
+                {
+                    _sequence.Kill();
+                    _sequence = null;
+                });
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_sequence != null)
+        {
+            _sequence.Kill();
+            _sequence = null;
+            _itemRect.localScale = Vector3.one;
+        }
+        
+        if (_tween != null)
+        {
+            _tween.Kill();
+            _tween = null;
+        }
+        _highlightImage.color = new Color(1f, 1f, 0f, 0f);
         _highlight.SetActive(false);
     }
 
@@ -306,7 +343,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
         smelterSlot.RefreshUI();
         
-        TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
+        if (DragManager.DraggingItem != null)
+            TooltipManager.Instance.UpdateTooltip(DragManager.DraggingItem.Data.itemName, DragManager.DraggingItem.Data.context);
 
         DragManager.Clear();
     }

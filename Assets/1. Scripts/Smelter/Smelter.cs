@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Smelter : MonoBehaviour, IPoolable, IDamageable
+public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 {
     public int smelterID;
     public SmelterDatabase smelterData;
@@ -18,19 +18,16 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
     public event Action<float> OnSmeltingProgress;
     public float elapsed = 0f;
 
-    [SerializeField] private Smelter_Interaction _interaction;
-
     public SpriteRenderer spriteRenderer;
-    
+    public Animator animator;
+
     private void Awake()
     {
         smelterData = DataManager.Instance.SmelterData.GetById(smelterID);
-        if(_interaction==null)
-            _interaction = Helper_Component.GetComponentInChildren<Smelter_Interaction>(gameObject);
-        _interaction.Init(this);
         if (_buildInfo == null)
             _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(gameObject);
         _buildInfo.Init(smelterID, size);
+        animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
     }
 
     /// <summary>
@@ -63,6 +60,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         
         if (OutputItem == null || mineralData.ingotId == OutputItem.Data.id)
         {
+            animator.SetTrigger("IsMelting");
             _smeltCoroutine = StartCoroutine(C_Smelt(mineralData, smeltedTime));
         }
         else
@@ -78,7 +76,12 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
             StopCoroutine(_smeltCoroutine);
             _smeltCoroutine = null;
         }
-        
+
+        if (OutputItem == null)
+            animator.SetTrigger("IsCancel");
+        else 
+            animator.SetTrigger("IsDone");
+
         isSmelting = false;
         OnSmeltingProgress?.Invoke(0);
         RefreshUI();
@@ -130,6 +133,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
         else
         {
             isSmelting = false;
+            animator.SetTrigger("IsDone");
         }
     }
 
@@ -192,5 +196,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable
 
         StopAllCoroutines();
         PoolManager.Instance.ReturnToPool(smelterID, gameObject);
+    }
+
+    public void Interact()
+    {
+        UIManager.Instance.SmelterUI.Open(this);
+    }
+
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
+    {
+        return true;
     }
 }

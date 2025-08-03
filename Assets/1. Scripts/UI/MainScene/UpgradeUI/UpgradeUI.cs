@@ -125,13 +125,11 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
 
     public void Open()
     {
-        TimeManager.Instance.PauseGame(true);
         UIManager.Instance.OpenUI(this);
     }
     
     public void Close()
     {
-        TimeManager.Instance.PauseGame(false);
         UIManager.Instance.CloseUI(this);
     }
 
@@ -139,6 +137,7 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
     {
         UpgradeManager.Instance.SetVirtualUpgrade();
         UpgradeManager.Instance.SetVirtualEssence();
+        TimeManager.Instance.PauseGame(true);
         
         Refresh();
         RefreshSlot();
@@ -150,6 +149,7 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
     {
         UpgradeManager.Instance.DiscardVirtualUpgrade();
         UpgradeManager.Instance.SetVirtualEssence();
+        TimeManager.Instance.PauseGame(false);
         
         _rect.CloseAndRestore();
     }

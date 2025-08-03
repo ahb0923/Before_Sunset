@@ -71,7 +71,6 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         for (int i = 0; i < _buildSlots.Count; i++)
         {
             SmelterDatabase data = i < _smelterData.Count ? _smelterData[i] : null;
-            //_buildSlots[i].SetSmelterSlot(data);
             _buildSlots[i].SetSlot(data);
         }
     }
@@ -115,9 +114,6 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     public void Close()
     {
         UIManager.Instance.CloseUI(this);
-        UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
-        
-        ResetUI();
     }
 
     public void OpenUI()
@@ -127,6 +123,9 @@ public class CraftArea : MonoBehaviour, ICloseableUI
 
     public void CloseUI()
     {
+        UIManager.Instance.CraftMaterialArea.gameObject.SetActive(false);
+        
+        ResetUI();
         this.gameObject.SetActive(false);
     }
     
@@ -155,5 +154,4 @@ public class CraftArea : MonoBehaviour, ICloseableUI
                 TooltipManager.Instance.HideTooltip();
         }
     }
-
 }

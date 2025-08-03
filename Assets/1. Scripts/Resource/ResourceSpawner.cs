@@ -8,7 +8,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private Vector3 spawnAreaCenter3D;
     private Vector2 spawnAreaSize = new Vector2(57f, 31f);
 
-    [SerializeField] private int spawnCount = 20;
+    [SerializeField] private int spawnCount = 100;
     [SerializeField] private float overlapRadius = 1.0f;
     [SerializeField] private LayerMask obstacleLayerMask;
     [SerializeField] private LayerMask _spawnZoneLayer;
