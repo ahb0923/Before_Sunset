@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -22,6 +23,7 @@ public class UIManager : MonoSingleton<UIManager>
     public EssenceUI EssenceUI { get; private set; }
     public TutorialSkip TutorialSkipButton { get; private set; }
     public QuestUI QuestUI { get; private set; }
+    public Button DaySkipButton { get; private set; }
 
     protected override void Awake()
     {
@@ -43,6 +45,7 @@ public class UIManager : MonoSingleton<UIManager>
         EssenceUI = Helper_Component.FindChildComponent<EssenceUI>(this.transform, "EssenceUI");
         TutorialSkipButton = Helper_Component.FindChildComponent<TutorialSkip>(transform, "TurorialSkipButton");
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
+        DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
     }
 
     private void Start()
@@ -52,6 +55,8 @@ public class UIManager : MonoSingleton<UIManager>
         
         TutorialSkipButton?.gameObject.SetActive(GameManager.Instance.IsTutorial);
         QuestUI?.gameObject.SetActive(GameManager.Instance.IsTutorial);
+
+        DaySkipButton.onClick.AddListener(() => TimeManager.Instance.SkipHalfDay());
     }
 
     private void Update()

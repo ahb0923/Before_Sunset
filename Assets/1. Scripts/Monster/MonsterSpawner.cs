@@ -6,7 +6,7 @@ public class MonsterSpawner : MonoBehaviour
 {
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
-    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Stage - 1) / 2, _spawnPoints.Count - 1);
+    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Day - 1) / 2, _spawnPoints.Count - 1);
     [SerializeField] private Transform _monsterParent;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
@@ -37,13 +37,13 @@ public class MonsterSpawner : MonoBehaviour
     public void SpawnAllMonsters()
     {
         UIManager.Instance.BattleUI.StartWarning();
-        StartCoroutine(C_SpawnMonsters(TimeManager.Instance.Stage));
+        StartCoroutine(C_SpawnMonsters(TimeManager.Instance.Day));
     }
 
     /// <summary>
     /// 웨이브 데이터를 받아와서 스테이지에 따른 웨이브 소환
     /// </summary>
-    private IEnumerator C_SpawnMonsters(int stage)
+    private IEnumerator C_SpawnMonsters(int day)
     {
         if (GameManager.Instance.IsTutorial)
         {
@@ -63,11 +63,11 @@ public class MonsterSpawner : MonoBehaviour
         }
         else
         {
-            int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(stage);
+            int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(day);
             for (int i = 1; i <= waveCount; i++)
             {
                 // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
-                WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(stage, i);
+                WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(day, i);
 
                 // 다음 웨이브 기다림
                 yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);

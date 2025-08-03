@@ -27,7 +27,7 @@ public class LoadSlot : MonoBehaviour
         if (SaveManager.Instance.DoesSaveSlotExist(_slotIndex))
         {
             GameData data = SaveManager.Instance.GetGameDataFromSlot(_slotIndex);
-            UpdateSavedStageText(data.timeData.stage, data.timeData.day, data.timeData.isNight);
+            UpdateSavedStageText(data.timeData.day, data.timeData.isNight);
             UpdateSavedTimeText(DateTime.Parse(data.lastSaveDateTime));
         }
         else
@@ -46,10 +46,10 @@ public class LoadSlot : MonoBehaviour
             Debug.LogWarning($"{_slotIndex}번 슬롯에는 저장된 데이터가 없습니다!");
     }
 
-    private void UpdateSavedStageText(int stage, int day, bool isNight)
+    private void UpdateSavedStageText(int day, bool isNight)
     {
         string DayOrNight = isNight ? "밤" : "낮";
-        _savedStageTxt.text = $"{stage}주째 {day}일의 " + DayOrNight;
+        _savedStageTxt.text = $"{day}일의 " + DayOrNight;
     }
 
     private void UpdateSavedTimeText(DateTime time)

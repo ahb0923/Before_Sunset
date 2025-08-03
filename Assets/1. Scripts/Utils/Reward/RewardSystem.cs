@@ -35,7 +35,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
 
             case MONSTER_REWARD_TYPE.Mineral:
                 List<MineralDatabase> minerals;
-                if(TimeManager.Instance.Stage == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
+                if(TimeManager.Instance.Day == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
                 {
                     minerals = DataManager.Instance.MineralData.GetAllItems()
                         .Where(item => item.itemType == MINERAL_TYPE.Mineral).Where(item => item.id < 120).ToList();
@@ -55,7 +55,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
 
             case MONSTER_REWARD_TYPE.Ingot:
                 List<MineralDatabase> ingots;
-                if (TimeManager.Instance.Stage == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
+                if (TimeManager.Instance.Day == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
                 {
                     ingots = DataManager.Instance.MineralData.GetAllItems()
                         .Where(item => item.itemType == MINERAL_TYPE.Ingot).Where(item => item.id < 120).ToList();

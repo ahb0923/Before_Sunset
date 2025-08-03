@@ -95,6 +95,8 @@ public class ResultUI : MonoBehaviour
 
     public void OpenClear(int stage)
     {
+        TimeManager.Instance.PauseGame(true);
+
         IsOpen = true;
         InitSlots(stage);
         RefreshSlots(stage);
@@ -117,12 +119,13 @@ public class ResultUI : MonoBehaviour
             int id = DataManager.Instance.JewelData.GetByName(slot.JewelName).id;
             InventoryManager.Instance.Inventory.AddItem(id, slot.Amount);
         }
-        StageRewarded[TimeManager.Instance.Stage] = true;
+        StageRewarded[TimeManager.Instance.Day] = true;
         
         _clearResultRect.CloseAndRestore();
         _rect.CloseAndRestore();
         
         TimeManager.Instance.PauseGame(false);
+        TimeManager.Instance.NextDay();
     }
 
     public void OpenFail()
@@ -155,7 +158,7 @@ public class ResultUI : MonoBehaviour
     private void RefreshClear()
     {
         _bestRecordText.text = "";
-        _currentRecordText.text = $"{TimeManager.Instance.Stage:D2}주";
+        _currentRecordText.text = $"{TimeManager.Instance.Day:D2}일";
     }
 
     private void RefreshSlots(int stage)
@@ -184,6 +187,6 @@ public class ResultUI : MonoBehaviour
     private void RefreshFail()
     {
         _failBestRecordText.text = "";
-        _failCurrentRecordText.text = $"{TimeManager.Instance.Stage:D2}주";
+        _failCurrentRecordText.text = $"{TimeManager.Instance.Day:D2}주";
     }
 }

@@ -1013,7 +1013,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4020907712365007841, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -90
+      value: -160
       objectReference: {fileID: 0}
     - target: {fileID: 4020907712365007841, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1389,8 +1389,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.00999999, y: 0, z: 0}
-    m_Extent: {x: 2.73, y: 2.73, z: 0}
+    m_Center: {x: 0.0031249821, y: 0, z: 0}
+    m_Extent: {x: 0.81875, y: 0.81875, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -1771,7 +1771,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1349318923785594099, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00024414062
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 1350270042997854497, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1807,7 +1807,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1702533654799424317, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1762527114484919741, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1839,6 +1839,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2589592176759440752, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2589592176759440752, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2650811011501266253, guid: 77c22645ff1152141853b782277d3133, type: 3}
@@ -2239,7 +2243,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074921222671413708, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0000029802322
+      value: -0.000006556511
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4306,8 +4310,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 0.00999999, y: 0, z: 0}
-    m_Extent: {x: 2.73, y: 2.73, z: 0}
+    m_Center: {x: 0.0031249821, y: 0, z: 0}
+    m_Extent: {x: 0.81875, y: 0.81875, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
