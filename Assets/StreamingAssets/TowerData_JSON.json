@@ -9,14 +9,14 @@
     "projectileId": 800,
     "debuffId": null,
     "level": 1,
-    "towerHp": 50.0,
+    "towerHp": 70.0,
     "damage": 7.0,
     "aps": 1.0,
     "range": 3.0,
     "spriteName": "Tower_Cooper_Sprite",
     "prefabName": "Tower_Cooper",
     "buildRequirements": {
-      "구리주괴": 3
+      "구리주괴": 2
     }
   },
   {
@@ -36,7 +36,7 @@
     "spriteName": null,
     "prefabName": null,
     "buildRequirements": {
-      "구리주괴": 5,
+      "구리주괴": 3,
       "철주괴": 2
     }
   },
@@ -50,14 +50,14 @@
     "projectileId": 801,
     "debuffId": null,
     "level": 1,
-    "towerHp": 50.0,
+    "towerHp": 70.0,
     "damage": 8.0,
     "aps": 2.3,
     "range": 5.0,
     "spriteName": "Tower_Iron_Sprite",
     "prefabName": "Tower_Iron",
     "buildRequirements": {
-      "구리주괴": 3,
+      "구리주괴": 2,
       "철주괴": 3
     }
   },
@@ -79,7 +79,7 @@
     "prefabName": null,
     "buildRequirements": {
       "은주괴": 2,
-      "철주괴": 5
+      "철주괴": 3
     }
   },
   {
@@ -176,7 +176,7 @@
     "projectileId": null,
     "debuffId": null,
     "level": 1,
-    "towerHp": 30.0,
+    "towerHp": 50.0,
     "damage": 7.0,
     "aps": 3.0,
     "range": 6.0,
@@ -197,7 +197,7 @@
     "projectileId": null,
     "debuffId": null,
     "level": 2,
-    "towerHp": 20.0,
+    "towerHp": 30.0,
     "damage": 3.0,
     "aps": 0.0,
     "range": 2.0,
@@ -218,7 +218,7 @@
     "projectileId": null,
     "debuffId": null,
     "level": 1,
-    "towerHp": 100.0,
+    "towerHp": 150.0,
     "damage": 6.0,
     "aps": 10.0,
     "range": 4.0,
@@ -281,7 +281,7 @@
     "projectileId": null,
     "debuffId": 1405,
     "level": 2,
-    "towerHp": 20.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
@@ -323,7 +323,7 @@
     "projectileId": null,
     "debuffId": 1403,
     "level": 2,
-    "towerHp": 20.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
@@ -365,7 +365,7 @@
     "projectileId": null,
     "debuffId": 1401,
     "level": 2,
-    "towerHp": 20.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
