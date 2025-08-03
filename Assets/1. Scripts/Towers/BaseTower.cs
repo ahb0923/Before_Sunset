@@ -167,6 +167,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
             return;
         }
 
+        AudioManager.Instance.PlaySFX("UpgradeTower");
         UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
     }
 

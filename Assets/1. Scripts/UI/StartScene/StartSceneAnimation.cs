@@ -69,6 +69,8 @@ public class StartSceneAnimation : MonoBehaviour
         {
             CameraAction();
         }
+
+        AudioManager.Instance.PlayBGM("NormalBase");
     }
 
     [Button]

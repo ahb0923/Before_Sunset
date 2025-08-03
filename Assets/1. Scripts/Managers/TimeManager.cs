@@ -33,16 +33,17 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer += Time.deltaTime;
 
-        if(_dailyTimer >= _realSecDayLength)
+        if (_dailyTimer >= _realSecDayLength)
         {
             NextDay();
         }
 
-        if(Day == _maxDay - 1 && IsNight && !_isSpawned)
+        if (Day == _maxDay - 1 && IsNight && !_isSpawned)
         {
             Recall();
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
+            AudioManager.Instance.PlayBGM("DefenseBase");
         }
 
         if (IsStageClear && !UIManager.Instance.ResultUI.IsOpen && !UIManager.Instance.ResultUI.StageRewarded[Stage])
@@ -71,8 +72,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     public void NextDay()
     {
         _dailyTimer = 0;
-        
-        if(Day == _maxDay)
+
+        if (Day == _maxDay)
         {
             if (IsStageClear)
             {
@@ -99,7 +100,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void NextStage()
     {
-        if(Stage == _maxStage + 1)
+        if (Stage == _maxStage + 1)
         {
             PauseGame(true);
             // 승리

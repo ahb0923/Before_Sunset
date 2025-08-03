@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     [Header("BGM")]
     public AudioSource bgmSource;
 
-    private int _sfxPoolSize = 10;
+    private int _sfxPoolSize = 30;
     private Queue<AudioSource> _sfxPool;
 
     private Dictionary<string, AudioClip> _bgmClips = new();
