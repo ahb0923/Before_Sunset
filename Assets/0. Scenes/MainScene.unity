@@ -742,6 +742,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4276528058182126163, guid: aadc2c34e6e534e4d9ebb984818c00f5, type: 3}
+      propertyPath: _realMinDayLength
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6137766019424001956, guid: aadc2c34e6e534e4d9ebb984818c00f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -24984,7 +24988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4527551188730220436, guid: 6a9a337f67c2d014b9dd0827590cc658, type: 3}
       propertyPath: _maxHp
-      value: 50000
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 4792642173256333417, guid: 6a9a337f67c2d014b9dd0827590cc658, type: 3}
       propertyPath: m_AnchoredPosition.x
