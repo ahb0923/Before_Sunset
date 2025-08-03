@@ -11,12 +11,18 @@ public class TutorialSkip : MonoBehaviour
         tutoSkipBtn.onClick.AddListener(OnClickTutorialSkipButton);
     }
 
+    /// <summary>
+    /// 스킵 버튼 클릭 시에 일시 정지 후 팝업 UI 활성화
+    /// </summary>
     private void OnClickTutorialSkipButton()
     {
         TimeManager.Instance.PauseGame(true);
-        UIManager.Instance.AskPopUpUI.Open("튜토리얼을 스킵하시겠습니까?", () => OnSkip(), () => TimeManager.Instance.PauseGame(false));
+        UIManager.Instance.AskPopUpUI.Open("튜토리얼을 스킵하고 게임을 시작하시겠습니까?", () => OnSkip(), () => TimeManager.Instance.PauseGame(false));
     }
 
+    /// <summary>
+    /// 튜토리얼 스킵 시에 메인 게임 시작
+    /// </summary>
     private void OnSkip()
     {
         TimeManager.Instance.PauseGame(false);
