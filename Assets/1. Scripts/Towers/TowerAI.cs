@@ -216,7 +216,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             _animator.SetTrigger("IsDestroy");
         }
-        AudioManager.Instance.PlaySFX(_tower.statHandler.name);
+        AudioManager.Instance.PlaySFX("DestroyedTower");
         yield return Helper_Coroutine.WaitSeconds(0.4f);
 
         _isDestroy = true;
