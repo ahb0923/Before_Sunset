@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -6,8 +7,13 @@ using static UnityEditor.Progress;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {
+    [Header("설치")]
     [SerializeField] private LayerMask _buildingLayer;
     [SerializeField] private Transform _buildablePool;
+
+    [Header("하이라이트")]
+    [SerializeField] private Tilemap highlightTilemap;
+    [SerializeField] private TileBase highlightTile;
 
     private Tilemap _groundTilemap;
     private GameObject _buildPrefab;
@@ -15,8 +21,13 @@ public class BuildManager : MonoSingleton<BuildManager>
     private bool _isPlacing;
     public bool IsPlacing => _isPlacing;
 
-    // 파괴 선택
-    public bool isOnDestroy = false;
+    // 파괴 선택(추후 프로퍼티로 변경)
+    public bool IsOnDestroy = false;
+
+    private readonly HashSet<Vector3Int> _buildableTiles = new();
+    private readonly List<Vector3Int> _highlightedTiles = new();
+
+    private float _lastRadius = -1f;
 
     private void Start()
     {
@@ -30,24 +41,35 @@ public class BuildManager : MonoSingleton<BuildManager>
     /// <param name="prefab"></param>
     public void StartPlacing(int ID)
     {
-        _buildPrefab = DataManager.Instance.TowerData.GetPrefabById(ID) ?? _buildPrefab;
-        _buildPrefab = DataManager.Instance.SmelterData.GetPrefabById(ID) ?? _buildPrefab;
-
+        var towerPrefab = DataManager.Instance.TowerData.GetPrefabById(ID);
+        var smelterPrefab = DataManager.Instance.SmelterData.GetPrefabById(ID);
+        _buildPrefab = towerPrefab ?? smelterPrefab;
+        if (_buildPrefab == null)
+        {
+            Debug.LogError($"[BuildManager] ID {ID}에 해당하는 프리팹 없음");
+            return;
+        }
 
         _buildInfo = Helper_Component.GetComponentInChildren<BuildInfo>(_buildPrefab);
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();
         DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
+
+        CalculateBuildableTiles(_groundTilemap, DefenseManager.Instance.Core.transform, DefenseManager.Instance.Core.GetLightAreaRadius());
+        ShowHighlightTiles();
     }
     
     public void CancelPlacing()
     {
         _isPlacing = false;
         _buildInfo = null;
+        _buildPrefab = null;
 
         DefenseManager.Instance.DragIcon.Hide();
         DefenseManager.Instance.BuildPreview.Clear();
+
+        ClearHighlights();
     }
     
     private void Update()
@@ -65,12 +87,12 @@ public class BuildManager : MonoSingleton<BuildManager>
         // 프리뷰 표시 (셀 중심으로)
         DefenseManager.Instance.DragIcon.SetPosition(Camera.main.WorldToScreenPoint(cellCenter));
         DefenseManager.Instance.BuildPreview.ShowPreview(cellCenter, _buildInfo.buildSize);
-        // 프리뷰 표시
+        // 프리뷰 표시 (마우스 포인터)
         //DefenseManager.Instance.DragIcon.SetPosition(Input.mousePosition);
         //DefenseManager.Instance.BuildPreview.ShowPreview(mouseWorld, _buildInfo.buildSize);
 
-        // 좌클릭 확정
-        if (Input.GetMouseButtonDown(0)) //  && !EventSystem.current.IsPointerOverGameObject()
+        // 좌클릭 확정(UI 위에 클릭시 설치 안되도록 조건 추가)
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             TryPlace(mouseWorld);
         }
@@ -85,18 +107,18 @@ public class BuildManager : MonoSingleton<BuildManager>
     {
         if (TryBuildTower(_buildInfo, worldPos))
         {
+            // 추후 개선 요구 이름 포함으로 찾는거 위험함
             if (_buildPrefab.name.Contains("Tower"))
                 AudioManager.Instance.PlaySFX("CreateTower");
             else if (_buildPrefab.name.Contains("Smelter"))
                 AudioManager.Instance.PlaySFX("CreateSmelter");
-
-            Debug.Log("설치 성공");
         }
         else { ToastManager.Instance.ShowToast("해당 구역에는 설치할 수 없습니다."); }
 
         CancelPlacing();
         UIManager.Instance.CraftArea.Open();
     }
+
     /// <summary>
     /// 1) tile의 유효성을 검사(tile이 존재하는지 & 설치가능한 지역인지)
     /// 2) Building이 이미 지어져 있는지 체크
@@ -108,16 +130,11 @@ public class BuildManager : MonoSingleton<BuildManager>
     public bool TryBuildTower(BuildInfo prefab, Vector3 worldPos)
     {
         Vector3Int originCell = _groundTilemap.WorldToCell(worldPos);
-        BoundsInt visibleTiles = GetVisibleTileBounds(_groundTilemap);
 
-        // 모든 타일이 화면 안에 있고, 존재하는지 확인
-        for (int x = 0; x < prefab.buildSize.x; x++)
-            for (int y = 0; y < prefab.buildSize.y; y++)
-            {
-                Vector3Int checkCell = originCell + new Vector3Int(x, y, 0);
-                if (!visibleTiles.Contains(checkCell) || !_groundTilemap.HasTile(checkCell))
-                    return false;
-            }
+        // 셀의 중심이 타일 안에 있는지 확인
+        Vector3Int centerCell = _groundTilemap.WorldToCell(worldPos);
+        if (!_buildableTiles.Contains(centerCell))
+            return false;
 
         // 중앙 위치
         Vector3 cellCenter = _groundTilemap.GetCellCenterWorld(originCell);
@@ -153,25 +170,64 @@ public class BuildManager : MonoSingleton<BuildManager>
         DefenseManager.Instance.AddObstacle(obj.transform, 1); // 일단 1x1이니까 1로 두었음
         return true;
     }
+
     /// <summary>
-    /// 현재 viewport에 보이는(화면에 실제로 보이는) 위치의 worldPosition값<br/>
-    /// 추후에 『카메라의 비추는 전체 범위 => 플레이어의 시야 범위』로 변경할 경우 코드 수정
-    /// 플레이어 중심으로부터 원형으로 7칸까지 설치 범위
+    /// 중심과 반경으로 설치 가능 타일 계산
     /// </summary>
-    /// <returns></returns>
-    private BoundsInt GetVisibleTileBounds(Tilemap tilemap)
+    private void CalculateBuildableTiles(Tilemap tilemap, Transform target, float radius)
     {
-        Camera cam = Camera.main;
-        float distance = -cam.transform.position.z;
+        _buildableTiles.Clear();
+        _highlightedTiles.Clear();
 
-        Vector3 worldMin = cam.ViewportToWorldPoint(new Vector3(0, 0, distance));
-        Vector3 worldMax = cam.ViewportToWorldPoint(new Vector3(1, 1, distance));
+        Debug.Log(target.position);
 
-        Vector3Int minCell = tilemap.WorldToCell(worldMin);
-        Vector3Int maxCell = tilemap.WorldToCell(worldMax);
+        Vector3 centerWorld = target.position;
+        float sqrRadius = radius * radius;
+        Vector3Int centerCell = tilemap.WorldToCell(centerWorld);
+        int cellRadius = Mathf.CeilToInt(radius);
 
-        Vector3Int size = maxCell - minCell + Vector3Int.one;
+        for (int x = -cellRadius; x <= cellRadius; x++)
+        {
+            for (int y = -cellRadius; y <= cellRadius; y++)
+            {
+                Vector3Int cell = new Vector3Int(centerCell.x + x, centerCell.y + y, 0);
 
-        return new BoundsInt(minCell, size);
+                Vector3 cellCenter = tilemap.GetCellCenterWorld(cell);
+                float distSqr = (cellCenter - centerWorld).sqrMagnitude;
+
+                if (distSqr <= sqrRadius && tilemap.HasTile(cell))
+                {
+                    _buildableTiles.Add(cell);
+                    _highlightedTiles.Add(cell);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 설치 가능 타일 하이라이트 표시
+    /// </summary>
+    private void ShowHighlightTiles()
+    {
+        if (highlightTilemap == null || highlightTile == null) return;
+
+        foreach (var cell in _highlightedTiles)
+        {
+            highlightTilemap.SetTile(cell, highlightTile);
+        }
+    }
+
+    /// <summary>
+    /// 기존 하이라이트 제거
+    /// </summary>
+    private void ClearHighlights()
+    {
+        if (highlightTilemap == null) return;
+
+        foreach (var cell in _highlightedTiles)
+        {
+            highlightTilemap.SetTile(cell, null);
+        }
+        _highlightedTiles.Clear();
     }
 }

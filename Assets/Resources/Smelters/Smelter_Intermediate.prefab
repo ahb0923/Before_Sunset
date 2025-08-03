@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: -2124863439
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4584001840792588798, guid: ca1fe683d8872314481b6dbcd87cb1d1, type: 3}
-  m_Color: {r: 0.4669811, g: 0.63629293, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 41aec15741cd0e940915d94c57f35c17, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.2, y: 0.14}
+  m_Size: {x: 6.4, y: 6.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -93,9 +93,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570845869665552353}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 457c657932433fa44a6d03357cc1359b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 2078991498260920185}
   - component: {fileID: 6080508498196729439}
   - component: {fileID: 3951482302717768146}
+  - component: {fileID: 5925358709970405489}
   m_Layer: 13
   m_Name: Smelter_Intermediate
   m_TagString: Untagged
@@ -200,10 +201,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smelterID: 901
-  size: {x: 3, y: 3}
+  size: {x: 1, y: 1}
   isSmelting: 0
   elapsed: 0
+  _interaction: {fileID: 5925358709970405489}
+  animator: {fileID: 5346647228943257301}
   spriteRenderer: {fileID: 7547968999694799401}
+--- !u!114 &5925358709970405489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185829061793917326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec5a5da6296a63942a588c0e0849e21e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1411796654157379378
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,5 +359,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 901
-  buildSize: {x: 3, y: 3}
+  buildSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 7547968999694799401}

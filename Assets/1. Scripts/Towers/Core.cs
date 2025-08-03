@@ -102,4 +102,9 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     {
         SetHp(data.coreCurHp);
     }
+    public float GetLightAreaRadius()
+    {
+        return _statHandler.GetSight() + 1.5f;
+    }
+
 }
