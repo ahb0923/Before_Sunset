@@ -158,11 +158,11 @@ public class PlayerInputHandler : MonoBehaviour
                 }
             }
 
+            _isRecallStarted = false;
+            _isRecallInProgress = false;
             _player.SetPlayerInBase(true);
         }));
 
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GoToBase);
-        _isRecallStarted = false;
-        _isRecallInProgress = false;
     }
 }
