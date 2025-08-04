@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private BasePlayer _player;
-    private PlayerInteractor _interactor;
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
     private EquipmentDatabase _equippedPickaxe;
@@ -135,7 +134,6 @@ public class PlayerController : MonoBehaviour
     public void Init(BasePlayer player)
     {
         _player = player;
-        _interactor = GetComponent<PlayerInteractor>();
         _playerEffect = GetComponent<PlayerEffect>();
         _equippedPickaxe = player.Stat.Pickaxe;
 
@@ -271,7 +269,7 @@ public class PlayerController : MonoBehaviour
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         clickPos.z = 0f;
 
-        IInteractable target = _interactor.GetCurrentTarget();
+        IInteractable target = InteractManager.Instance.GetCurrentTarget();
 
         if (target != null && !(target is OreController) && !(target is JewelController))
         {
@@ -306,7 +304,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void TryInteractTarget(IInteractable target)
     {
-        if (target == null) return;
+        if (target == null)
+        {
+            ToastManager.Instance.ShowToast("목표가 존재하지 않습니다.");
+            return;
+
+        }
 
         float range = (target is OreController || target is JewelController) ? 1.5f : 5.0f;
 
