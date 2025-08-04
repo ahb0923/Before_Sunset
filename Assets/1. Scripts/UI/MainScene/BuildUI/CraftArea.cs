@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class CraftArea : MonoBehaviour, ICloseableUI
@@ -10,7 +11,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     [SerializeField] private Button _smelterButton;
     [SerializeField] private GameObject _buildingSlotArea;
     [SerializeField] private GameObject _buildingSlotPrefab;
-    [SerializeField] private List<BuildingSlot> _buildSlots = new List<BuildingSlot>();
+    [SerializeField] public List<BuildingSlot> buildSlots = new List<BuildingSlot>();
     [SerializeField] private List<TowerDatabase> _baseTowerData = new List<TowerDatabase>();
     [SerializeField] private List<SmelterDatabase> _smelterData;
     
@@ -46,15 +47,15 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         _towerButton.interactable = false;
         _smelterButton.interactable = true;
 
-        foreach (var slot in _buildSlots)
+        foreach (var slot in buildSlots)
         {
             slot.ClearSlot();
         }
 
-        for (int i = 0; i < _buildSlots.Count; i++)
+        for (int i = 0; i < buildSlots.Count; i++)
         {
             TowerDatabase data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
-            _buildSlots[i].SetSlot(data);
+            buildSlots[i].SetSlot(data);
         }
     }
     
@@ -63,15 +64,15 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         _smelterButton.interactable = false;
         _towerButton.interactable = true;
         
-        foreach (var slot in _buildSlots)
+        foreach (var slot in buildSlots)
         {
             slot.ClearSlot();
         }
     
-        for (int i = 0; i < _buildSlots.Count; i++)
+        for (int i = 0; i < buildSlots.Count; i++)
         {
             SmelterDatabase data = i < _smelterData.Count ? _smelterData[i] : null;
-            _buildSlots[i].SetSlot(data);
+            buildSlots[i].SetSlot(data);
         }
     }
 
@@ -101,7 +102,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         {
             var slot = Instantiate(_buildingSlotPrefab, _buildingSlotArea.transform);
             var buildingSlot = slot.GetComponent<BuildingSlot>();
-            _buildSlots.Add(buildingSlot);
+            buildSlots.Add(buildingSlot);
             buildingSlot.InitIndex(i);
         }
     }
@@ -143,9 +144,9 @@ public class CraftArea : MonoBehaviour, ICloseableUI
 
     private void ResetUI()
     {
-        if (_buildSlots.Count != 0)
+        if (buildSlots.Count != 0)
         {
-            foreach (var slot in _buildSlots)
+            foreach (var slot in buildSlots)
             {
                 slot.RefreshUI();
             }

@@ -81,6 +81,10 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _bGSoundSlider.value = AudioManager.Instance.GetBGMVolume();
         _effectSoundSlider.value = AudioManager.Instance.GetSFXVolume();
         
+        AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
+        AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
+        AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
+        
         _wholeSoundSlider.onValueChanged.AddListener(OnWholeVolumeChanged);
         _bGSoundSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
         _effectSoundSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
@@ -113,15 +117,14 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         if (_isWholeSoundMute)
         {
             _isWholeSoundMute = false;
-            AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
             _wholeSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isWholeSoundMute = true;
-            AudioManager.Instance.SetWholeVolume(0f);
             _wholeSoundImage.gameObject.SetActive(false);
         }
+        AudioManager.Instance.SetWholeMute(_isWholeSoundMute);
     }
 
     private void MuteBGSound()
@@ -129,15 +132,14 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         if (_isBGSoundMute)
         {
             _isBGSoundMute = false;
-            AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
             _bGSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isBGSoundMute = true;
-            AudioManager.Instance.SetBGMVolume(0f);
             _bGSoundImage.gameObject.SetActive(false);
         }
+        AudioManager.Instance.SetBGMMute(_isBGSoundMute);
     }
 
     private void MuteEffectSound()
@@ -145,15 +147,14 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         if (_isEffectSoundMute)
         {
             _isEffectSoundMute = false;
-            AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
             _effectSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isEffectSoundMute = true;
-            AudioManager.Instance.SetSFXVolume(0f);
             _effectSoundImage.gameObject.SetActive(false);
         }
+        AudioManager.Instance.SetSFXMute(_isEffectSoundMute);
     }
 
     private void OnClickSaveLoadButton()
@@ -202,19 +203,16 @@ public class OptionUI : MonoBehaviour, ICloseableUI
 
     private void OnWholeVolumeChanged(float value)
     {
-        if (!_isWholeSoundMute)
-            AudioManager.Instance.SetWholeVolume(value);
+        AudioManager.Instance.SetWholeVolume(value);
     }
 
     private void OnBGMVolumeChanged(float value)
     {
-        if (!_isBGSoundMute)
-            AudioManager.Instance.SetBGMVolume(value);
+        AudioManager.Instance.SetBGMVolume(value);
     }
 
     private void OnSFXVolumeChanged(float value)
     {
-        if (!_isEffectSoundMute)
-            AudioManager.Instance.SetSFXVolume(value);
+        AudioManager.Instance.SetSFXVolume(value);
     }
 }
