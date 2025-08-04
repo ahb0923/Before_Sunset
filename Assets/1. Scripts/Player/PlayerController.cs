@@ -253,13 +253,19 @@ public class PlayerController : MonoBehaviour
     private IEnumerator C_Swing()
     {
         // UI 클릭 체크
-        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current.IsPointerOverGameObject())
         {
             _swingCoroutine = null;
             yield break;
         }
 
         if (_wasPointerOverUIOnSwingStart)
+        {
+            _swingCoroutine = null;
+            yield break;
+        }
+
+        if (_player.IsInBase)
         {
             _swingCoroutine = null;
             yield break;
@@ -273,9 +279,7 @@ public class PlayerController : MonoBehaviour
 
         if (target != null && !(target is OreController) && !(target is JewelController))
         {
-            TryInteractTarget(target);
-            _swingCoroutine = null;
-            yield break;
+            target = null;
         }
 
         // 플레이어 기준으로 클릭의 방향 벡터 구하기
@@ -289,7 +293,15 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
         // 채광 효과음
-        AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
+        if (target == null || !(target is OreController) && !(target is JewelController) && !target.IsInteractable(_player.transform.position, 5f, _player.PlayerCollider))
+        {
+            // 헛스윙
+            AudioManager.Instance.PlaySFX("SwingMiss");
+        }
+        else
+        {
+            AudioManager.Instance.PlayRandomSFX("HittingARock", 4);
+        }
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
         yield return Helper_Coroutine.WaitSeconds(0.5f / _player.Stat.MiningSpeed);

@@ -55,7 +55,13 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (col == null) return;
 
-        IInteractable target = col.GetComponent<IInteractable>();
+        IInteractable target = col.GetComponent<IInteractable>() ?? col.GetComponentInParent<IInteractable>();
+        if (target == null)
+        {
+            Debug.LogWarning("IInteractable 못찾음");
+            return;
+        }
+
         if (target == null) return;
 
         // 플레이어 위치에서 상호작용 가능한지 검사
@@ -159,11 +165,11 @@ public class PlayerInputHandler : MonoBehaviour
                 }
             }
 
+            _isRecallStarted = false;
+            _isRecallInProgress = false;
             _player.SetPlayerInBase(true);
         }));
 
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GoToBase);
-        _isRecallStarted = false;
-        _isRecallInProgress = false;
     }
 }

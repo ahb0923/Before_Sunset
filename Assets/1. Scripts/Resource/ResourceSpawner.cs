@@ -254,38 +254,4 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         return spawnedObjects;
     }
-
-    public GameObject SpawnSingle(TData data, Vector3 position)
-    {
-        int id = GetId(data);
-        GameObject obj = PoolManager.Instance.GetFromPool(id, position);
-
-        if (obj == null)
-        {
-            Debug.LogWarning($"[SpawnSingle] Pool에서 오브젝트를 가져오지 못함. ID: {id}");
-            return null;
-        }
-
-        if (parentTransform != null)
-            obj.transform.SetParent(parentTransform, false);
-
-        obj.transform.position = position;
-
-        if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
-        {
-            if (resource is OreController ore)
-            {
-                ore.OnInstantiate();
-            }
-            else if (resource is JewelController jewel)
-            {
-                jewel.OnGetFromPool();
-            }
-
-            resource.OnGetFromPool();
-        }
-
-        obj.SetActive(true);
-        return obj;
-    }
 }
