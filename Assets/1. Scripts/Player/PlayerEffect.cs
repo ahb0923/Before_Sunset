@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerEffect : MonoBehaviour
 {
-    private int dashImageCount = 3;
     private float dashImageInterval = 0.05f;
     private float dashImageFadeTime = 0.4f;
     private Color dashImageStartColor = new Color(1f, 1f, 1f, 0.8f);

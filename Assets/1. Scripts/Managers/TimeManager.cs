@@ -15,6 +15,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     private bool _isSpawned;
     private bool _isSpawnOver;
+    private bool _isRecallOver;
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
@@ -30,10 +31,15 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer += Time.deltaTime;
 
-        // 밤이 되면 몬스터 스폰
-        if(IsNight && !_isSpawned)
+        if (DailyPercent >= 0.9f && !_isRecallOver)
         {
             Recall();
+            _isRecallOver = true;
+        }
+
+        // 밤이 되면 몬스터 스폰
+        if (IsNight && !_isSpawned)
+        {
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
             AudioManager.Instance.PlayBGM("DefenseBase");
@@ -44,6 +50,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         {
             _isSpawnOver = false;
             UIManager.Instance.ResultUI.OpenClear(Day);
+            AudioManager.Instance.PlayBGM("NormalBase");
         }
     }
 
@@ -136,6 +143,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         BasePlayer player = FindObjectOfType<BasePlayer>();
         if (player.IsInBase)
         {
+            Debug.Log("기지에요");
             return;
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -82,7 +82,7 @@ public class RecallUI : MonoBehaviour
 
     private IEnumerator C_UpdateCountdown()
     {
-        float duration = 3f;
+        float duration = 1.5f;
         float elapsed = 0f;
         while (elapsed < duration)
         {
