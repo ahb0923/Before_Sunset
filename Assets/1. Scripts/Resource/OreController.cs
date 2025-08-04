@@ -161,4 +161,10 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
         return edgeToEdgeDistance <= 1.5f;
     }
+
+    public int GetObejctSize()
+    {
+        return 1;
+
+    }
 }

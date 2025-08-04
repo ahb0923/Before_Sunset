@@ -25,6 +25,8 @@ public class InteractManager : MonoSingleton<InteractManager>
     private Vector2 _interactHotspot;
     private Vector2 _outOfRangeHotspot;
 
+    [SerializeField ] private InteractImage aimObject;
+
 
     protected override void Awake()
     {
@@ -56,23 +58,30 @@ public class InteractManager : MonoSingleton<InteractManager>
             SetCursor(null, Vector2.zero, null);
             return;
         }
+        else 
+            SetCursor(defaultCursor, _defaultHotspot, null);
+
         // UI 위면 기본 커서
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
             SetCursor(defaultCursor, _defaultHotspot, null);
             return;
         }
+
         Vector3 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mouseWorldPos.z = 0f;
         Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos, interactableLayerMask);
+        aimObject.transform.position = mouseWorldPos;
 
         if (hit != null && hit.TryGetComponent(out IInteractable interactable))
         {
+            aimObject.transform.position = hit.transform.position;
             HandleInteractable(interactable);
         }
         else
         {
-            SetCursor(defaultCursor, _defaultHotspot, null);
+            //SetCursor(defaultCursor, _defaultHotspot, null);
+            aimObject.gameObject.SetActive(false);
         }
     }
 
@@ -84,14 +93,20 @@ public class InteractManager : MonoSingleton<InteractManager>
 
         if (interactable.IsInteractable(DefenseManager.Instance.mainPlayer.transform.position, range, _playerCollider))
         {
-            SetCursor(interactCursor, _interactHotspot, interactable);
+            //SetCursor(interactCursor, _interactHotspot, interactable);
+            if (interactable != null) _currentTarget = interactable;
+            aimObject.gameObject.SetActive(true);
+            aimObject.SetNearCursor(interactable.GetObejctSize());
         }
         else
         {
-            SetCursor(outOfRangeCursor, _outOfRangeHotspot, null);
+            //SetCursor(outOfRangeCursor, _outOfRangeHotspot, null);
+            if (interactable != null) _currentTarget = interactable;
+            aimObject.gameObject.SetActive(true);
+            aimObject.SetFarCursor(interactable.GetObejctSize());
         }
     }
-
+    
     /// <summary> 커서 설정 + 현재 타겟 갱신 </summary>
     private void SetCursor(Texture2D texture, Vector2 hotspot, IInteractable target)
     {
@@ -119,6 +134,11 @@ public class InteractManager : MonoSingleton<InteractManager>
     {
         Vector2 pos = Input.mousePosition;
         return pos.x < 0 || pos.y < 0 || pos.x > Screen.width || pos.y > Screen.height;
+    }
+
+    private void SetTargetingImage(Transform obj)
+    {
+        
     }
 
     public IInteractable GetCurrentTarget() => _currentTarget;
