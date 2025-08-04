@@ -24,6 +24,7 @@ public class UIManager : MonoSingleton<UIManager>
     public TutorialSkip TutorialSkipButton { get; private set; }
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
+    public SaveLoadSlot AutoSaveLoadSlot { get; private set; }
 
     protected override void Awake()
     {
@@ -46,6 +47,7 @@ public class UIManager : MonoSingleton<UIManager>
         TutorialSkipButton = Helper_Component.FindChildComponent<TutorialSkip>(transform, "TurorialSkipButton");
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
         DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
+        AutoSaveLoadSlot = Helper_Component.FindChildComponent<SaveLoadSlot>(transform, "AutoSaveSlot");
     }
 
     private void Start()

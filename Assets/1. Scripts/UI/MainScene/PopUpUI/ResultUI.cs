@@ -142,8 +142,7 @@ public class ResultUI : MonoBehaviour
         _failResultRect.CloseAndRestore();
         _rect.CloseAndRestore();
         TimeManager.Instance.PauseGame(false);
-        //자동저장슬롯이 없어서 일단은 4번으로 표기해뒀음.
-        SaveManager.Instance.LoadGameFromSlot(4);
+        SaveManager.Instance.LoadGameFromSlot();
     }
     
     private void CloseOnExit()

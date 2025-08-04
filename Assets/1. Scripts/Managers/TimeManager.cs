@@ -82,6 +82,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             // 게임 승리
         }
 
+        UIManager.Instance.AutoSaveLoadSlot.Save();
         UIManager.Instance.GameTimeUI.SetDayText();
     }
 
@@ -124,7 +125,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        data.timeData = new TimeSaveData(Day, _dailyTimer, IsNight);
+        data.timeData = new TimeSaveData(Day, _dailyTimer);
     }
 
     /// <summary>
