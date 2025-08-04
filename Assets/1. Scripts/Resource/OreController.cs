@@ -87,6 +87,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public bool Mine(int damage)
     {
+        if (_currentHP <= 0)
+            return false;
+
         _currentHP -= damage;
 
         if (_currentHP <= 0)
