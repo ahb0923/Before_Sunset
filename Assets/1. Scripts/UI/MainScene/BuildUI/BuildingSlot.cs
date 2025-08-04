@@ -123,6 +123,13 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        bool isInBase = DefenseManager.Instance.mainPlayer.GetComponent<BasePlayer>().IsInBase;
+        if (!isInBase)
+        {
+            ToastManager.Instance.ShowToast("광산에서는 설치할 수 없습니다.");
+            return;
+        }
+        
         // 좌클릭시
         if (eventData.button == PointerEventData.InputButton.Left)
         {
@@ -157,9 +164,12 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
                         }
                     }
                 }
-                if(checkRequirements)
+
+                if (checkRequirements)
+                {
                     BuildManager.Instance.StartPlacing(currentBuildID);
-                UIManager.Instance.CraftArea.Close();
+                    UIManager.Instance.CraftArea.Close();
+                }
             }
         }
         // 우클릭시
