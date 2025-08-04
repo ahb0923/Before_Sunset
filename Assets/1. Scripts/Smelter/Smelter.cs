@@ -217,4 +217,9 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     {
         return true;
     }
+
+    public int GetObejctSize()
+    {
+        return 1;
+    }
 }

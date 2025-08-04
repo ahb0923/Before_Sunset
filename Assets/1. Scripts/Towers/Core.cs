@@ -107,4 +107,8 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         return _statHandler.GetSight() + 1.5f;
     }
 
+    public int GetObejctSize()
+    {
+        return 3;
+    }
 }
