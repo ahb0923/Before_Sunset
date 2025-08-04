@@ -117,7 +117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   towerType: 4
   towerId: 450
-  buildSize: {x: 3, y: 3}
+  buildSize: {x: 1, y: 1}
   mainCollider: {fileID: 2988486009109016483}
   _attackCollider: {fileID: 5111005074308737201}
   _buildCollider: {fileID: 8130746354129068096}
@@ -408,7 +408,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.15}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -419,7 +419,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1, y: 1.7}
   m_EdgeRadius: 0
 --- !u!114 &7132922346847372962
 MonoBehaviour:
@@ -532,7 +532,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &8341232226603593089
 MonoBehaviour:
@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 450
-  buildSize: {x: 3, y: 3}
+  buildSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 1109353221721809788}
 --- !u!1 &7063769191260737672
 GameObject:
@@ -1167,11 +1167,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3228721324370034778, guid: a4e2b91b642ecd543b8d15677282a0f7, type: 3}
       propertyPath: m_LocalBounds.m_Extent.x
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3228721324370034778, guid: a4e2b91b642ecd543b8d15677282a0f7, type: 3}
       propertyPath: m_LocalBounds.m_Extent.y
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9003799100399663123, guid: a4e2b91b642ecd543b8d15677282a0f7, type: 3}
       propertyPath: m_Name

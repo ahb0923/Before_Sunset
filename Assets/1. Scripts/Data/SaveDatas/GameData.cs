@@ -39,10 +39,11 @@ public class GameData
     public SerializableVector3 playerPosition;
     public InventorySaveData inventory;
 
-    // 2. 디펜스 관련 : 코어 체력 & 타워 정보
+    // 2. 디펜스 관련 : 코어 체력 & 타워 정보 & 기지 내 광석
     public int coreCurHp;
     public List<TowerSaveData> constructedTowers;
     public List<SmelterSaveData> constructedSmelters;
+    public List<ResourceSaveData> baseResources;
 
     // 3. 광산 관련 : 소환된 광산 정보 (광석 & 쥬얼도 포함)
     public MapLinkSaveData mapLinks;
@@ -52,14 +53,28 @@ public class GameData
     public TimeSaveData timeData;
     public string lastSaveDateTime;
 
+    // 5. 업그레이드 관련 : 코어 & 플레이어 업그레이드 / 샤드 개수
+    public EssenceSaveData esenceSaveData;
+
+    // 6. 드랍 아이템 관련 : 떨어진 아이템
+    public List<DropItemSaveData> dropItems;
+
     // 생성 시 기본적인 리스트만 초기화 (인벤토리 세이브 데이터도 안에는 리스트 초기화임)
     public GameData()
     {
         inventory = new InventorySaveData();
+
         constructedTowers = new List<TowerSaveData>();
         constructedSmelters = new List<SmelterSaveData>();
-        spawnedMines = new List<MineSaveData>();
-        lastSaveDateTime = DateTime.UtcNow.ToString("o");
+        baseResources = new List<ResourceSaveData>();
+
         mapLinks = new MapLinkSaveData();
+        spawnedMines = new List<MineSaveData>();
+
+        lastSaveDateTime = DateTime.UtcNow.ToString("o");
+
+        esenceSaveData = new EssenceSaveData();
+
+        dropItems = new List<DropItemSaveData>();
     }
 }

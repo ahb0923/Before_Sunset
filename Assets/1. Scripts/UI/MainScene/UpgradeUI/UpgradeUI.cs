@@ -140,7 +140,8 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
         TimeManager.Instance.PauseGame(true);
         
         Refresh();
-        
+        RefreshSlot();
+
         _rect.OpenAtCenter();
     }
 

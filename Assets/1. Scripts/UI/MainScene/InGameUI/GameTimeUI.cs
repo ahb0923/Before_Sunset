@@ -1,93 +1,48 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameTimeUI : MonoBehaviour
 {
-    [Header("# Related Time")]
-    [SerializeField] private Transform _dayPieceParent;
-    private Transform[] _dayPieceList;
-    [SerializeField] private TextMeshProUGUI _stageText;
-    [SerializeField] private Transform _clockHand;
-
-    [Header("# Buttons")]
-    [SerializeField] private Button _halfDaySkipBtn;
-    [SerializeField] private Button _daySkipBtn;
-
-    private void Awake()
-    {
-        _dayPieceList = _dayPieceParent.GetComponentsInChildren<Transform>();
-
-        _halfDaySkipBtn.onClick.AddListener(TimeManager.Instance.SkipHalfDay);
-        _daySkipBtn.onClick.AddListener(TimeManager.Instance.NextDay);
-    }
+    [SerializeField] private Image _dayImageUI;
+    [SerializeField] private TextMeshProUGUI _dayText;
+    [SerializeField] private List<Sprite> _dayImages;
+    [SerializeField] private Sprite _nightImage;
 
     private void Update()
     {
-        UpdateClockHand();
-        UpdateSkipButtonState();
+        UpdateDayImage();
     }
 
     /// <summary>
-    /// 밤낮 시계 바늘의 회전 업데이트
+    /// 시간 경과에 따른 날짜 이미지 변경
     /// </summary>
-    private void UpdateClockHand()
+    private void UpdateDayImage()
     {
-        _clockHand.rotation = Quaternion.Euler(0, 0, -TimeManager.Instance.DailyPercent * 360);
-    }
-
-    /// <summary>
-    /// 몬스터 소환 상태에 따른 스킵 버튼 활성화/비활성화 업데이트
-    /// </summary>
-    private void UpdateSkipButtonState()
-    {
-        // 몬스터 소환 전(1 ~ 3일차)에는 활성화
-        if(TimeManager.Instance.Day <= TimeManager.Instance.MaxDay - 2)
+        if (TimeManager.Instance.IsNight)
         {
-            _daySkipBtn.interactable = true;
-            _halfDaySkipBtn.interactable = true;
+            _dayImageUI.sprite = _nightImage;
         }
         else
         {
-            // 몬스터 소환 전(4일차 낮)에는 반나절 스킵만 활성화
-            if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && !TimeManager.Instance.IsNight)
+            for (int i = 1; i <= _dayImages.Count; i++)
             {
-                _halfDaySkipBtn.interactable = true;
-                _daySkipBtn.interactable = false;
-            }
-            else
-            {
-                // 몬스터 소환 후에는 클리어 상태에 따라서 활성화 또는 비활성화
-                if (TimeManager.Instance.IsStageClear)
+                float flag = (float) i / _dayImages.Count;
+                if(flag > TimeManager.Instance.DailyPercent)
                 {
-                    _halfDaySkipBtn.interactable = true;
-                    _daySkipBtn.interactable = true;
-                }
-                else
-                {
-                    _halfDaySkipBtn.interactable = false;
-                    _daySkipBtn.interactable = false;
+                    _dayImageUI.sprite = _dayImages[i - 1];
+                    break;
                 }
             }
         }
     }
 
     /// <summary>
-    /// 날짜에 따른 날짜 피스 UI 설정
+    /// 데이 텍스트 설정
     /// </summary>
-    public void SetDayPieces()
+    public void SetDayText()
     {
-        for (int i = 1; i < _dayPieceList.Length; i++) 
-        {
-            _dayPieceList[i].gameObject.SetActive(i <= TimeManager.Instance.Day);
-        }
-    }
-
-    /// <summary>
-    /// 스테이지 텍스트 설정
-    /// </summary>
-    public void SetStageText()
-    {
-        _stageText.text = $"{TimeManager.Instance.Stage} 주차";
+        _dayText.text = $"Day {TimeManager.Instance.Day}";
     }
 }

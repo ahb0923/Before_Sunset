@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class BuildPreview : MonoBehaviour
@@ -34,20 +34,36 @@ public class BuildPreview : MonoBehaviour
         Vector3Int centerCell = groundTilemap.WorldToCell(worldPos);
         Vector3Int origin = centerCell - new Vector3Int(offsetX, offsetY, 0);
 
-        // 현재 설치하려는 건물의 x와 y좌표
-        for (int x = 0; x < size.x; x++)
+        if (!BuildManager.Instance.BuildableTiles.Contains(centerCell))
         {
-            for (int y = 0; y < size.y; y++)
+            for (int x = 0; x < size.x; x++)
             {
-                // 셀 중심좌표 구하기
-                Vector3Int cell = origin + new Vector3Int(x, y, 0);
-                Vector3 cellCenter = groundTilemap.CellToWorld(cell) + new Vector3(0.5f, 0.5f);
+                for (int y = 0; y < size.y; y++)
+                {
+                    Vector3Int cell = origin + new Vector3Int(x, y, 0);
 
-                bool isValidTile = groundTilemap.HasTile(cell);
-                bool isBlocked = Physics2D.OverlapBox(cellCenter, Vector2.one * 0.9f, 0f, _layerMask);
+                    TileBase tileToShow = redTile;
+                    previewTilemap.SetTile(cell, tileToShow);
+                }
+            }
+        }
+        else
+        {
+            // 현재 설치하려는 건물의 x와 y좌표
+            for (int x = 0; x < size.x; x++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    // 셀 중심좌표 구하기
+                    Vector3Int cell = origin + new Vector3Int(x, y, 0);
+                    Vector3 cellCenter = groundTilemap.CellToWorld(cell) + new Vector3(0.5f, 0.5f);
 
-                TileBase tileToShow = (isValidTile && !isBlocked) ? greenTile : redTile;
-                previewTilemap.SetTile(cell, tileToShow);
+                    bool isValidTile = groundTilemap.HasTile(cell);
+                    bool isBlocked = Physics2D.OverlapBox(cellCenter, Vector2.one * 0.9f, 0f, _layerMask);
+
+                    TileBase tileToShow = (isValidTile && !isBlocked) ? greenTile : redTile;
+                    previewTilemap.SetTile(cell, tileToShow);
+                }
             }
         }
     }

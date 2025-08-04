@@ -19,7 +19,7 @@ public enum CORE_STATUS_TYPE
     SightRange,
 }
 
-public class UpgradeManager : MonoSingleton<UpgradeManager>
+public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
 {
     public Dictionary<PLAYER_STATUS_TYPE, int> PlayerStatus { get; private set; } = new();
     public Dictionary<CORE_STATUS_TYPE, int> CoreStatus { get; private set; } = new();
@@ -420,5 +420,60 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>
         Essence = VirtualEssence + UsedEssence - ResetCost;
         ResetCounter++;
         UsedEssence = 0;
+    }
+
+    /// <summary>
+    /// 플레이어 & 코어 업그레이드 정보 / 정수 관련 정보 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        data.esenceSaveData.essence = Essence;
+        data.esenceSaveData.essencePiece = EssencePiece;
+        data.esenceSaveData.usedEssence = UsedEssence;
+        data.esenceSaveData.resetCounter = ResetCounter;
+
+        foreach(var pair in PlayerStatus)
+        {
+            data.esenceSaveData.playerUpgradeDict.Add(pair);
+        }
+
+        foreach(var pair in CoreStatus)
+        {
+            data.esenceSaveData.coreUpgradeDict.Add(pair);
+        }
+
+        foreach(var pair in FixedUpgrade)
+        {
+            data.esenceSaveData.doneUpgradeDict.Add(pair);
+        }
+    }
+
+    /// <summary>
+    /// 플레이어 & 코어 업그레이드 로드 / 정수 관련 정보 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        Essence = data.esenceSaveData.essence;
+        EssencePiece = data.esenceSaveData.essencePiece;
+        UsedEssence = data.esenceSaveData.usedEssence;
+        ResetCounter = data.esenceSaveData.resetCounter;
+
+        foreach(var pair in data.esenceSaveData.playerUpgradeDict)
+        {
+            PlayerStatus[pair.key] = pair.value;
+        }
+
+        foreach(var pair in data.esenceSaveData.coreUpgradeDict)
+        {
+            CoreStatus[pair.key] = pair.value;
+        }
+
+        foreach(var pair in data.esenceSaveData.doneUpgradeDict)
+        {
+            FixedUpgrade[pair.key] = pair.value;
+        }
+
+        ApplyAllUpgradesToAll();
+        UIManager.Instance.EssenceUI.Refresh();
     }
 }

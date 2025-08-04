@@ -326,7 +326,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         yield return C_DeadAnimation();
 
-        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform.position);
+        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform.position, MapManager.Instance.ItemParent);
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
     }
 

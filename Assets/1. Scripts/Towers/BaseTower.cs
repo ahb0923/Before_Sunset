@@ -142,7 +142,8 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         ai.ResetStateMachine();
         ai.SetState(TOWER_STATE.Construction, true);
         ui.ResetHpBar();
-       
+
+        PoolManager.Instance.GetFromPool(10002, transform.position+Vector3.up);
         RenderUtil.SetSortingOrderByY(ui.icon);
     }
 
@@ -152,6 +153,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     public void OnReturnToPool()
     {
         ai.SetState(TOWER_STATE.None, true);
+        ui.icon.color = Color.white;
         gameObject.SetActive(false);
     }
     // =======================================
@@ -165,6 +167,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
             return;
         }
 
+        AudioManager.Instance.PlaySFX("UpgradeTower");
         UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
     }
 
@@ -263,6 +266,25 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
                     refundAmount
                 );
             }
+        }
+    }
+
+    public int GetObejctSize()
+    {
+        switch (towerType)
+        {
+            case TOWER_TYPE.CooperTower:
+            case TOWER_TYPE.IronTower:
+            case TOWER_TYPE.DiaprismTower:
+            case TOWER_TYPE.HealTower:
+            case TOWER_TYPE.MagnetTower:
+                return 1;
+            case TOWER_TYPE.TopazTower:
+            case TOWER_TYPE.RubyTower:
+            case TOWER_TYPE.AquamarineTower:
+                return 3;
+            default: 
+                return -1;
         }
     }
 }

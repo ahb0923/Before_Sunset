@@ -1,7 +1,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class QuestUI : MonoBehaviour
 {
@@ -29,11 +28,14 @@ public class QuestUI : MonoBehaviour
         _questAmount.text = "(" + quest.CurAmount + "/" + quest.ClearAmount + ")";
     }
 
+    /// <summary>
+    /// 클리어 시에 텍스트가 깜빡이는 효과<br/>
+    /// 튜토리얼 완료 시에는 팝업 UI 활성화
+    /// </summary>
     public void DisplayClear(Quest quest)
     {
         StartCoroutine(C_DisplayClear(quest));
     }
-
     private IEnumerator C_DisplayClear(Quest quest)
     {
         float timer = _duration;
@@ -59,5 +61,31 @@ public class QuestUI : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
+
+        if(quest == null)
+        {
+            TimeManager.Instance.PauseGame(true);
+            UIManager.Instance.AskPopUpUI.Open("튜토리얼을 완료하였습니다!\n 바로 게임을 진행하시겠습니까?", OnMainGameStart, OnReturnStartScene);
+        }
+    }
+
+    /// <summary>
+    /// 메인 게임 시작하기
+    /// </summary>
+    private void OnMainGameStart()
+    {
+        TimeManager.Instance.PauseGame(false);
+        GameManager.Instance.SetTutorial(false);
+        LoadingSceneController.LoadScene("MainScene");
+    }
+
+    /// <summary>
+    /// 시작 화면으로 돌아가기
+    /// </summary>
+    private void OnReturnStartScene()
+    {
+        TimeManager.Instance.PauseGame(false);
+        GameManager.Instance.SetTutorial(false);
+        LoadingSceneController.LoadScene("StartScene");
     }
 }

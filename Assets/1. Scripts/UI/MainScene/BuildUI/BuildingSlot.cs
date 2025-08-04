@@ -139,7 +139,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
                         {
                             if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
                             {
-                                Debug.Log("설치 실패: 자원이 부족합니다.");
+                                ToastManager.Instance.ShowToast("자원이 부족합니다!");
                                 checkRequirements = false;
                             }
                         }
@@ -151,7 +151,6 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
                         {
                             if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
                             {
-                                //Debug.Log("설치 실패: 자원이 부족합니다.");
                                 ToastManager.Instance.ShowToast("자원이 부족합니다!");
                                 checkRequirements = false;
                             }

@@ -5,7 +5,7 @@ using UnityEngine;
 using static Cinemachine.DocumentationSortingAttribute;
 
 
-public class BaseMapSpawner : MonoBehaviour
+public class BaseMapSpawner : MonoBehaviour, ISaveable
 {
     [SerializeField] private string[] _zoneLayerNames = { "Zone1", "Zone2", "Zone3" };
     [SerializeField] private float _tileSize = 1.0f;
@@ -192,6 +192,56 @@ public class BaseMapSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// 기지 광석 정보 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        foreach(var obj in _spawnedObjects)
+        {
+            if(obj.TryGetComponent<IResourceStateSavable>(out var resource))
+            {
+                ResourceState resourceState = resource.SaveState();
+                if (!resourceState.IsMined)
+                    data.baseResources.Add(new ResourceSaveData(resourceState.Id, resourceState.Position, resourceState.HP));
+            }
+        }
+    }
+
+    /// <summary>
+    /// 기지 광석 정보 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        foreach (var obj in _spawnedObjects)
+        {
+            if (obj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                PoolManager.Instance.ReturnToPool(poolable.GetId(), obj);
+            }
+        }
+
+        _spawnedObjects.Clear();
+
+        foreach (var resourceData in data.baseResources)
+        {
+            ResourceState resource = new ResourceState()
+            {
+                Id = resourceData.resourceId,
+                Position = resourceData.position,
+                HP = resourceData.curHp,
+                IsMined = false
+            };
+
+            GameObject spawned = PoolManager.Instance.GetFromPool(resource.Id, resource.Position, _baseResourceParent);
+            if (spawned.TryGetComponent<IResourceStateSavable>(out var stateable))
+            {
+                stateable.LoadState(resource);
+            }
+
+            _spawnedObjects.Add(spawned);
+        }
+    }
+    
     /// 해당 위치가 Wall 레이어의 콜라이더와 겹치는지 확인
     /// </summary>
     private bool IsPositionOnWallLayer(Vector3 position)

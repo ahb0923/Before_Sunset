@@ -108,34 +108,26 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         //int spriteIndex = 0;
 
         // 방어코드 기본 0으로 초기화 하긴함
-        stat.CurrHp = 0f;
-        //icon.color = ColorExtensions.WithAlpha(icon.color, 0.5f);
-        
+        //stat.CurrHp = 0f;
+        stat.CurrHp = stat.MaxHp;
 
+        
         while (elapsed < totalTime)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / totalTime);
-            stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
+            //float t = Mathf.Clamp01(elapsed / totalTime);
+           // stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
 
             //_tower.ui.SetConstructionProgress(t);
-            /*
-            // 일정 시간마다 스프라이트 전환
-            if (spriteIndex < sprites.Count && elapsed >= interval * spriteIndex)
-            {
-                icon.sprite = sprites[spriteIndex];
-                //AudioManager.Instance().PlaySfx(SFX_TYPE.Building_Place);
-                spriteIndex++;
-            }*/
+
 
             yield return null;
         }
 
 
-
         // 건설 완료 후 체력 100% 보장
         //_tower.ui.SetConstructionProgress(1f);
-        stat.CurrHp = stat.MaxHp;
+        //stat.CurrHp = stat.MaxHp;
 
         /*
         // 건설 직후, 공격 범위 내 적 검색
@@ -224,7 +216,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         {
             _animator.SetTrigger("IsDestroy");
         }
-        AudioManager.Instance.PlaySFX(_tower.statHandler.name);
+        AudioManager.Instance.PlaySFX("DestroyedTower");
         yield return Helper_Coroutine.WaitSeconds(0.4f);
 
         _isDestroy = true;
