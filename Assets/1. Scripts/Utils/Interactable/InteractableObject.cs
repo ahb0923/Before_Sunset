@@ -76,4 +76,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
         if (targetToToggle != null)
             targetToToggle.SetActive(state.targetActive);
     }
+
+    public int GetObejctSize()
+    {
+        return 1;
+    }
 }
