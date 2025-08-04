@@ -268,4 +268,23 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
             }
         }
     }
+
+    public int GetObejctSize()
+    {
+        switch (towerType)
+        {
+            case TOWER_TYPE.CooperTower:
+            case TOWER_TYPE.IronTower:
+            case TOWER_TYPE.DiaprismTower:
+            case TOWER_TYPE.HealTower:
+            case TOWER_TYPE.MagnetTower:
+                return 1;
+            case TOWER_TYPE.TopazTower:
+            case TOWER_TYPE.RubyTower:
+            case TOWER_TYPE.AquamarineTower:
+                return 3;
+            default: 
+                return -1;
+        }
+    }
 }

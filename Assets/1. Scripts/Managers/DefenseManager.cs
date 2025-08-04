@@ -25,6 +25,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     [Header("# A Star Setting")]
     [SerializeField] private int _monsterPenalty = 5;
 
+    public GameObject mainPlayer;
+
     // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
@@ -54,6 +56,10 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         InitGridAndWalkableStack();
     }
 
+    private void Start()
+    {
+        InteractManager.Instance.SetInGame();
+    }
     /// <summary>
     /// 노드 그리드 생성 & 코어 위치 설정
     /// </summary>

@@ -194,6 +194,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         // 3) 있다면 제련중이던 실제 정보값들 저장 위치 초기화
         // 4) 파괴 될 경우 50% 의 아이템 손실
 
+        if (InputItem != null)
+        {
+            ItemDropManager.Instance.DropItem(InputItem.Data.id, InputItem.stack, transform);
+        }
+
+        if (OutputItem != null)
+        {
+            ItemDropManager.Instance.DropItem(OutputItem.Data.id, OutputItem.stack, transform);
+        }
 
         StopAllCoroutines();
         PoolManager.Instance.ReturnToPool(smelterID, gameObject);
@@ -207,5 +216,10 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
     {
         return true;
+    }
+
+    public int GetObejctSize()
+    {
+        return 1;
     }
 }

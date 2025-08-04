@@ -72,4 +72,9 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourc
 
         return edgeToEdgeDistance <= 1.5f;
     }
+
+    public int GetObejctSize()
+    {
+        return 1;
+    }
 }
