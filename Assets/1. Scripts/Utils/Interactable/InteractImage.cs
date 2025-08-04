@@ -17,25 +17,51 @@ public class InteractImage : MonoBehaviour
     }
 
 
-    public void SetNearCursor(int size)
+    public void SetNearCursor(IInteractable interactable)
     {
+        int size = interactable.GetObejctSize();
+        bool isDestroy = BuildManager.Instance.IsOnDestroy;
         farCursor.gameObject.SetActive(false);
         nearCursor.gameObject.SetActive(true);
-        if (size == 1)
+        if (interactable is BaseTower || interactable is Smelter)
         {
-            nearAnim.SetTrigger("IsSize_1");
+            if (size == 1 && !isDestroy)
+            {
+                nearAnim.SetTrigger("IsSize_1");
+            }
+            else if (size == 1 && isDestroy)
+            {
+                nearAnim.SetTrigger("IsSize_1_Red");
+            }
+            else if (size == 3 && !isDestroy)
+            {
+                nearAnim.SetTrigger("IsSize_3");
+            }
+            else if (size == 3 && isDestroy)
+            {
+                nearAnim.SetTrigger("IsSize_3_Red");
+            }
+            else
+                ToastManager.Instance.ShowToast("[System] 사이즈가 잘못되었습니다!");
         }
-        else if (size == 3)
+        else if(interactable is Core || interactable is OreController || interactable is JewelController)
         {
-            nearAnim.SetTrigger("IsSize_3");
+            if (size == 1)
+            {
+                nearAnim.SetTrigger("IsSize_1");
+            }
+            else if (size == 3)
+            {
+                nearAnim.SetTrigger("IsSize_3");
+            }
         }
-        else
-            ToastManager.Instance.ShowToast("[System] 사이즈가 잘못되었습니다!");
     }
-    public void SetFarCursor(int size)
+    public void SetFarCursor(IInteractable interactable)
     {
+        int size = interactable.GetObejctSize();
         farCursor.gameObject.SetActive(true);
         nearCursor.gameObject.SetActive(false);
+
         if (size == 1)
         {
             farAnim.SetTrigger("IsSize_1");

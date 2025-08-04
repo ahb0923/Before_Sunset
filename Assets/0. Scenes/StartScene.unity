@@ -370,6 +370,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1767724884448006911, guid: 26546d0216bbdb343a3d34df4c7c8717, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5692443043609204607, guid: 26546d0216bbdb343a3d34df4c7c8717, type: 3}
       propertyPath: m_Name
       value: InteractImage
@@ -508,6 +512,10 @@ PrefabInstance:
       propertyPath: aimObject
       value: 
       objectReference: {fileID: 1460996788}
+    - target: {fileID: 6578194207489383682, guid: 35210ae470759be4c95db07d42a57bb3, type: 3}
+      propertyPath: dismantleCursor
+      value: 
+      objectReference: {fileID: 2800000, guid: 490c15ea68129da4c8f65e03ad678aae, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
