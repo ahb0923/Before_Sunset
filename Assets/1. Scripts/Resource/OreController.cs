@@ -128,10 +128,12 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private void SpawnDrop(int dropId, Vector3 positionOffset)
     {
-        Vector3 spawnPos = transform.position + positionOffset;
+        //Vector3 spawnPos = transform.position + positionOffset;
 
-        GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos);
+        //GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos, MapManager.Instance.ItemParent);
+        ItemDropManager.Instance.DropItem(dropId, 1, transform, false);
 
+        /*
         if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
         {
             dropItem.OnGetFromPool();
@@ -139,7 +141,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         else
         {
             Debug.LogWarning($"[OreController] 드롭 아이템 풀에서 꺼내기 실패 ID: {dropId}");
-        }
+        }*/
     }
 
     public void Interact()

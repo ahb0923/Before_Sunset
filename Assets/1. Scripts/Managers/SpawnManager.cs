@@ -129,13 +129,13 @@ public class SpawnManager : MonoBehaviour, ISaveable
 
         if (oreSpawner != null && oreList != null)
         {
-            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
+            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Day);
             spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.GetParentTransform()));
         }
 
         if (jewelSpawner != null && jewelList != null)
         {
-            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
+            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Day);
             spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.GetParentTransform()));
         }
 

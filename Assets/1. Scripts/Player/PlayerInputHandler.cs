@@ -151,8 +151,8 @@ public class PlayerInputHandler : MonoBehaviour
             {
                 MapManager.Instance.ReturnToHomeMap();
 
-                // 4일차 밤 맵 초기화
-                if (TimeManager.Instance.Day == TimeManager.Instance.MaxDay - 1 && TimeManager.Instance.IsNight)
+                // 밤일 때는 맵 초기화
+                if (TimeManager.Instance.IsNight)
                 {
                     MapManager.Instance.ResetAllMaps();
                 }

@@ -3,22 +3,19 @@ using UnityEngine;
 public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
     [Header("# Time Setting")]
-    [SerializeField] private int _realMinDayLength = 12;
+    [SerializeField] private int _realMinDayLength = 5;
     private int _realSecDayLength => _realMinDayLength * 60;
-    [SerializeField] private int _maxDay = 5;
-    public int MaxDay => _maxDay;
     private int _maxStage;
 
     private float _dailyTimer;
-    public bool IsNight => _dailyTimer >= _realSecDayLength * 0.5f;
+    public bool IsNight => _dailyTimer >= _realSecDayLength;
     public float DailyPercent => _dailyTimer / _realSecDayLength;
 
     public int Day { get; private set; }
-    public int Stage { get; private set; }
 
     private bool _isSpawned;
     private bool _isSpawnOver;
-    public bool IsStageClear => _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
+    public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
     {
@@ -33,12 +30,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer += Time.deltaTime;
 
-        if (_dailyTimer >= _realSecDayLength)
-        {
-            NextDay();
-        }
-
-        if (Day == _maxDay - 1 && IsNight && !_isSpawned)
+        // 밤이 되면 몬스터 스폰
+        if(IsNight && !_isSpawned)
         {
             Recall();
             _isSpawned = true;
@@ -46,24 +39,23 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             AudioManager.Instance.PlayBGM("DefenseBase");
         }
 
-        if (IsStageClear && !UIManager.Instance.ResultUI.IsOpen && !UIManager.Instance.ResultUI.StageRewarded[Stage])
+        // 해당 날짜 클리어 
+        if (IsStageClear)
         {
-            PauseGame(true);
-            UIManager.Instance.ResultUI.OpenClear(Stage);
+            _isSpawnOver = false;
+            UIManager.Instance.ResultUI.OpenClear(Day);
         }
     }
 
     /// <summary>
     /// 게임 시간 초기화
     /// </summary>
-    public void InitGameTime(float dailyTime = 0f, int day = 1, int stage = 1)
+    public void InitGameTime(float dailyTime = 0f, int day = 1)
     {
         _dailyTimer = dailyTime;
         Day = day;
-        Stage = stage;
 
-        UIManager.Instance.GameTimeUI.SetDayPieces();
-        UIManager.Instance.GameTimeUI.SetStageText();
+        UIManager.Instance.GameTimeUI.SetDayText();
     }
 
     /// <summary>
@@ -71,49 +63,19 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void NextDay()
     {
-        _dailyTimer = 0;
+        _dailyTimer = 0f;
+        _isSpawned = false;
 
-        if (Day == _maxDay)
-        {
-            if (IsStageClear)
-            {
-                NextStage();
-            }
-            else
-            {
-                // 패배 시에 일시 정지 & 엔티티 움직임 정지
-                PauseGame(true);
-                UIManager.Instance.ResultUI.OpenFail();
-            }
-        }
-        else
+        if (Day != _maxStage)
         {
             Day++;
         }
-
-        UIManager.Instance.GameTimeUI.SetDayPieces();
-        QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, (Day - 1) * 2 + (IsNight ? 2 : 1));
-    }
-
-    /// <summary>
-    /// 다음 스테이지로 변경
-    /// </summary>
-    public void NextStage()
-    {
-        if (Stage == _maxStage + 1)
-        {
-            PauseGame(true);
-            // 승리
-        }
         else
         {
-            Day = 1;
-            Stage++;
+            // 게임 승리
         }
 
-        _isSpawned = false;
-        _isSpawnOver = false;
-        UIManager.Instance.GameTimeUI.SetStageText();
+        UIManager.Instance.GameTimeUI.SetDayText();
     }
 
     /// <summary>
@@ -134,20 +96,20 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     }
 
     /// <summary>
-    /// 반나절 스킵 : 낮 → 밤 / 밤 → 낮
+    /// 반나절 스킵
     /// </summary>
     public void SkipHalfDay()
     {
         if (IsNight)
         {
-            NextDay();
+            ToastManager.Instance.ShowToast("몬스터 웨이브 중에는 스킵이 불가능합니다!");
         }
         else
         {
-            _dailyTimer = _realSecDayLength * 0.5f;
+            _dailyTimer = _realSecDayLength;
         }
 
-        QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, (Day - 1) * 2 + (IsNight ? 2 : 1));
+        QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, 1);
     }
 
     /// <summary>
@@ -155,7 +117,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        data.timeData = new TimeSaveData(Stage, Day, _dailyTimer, IsNight);
+        data.timeData = new TimeSaveData(Day, _dailyTimer, IsNight);
     }
 
     /// <summary>
@@ -163,15 +125,17 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        InitGameTime(data.timeData.dailyTime, data.timeData.day, data.timeData.stage);
+        InitGameTime(data.timeData.dailyTime, data.timeData.day);
     }
 
+    /// <summary>
+    /// 강제 귀환 메서드 → 이거 플레이어 쪽으로 옮겨야 함
+    /// </summary>
     private void Recall()
     {
         BasePlayer player = FindObjectOfType<BasePlayer>();
         if (player.IsInBase)
         {
-            Debug.Log("기지에요");
             return;
         }
 

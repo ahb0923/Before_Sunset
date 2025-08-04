@@ -10,6 +10,7 @@ public class BuildManager : MonoSingleton<BuildManager>
     [Header("설치")]
     [SerializeField] private LayerMask _buildingLayer;
     [SerializeField] private Transform _buildablePool;
+    public Transform BuildablePool => _buildablePool;
 
     [Header("하이라이트")]
     [SerializeField] private Tilemap highlightTilemap;

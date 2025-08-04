@@ -7,12 +7,12 @@ public class RewardSystem : PlainSingleton<RewardSystem>
     /// <summary>
     /// 몬스터 ID에 따른 모든 보상 생성
     /// </summary>
-    public void GenerateRewards(int monsterId, Vector3 monsterPos)
+    public void GenerateRewards(int monsterId, Vector3 monsterPos, Transform parent)
     {
         var rewards = DataManager.Instance.MonsterRewardData.GetMonsterRewardsByMonsterId(monsterId);
         foreach(var reward in rewards)
         {
-            GetRewardItemId(reward, monsterPos);
+            GetRewardItemId(reward, monsterPos, parent);
         }
     }
 
@@ -20,7 +20,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
     /// 확률에 의한 보상 아이템 ID 반환<br/>
     /// ※ 반환값 -1은 확률을 뚫지 못해서 해당 보상을 얻지 못하는 것을 의미
     /// </summary>
-    private void GetRewardItemId(MonsterRewardDatabase reward, Vector3 monsterPos)
+    private void GetRewardItemId(MonsterRewardDatabase reward, Vector3 monsterPos, Transform parent)
     {
         if (!CanDrop(reward.dropProbability))
             return;
@@ -35,7 +35,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
 
             case MONSTER_REWARD_TYPE.Mineral:
                 List<MineralDatabase> minerals;
-                if(TimeManager.Instance.Stage == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
+                if(TimeManager.Instance.Day == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
                 {
                     minerals = DataManager.Instance.MineralData.GetAllItems()
                         .Where(item => item.itemType == MINERAL_TYPE.Mineral).Where(item => item.id < 120).ToList();
@@ -44,18 +44,18 @@ public class RewardSystem : PlainSingleton<RewardSystem>
                 {
                     minerals = DataManager.Instance.MineralData.GetAllItems().Where(item => item.itemType == MINERAL_TYPE.Mineral).ToList();
                 }
-                PoolManager.Instance.GetFromPool(minerals[Random.Range(0, minerals.Count)].id, monsterPos);
+                PoolManager.Instance.GetFromPool(minerals[Random.Range(0, minerals.Count)].id, monsterPos, parent);
                 break;
 
             case MONSTER_REWARD_TYPE.Jewel:
                 List<JewelDatabase> jewels = DataManager.Instance.JewelData.GetAllItems();
-                GameObject obj = PoolManager.Instance.GetFromPool(jewels[Random.Range(0, jewels.Count)].id, monsterPos);
+                GameObject obj = PoolManager.Instance.GetFromPool(jewels[Random.Range(0, jewels.Count)].id, monsterPos, parent);
                 obj.GetComponent<JewelController>().Interact();
                 break;
 
             case MONSTER_REWARD_TYPE.Ingot:
                 List<MineralDatabase> ingots;
-                if (TimeManager.Instance.Stage == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
+                if (TimeManager.Instance.Day == 1) // 여기 하드 코딩, 데이터 베이스 수정 필요
                 {
                     ingots = DataManager.Instance.MineralData.GetAllItems()
                         .Where(item => item.itemType == MINERAL_TYPE.Ingot).Where(item => item.id < 120).ToList();
@@ -64,7 +64,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
                 {
                     ingots = DataManager.Instance.MineralData.GetAllItems().Where(item => item.itemType == MINERAL_TYPE.Ingot).ToList();
                 }
-                PoolManager.Instance.GetFromPool(ingots[Random.Range(0, ingots.Count)].id, monsterPos);
+                PoolManager.Instance.GetFromPool(ingots[Random.Range(0, ingots.Count)].id, monsterPos, parent);
                 break;
         }
 
