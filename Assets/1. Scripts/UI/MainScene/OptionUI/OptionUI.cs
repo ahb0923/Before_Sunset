@@ -56,13 +56,10 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _wholeSoundSlider.value = AudioManager.Instance.GetWholeVolume();
         _bGSoundSlider.value = AudioManager.Instance.GetBGMVolume();
         _effectSoundSlider.value = AudioManager.Instance.GetSFXVolume();
-    }
 
-    private void Update()
-    {
-        AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
-        AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
-        AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
+        _wholeSoundSlider.onValueChanged.AddListener(OnWholeVolumeChanged);
+        _bGSoundSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
+        _effectSoundSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
     }
 
     public void Open()
@@ -129,5 +126,20 @@ public class OptionUI : MonoBehaviour, ICloseableUI
 #else
         Application.Quit();
 #endif
+    }
+
+    private void OnWholeVolumeChanged(float value)
+    {
+        AudioManager.Instance.SetWholeVolume(value);
+    }
+
+    private void OnBGMVolumeChanged(float value)
+    {
+        AudioManager.Instance.SetBGMVolume(value);
+    }
+
+    private void OnSFXVolumeChanged(float value)
+    {
+        AudioManager.Instance.SetSFXVolume(value);
     }
 }

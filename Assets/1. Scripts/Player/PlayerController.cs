@@ -255,7 +255,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator C_Swing()
     {
         // UI 클릭 체크
-        if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (EventSystem.current.IsPointerOverGameObject())
         {
             _swingCoroutine = null;
             yield break;
