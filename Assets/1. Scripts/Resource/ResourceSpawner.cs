@@ -76,7 +76,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 Vector3 pos = GetRandomPositionInArea();
 
                 if (!IsValidSpawnPosition(pos)) continue;
-                if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
                 if (IsTooClose(pos)) continue;
 
                 TData selected = GetRandomByProbability();
@@ -144,8 +143,15 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
     private bool IsValidSpawnPosition(Vector3 position)
     {
-        Collider2D collider = Physics2D.OverlapPoint(position, _spawnZoneLayer);
-        return collider != null;
+        // 스폰 가능 레이어
+        Collider2D spawnZoneCollider = Physics2D.OverlapCircle(position, 0.1f, _spawnZoneLayer);
+        if (spawnZoneCollider == null) return false;
+
+        // 스폰 불가능 레이어
+        Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.1f, obstacleLayerMask);
+        if (obstacleCollider != null) return false;
+
+        return true;
     }
 
     private bool IsTooClose(Vector3 pos)
