@@ -33,7 +33,7 @@
     "attackType": 0,
     "moveType": 0,
     "prefabName": "Monster_Heavy",
-    "hp": 100,
+    "hp": 70,
     "damage": 10,
     "aps": 1.2,
     "speed": 0.5,
@@ -54,5 +54,19 @@
     "range": 3.0,
     "size": 1,
     "context": "작고 가벼운 날개를 가진 비행형 몬스터. 바람을 타고 빠르게 이동한다."
+  },
+  {
+    "id": 604,
+    "monsterName": "그럼프",
+    "attackType": 0,
+    "moveType": 1,
+    "prefabName": "Monster_Grump",
+    "hp": 100,
+    "damage": 13,
+    "aps": 1.5,
+    "speed": 0.7,
+    "range": 1.0,
+    "size": 3,
+    "context": ""
   }
 ]

@@ -62,9 +62,7 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         var item = _currentSmelter.OutputItem;
         
         if (item == null)
-        {
             return;
-        }
         
         int id = item.Data.id;
         int quantity = item.stack;

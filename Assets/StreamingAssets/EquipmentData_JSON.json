@@ -19,7 +19,7 @@
     "range": 1.1,
     "spriteName": "Pickaxe_Cooper",
     "upgradeRequirements": {
-      "구리주괴": 30
+      "구리주괴": 15
     },
     "id": 701,
     "itemName": "구리 곡괭이",
@@ -29,11 +29,11 @@
     "nextUpgradeId": 703,
     "damage": 3,
     "crushingForce": 2,
-    "speed": 1.3,
+    "speed": 0.8,
     "range": 1.2,
     "spriteName": "Pickaxe_Iron",
     "upgradeRequirements": {
-      "철주괴": 30
+      "철주괴": 15
     },
     "id": 702,
     "itemName": "철 곡괭이",
@@ -43,11 +43,11 @@
     "nextUpgradeId": 704,
     "damage": 4,
     "crushingForce": 3,
-    "speed": 1.5,
+    "speed": 0.5,
     "range": 1.3,
     "spriteName": "Pickaxe_Silver",
     "upgradeRequirements": {
-      "은주괴": 30
+      "은주괴": 15
     },
     "id": 703,
     "itemName": "은 곡괭이",
@@ -57,11 +57,11 @@
     "nextUpgradeId": 0,
     "damage": 5,
     "crushingForce": 4,
-    "speed": 1.7,
+    "speed": 0.5,
     "range": 1.4,
     "spriteName": "Pickaxe_Gold",
     "upgradeRequirements": {
-      "금주괴": 30
+      "금주괴": 15
     },
     "id": 704,
     "itemName": "금 곡괭이",
