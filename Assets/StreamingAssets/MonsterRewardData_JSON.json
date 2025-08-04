@@ -4,7 +4,7 @@
     "monsterid": 600,
     "idName": "머프_보상_정수",
     "rewardType": 0,
-    "dropProbability": 45.0,
+    "dropProbability": 100.0,
     "minQuantity": 1,
     "maxQuantity": 4
   },
@@ -40,7 +40,7 @@
     "monsterid": 601,
     "idName": "드리즐_보상_정수",
     "rewardType": 0,
-    "dropProbability": 45.0,
+    "dropProbability": 100.0,
     "minQuantity": 1,
     "maxQuantity": 4
   },
@@ -76,7 +76,7 @@
     "monsterid": 602,
     "idName": "헤비_보상_정수",
     "rewardType": 0,
-    "dropProbability": 65.0,
+    "dropProbability": 100.0,
     "minQuantity": 5,
     "maxQuantity": 8
   },
@@ -112,7 +112,7 @@
     "monsterid": 603,
     "idName": "플리터_보상_정수",
     "rewardType": 0,
-    "dropProbability": 45.0,
+    "dropProbability": 100.0,
     "minQuantity": 1,
     "maxQuantity": 4
   },
@@ -142,5 +142,41 @@
     "dropProbability": 10.0,
     "minQuantity": 1,
     "maxQuantity": 2
+  },
+  {
+    "id": 1240,
+    "monsterid": 604,
+    "idName": "그럼프_보상_정수",
+    "rewardType": 0,
+    "dropProbability": 100.0,
+    "minQuantity": 5,
+    "maxQuantity": 8
+  },
+  {
+    "id": 1241,
+    "monsterid": 604,
+    "idName": "그럼프_보상_광석",
+    "rewardType": 1,
+    "dropProbability": 35.0,
+    "minQuantity": 3,
+    "maxQuantity": 5
+  },
+  {
+    "id": 1242,
+    "monsterid": 604,
+    "idName": "그럼프_보상_보석",
+    "rewardType": 2,
+    "dropProbability": 7.0,
+    "minQuantity": 3,
+    "maxQuantity": 5
+  },
+  {
+    "id": 1243,
+    "monsterid": 604,
+    "idName": "그럼프_보상_주괴",
+    "rewardType": 3,
+    "dropProbability": 20.0,
+    "minQuantity": 3,
+    "maxQuantity": 5
   }
 ]
