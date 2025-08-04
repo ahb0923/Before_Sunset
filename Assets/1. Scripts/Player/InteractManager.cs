@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class InteractManager : MonoSingleton<InteractManager>
 {
@@ -27,7 +28,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     private Vector2 _outOfRangeHotspot;
 
     [SerializeField ] private InteractImage aimObject;
-
+    private Texture2D currCursorImage;
 
     protected override void Awake()
     {
@@ -39,8 +40,11 @@ public class InteractManager : MonoSingleton<InteractManager>
         _interactHotspot = GetCursorCenter(interactCursor);
         _outOfRangeHotspot = GetCursorCenter(outOfRangeCursor);
 
+        if(defaultCursor != null)
+            currCursorImage = defaultCursor;
+
         // 시작 시에 기본 커서
-        SetCursor(defaultCursor, _defaultHotspot, null);
+        SetCursor(currCursorImage, _defaultHotspot, null);
     }
 
     public void SetInGame()
@@ -60,12 +64,12 @@ public class InteractManager : MonoSingleton<InteractManager>
             return;
         }
         else 
-            SetCursor(defaultCursor, _defaultHotspot, null);
+            SetCursor(currCursorImage, _defaultHotspot, null);
 
         // UI 위면 기본 커서
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            SetCursor(defaultCursor, _defaultHotspot, null);
+            SetCursor(currCursorImage, _defaultHotspot, null);
             return;
         }
 
@@ -86,6 +90,13 @@ public class InteractManager : MonoSingleton<InteractManager>
         }
     }
 
+    public void SetCursorImage(bool isDestroy)
+    {
+        if (isDestroy) 
+            currCursorImage = dismantleCursor;
+        else
+            currCursorImage = defaultCursor;
+    }
 
     /// <summary> 상호 작용 시 커서 세팅 </summary>
     private void HandleInteractable(IInteractable interactable)
@@ -118,7 +129,7 @@ public class InteractManager : MonoSingleton<InteractManager>
             return;
         }*/
 
-        if (BuildManager.Instance.IsOnDestroy) { texture = dismantleCursor; }
+        //if ( BuildManager.Instance.IsOnDestroy) { texture = dismantleCursor; }
 
         Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
         _currentCursor = texture;
