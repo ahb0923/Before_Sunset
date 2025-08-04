@@ -17,6 +17,7 @@ public static class AstarAlgorithm
     public static void BindGrid(NodeGrid grid)
     {
         _bindGrid = grid;
+        _aGridStack.Clear();
     }
     
     /// <summary>
