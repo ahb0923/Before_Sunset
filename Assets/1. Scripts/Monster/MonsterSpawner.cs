@@ -6,7 +6,7 @@ public class MonsterSpawner : MonoBehaviour
 {
     [Header("# Spawn Setting")]
     [SerializeField] private List<Transform> _spawnPoints;
-    private int _spawnPointLimt => Mathf.Min((TimeManager.Instance.Day - 1) / 2, _spawnPoints.Count - 1);
+    [SerializeField] private int[] _stageToUnlockDoor = new int[3];
     [SerializeField] private Transform _monsterParent;
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
@@ -63,11 +63,26 @@ public class MonsterSpawner : MonoBehaviour
         }
         else
         {
+            // 스테이지에 따라서 소환포인트가 늘어남
+            int spawnPointLimit = 3;
+            foreach (int limit in _stageToUnlockDoor)
+            {
+                if (day >= limit)
+                {
+                    spawnPointLimit--;
+                }
+            }
+
             int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(day);
             for (int i = 1; i <= waveCount; i++)
             {
                 // GetWaveByTupleKey 내부에서 각 매개변수에서 -1 해줌
                 WaveDatabase currentWaveData = DataManager.Instance.WaveData.GetWaveByTupleKey(day, i);
+
+                // 스폰포인트에 따라서 4곳 중에서 랜덤 웨이브 소환
+                List<int> spawedDoor = new List<int>() { 0, 1, 2, 3 };
+                for (int t = 0; t < spawnPointLimit; t++) 
+                    spawedDoor.RemoveAt(Random.Range(0, spawedDoor.Count));
 
                 // 다음 웨이브 기다림
                 yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
@@ -78,10 +93,9 @@ public class MonsterSpawner : MonoBehaviour
                     int monsterID = DataManager.Instance.MonsterData.GetByName(pair.Key).id;
                     int spawnCount = pair.Value;
 
-                    // 열려있는 모든 방향에서 소환
-                    for (int spawnIndex = 0;  spawnIndex <= _spawnPointLimt; spawnIndex++)
+                    for (int j = 0; j < spawnCount; j++)
                     {
-                        for (int j = 0; j < spawnCount; j++)
+                        for (int k = 0; k < spawedDoor.Count; k++)
                         {
                             // 코어가 부서지면, 스폰 중지
                             if (DefenseManager.Instance.Core.IsDead)
@@ -89,10 +103,11 @@ public class MonsterSpawner : MonoBehaviour
                                 yield break;
                             }
 
-                            SpawnMonster(monsterID, spawnIndex);
+                            SpawnMonster(monsterID, spawedDoor[k]);
                             yield return null;
                         }
                     }
+                    
                 }
             }
         }
