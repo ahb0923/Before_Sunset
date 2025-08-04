@@ -10,6 +10,8 @@ public class AskTutorial : MonoBehaviour
     private const string YES_BUTTON = "YesButton";
     private const string NO_BUTTON = "NoButton";
 
+    private bool _clickTutorialBtn;
+
     private void Reset()
     {
         _yesButton = Helper_Component.FindChildComponent<Button>(this.transform, YES_BUTTON);
@@ -23,9 +25,10 @@ public class AskTutorial : MonoBehaviour
         _noButton.onClick.AddListener(NoTutorial);
     }
 
-    public void Open()
+    public void Open(bool clickTutorialButton)
     {
         _askRect.OpenAtCenter();
+        _clickTutorialBtn = clickTutorialButton;
     }
 
     private void Tutorial()
@@ -38,11 +41,14 @@ public class AskTutorial : MonoBehaviour
     private void NoTutorial()
     {
         Close();
-        GameManager.Instance.SetTutorial(false);
-        if (GlobalState.HasPlayedOpening)
-            LoadingSceneController.LoadScene("MainScene");
-        else
-            LoadingSceneController.LoadScene("OpeningScene");
+        if (!_clickTutorialBtn)
+        {
+            GameManager.Instance.SetTutorial(false);
+            if (GlobalState.HasPlayedOpening)
+                LoadingSceneController.LoadScene("MainScene");
+            else
+                LoadingSceneController.LoadScene("OpeningScene");
+        }
     }
     
     private void Close()
