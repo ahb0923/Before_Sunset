@@ -75,6 +75,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     {
         InventoryUI.gameObject.SetActive(false);
         QuickSlotInventoryUI.gameObject.SetActive(true);
+        TooltipManager.Instance.HideTooltip();
 
         foreach (var slot in InventoryUI.itemSlots)
         {
