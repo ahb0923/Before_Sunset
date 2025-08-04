@@ -11,6 +11,9 @@ public class OptionUI : MonoBehaviour, ICloseableUI
     [SerializeField] private Button _bGSoundButton;
     [SerializeField] private Button _effectSoundButton;
     [SerializeField] private Button _cancelButton;
+    [SerializeField] private GameObject _wholeSoundImage;
+    [SerializeField] private GameObject _bGSoundImage;
+    [SerializeField] private GameObject _effectSoundImage;
     
     private RectTransform _optionRect;
     private bool _isWholeSoundMute;
@@ -24,8 +27,11 @@ public class OptionUI : MonoBehaviour, ICloseableUI
     private const string BG_SOUND_SLIDER = "BGSoundSlider";
     private const string EFFECT_SOUND_SLIDER = "EffectSoundSlider";
     private const string WHOLE_SOUND_BUTTON = "WholeSoundButton";
+    private const string WHOLE_SOUND_IMAGE = "WholeSoundButtonImage";
     private const string BG_SOUND_BUTTON = "BGSoundButton";
+    private const string BG_SOUND_IMAGE = "BGSoundButtonImage";
     private const string EFFECT_SOUND_BUTTON = "EffectSoundButton";
+    private const string EFFECT_SOUND_IMAGE = "EffectSoundButtonImage";
     
     private const string OPTION_BUTTON = "OptionButton";
     private const string UN_PAUSE_BUTTON = "UnPauseButton";
@@ -43,6 +49,9 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _bGSoundButton = Helper_Component.FindChildComponent<Button>(this.transform, BG_SOUND_BUTTON);
         _effectSoundButton = Helper_Component.FindChildComponent<Button>(this.transform, EFFECT_SOUND_BUTTON);
         _cancelButton = Helper_Component.FindChildComponent<Button>(this.transform, CANCEL_BUTTON);
+        _wholeSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, WHOLE_SOUND_IMAGE);
+        _bGSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, BG_SOUND_IMAGE);
+        _effectSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, EFFECT_SOUND_IMAGE);
     }
 
     private void Awake()
@@ -105,11 +114,13 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         {
             _isWholeSoundMute = false;
             AudioManager.Instance.SetWholeVolume(_wholeSoundSlider.value);
+            _wholeSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isWholeSoundMute = true;
             AudioManager.Instance.SetWholeVolume(0f);
+            _wholeSoundImage.gameObject.SetActive(false);
         }
     }
 
@@ -118,12 +129,14 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         if (_isBGSoundMute)
         {
             _isBGSoundMute = false;
-            AudioManager.Instance.SetWholeVolume(_bGSoundSlider.value);
+            AudioManager.Instance.SetBGMVolume(_bGSoundSlider.value);
+            _bGSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isBGSoundMute = true;
-            AudioManager.Instance.SetWholeVolume(0f);
+            AudioManager.Instance.SetBGMVolume(0f);
+            _bGSoundImage.gameObject.SetActive(false);
         }
     }
 
@@ -132,12 +145,14 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         if (_isEffectSoundMute)
         {
             _isEffectSoundMute = false;
-            AudioManager.Instance.SetWholeVolume(_effectSoundSlider.value);
+            AudioManager.Instance.SetSFXVolume(_effectSoundSlider.value);
+            _effectSoundImage.gameObject.SetActive(true);
         }
         else
         {
             _isEffectSoundMute = true;
-            AudioManager.Instance.SetWholeVolume(0f);
+            AudioManager.Instance.SetSFXVolume(0f);
+            _effectSoundImage.gameObject.SetActive(false);
         }
     }
 
