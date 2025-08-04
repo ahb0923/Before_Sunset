@@ -58,7 +58,7 @@ public class MonsterSpawner : MonoBehaviour
                 }
 
                 // 머프 10마리만 소환
-                SpawnMonster(600, 0, true);
+                SpawnMonster(600, 0);
             }
         }
         else
@@ -89,7 +89,7 @@ public class MonsterSpawner : MonoBehaviour
                                 yield break;
                             }
 
-                            SpawnMonster(monsterID, spawnIndex, currentWaveData.isAttackCore);
+                            SpawnMonster(monsterID, spawnIndex);
                             yield return null;
                         }
                     }
@@ -104,7 +104,7 @@ public class MonsterSpawner : MonoBehaviour
     /// <summary>
     /// 해당하는 몬스터 ID를 가진 몬스터 소환
     /// </summary>
-    public void SpawnMonster(int monsterId, int posIndex, bool isAttackCore)
+    public void SpawnMonster(int monsterId, int posIndex)
     {
         float rand = Random.Range(-1f, 1f);
         Vector3 randOffset;
@@ -116,7 +116,6 @@ public class MonsterSpawner : MonoBehaviour
         Vector3 pos = _spawnPoints[posIndex].position + randOffset;
         GameObject obj = PoolManager.Instance.GetFromPool(monsterId, pos, _monsterParent);
         BaseMonster monster = obj.GetComponent<BaseMonster>();
-        monster.SetMonsterTargeting(isAttackCore);
         _aliveMonsterSet.Add(monster);
     }
 }

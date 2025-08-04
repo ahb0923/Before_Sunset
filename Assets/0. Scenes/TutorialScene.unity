@@ -1485,6 +1485,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4276528058182126163, guid: aadc2c34e6e534e4d9ebb984818c00f5, type: 3}
+      propertyPath: _realMinDayLength
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 6137766019424001956, guid: aadc2c34e6e534e4d9ebb984818c00f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

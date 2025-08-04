@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public enum MONSTER_STATE
 {
@@ -143,7 +142,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         // 3. 코어에서 가까운 거리 순으로 정렬된 리스트에서 해당 몬스터에게 가까운 순으로 순차적으로 경로 탐색 진행
         int count = 0;
-        while(count < 30)
+        while(count < 1000)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)

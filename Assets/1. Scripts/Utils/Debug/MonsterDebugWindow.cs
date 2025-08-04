@@ -16,17 +16,17 @@ public class MonsterDebugWindow : EditorWindow
 
         if (GUILayout.Button("몬스터 스폰 : 머프"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(600, 3, false);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(600, 3);
         }
 
         if (GUILayout.Button("몬스터 스폰 : 드리즐"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(601, 3, false);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(601, 3);
         }
 
         if (GUILayout.Button("몬스터 스폰 : 헤비"))
         {
-            DefenseManager.Instance.MonsterSpawner.SpawnMonster(602, 3, false);
+            DefenseManager.Instance.MonsterSpawner.SpawnMonster(602, 3);
         }
     }
 }
