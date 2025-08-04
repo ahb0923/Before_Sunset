@@ -30,7 +30,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         _buildingSlotPrefab = Resources.Load<GameObject>(BUILD_SLOT);
     }
 
-    public void Awake()
+    private void Awake()
     {
         _buildButton.onClick.AddListener(Toggle);
         _towerButton.onClick.AddListener(TowerButton);
@@ -39,6 +39,10 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         GetBaseTowerList();
         GetSmelterList();
         InitSlots();
+    }
+
+    private void Start()
+    {
         TowerButton();
     }
 
@@ -56,6 +60,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         {
             TowerDatabase data = i < _baseTowerData.Count ? _baseTowerData[i] : null;
             buildSlots[i].SetSlot(data);
+            buildSlots[i].CheckBuildable();
         }
     }
     
@@ -73,6 +78,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
         {
             SmelterDatabase data = i < _smelterData.Count ? _smelterData[i] : null;
             buildSlots[i].SetSlot(data);
+            buildSlots[i].CheckBuildable();
         }
     }
 
