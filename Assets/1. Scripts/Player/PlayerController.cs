@@ -279,9 +279,7 @@ public class PlayerController : MonoBehaviour
 
         if (target != null && !(target is OreController) && !(target is JewelController))
         {
-            TryInteractTarget(target);
-            _swingCoroutine = null;
-            yield break;
+            target = null;
         }
 
         // 플레이어 기준으로 클릭의 방향 벡터 구하기
