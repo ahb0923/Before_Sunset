@@ -18,6 +18,8 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> _bgmClips = new();
     private Dictionary<string, AudioClip> _sfxClips = new();
 
+    private Dictionary<string, float> _volumeOverrides = new();
+
     private void Awake()
     {
         if (Instance == null)
@@ -62,6 +64,10 @@ public class AudioManager : MonoBehaviour
         var sfxs = Resources.LoadAll<AudioClip>("Sounds/SFX");
         foreach (var clip in sfxs)
             _sfxClips[clip.name] = clip;
+
+        _volumeOverrides["BasicMine1"] = 0.1f;
+        _volumeOverrides["DefenseBase"] = 0.1f;
+        _volumeOverrides["RareMine1"] = 0.1f;
     }
 
     public void PlayBGM(string name)
@@ -69,7 +75,14 @@ public class AudioManager : MonoBehaviour
         if (_bgmClips.TryGetValue(name, out var clip))
         {
             bgmSource.clip = clip;
-            bgmSource.volume = _bgmVolume;
+
+            float overrideVolume = _bgmVolume;
+            if (_volumeOverrides.TryGetValue(name, out var multiplier))
+            {
+                overrideVolume *= multiplier;
+            }
+
+            bgmSource.volume = overrideVolume;
             bgmSource.Play();
         }
         else
@@ -78,18 +91,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
-
     public void PlaySFX(string name)
     {
         if (_sfxClips.TryGetValue(name, out var clip))
         {
             AudioSource source = GetAvailableSFXSource();
             source.clip = clip;
-            source.volume = _sfxVolume;
+
+            float overrideVolume = _sfxVolume;
+
+            if (_volumeOverrides.TryGetValue(name, out var multiplier))
+            {
+                overrideVolume *= multiplier;
+            }
+
+            source.volume = overrideVolume;
             source.Play();
             StartCoroutine(ReturnToPoolWhenDone(source, clip.length));
         }
