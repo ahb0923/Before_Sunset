@@ -35,15 +35,22 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     /// </summary>
     public void TrySmelt(float smeltedTime = 0f)
     {
-        if (_smeltCoroutine != null)
-        {
+        if (isSmelting)
             return;
-        }
+
+        if (InputItem == null)
+            StopSmelting();
         
-        if (!isSmelting)
-        {
+        if (!isSmelting && InputItem != null)
             StartSmelting(smeltedTime);
-        }
+    }
+
+    private void InitAnim()
+    {
+        animator.SetBool("IsDone", false);
+        animator.SetBool("IsMelting", false);
+        animator.SetBool("IsClear", false);
+        animator.SetBool("IsCancel", false);
     }
 
     /// <summary>
@@ -51,22 +58,10 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     /// </summary>
     private void StartSmelting(float smeltedTime = 0f)
     {
-        if (InputItem == null)
-        {
-            return;
-        }
-        
         var mineralData = DataManager.Instance.MineralData.GetById(InputItem.Data.id);
         
         if (OutputItem == null || mineralData.ingotId == OutputItem.Data.id)
-        {
-            animator.SetTrigger("IsMelting");
             _smeltCoroutine = StartCoroutine(C_Smelt(mineralData, smeltedTime));
-        }
-        else
-        {
-            isSmelting = false;
-        }
     }
     
     public void StopSmelting()
@@ -77,12 +72,18 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
             _smeltCoroutine = null;
         }
 
-        if (OutputItem == null)
-            animator.SetTrigger("IsCancel");
-        else 
-            animator.SetTrigger("IsDone");
-
+        if (OutputItem != null)
+        {
+            InitAnim();
+            animator.SetBool("IsDone", true);
+        }
+        else
+        {
+            InitAnim();
+            animator.SetBool("IsCancel", true);
+        }
         isSmelting = false;
+
         OnSmeltingProgress?.Invoke(0);
         RefreshUI();
     }
@@ -95,6 +96,8 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     private IEnumerator C_Smelt(MineralDatabase mineralData, float smeltedTime)
     {
         isSmelting = true;
+        InitAnim();
+        animator.SetBool("IsMelting", true);
 
         //float duration = mineralData.smeltingTime;
         float duration = 1.0f;
@@ -102,7 +105,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 
         while (elapsed < duration)
         {
-            if (InputItem == null) yield break;
+            if (InputItem == null) break;
             elapsed += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsed / duration);
 
@@ -111,19 +114,33 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
             yield return null;
         }
 
-        InputItem.stack--;
-        if (InputItem.stack <= 0)
+        if (InputItem == null)
         {
-            InputItem = null;
+            if (OutputItem != null)
+            {
+                InitAnim();
+                animator.SetBool("IsDone", true);
+            }
+            else
+            {
+                InitAnim();
+                animator.SetBool("IsCancel", true);
+            }
+            
+            isSmelting = false;
+            OnSmeltingProgress?.Invoke(0);
+            RefreshUI();
+            yield break;
         }
+
+        InputItem.stack--;
+        if (InputItem.stack == 0)
+            InputItem = null;
 
         if (OutputItem == null)
-        {
             OutputItem = new Item(DataManager.Instance.ItemData.GetById(mineralData.ingotId));
-        }
-
         OutputItem.stack++;
-        _smeltCoroutine = null;
+        
         OnSmeltingProgress?.Invoke(0);
         RefreshUI();
 
@@ -133,8 +150,9 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         }
         else
         {
+            InitAnim();
+            animator.SetBool("IsDone", true);
             isSmelting = false;
-            animator.SetTrigger("IsDone");
         }
     }
 
@@ -153,10 +171,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public void SetInputItem(Item item, float smeltedTime = 0f)
     {
         InputItem = item;
-        if (InputItem == null)
-            StopSmelting();
-        else
-            TrySmelt();
+        TrySmelt();
     }
 
     /// <summary>
@@ -166,6 +181,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public void SetOutputItem(Item item)
     {
         OutputItem = item;
+        TrySmelt();
     }
 
     public int GetId()
