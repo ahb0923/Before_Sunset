@@ -37,6 +37,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         _currentHP = _data.hp;
         FindPlayer();
         Init(_player);
+        Debug.Log($"{gameObject.name}소환한새기 누구야");
     }
 
     public void OnReturnToPool()
