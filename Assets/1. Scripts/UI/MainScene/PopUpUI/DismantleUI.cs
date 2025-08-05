@@ -96,6 +96,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void CloseUI()
     {
+        if (_selectedTower != null) _selectedTower.ui.ToggleAttackArea();
         _rect.CloseAndRestore();
     }
 

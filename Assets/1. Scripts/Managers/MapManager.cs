@@ -107,6 +107,14 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             }
         }
 
+        if (TimeManager.Instance.IsNight)
+        {
+            _activeMapInstances.Clear();
+            _mapHistory.Clear();
+            _mapPrefabIdMap.Clear();
+            _portalMapLinks.Clear();
+        }
+
         MoveToMap(0, false);
         _player.position = GetRandomPositionNearCore(1.0f);
     }
@@ -383,7 +391,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             return;
         }
 
-        if (mapIndex == 0)
+        if (mapIndex == 0 && !TimeManager.Instance.IsNight)
         {
             AudioManager.Instance.PlayBGM("NormalBase");
             return;
@@ -394,7 +402,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         var mapData = DataManager.Instance.MapData.GetById(mapId);
         if (mapData == null)
         {
-            Debug.LogWarning("맵 데이터를 찾을 수 없어 BGM을 변경할 수 없습니다.");
             return;
         }
 

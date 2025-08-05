@@ -157,12 +157,6 @@ public class PlayerInputHandler : MonoBehaviour
             else
             {
                 MapManager.Instance.ReturnToHomeMap();
-
-                // 밤일 때는 맵 초기화
-                if (TimeManager.Instance.IsNight)
-                {
-                    MapManager.Instance.ResetAllMaps();
-                }
             }
 
             _isRecallStarted = false;

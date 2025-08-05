@@ -72,6 +72,10 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer = 0f;
         _isSpawned = false;
+        _isRecallOver = false;
+
+        MapManager.Instance.ResetAllMaps();
+        SpawnManager.Instance.OnStageChanged();
 
         if (Day != _maxStage)
         {

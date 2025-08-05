@@ -155,4 +155,15 @@ public class TowerUI : MonoBehaviour
         animator.Rebind();      // 트랜스폼 포함 초기화
         animator.Update(0f);    // 즉시 적용
     }
+
+    public void ToggleAttackArea() 
+    {
+        bool isActive = effectArea.gameObject.activeSelf;
+        effectArea.gameObject.SetActive(!isActive);
+    }
+    public void SetEffectSize(float radius)
+    {
+        radius += 0.5f;
+        effectArea.size = new Vector2 (radius, radius);
+    }
 }
