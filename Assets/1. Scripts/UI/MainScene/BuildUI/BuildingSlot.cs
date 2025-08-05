@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
-using System;
-using UnityEngine.Serialization;
 
 public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
@@ -12,23 +10,27 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
     [SerializeField] public Image bgImage;
     [SerializeField] private Image _buildingIcon;
     [SerializeField] private TextMeshProUGUI _buildingName;
+    [SerializeField] private GameObject _disableImage;
     
     private TowerDatabase _towerData;
     private SmelterDatabase _smelterData;
-    private int currentBuildID;
+    private int _currentBuildID;
     private Color _originalColor;
     private Tween _tween;
+    public bool isDisabled = true;
     
     public int Index { get; private set; }
     
     private const string BUILDING_ICON = "BuildingIcon";
     private const string BUILDING_NAME = "BuildingName";
+    private const string DISABLE_IMAGE = "DisableImage";
     
     private void Reset()
     {
         bgImage = GetComponent<Image>();
         _buildingIcon = Helper_Component.FindChildComponent<Image>(this.transform, BUILDING_ICON);
         _buildingName = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, BUILDING_NAME);
+        _disableImage = Helper_Component.FindChildGameObjectByName(this.gameObject, DISABLE_IMAGE);
     }
     
     public void InitIndex(int index)
@@ -45,17 +47,18 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             _towerData = data;
             _smelterData = null;
-            currentBuildID = data.id;
+            _currentBuildID = data.id;
             
-            buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(currentBuildID);
+            buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(_currentBuildID);
 
-            _buildingIcon.sprite = DataManager.Instance.TowerData.GetSpriteById(currentBuildID);
+            _buildingIcon.sprite = DataManager.Instance.TowerData.GetSpriteById(_currentBuildID);
             _buildingIcon.preserveAspect = true;
             _buildingName.text = data.towerName;
             
             this.gameObject.SetActive(true);
         }
     }
+    
     public void SetSlot(SmelterDatabase data)
     {
         buildingPrefab = null;
@@ -64,9 +67,9 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
         {
             _towerData = null;
             _smelterData = data;
-            currentBuildID = data.id;
+            _currentBuildID = data.id;
 
-            buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(currentBuildID);
+            buildingPrefab = DataManager.Instance.SmelterData.GetPrefabById(_currentBuildID);
             
             _buildingIcon.sprite = Helper_Component.GetComponentInChildren<SpriteRenderer>(buildingPrefab).sprite;
             _buildingIcon.preserveAspect = true;
@@ -97,15 +100,72 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
                     $"{DataManager.Instance.ItemData.GetById(data.smeltingIdList[1]).itemName}";
     }
 
+    public void CheckBuildable()
+    {
+        if (_towerData != null)
+        {
+            var buildRequirements = DataManager.Instance.TowerData.GetById(_currentBuildID).buildRequirements;
+            int counter = 0;
+            
+            foreach (var item in buildRequirements)
+            {
+                if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
+                {
+                    counter++;
+                    break;
+                }
+            }
+
+            if (counter == 0)
+                EnableSlot();
+            else
+                DisableSlot();
+        }
+
+        if (_smelterData != null)
+        {
+            var buildRequirements = DataManager.Instance.SmelterData.GetById(_currentBuildID).buildRequirements;
+            int counter = 0;
+            
+            foreach (var item in buildRequirements)
+            {
+                if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
+                {
+                    counter++;
+                    break;
+                }
+            }
+            if (counter == 0)
+                EnableSlot();
+            else
+                DisableSlot();
+        }
+    }
+
+    private void DisableSlot()
+    {
+        isDisabled = true;
+        _disableImage.SetActive(true);
+    }
+
+    private void EnableSlot()
+    {
+        isDisabled = false;
+        _disableImage.SetActive(false);
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_tween != null)
+        if (!isDisabled)
         {
-            _tween.Kill();
+            if (_tween != null)
+            {
+                _tween.Kill();
+            }
+
+            bgImage.color = _originalColor;
+            _tween = bgImage.DOColor(Color.yellow, 0.2f);
         }
-        
-        bgImage.color = _originalColor;
-        _tween = bgImage.DOColor(Color.yellow, 0.2f);
         
         UIManager.Instance.CraftMaterialArea.Open();
         
@@ -123,6 +183,13 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        bool isInBase = DefenseManager.Instance.mainPlayer.GetComponent<BasePlayer>().IsInBase;
+        if (!isInBase)
+        {
+            ToastManager.Instance.ShowToast("광산에서는 설치할 수 없습니다.");
+            return;
+        }
+        
         // 좌클릭시
         if (eventData.button == PointerEventData.InputButton.Left)
         {
@@ -134,32 +201,37 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
                     if (_towerData == null)
                     {
-                        var buildRequirements = DataManager.Instance.SmelterData.GetById(currentBuildID).buildRequirements;
+                        var buildRequirements = DataManager.Instance.SmelterData.GetById(_currentBuildID).buildRequirements;
                         foreach (var item in buildRequirements)
                         {
                             if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
                             {
                                 ToastManager.Instance.ShowToast("자원이 부족합니다!");
                                 checkRequirements = false;
+                                break;
                             }
                         }
                     }
                     else
                     {
-                        var buildRequirements = DataManager.Instance.TowerData.GetById(currentBuildID).buildRequirements;
+                        var buildRequirements = DataManager.Instance.TowerData.GetById(_currentBuildID).buildRequirements;
                         foreach (var item in buildRequirements)
                         {
                             if (InventoryManager.Instance.Inventory.GetItemCount(item.Key) < item.Value)
                             {
                                 ToastManager.Instance.ShowToast("자원이 부족합니다!");
                                 checkRequirements = false;
+                                break;
                             }
                         }
                     }
                 }
-                if(checkRequirements)
-                    BuildManager.Instance.StartPlacing(currentBuildID);
-                UIManager.Instance.CraftArea.Close();
+
+                if (checkRequirements)
+                {
+                    BuildManager.Instance.StartPlacing(_currentBuildID);
+                    UIManager.Instance.CraftArea.Close();
+                }
             }
         }
         // 우클릭시
@@ -174,12 +246,15 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        // if (!isDisabled)
+        // {
+        // }
         if (_tween != null)
         {
             _tween.Kill();
             _tween = null;
         }
-        
+
         _tween = bgImage.DOColor(_originalColor, 0.2f);
         
         TooltipManager.Instance.HideTooltip();

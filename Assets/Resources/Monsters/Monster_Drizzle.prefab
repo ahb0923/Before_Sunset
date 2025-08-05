@@ -67,7 +67,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 5
+  m_Radius: 3
 --- !u!114 &6191429057146182332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e9dd189854c75499f01dee4e284305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MonsterSoundKey: Normal
   _id: 601
   _obstacleLayer:
     serializedVersion: 2

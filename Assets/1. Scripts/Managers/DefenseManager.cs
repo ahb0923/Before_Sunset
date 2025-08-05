@@ -60,6 +60,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     {
         InteractManager.Instance.SetInGame();
     }
+
     /// <summary>
     /// 노드 그리드 생성 & 코어 위치 설정
     /// </summary>
