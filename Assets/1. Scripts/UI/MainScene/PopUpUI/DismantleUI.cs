@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,6 +48,11 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _cancelButton.onClick.AddListener(Close);
     }
 
+    private void Start()
+    {
+        CloseUI();
+    }
+
     private void Dismantle()
     {
         _selectedTower.DestroyTower();
@@ -55,10 +61,19 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void OpenDismantleUI(BaseTower tower)
     {
-        UIManager.Instance.OpenUI(this);
-        InitSlots(tower);
-        SetSlot(tower);
-        SetDismantleUI(tower);
+        if (!this.gameObject.activeSelf)
+        {
+            UIManager.Instance.OpenUI(this);
+            InitSlots(tower);
+            SetSlot(tower);
+            SetDismantleUI(tower);
+        }
+        else
+        {
+            InitSlots(tower);
+            SetSlot(tower);
+            SetDismantleUI(tower);
+        }
     }
 
     public void Open()
