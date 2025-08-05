@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {

@@ -27,6 +27,6 @@ public class TutorialSkip : MonoBehaviour
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-        SaveManager.Instance.LoadGameFromAutoSlot();
+        SaveManager.Instance.LoadGameFromSlot();
     }
 }

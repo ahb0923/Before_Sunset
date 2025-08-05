@@ -128,7 +128,7 @@ public class SaveManager : MonoSingleton<SaveManager>
     
     /// <summary>
     /// 저장 슬롯에서 게임 로드<br/>
-    /// ※ 로딩씬을 거쳐서 로드
+    /// ※ 로딩씬을 거쳐서 로드<br/>
     /// ※ slotIndex 공백일 경우에는 새 게임 시작
     /// </summary>
     public void LoadGameFromSlot(int slotIndex = -1)
