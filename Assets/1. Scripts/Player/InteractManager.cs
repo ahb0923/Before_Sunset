@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class InteractManager : MonoSingleton<InteractManager>
 {
     [Header("Cursor Textures")]
     public Texture2D defaultCursor;
+    public Texture2D dismantleCursor;
     public Texture2D interactCursor;
     public Texture2D outOfRangeCursor;
 
@@ -26,7 +28,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     private Vector2 _outOfRangeHotspot;
 
     [SerializeField ] private InteractImage aimObject;
-
+    private Texture2D currCursorImage;
 
     protected override void Awake()
     {
@@ -38,8 +40,11 @@ public class InteractManager : MonoSingleton<InteractManager>
         _interactHotspot = GetCursorCenter(interactCursor);
         _outOfRangeHotspot = GetCursorCenter(outOfRangeCursor);
 
+        if(defaultCursor != null)
+            currCursorImage = defaultCursor;
+
         // 시작 시에 기본 커서
-        SetCursor(defaultCursor, _defaultHotspot, null);
+        SetCursor(currCursorImage, _defaultHotspot, null);
     }
 
     public void SetInGame()
@@ -59,12 +64,12 @@ public class InteractManager : MonoSingleton<InteractManager>
             return;
         }
         else 
-            SetCursor(defaultCursor, _defaultHotspot, null);
+            SetCursor(currCursorImage, _defaultHotspot, null);
 
         // UI 위면 기본 커서
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            SetCursor(defaultCursor, _defaultHotspot, null);
+            SetCursor(currCursorImage, _defaultHotspot, null);
             return;
         }
 
@@ -85,6 +90,13 @@ public class InteractManager : MonoSingleton<InteractManager>
         }
     }
 
+    public void SetCursorImage(bool isDestroy)
+    {
+        if (isDestroy) 
+            currCursorImage = dismantleCursor;
+        else
+            currCursorImage = defaultCursor;
+    }
 
     /// <summary> 상호 작용 시 커서 세팅 </summary>
     private void HandleInteractable(IInteractable interactable)
@@ -96,25 +108,28 @@ public class InteractManager : MonoSingleton<InteractManager>
             //SetCursor(interactCursor, _interactHotspot, interactable);
             if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
-            aimObject.SetNearCursor(interactable.GetObejctSize());
+            aimObject.SetNearCursor(interactable);
         }
         else
         {
             //SetCursor(outOfRangeCursor, _outOfRangeHotspot, null);
             if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
-            aimObject.SetFarCursor(interactable.GetObejctSize());
+            aimObject.SetFarCursor(interactable);
         }
     }
     
     /// <summary> 커서 설정 + 현재 타겟 갱신 </summary>
     private void SetCursor(Texture2D texture, Vector2 hotspot, IInteractable target)
     {
+        /*
         if (_currentCursor == texture && _currentHotspot == hotspot)
         {
             if (target != null) _currentTarget = target; // null이면 유지
             return;
-        }
+        }*/
+
+        //if ( BuildManager.Instance.IsOnDestroy) { texture = dismantleCursor; }
 
         Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
         _currentCursor = texture;

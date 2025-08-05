@@ -76,7 +76,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 Vector3 pos = GetRandomPositionInArea();
 
                 if (!IsValidSpawnPosition(pos)) continue;
-                if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
                 if (IsTooClose(pos)) continue;
 
                 TData selected = GetRandomByProbability();
@@ -144,8 +143,15 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
     private bool IsValidSpawnPosition(Vector3 position)
     {
-        Collider2D collider = Physics2D.OverlapPoint(position, _spawnZoneLayer);
-        return collider != null;
+        // 스폰 가능 레이어
+        Collider2D spawnZoneCollider = Physics2D.OverlapCircle(position, 0.1f, _spawnZoneLayer);
+        if (spawnZoneCollider == null) return false;
+
+        // 스폰 불가능 레이어
+        Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.1f, obstacleLayerMask);
+        if (obstacleCollider != null) return false;
+
+        return true;
     }
 
     private bool IsTooClose(Vector3 pos)
@@ -253,39 +259,5 @@ public class ResourceSpawner<TData> : MonoBehaviour
         }
 
         return spawnedObjects;
-    }
-
-    public GameObject SpawnSingle(TData data, Vector3 position)
-    {
-        int id = GetId(data);
-        GameObject obj = PoolManager.Instance.GetFromPool(id, position);
-
-        if (obj == null)
-        {
-            Debug.LogWarning($"[SpawnSingle] Pool에서 오브젝트를 가져오지 못함. ID: {id}");
-            return null;
-        }
-
-        if (parentTransform != null)
-            obj.transform.SetParent(parentTransform, false);
-
-        obj.transform.position = position;
-
-        if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
-        {
-            if (resource is OreController ore)
-            {
-                ore.OnInstantiate();
-            }
-            else if (resource is JewelController jewel)
-            {
-                jewel.OnGetFromPool();
-            }
-
-            resource.OnGetFromPool();
-        }
-
-        obj.SetActive(true);
-        return obj;
     }
 }

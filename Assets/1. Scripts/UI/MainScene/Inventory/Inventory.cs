@@ -75,6 +75,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     {
         InventoryUI.gameObject.SetActive(false);
         QuickSlotInventoryUI.gameObject.SetActive(true);
+        TooltipManager.Instance.HideTooltip();
 
         foreach (var slot in InventoryUI.itemSlots)
         {
@@ -152,6 +153,12 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
         }
         _addedSlotIndex.Clear();
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
+
+        var slots = UIManager.Instance.CraftArea.buildSlots;
+        foreach (var slot in slots)
+        {
+            slot.CheckBuildable();
+        }
     }
 
     /// <summary>
@@ -375,6 +382,13 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
 
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        
+        var slots = UIManager.Instance.CraftArea.buildSlots;
+        foreach (var slot in slots)
+        {
+            slot.CheckBuildable();
+        }
+        
         return true;
     }
 
@@ -433,6 +447,13 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
 
         InventoryUI.RefreshUI(Items);
         QuickSlotInventoryUI.RefreshUI(Items);
+        
+        var slots = UIManager.Instance.CraftArea.buildSlots;
+        foreach (var slot in slots)
+        {
+            slot.CheckBuildable();
+        }
+        
         return true;
     }
     

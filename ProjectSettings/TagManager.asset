@@ -34,9 +34,9 @@ TagManager:
   - Stair
   - Obstacle
   - SpawnZone
-  - Zone1
-  - Zone2
-  - Zone3
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Ground
     uniqueID: 2565922313
@@ -61,4 +61,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 3759000591
+    locked: 0
+  - name: Interactable
+    uniqueID: 3144159975
     locked: 0

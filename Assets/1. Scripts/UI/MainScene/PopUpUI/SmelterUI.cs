@@ -55,8 +55,24 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void Open(Smelter smelter)
     {
+        if (_currentSmelter != null)
+            _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
+        
         _currentSmelter = smelter;
-        UIManager.Instance.OpenUI(this);
+        
+        if (!this.gameObject.activeInHierarchy)
+            UIManager.Instance.OpenUI(this);
+        else
+        {
+            SetSmelterUI();
+            _currentSmelter.OnSmeltingProgress += UpdateProgressBar;
+
+            if (!_currentSmelter.isSmelting)
+                _smeltProgressBar.fillAmount = 0f;
+
+            if (_currentSmelter.OutputItem != null)
+                ActivateReceiveButton();
+        }
     }
 
     public void Open()
@@ -72,11 +88,6 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
     public void OpenUI()
     {
         AudioManager.Instance.PlaySFX("OpenSmelter");
-
-        if (_currentSmelter != null)
-        {
-            _currentSmelter.OnSmeltingProgress -= UpdateProgressBar;
-        }
         
         SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();
@@ -164,7 +175,9 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
     {
         smelterOutputSlot.ReceiveItem();
         DeactivateReceiveButton();
-        _currentSmelter.TrySmelt();
+
+        if (!_currentSmelter.isSmelting)
+            _currentSmelter.animator.SetTrigger("IsClear");
     }
 
     /// <summary>

@@ -137,6 +137,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     // 맵이동
     public void MoveToMap(int targetIndex, bool addToHistory = true)
     {
+        if (TimeManager.Instance.IsNight && !PlayerInputHandler._isRecallInProgress) return;
+
         if (targetIndex == CurrentMapIndex) return;
 
         _spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);

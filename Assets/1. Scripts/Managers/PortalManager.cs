@@ -16,6 +16,8 @@ public class PortalManager : MonoSingleton<PortalManager>
 
     public void OnPlayerEnteredPortal(Portal portal)
     {
+        if (TimeManager.Instance.IsNight && !PlayerInputHandler._isRecallInProgress) return;
+
         LastEnteredPortalDirection = portal.CurrentPortalDirection;
 
         bool isEntering = DetermineIsEntering(portal.CurrentPortalDirection);

@@ -135,7 +135,7 @@ public class StartSceneUI : MonoBehaviour
     {
         StartSceneManager.Instance.StartSceneAnimation.StopCamera();
         selectImage.HideImage();
-        askTutorial.Open();
+        askTutorial.Open(false);
     }
 
     private void LoadGame()
@@ -149,7 +149,7 @@ public class StartSceneUI : MonoBehaviour
     {
         StartSceneManager.Instance.StartSceneAnimation.StopCamera();
         selectImage.HideImage();
-        askTutorial.Open();
+        askTutorial.Open(true);
     }
 
     private void Exit()

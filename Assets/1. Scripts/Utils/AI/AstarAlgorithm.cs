@@ -17,6 +17,7 @@ public static class AstarAlgorithm
     public static void BindGrid(NodeGrid grid)
     {
         _bindGrid = grid;
+        _aGridStack.Clear();
     }
     
     /// <summary>
@@ -42,6 +43,9 @@ public static class AstarAlgorithm
 
         NodeGrid grid = _bindGrid;
         if (!grid.HasNode(center)) return false;
+
+        // 해당 노드가 타겟이면 true 반환
+        if (center.walkableIndex == targetIndex) return true;
 
         Vector2Int gridIndex = grid.GetGridIndex(center);
         int boundary = entitySize / 2;

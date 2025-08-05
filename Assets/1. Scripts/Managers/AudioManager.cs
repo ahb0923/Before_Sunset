@@ -6,8 +6,16 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
+    private float _wholeVolume = 1f;
     private float _bgmVolume = 0.5f;
     private float _sfxVolume = 0.2f;
+
+    private float _originalBgVolume;
+    private float _originalSfxVolume;
+    
+    private bool _isWholeSoundMute = false;
+    private bool _isBGSoundMute = false;
+    private bool _isSFXSoundMute = false;
 
     [Header("BGM")]
     public AudioSource bgmSource;
@@ -17,6 +25,8 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<string, AudioClip> _bgmClips = new();
     private Dictionary<string, AudioClip> _sfxClips = new();
+
+    private Dictionary<string, float> _volumeOverrides = new();
 
     private void Awake()
     {
@@ -62,6 +72,10 @@ public class AudioManager : MonoBehaviour
         var sfxs = Resources.LoadAll<AudioClip>("Sounds/SFX");
         foreach (var clip in sfxs)
             _sfxClips[clip.name] = clip;
+
+        _volumeOverrides["BasicMine1"] = 0.1f;
+        _volumeOverrides["DefenseBase"] = 0.1f;
+        _volumeOverrides["RareMine1"] = 0.1f;
     }
 
     public void PlayBGM(string name)
@@ -69,7 +83,14 @@ public class AudioManager : MonoBehaviour
         if (_bgmClips.TryGetValue(name, out var clip))
         {
             bgmSource.clip = clip;
-            bgmSource.volume = _bgmVolume;
+
+            float overrideVolume = _bgmVolume;
+            if (_volumeOverrides.TryGetValue(name, out var multiplier))
+            {
+                overrideVolume *= multiplier;
+            }
+
+            bgmSource.volume = overrideVolume;
             bgmSource.Play();
         }
         else
@@ -78,18 +99,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
-
     public void PlaySFX(string name)
     {
         if (_sfxClips.TryGetValue(name, out var clip))
         {
             AudioSource source = GetAvailableSFXSource();
             source.clip = clip;
-            source.volume = _sfxVolume;
+
+            float overrideVolume = _sfxVolume;
+
+            if (_volumeOverrides.TryGetValue(name, out var multiplier))
+            {
+                overrideVolume *= multiplier;
+            }
+
+            source.volume = overrideVolume;
             source.Play();
             StartCoroutine(ReturnToPoolWhenDone(source, clip.length));
         }
@@ -136,19 +160,31 @@ public class AudioManager : MonoBehaviour
 
     public void SetWholeVolume(float volume)
     {
-        SetBGMVolume(volume);
-        SetSFXVolume(volume);
+        _wholeVolume = volume;
+        ApplyVolumes();
+    }
+
+    public void SetWholeMute(bool isMute)
+    {
+        _isWholeSoundMute = isMute;
+        ApplyVolumes();
     }
 
     public float GetWholeVolume()
     {
-        return (_bgmVolume + _sfxVolume) / 2f;
+        return _wholeVolume;
     }
 
     public void SetBGMVolume(float volume)
     {
-        _bgmVolume = volume;
-        bgmSource.volume = volume;
+        _originalBgVolume = volume;
+        ApplyVolumes();
+    }
+
+    public void SetBGMMute(bool isMute)
+    {
+        _isBGSoundMute = isMute;
+        ApplyVolumes();
     }
 
     public float GetBGMVolume()
@@ -158,11 +194,26 @@ public class AudioManager : MonoBehaviour
 
     public void SetSFXVolume(float volume)
     {
-        _sfxVolume = volume;
+        _originalSfxVolume = volume;
+        ApplyVolumes();
+    }
+
+    public void SetSFXMute(bool isMute)
+    {
+        _isSFXSoundMute = isMute;
+        ApplyVolumes();
     }
 
     public float GetSFXVolume()
     {
         return _sfxVolume;
+    }
+
+    private void ApplyVolumes()
+    {
+        _bgmVolume = (_isWholeSoundMute || _isBGSoundMute) ? 0f : _originalBgVolume * _wholeVolume;
+        _sfxVolume = (_isWholeSoundMute || _isSFXSoundMute) ? 0f : _originalSfxVolume * _wholeVolume;
+        
+        bgmSource.volume = _bgmVolume;
     }
 }
