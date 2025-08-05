@@ -88,11 +88,13 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _wholeSoundSlider.onValueChanged.AddListener(OnWholeVolumeChanged);
         _bGSoundSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
         _effectSoundSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+        
+        CloseUI();
     }
 
     public void Open()
     {
-        UIManager.Instance.OpenUI(this);
+        UIManager.Instance.OpenUIClosingEveryUI(this);
     }
 
     public void Close()
@@ -165,7 +167,7 @@ public class OptionUI : MonoBehaviour, ICloseableUI
             return;
         }
 
-        if (DefenseManager.Instance.MonsterSpawner.IsMonsterAlive)
+        if (TimeManager.Instance.IsNight)
         {
             ToastManager.Instance.ShowToast("몬스터 디펜스 중에는 세이브를 할 수 없습니다!");
             return;

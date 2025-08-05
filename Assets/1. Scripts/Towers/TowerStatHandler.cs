@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.AddressableAssets.Build.Layout;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -84,6 +81,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         AttackRange = _data.range;
         BuildRequirements = _data.buildRequirements;
         AccumulatedCosts = new Dictionary<string, int>(BuildRequirements);
+
+        _tower.ui.SetEffectSize(AttackRange);
     }
 
     /// <summary>
@@ -153,7 +152,9 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             AttackPower += upgradeData.damage;
             AttackSpeed += upgradeData.aps;
             AttackRange += upgradeData.range;
+            _tower.ui.SetEffectSize(AttackRange);
 
+            BuildType = upgradeData.buildType;
             NextupgradeID = upgradeData.nextUpgradeId;
 
             if (DebuffID != null)
@@ -172,6 +173,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
                 else
                     AccumulatedCosts[kvp.Key] = kvp.Value;
             }
+
         }
     }
 

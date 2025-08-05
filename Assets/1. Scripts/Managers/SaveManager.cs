@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,10 +27,12 @@ public class SaveManager : MonoSingleton<SaveManager>
 
     private void Start()
     {
-        if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3)
+        // 시작 화면은 로드 X
+        if (SceneManager.GetActiveScene().buildIndex == 0) return;
+
+        if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3 || GlobalState.Index == 99)
         {
-            LoadGameFromSlot(GlobalState.Index);
-            GlobalState.Index = -1;
+            LoadGameFromGlobalIndex(GlobalState.Index);
         }
     }
 
@@ -60,7 +61,6 @@ public class SaveManager : MonoSingleton<SaveManager>
         if (PlayerPrefs.HasKey(playerPrefsKey))
         {
             fileName = PlayerPrefs.GetString(playerPrefsKey);
-            Debug.Log($"저장 슬롯 {slotIndex}번 - 파일 덮어씌움 : {fileName}");
             return Path.Combine(Application.persistentDataPath, fileName);
         }
         else
@@ -68,7 +68,6 @@ public class SaveManager : MonoSingleton<SaveManager>
             fileName = $"GameData_{slotIndex}.json";
             PlayerPrefs.SetString(playerPrefsKey, fileName);
             PlayerPrefs.Save();
-            Debug.Log($"저장 슬롯 {slotIndex}번 - 새 파일 저장 : {fileName}");
             return Path.Combine(Application.persistentDataPath, fileName);
         }
     }
@@ -76,7 +75,7 @@ public class SaveManager : MonoSingleton<SaveManager>
     /// <summary>
     /// 저장 슬롯에 게임 저장
     /// </summary>
-    public void SaveGameToSlot(int slotIndex)
+    public void SaveGameToSlot(int slotIndex = 99)
     {
         UpdateSavebles();
 
@@ -100,18 +99,18 @@ public class SaveManager : MonoSingleton<SaveManager>
 
         // 해당 경로에 Json 문자열 덮어씌우기
         File.WriteAllText(path, jsonData);
-        Debug.Log($"{slotIndex}번 슬롯에 게임 저장 완료");
+        Debug.Log($"[SaveManager] {slotIndex}번 슬롯에 게임 저장 완료");
     }
 
     /// <summary>
-    /// 저장 슬롯에서 게임 로드
+    /// 글로벌 인덱스를 가져와서 실제 로드
     /// </summary>
-    public void LoadGameFromSlot(int slotIndex)
+    private void LoadGameFromGlobalIndex(int globalIndex)
     {
         UpdateSavebles();
 
         // 저장 슬롯에서 게임 데이터 가져오기
-        GameData data = GetGameDataFromSlot(slotIndex);
+        GameData data = GetGameDataFromSlot(globalIndex);
 
         // 게임 내 데이터 로드
         foreach (ISaveable saveable in saveables)
@@ -124,39 +123,29 @@ public class SaveManager : MonoSingleton<SaveManager>
         _player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
         _player.transform.position = data.playerPosition;
 
-        Debug.Log($"{slotIndex}번 슬롯에서 게임 불러오기 완료");
+        Debug.Log($"[SaveManager] {globalIndex}번 슬롯에서 게임 불러오기 완료");
     }
     
     /// <summary>
-    /// 저장 슬롯에서 게임 로드
+    /// 저장 슬롯에서 게임 로드<br/>
+    /// ※ 로딩씬을 거쳐서 로드<br/>
+    /// ※ slotIndex 공백일 경우에는 새 게임 시작
     /// </summary>
-    public void LoadGameFromSlotInStartScene(int slotIndex)
+    public void LoadGameFromSlot(int slotIndex = -1)
     {
         GlobalState.Index = slotIndex;
         LoadingSceneController.LoadScene("MainScene");
     }
 
-
-    // private void OnSceneLoad()
-    // {
-    //     UpdateSavebles();
-    //
-    //     // 저장 슬롯에서 게임 데이터 가져오기
-    //     GameData data = GetGameDataFromSlot(index);
-    //
-    //     // 게임 내 데이터 로드
-    //     foreach (ISaveable saveable in saveables)
-    //     {
-    //         saveable.LoadData(data);
-    //     }
-    //
-    //     // 플레이어 위치 로드
-    //     MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
-    //     _player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
-    //     _player.transform.position = data.playerPosition;
-    //
-    //     Debug.Log($"{index}번 슬롯에서 게임 불러오기 완료");
-    // }
+    /// <summary>
+    /// 자동 저장 슬롯에서 게임 로드<br/>
+    /// ※로딩씬을 거쳐서 로드
+    /// </summary>
+    public void LoadGameFromAutoSlot()
+    {
+        GlobalState.Index = 99;
+        LoadingSceneController.LoadScene("MainScene");
+    }
 
     /// <summary>
     /// 저장 슬롯에서 게임 데이터 로드

@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class OpeningText : MonoBehaviour
+public class NarrationText : MonoBehaviour
 {
     public TextMeshProUGUI textMesh;
     public RectTransform rect;
@@ -64,7 +64,7 @@ public class OpeningText : MonoBehaviour
         seq.Play();
     }
 
-    public void ResetOpeningText()
+    public void ResetNarrationText()
     {
         textMesh.text = string.Empty;
         textMesh.color = Color.white;

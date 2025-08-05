@@ -7,6 +7,20 @@ public class QuestManager : MonoSingleton<QuestManager>
     private int curIndex = 0;
     private bool isAllClear = false;
 
+    [Header("Arrow 관련")]
+    [SerializeField] private GuideArrow _arrow;
+    public GuideArrow Arrow => _arrow;
+    [SerializeField] private List<Transform> _targets;
+    private int curTargetIndex = 0;
+
+    private void Start()
+    {
+        if (_arrow == null) return;
+
+        // 처음에 광산 입구 표시
+        _arrow.SettingTarget(_targets[curTargetIndex]);
+    }
+
     /// <summary>
     /// 퀘스트 완료 시에 다음 퀘스트 진행
     /// </summary>
@@ -34,6 +48,16 @@ public class QuestManager : MonoSingleton<QuestManager>
             if(curQuest.Type == QUEST_TYPE.UpgradeCore)
             {
                 UpgradeManager.Instance.AddEssencePiece(300);
+            }
+
+            // 광산 이동 퀘스트는 화살표 표시
+            if(curQuest.Type == QUEST_TYPE.MoveToMine)
+            {
+                curTargetIndex++;
+                if(curTargetIndex < _targets.Count)
+                {
+                    _arrow?.SettingTarget(_targets[curTargetIndex]);
+                }
             }
         }
 

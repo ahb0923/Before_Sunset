@@ -21,12 +21,12 @@ public class TutorialSkip : MonoBehaviour
     }
 
     /// <summary>
-    /// 튜토리얼 스킵 시에 메인 게임 시작
+    /// 튜토리얼 스킵 시에 새 메인 게임 시작
     /// </summary>
     private void OnSkip()
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-        LoadingSceneController.LoadScene("MainScene");
+        SaveManager.Instance.LoadGameFromSlot();
     }
 }

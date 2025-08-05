@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class UIManager : MonoSingleton<UIManager>
 {
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
+
+    public bool isResultUIOpen = false;
     
     public AskPopUpUI AskPopUpUI { get; private set; }
     public GameTimeUI GameTimeUI { get; private set; }
@@ -24,6 +26,7 @@ public class UIManager : MonoSingleton<UIManager>
     public TutorialSkip TutorialSkipButton { get; private set; }
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
+    public SaveLoadSlot AutoSaveLoadSlot { get; private set; }
 
     protected override void Awake()
     {
@@ -46,6 +49,7 @@ public class UIManager : MonoSingleton<UIManager>
         TutorialSkipButton = Helper_Component.FindChildComponent<TutorialSkip>(transform, "TurorialSkipButton");
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
         DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
+        AutoSaveLoadSlot = Helper_Component.FindChildComponent<SaveLoadSlot>(transform, "AutoSaveSlot");
     }
 
     private void Start()
@@ -80,8 +84,27 @@ public class UIManager : MonoSingleton<UIManager>
     /// <param name="ui"></param>
     public void OpenUI(ICloseableUI ui)
     {
+        if (isResultUIOpen)
+            return;
+        
         ui.OpenUI();
         _uiStack.Push(ui);
+        
+        if (ui is ResultUI)
+            isResultUIOpen = true;
+    }
+
+    public void OpenUIClosingEveryUI(ICloseableUI ui)
+    {
+        if (isResultUIOpen)
+            return;
+        
+        CloseEveryUI();
+        ui.OpenUI();
+        _uiStack.Push(ui);
+        
+        if (ui is ResultUI)
+            isResultUIOpen = true;
     }
 
     private void CloseLastUI()

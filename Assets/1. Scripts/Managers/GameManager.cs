@@ -46,4 +46,12 @@ public class GameManager : MonoSingleton<GameManager>
     {
         IsTutorial = isTutorial;
     }
+
+    /// <summary>
+    /// 엔딩 씬으로 이동
+    /// </summary>
+    public void GoToEndScene()
+    {
+        SceneManager.LoadScene("EndingScene");
+    }
 }

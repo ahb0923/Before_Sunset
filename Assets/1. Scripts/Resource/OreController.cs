@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceStateSavable
 {
@@ -104,7 +103,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private void DropItem()
     {
-        int dropId = _data.dropMineralId;
+        int dropId = _data.dropItemId;
 
         // 기본 드랍
         SpawnDrop(dropId, Vector3.zero);

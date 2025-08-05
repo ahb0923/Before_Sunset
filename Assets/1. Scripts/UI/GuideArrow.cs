@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class GuideArrow : MonoBehaviour
@@ -8,8 +7,9 @@ public class GuideArrow : MonoBehaviour
     [SerializeField] private Animator _anim;
     [SerializeField] private Transform _currentGoal;
 
-    private const float HIDE_DISTANCE = 3f; // 목표와의 거리
-    private bool _isArrowVisible = true;
+    // 목표와의 거리
+    private const float HIDE_DISTANCE = 3f; 
+    private bool _isArrowVisible = false;
 
     private void Update()
     {
@@ -20,16 +20,15 @@ public class GuideArrow : MonoBehaviour
         }
 
         float distance = Vector3.Distance(_currentGoal.position, transform.position);
-        Debug.Log(distance);
 
-        if (distance <= HIDE_DISTANCE)
-        {
-            SetArrowVisible(false);
-        }
-        else
+        if (distance >= HIDE_DISTANCE)
         {
             SetArrowVisible(true);
             RotationArrow();
+        }
+        else
+        {
+            SetArrowVisible(false);
         }
     }
 
@@ -50,7 +49,7 @@ public class GuideArrow : MonoBehaviour
     /// <summary>화살표 켜기/끄기</summary>
     public void SetArrowVisible(bool visible)
     {
-        if (_isArrowVisible == visible) return; // 상태 변화 없으면 패스
+        if (_isArrowVisible == visible) return;
         _isArrowVisible = visible;
 
         if (_anim != null)
