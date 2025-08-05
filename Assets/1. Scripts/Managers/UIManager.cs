@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class UIManager : MonoSingleton<UIManager>
 {
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
+
+    public bool isResultUIOpen = false;
     
     public AskPopUpUI AskPopUpUI { get; private set; }
     public GameTimeUI GameTimeUI { get; private set; }
@@ -80,8 +82,27 @@ public class UIManager : MonoSingleton<UIManager>
     /// <param name="ui"></param>
     public void OpenUI(ICloseableUI ui)
     {
+        if (isResultUIOpen)
+            return;
+        
         ui.OpenUI();
         _uiStack.Push(ui);
+        
+        if (ui is ResultUI)
+            isResultUIOpen = true;
+    }
+
+    public void OpenUIClosingEveryUI(ICloseableUI ui)
+    {
+        if (isResultUIOpen)
+            return;
+        
+        CloseEveryUI();
+        ui.OpenUI();
+        _uiStack.Push(ui);
+        
+        if (ui is ResultUI)
+            isResultUIOpen = true;
     }
 
     private void CloseLastUI()

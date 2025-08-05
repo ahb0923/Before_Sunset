@@ -49,7 +49,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         if (IsStageClear)
         {
             _isSpawnOver = false;
-            UIManager.Instance.ResultUI.OpenClear(Day);
+            UIManager.Instance.ResultUI.Open(Day, true);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
     }

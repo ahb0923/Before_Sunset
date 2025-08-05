@@ -62,18 +62,11 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     public void OpenDismantleUI(BaseTower tower)
     {
         if (!this.gameObject.activeSelf)
-        {
-            UIManager.Instance.OpenUI(this);
-            InitSlots(tower);
-            SetSlot(tower);
-            SetDismantleUI(tower);
-        }
-        else
-        {
-            InitSlots(tower);
-            SetSlot(tower);
-            SetDismantleUI(tower);
-        }
+            UIManager.Instance.OpenUIClosingEveryUI(this);
+        
+        InitSlots(tower);
+        SetSlot(tower);
+        SetDismantleUI(tower);
     }
 
     public void Open()
