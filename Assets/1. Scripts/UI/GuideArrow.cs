@@ -20,9 +20,8 @@ public class GuideArrow : MonoBehaviour
         }
 
         float distance = Vector3.Distance(_currentGoal.position, transform.position);
-        Debug.Log(distance);
 
-        if (distance <= HIDE_DISTANCE)
+        if (distance >= HIDE_DISTANCE)
         {
             SetArrowVisible(false);
         }
@@ -55,7 +54,7 @@ public class GuideArrow : MonoBehaviour
 
         if (_anim != null)
         {
-            _anim.SetBool("IsHide", !visible);
+            _anim.SetBool("IsHide", visible);
         }
     }
 }
