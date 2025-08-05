@@ -33,6 +33,11 @@ public class AskPopUpUI : MonoBehaviour, ICloseableUI
         _askRect = GetComponent<RectTransform>();
     }
 
+    private void Start()
+    {
+        CloseUI();
+    }
+
     private void OnClickYes()
     {
         _onYesAction?.Invoke();

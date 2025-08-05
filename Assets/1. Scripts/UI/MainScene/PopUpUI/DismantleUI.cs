@@ -72,7 +72,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _selectedSmelter = null;
         
         if (!this.gameObject.activeSelf)
-            UIManager.Instance.OpenUI(this);
+            UIManager.Instance.OpenUIClosingEveryUI(this);
 
         InitSlots(tower);
         SetSlot(tower);
@@ -84,7 +84,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _selectedTower = null;
 
         if (!this.gameObject.activeSelf)
-            UIManager.Instance.OpenUI(this);
+            UIManager.Instance.OpenUIClosingEveryUI(this);
 
         InitSlots(Smelter);
         SetSlot(Smelter);
@@ -131,6 +131,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             slotComponent.InitIndex(_slots.Count - 1);
         }
     }
+    
     private void InitSlots(Smelter smelter)
     {
         _selectedSmelter = smelter;
@@ -173,6 +174,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             _slots[i].ClearSlot();
         }
     }
+    
     private void SetSlot(Smelter smelter)
     {
         var costs = _selectedSmelter.smelterData.buildRequirements.ToList();

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ResultUI : MonoBehaviour
+public class ResultUI : MonoBehaviour, ICloseableUI
 {
     [Header("ClearResult")]
     [SerializeField] private RectTransform _clearResultRect;
@@ -25,6 +25,7 @@ public class ResultUI : MonoBehaviour
     
     private RectTransform _rect;
     public bool IsOpen { get; private set; }
+    private bool _isClear;
     public Dictionary<int, bool> StageRewarded { get; private set; } = new Dictionary<int, bool>();
     
     private const string BEST_RECORD_TEXT = "BestRecordText";
@@ -75,6 +76,10 @@ public class ResultUI : MonoBehaviour
         }
         
         InitSlots();
+        
+        _clearResultRect.CloseAndRestore();
+        _failResultRect.CloseAndRestore();
+        _rect.CloseAndRestore();
     }
 
     private void InitSlots(int stage = 1)
@@ -92,18 +97,56 @@ public class ResultUI : MonoBehaviour
             _slots.Add(slot.GetComponent<RewardSlot>());
         }
     }
-
-    public void OpenClear(int stage)
+    
+    public void Open(int stage, bool isClear)
     {
-        TimeManager.Instance.PauseGame(true);
-
         IsOpen = true;
-        InitSlots(stage);
-        RefreshSlots(stage);
-        RefreshShard(stage);
-        RefreshClear();
+        _isClear = isClear;
+        if (isClear)
+        {
+            TimeManager.Instance.PauseGame(true);
+
+            InitSlots(stage);
+            RefreshSlots(stage);
+            RefreshShard(stage);
+            RefreshClear();
+        }
+        else
+        {
+            RefreshFail();
+        }
+        UIManager.Instance.OpenUIClosingEveryUI(this);
+    }
+
+    public void Open()
+    {
+        
+    }
+
+    public void Close()
+    {
+        
+    }
+
+    public void OpenUI()
+    {
         _rect.OpenAtCenter();
-        _clearResultRect.OpenAtCenter();
+        if (_isClear)
+            _clearResultRect.OpenAtCenter();
+        else
+            _failResultRect.OpenAtCenter();
+    }
+
+    public void CloseUI()
+    {
+        UIManager.Instance.isResultUIOpen = false;
+        
+        if (_isClear)
+            _clearResultRect.CloseAndRestore();
+        else
+            _failResultRect.CloseAndRestore();
+        
+        _rect.CloseAndRestore();
     }
 
     private void CloseClear()
@@ -121,11 +164,10 @@ public class ResultUI : MonoBehaviour
         }
         StageRewarded[TimeManager.Instance.Day] = true;
         
-        _clearResultRect.CloseAndRestore();
-        _rect.CloseAndRestore();
-        
         TimeManager.Instance.PauseGame(false);
         TimeManager.Instance.NextDay();
+        
+        UIManager.Instance.CloseUI(this);
     }
 
     public void OpenFail()
@@ -141,8 +183,7 @@ public class ResultUI : MonoBehaviour
     private void CloseOnLoad()
     {
         IsOpen = false;
-        _failResultRect.CloseAndRestore();
-        _rect.CloseAndRestore();
+        UIManager.Instance.CloseUI(this);
         TimeManager.Instance.PauseGame(false);
 
         if(TimeManager.Instance.Day != 1)
@@ -159,8 +200,7 @@ public class ResultUI : MonoBehaviour
     private void CloseOnExit()
     {
         IsOpen = false;
-        _failResultRect.CloseAndRestore();
-        _rect.CloseAndRestore();
+        UIManager.Instance.CloseUI(this);
         TimeManager.Instance.PauseGame(false);
         SceneManager.LoadScene("StartScene");
     }
