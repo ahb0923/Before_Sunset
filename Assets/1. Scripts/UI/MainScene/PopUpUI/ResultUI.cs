@@ -84,7 +84,7 @@ public class ResultUI : MonoBehaviour, ICloseableUI
 
     private void InitSlots(int stage = 1)
     {
-        var count = DataManager.Instance.ClearRewardData.GetAllItems()[stage-1].jewelReward.Count;
+        var count = DataManager.Instance.ClearRewardData.GetAllItems()[stage].jewelReward.Count;
 
         if (count <= _slots.Count)
             return;
