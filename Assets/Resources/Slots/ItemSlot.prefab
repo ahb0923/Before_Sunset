@@ -209,6 +209,7 @@ MonoBehaviour:
   _highlight: {fileID: 4686439691879044362}
   _itemAmountText: {fileID: 5107309572671174926}
   _scaleAmount: 1.5
+  _scaleDuration: 0.3
 --- !u!222 &2148054424183753749
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -230,14 +231,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2830189, g: 0.1999206, b: 0.1241545, a: 1}
+  m_Color: {r: 0.29803923, g: 0.17254902, b: 0.058823533, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1542910829, guid: ff224063d1f76f64f9e2e82947616ced, type: 3}
+  m_Sprite: {fileID: 1011127721, guid: 810bf2a6710a16b4b854c7e382c427ca, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
