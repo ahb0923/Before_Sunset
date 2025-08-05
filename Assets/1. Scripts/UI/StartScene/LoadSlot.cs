@@ -40,7 +40,7 @@ public class LoadSlot : MonoBehaviour
     private void Load()
     {
         if (SaveManager.Instance.DoesSaveSlotExist(_slotIndex))
-            SaveManager.Instance.LoadGameFromSlotInStartScene(_slotIndex);
+            SaveManager.Instance.LoadGameFromSlot(_slotIndex);
         
         else
             Debug.LogWarning($"{_slotIndex}번 슬롯에는 저장된 데이터가 없습니다!");
