@@ -216,7 +216,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         var id = statHandler.ID;
         var towerData = DataManager.Instance.TowerData.GetById(id);
-        var req = towerData.buildRequirements;
+        var req = statHandler.AccumulatedCosts;
 
         float hpRatio = statHandler.CurrHp / statHandler.MaxHp;
         float refundRatio = 0f;
