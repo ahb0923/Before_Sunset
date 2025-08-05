@@ -30,7 +30,6 @@ public class BuildManager : MonoSingleton<BuildManager>
 
     private readonly List<Vector3Int> _highlightedTiles = new();
 
-    private float _lastRadius = -1f;
 
     private void Start()
     {

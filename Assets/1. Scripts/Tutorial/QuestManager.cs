@@ -9,6 +9,7 @@ public class QuestManager : MonoSingleton<QuestManager>
 
     [Header("Arrow 관련")]
     [SerializeField] private GuideArrow _arrow;
+    public GuideArrow Arrow => _arrow;
     [SerializeField] private List<Transform> _targets;
     private int curTargetIndex = 0;
 
@@ -57,10 +58,6 @@ public class QuestManager : MonoSingleton<QuestManager>
                 {
                     _arrow?.SettingTarget(_targets[curTargetIndex]);
                 }
-            }
-            else
-            {
-                _arrow?.SettingTarget(null);
             }
         }
 
