@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SpawnManager : MonoBehaviour, ISaveable
+public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 {
     private OreSpawner oreSpawner;
     private JewelSpawner jewelSpawner;
@@ -15,7 +15,7 @@ public class SpawnManager : MonoBehaviour, ISaveable
     private Vector3 currentMapPosition = Vector3.zero;
     private int currentMapIndex = -1;
 
-    private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<GameObject>> _mapResources = new Dictionary<int, List<GameObject>>();
     private Dictionary<int, List<ResourceState>> _mapResourceStates = new();
 
     private void Start()
@@ -66,7 +66,7 @@ public class SpawnManager : MonoBehaviour, ISaveable
             _mapResourceStates[currentMapIndex] = saved;
 
             // 2) 이전 맵 자원들 풀에 반환
-            if (mapResources.TryGetValue(currentMapIndex, out var oldResources))
+            if (_mapResources.TryGetValue(currentMapIndex, out var oldResources))
             {
                 foreach (var obj in oldResources)
                 {
@@ -106,7 +106,7 @@ public class SpawnManager : MonoBehaviour, ISaveable
             newResources.AddRange(oreSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id < 1000).ToList()));
             newResources.AddRange(jewelSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id >= 1000).ToList()));
 
-            mapResources[currentMapIndex] = newResources;
+            _mapResources[currentMapIndex] = newResources;
         }
         else
         {
@@ -139,7 +139,7 @@ public class SpawnManager : MonoBehaviour, ISaveable
             spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.GetParentTransform()));
         }
 
-        mapResources[currentMapIndex] = spawnedObjects;
+        _mapResources[currentMapIndex] = spawnedObjects;
     }
 
     private List<GameObject> GetChildrenGameObjects(Transform parent)
@@ -155,14 +155,17 @@ public class SpawnManager : MonoBehaviour, ISaveable
     public void OnStageChanged()
     {
         ClearAll();
-        mapResources.Clear();
+        _mapResources.Clear();
+        _mapResourceStates.Clear();
+
+        SetMapPositionAndArea(Vector3.zero, Vector2.zero, Vector2.zero);
     }
 
     private void ClearAll()
     {
         ClearChildren(oreSpawner?.GetParentTransform());
         ClearChildren(jewelSpawner?.GetParentTransform());
-        mapResources.Clear();
+        _mapResources.Clear();
     }
 
     private void ClearChildren(Transform parent)
@@ -175,7 +178,7 @@ public class SpawnManager : MonoBehaviour, ISaveable
 
     public void SetMapResourcesActive(int mapIndex, bool active)
     {
-        if (mapResources.TryGetValue(mapIndex, out var resources))
+        if (_mapResources.TryGetValue(mapIndex, out var resources))
         {
             foreach (var obj in resources)
                 obj.SetActive(active);
