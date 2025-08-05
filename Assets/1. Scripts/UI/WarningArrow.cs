@@ -33,22 +33,21 @@ public class WarningArrow : MonoBehaviour
     /// 특정방향 워닝 사인 On
     /// </summary>
     /// <param name="dir">나오는 방향</param>
-    /// <param name="trigger"></param>
-    public void SetWarning(WARNING_DIRECTION dir, bool trigger)
+    public void OnWarning(WARNING_DIRECTION dir)
     {
         switch (dir)
         {
             case WARNING_DIRECTION.Up:
-                UpSide.gameObject.SetActive(trigger);
+                UpSide.gameObject.SetActive(true);
                 break;
             case WARNING_DIRECTION.Down:
-                DownSide.gameObject.SetActive(trigger);
+                DownSide.gameObject.SetActive(true);
                 break;
             case WARNING_DIRECTION.Left:
-                LeftSide.gameObject.SetActive(trigger);
+                LeftSide.gameObject.SetActive(true);
                 break;
             case WARNING_DIRECTION.Right:
-                RightSide.gameObject.SetActive(trigger);
+                RightSide.gameObject.SetActive(true);
                 break;
         }
     }
