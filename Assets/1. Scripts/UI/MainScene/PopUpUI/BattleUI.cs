@@ -95,6 +95,11 @@ public class BattleUI : MonoBehaviour
         StartDotRoutine();
         yield return new WaitUntil(() => _returnRoutine == null);
         CloseReturn();
+        if (!DefenseManager.Instance.MainBasePlayer.IsInBase)
+        {
+            DefenseManager.Instance.MainBasePlayer.InputHandler.StartRecall();
+
+        }
     }
     
     private IEnumerator C_DotRoutine()
