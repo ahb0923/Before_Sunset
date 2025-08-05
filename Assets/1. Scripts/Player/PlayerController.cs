@@ -60,10 +60,6 @@ public class PlayerController : MonoBehaviour
     {
         if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing) return;
 
-        _wasPointerOverUIOnSwingStart = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
-
-        if (_wasPointerOverUIOnSwingStart) return;
-
         _isSwingButtonHeld = true;
 
         if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed)
@@ -252,6 +248,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private IEnumerator C_Swing()
     {
+        yield return new WaitForEndOfFrame();
+
         // UI 클릭 체크
         if (EventSystem.current.IsPointerOverGameObject())
         {
