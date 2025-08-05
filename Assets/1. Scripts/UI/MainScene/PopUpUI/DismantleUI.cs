@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -48,6 +49,11 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _cancelButton.onClick.AddListener(Close);
     }
 
+    private void Start()
+    {
+        CloseUI();
+    }
+
     private void Dismantle()
     {
         if (_selectedSmelter == null)
@@ -64,7 +70,10 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     public void OpenDismantleUI(BaseTower tower)
     {
         _selectedSmelter = null;
-        UIManager.Instance.OpenUI(this);
+        
+        if (!this.gameObject.activeSelf)
+            UIManager.Instance.OpenUI(this);
+
         InitSlots(tower);
         SetSlot(tower);
         SetDismantleUI(tower);
@@ -73,7 +82,10 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     public void OpenDismantleUI(Smelter Smelter)
     {
         _selectedTower = null;
-        UIManager.Instance.OpenUI(this);
+
+        if (!this.gameObject.activeSelf)
+            UIManager.Instance.OpenUI(this);
+
         InitSlots(Smelter);
         SetSlot(Smelter);
         SetDismantleUI(Smelter);
