@@ -57,6 +57,11 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
         _cancelButton.onClick.AddListener(Close);
     }
 
+    private void Start()
+    {
+        CloseUI();
+    }
+
     private void Upgrade()
     {
         _selectedTower.statHandler.UpgradeTowerStat();
@@ -67,10 +72,19 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
     public void OpenUpgradeUI(BaseTower tower)
     {
-        UIManager.Instance.OpenUI(this);
-        InitSlots(tower);
-        SetSlot(tower);
-        SetUpgradeUI(tower);
+        if (!this.gameObject.activeInHierarchy)
+        {
+            UIManager.Instance.OpenUI(this);
+            InitSlots(tower);
+            SetSlot(tower);
+            SetUpgradeUI(tower);
+        }
+        else
+        {
+            InitSlots(tower);
+            SetSlot(tower);
+            SetUpgradeUI(tower);
+        }
     }
 
     public void Open()
@@ -117,7 +131,7 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
                     var slot = Instantiate(_slotPrefab, _slotArea.transform);
                     var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
                     _slots.Add(slotComponent);
-                    slotComponent.InitIndex(i);
+                    slotComponent.InitIndex(_slots.Count - 1);
                 }
             }
         }
