@@ -216,7 +216,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         var id = statHandler.ID;
         var towerData = DataManager.Instance.TowerData.GetById(id);
-        var req = towerData.buildRequirements;
+        var req = statHandler.AccumulatedCosts;
 
         float hpRatio = statHandler.CurrHp / statHandler.MaxHp;
         float refundRatio = 0f;
@@ -230,8 +230,12 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         QuestManager.Instance.AddQuestAmount(QUEST_TYPE.DestroyBuilding);
 
         // 실제 파괴 처리
-        DefenseManager.Instance.RemoveObstacle(transform);
-        PoolManager.Instance.ReturnToPool(id, gameObject);
+        statHandler.OnDamaged(new Damaged
+        {
+            Value = 99999,
+            Attacker = gameObject,
+            Victim = gameObject
+        });
     }
     /// <summary>
     /// 환급 비율 계산 메서드
