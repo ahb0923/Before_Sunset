@@ -49,7 +49,13 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         if (IsStageClear)
         {
             _isSpawnOver = false;
-            UIManager.Instance.ResultUI.OpenClear(Day);
+            if(Day == MaxStage)
+            {
+                GameManager.Instance.GoToEndScene();
+                return;
+            }
+
+            UIManager.Instance.ResultUI.OpenClear(Day - 1);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
     }
