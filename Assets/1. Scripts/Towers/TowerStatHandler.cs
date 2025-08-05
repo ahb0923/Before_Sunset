@@ -157,6 +157,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             AttackRange += upgradeData.range;
             _tower.ui.SetEffectSize(AttackRange);
 
+            BuildType = upgradeData.buildType;
             NextupgradeID = upgradeData.nextUpgradeId;
 
             if (DebuffID != null)

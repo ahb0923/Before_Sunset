@@ -194,8 +194,10 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         {
             if (constructed.TryGetComponent<TowerStatHandler>(out var tower))
             {
-                // 일단, 업그레이드 관련 정보가 없어서 임시로 Normal 사용
-                TowerSaveData towerData = new TowerSaveData(tower.ID, tower.transform.position, tower.BuildType, (int)tower.CurrHp);
+                // 업그레이드는 풀에 없어서, 일단 ID를 1 빼주는 것으로 타협
+                int towerId = tower.BuildType == TOWER_BUILD_TYPE.Base ? tower.ID : tower.ID - 1;
+                TowerSaveData towerData = new TowerSaveData(towerId, tower.transform.position, tower.BuildType, (int)tower.CurrHp);
+
                 data.constructedTowers.Add(towerData);
             }
             else if(constructed.TryGetComponent<Smelter>(out var smelter))

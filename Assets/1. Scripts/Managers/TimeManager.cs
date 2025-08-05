@@ -5,7 +5,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 5;
     private int _realSecDayLength => _realMinDayLength * 60;
-    private int _maxStage;
+    public int MaxStage { get; private set; }
 
     private float _dailyTimer;
     public bool IsNight => _dailyTimer >= _realSecDayLength;
@@ -20,7 +20,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     private void Start()
     {
-        _maxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
+        MaxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
 
         // 새 게임이면, 초기화 진행
         if (GlobalState.Index == -1)
@@ -77,13 +77,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         MapManager.Instance.ResetAllMaps();
         SpawnManager.Instance.OnStageChanged();
 
-        if (Day != _maxStage)
+        if (Day != MaxStage)
         {
             Day++;
-        }
-        else
-        {
-            // 게임 승리
         }
 
         UIManager.Instance.AutoSaveLoadSlot.Save();
