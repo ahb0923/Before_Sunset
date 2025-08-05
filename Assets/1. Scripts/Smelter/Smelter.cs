@@ -237,13 +237,13 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
    
         if (InputItem != null)
         {
-            int inputDropAmount = damaged.Attacker != gameObject ? InputItem.stack : InputItem.stack /= 2;
+            //int inputDropAmount = damaged.Attacker != gameObject ? InputItem.stack : InputItem.stack /= 2;
             ItemDropManager.Instance.DropItem(InputItem.Data.id, InputItem.stack, transform);
         }
 
         if (OutputItem != null)
         {
-            int outputDropAmount = damaged.Attacker != gameObject ? OutputItem.stack : OutputItem.stack /= 2;
+            //int outputDropAmount = damaged.Attacker != gameObject ? OutputItem.stack : OutputItem.stack /= 2;
             ItemDropManager.Instance.DropItem(OutputItem.Data.id, OutputItem.stack, transform);
         }
 
