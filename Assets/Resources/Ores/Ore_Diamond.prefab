@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7169157676754105709}
   - component: {fileID: 1553269638665619496}
-  - component: {fileID: -727991723801969071}
-  - component: {fileID: 2151111296290393198}
+  - component: {fileID: 5594350411403384768}
+  - component: {fileID: -8794689401615722462}
   m_Layer: 20
-  m_Name: Ore_Stone
+  m_Name: Ore_Diamond
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.3, y: 1.3, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ec291a8b4bea2b43883542201ac549a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 0
---- !u!58 &-727991723801969071
+  _id: 1
+--- !u!58 &5594350411403384768
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -79,10 +79,10 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.012643337, y: 0}
+  m_Offset: {x: 0.0126434965, y: 0}
   serializedVersion: 2
-  m_Radius: 0.3019198
---- !u!212 &2151111296290393198
+  m_Radius: 0.29349136
+--- !u!212 &-8794689401615722462
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -123,12 +123,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: 21300000, guid: 728c7dc849029d0439ed26ce17ec6785, type: 2}
+  m_Sprite: {fileID: 21300000, guid: f6c8dea0f902fcf4fb4501ac600fde11, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.6666667, y: 0.6666667}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

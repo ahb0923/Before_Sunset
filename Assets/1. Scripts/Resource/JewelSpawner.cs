@@ -7,6 +7,5 @@ public class JewelSpawner : ResourceSpawner<JewelDatabase>
     private void Awake()
     {
         GetId = data => data.id;
-        GetProbability = data => data.spawnProbability;
     }
 }
