@@ -19,6 +19,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     
     private RectTransform _rect;
     private BaseTower _selectedTower;
+    private Smelter _selectedSmelter;
     
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string BUILT_TIME_TEXT = "BuiltTimeText";
@@ -49,16 +50,33 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     private void Dismantle()
     {
-        _selectedTower.DestroyTower();
-        Close();
+        if (_selectedSmelter == null)
+        {
+            _selectedTower.DestroyTower();
+        }
+        else
+        {
+            _selectedSmelter.DestroySmelter();
+        }
+            Close();
     }
 
     public void OpenDismantleUI(BaseTower tower)
     {
+        _selectedSmelter = null;
         UIManager.Instance.OpenUI(this);
         InitSlots(tower);
         SetSlot(tower);
         SetDismantleUI(tower);
+    }
+
+    public void OpenDismantleUI(Smelter Smelter)
+    {
+        _selectedTower = null;
+        UIManager.Instance.OpenUI(this);
+        InitSlots(Smelter);
+        SetSlot(Smelter);
+        SetDismantleUI(Smelter);
     }
 
     public void Open()
@@ -100,7 +118,26 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             slotComponent.InitIndex(_slots.Count - 1);
         }
     }
-    
+    private void InitSlots(Smelter smelter)
+    {
+        _selectedSmelter = smelter;
+
+        int neededCount = smelter.smelterData.buildRequirements.Count;
+
+        if (_slots.Count >= neededCount)
+            return;
+
+        int toAdd = neededCount - _slots.Count;
+
+        for (int i = 0; i < toAdd; i++)
+        {
+            var slot = Instantiate(_slotPrefab, _slotArea.transform);
+            var slotComponent = slot.GetComponent<BuildingMaterialSlot>();
+            _slots.Add(slotComponent);
+            slotComponent.InitIndex(_slots.Count - 1);
+        }
+    }
+
     private void SetSlot(BaseTower tower)
     {
         var costs = _selectedTower.statHandler.AccumulatedCosts.ToList();
@@ -123,9 +160,37 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             _slots[i].ClearSlot();
         }
     }
-    
+    private void SetSlot(Smelter smelter)
+    {
+        var costs = _selectedSmelter.smelterData.buildRequirements.ToList();
+        var ratio = 0.9f;
+
+        for (int i = 0; i < costs.Count; i++)
+        {
+            var dataName = costs[i].Key;
+            var dataAmount = (int)(costs[i].Value * ratio);
+
+            if (i < _slots.Count)
+            {
+                _slots[i].ClearSlot();
+                _slots[i].SetSlotDismantle(dataName, dataAmount);
+            }
+        }
+
+        for (int i = costs.Count; i < _slots.Count; i++)
+        {
+            _slots[i].ClearSlot();
+        }
+    }
+
+
     public void SetDismantleUI(BaseTower tower)
     {
         _targetNameText.text = tower.statHandler.TowerName;
+    }
+
+    public void SetDismantleUI(Smelter smelter)
+    {
+        _targetNameText.text = smelter.smelterData.smelterName;
     }
 }
