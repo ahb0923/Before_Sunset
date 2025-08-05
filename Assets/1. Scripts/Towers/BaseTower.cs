@@ -85,6 +85,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         attackSensor.Init(this);
         InitAttackStrategy();
         buildInfo.Init(towerId, buildSize);
+        ui.ToggleAttackArea();
     }
 
     public void InitAttackStrategy()
@@ -152,6 +153,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     /// </summary>
     public void OnReturnToPool()
     {
+        ui.ToggleAttackArea();
         ai.SetState(TOWER_STATE.None, true);
         ui.icon.color = Color.white;
         gameObject.SetActive(false);
@@ -166,7 +168,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
             return;
         }
-
+        ui.ToggleAttackArea();
         AudioManager.Instance.PlaySFX("UpgradeTower");
         UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
     }
@@ -228,6 +230,8 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         
         // 퀘스트 매니지먼트
         QuestManager.Instance.AddQuestAmount(QUEST_TYPE.DestroyBuilding);
+
+        ui.ToggleAttackArea();
 
         // 실제 파괴 처리
         statHandler.OnDamaged(new Damaged

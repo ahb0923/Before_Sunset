@@ -84,6 +84,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         AttackRange = _data.range;
         BuildRequirements = _data.buildRequirements;
         AccumulatedCosts = new Dictionary<string, int>(BuildRequirements);
+
+        _tower.ui.SetEffectSize(AttackRange);
     }
 
     /// <summary>
@@ -153,6 +155,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             AttackPower += upgradeData.damage;
             AttackSpeed += upgradeData.aps;
             AttackRange += upgradeData.range;
+            _tower.ui.SetEffectSize(AttackRange);
 
             NextupgradeID = upgradeData.nextUpgradeId;
 
@@ -172,6 +175,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
                 else
                     AccumulatedCosts[kvp.Key] = kvp.Value;
             }
+
         }
     }
 
