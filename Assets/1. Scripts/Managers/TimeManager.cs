@@ -103,6 +103,18 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     public void PauseGame(bool doPause)
     {
         Time.timeScale = doPause ? 0f : 1f;
+
+        // 오디오 멈추기
+        if (doPause)
+        {
+            AudioManager.Instance.PauseAllSound();
+
+        }
+        else
+        {
+            AudioManager.Instance.ResumeAllSound();
+        }
+
         Debug.Log($"게임 일시 정지 : {doPause}");
     }
 

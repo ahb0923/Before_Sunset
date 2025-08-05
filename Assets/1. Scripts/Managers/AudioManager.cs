@@ -195,4 +195,32 @@ public class AudioManager : MonoBehaviour
         
         bgmSource.volume = _bgmVolume;
     }
+
+    public void PauseAllSound()
+    {
+        // BGM 일시정지
+        if (bgmSource.isPlaying)
+            bgmSource.Pause();
+
+        // SFX 일시정지
+        foreach (var source in _sfxPool)
+        {
+            if (source.isPlaying)
+                source.Pause();
+        }
+    }
+
+    public void ResumeAllSound()
+    {
+        // BGM 재생
+        if (bgmSource.clip != null && !bgmSource.isPlaying)
+            bgmSource.UnPause();
+
+        // SFX 재생
+        foreach (var source in _sfxPool)
+        {
+            if (source.clip != null && !source.isPlaying)
+                source.UnPause();
+        }
+    }
 }
