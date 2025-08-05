@@ -9,7 +9,7 @@ public class GuideArrow : MonoBehaviour
     [SerializeField] private Transform _currentGoal;
 
     private const float HIDE_DISTANCE = 3f; // 목표와의 거리
-    private bool _isArrowVisible = true;
+    private bool _isArrowVisible = false;
 
     private void Update()
     {
@@ -23,12 +23,12 @@ public class GuideArrow : MonoBehaviour
 
         if (distance >= HIDE_DISTANCE)
         {
-            SetArrowVisible(false);
+            SetArrowVisible(true);
+            RotationArrow();
         }
         else
         {
-            SetArrowVisible(true);
-            RotationArrow();
+            SetArrowVisible(false);
         }
     }
 
@@ -54,7 +54,7 @@ public class GuideArrow : MonoBehaviour
 
         if (_anim != null)
         {
-            _anim.SetBool("IsHide", visible);
+            _anim.SetBool("IsHide", !visible); // 🔹 visible 반대로 전달
         }
     }
 }
