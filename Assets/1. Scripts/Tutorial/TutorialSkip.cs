@@ -27,7 +27,7 @@ public class TutorialSkip : MonoBehaviour
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-        GlobalState.Index = 1;
+        GlobalState.Index = -1;
         LoadingSceneController.LoadScene("MainScene");
     }
 }

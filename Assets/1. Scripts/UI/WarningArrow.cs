@@ -5,9 +5,9 @@ using UnityEngine;
 public enum WARNING_DIRECTION
 {
     Up,
+    Right,
     Down, 
     Left, 
-    Right
 }
 public class WarningArrow : MonoBehaviour
 {
