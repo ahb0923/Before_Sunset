@@ -58,7 +58,7 @@ public class JewelController : MonoBehaviour, IPoolable, IInteractable, IResourc
             _collider.isTrigger = true;
         }
 
-        transform.SetParent(MapManager.Instance.ItemParent);
+        transform.SetParent(ItemDropManager.Instance.transform);
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)

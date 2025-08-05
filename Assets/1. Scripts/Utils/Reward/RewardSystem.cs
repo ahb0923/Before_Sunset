@@ -7,12 +7,12 @@ public class RewardSystem : PlainSingleton<RewardSystem>
     /// <summary>
     /// 몬스터 ID에 따른 모든 보상 생성
     /// </summary>
-    public void GenerateRewards(int monsterId, Vector3 monsterPos, Transform parent)
+    public void GenerateRewards(int monsterId, Transform monster)
     {
         var rewards = DataManager.Instance.MonsterRewardData.GetMonsterRewardsByMonsterId(monsterId);
         foreach(var reward in rewards)
         {
-            GetRewardItemId(reward, monsterPos, parent);
+            GetRewardItemId(reward, monster);
         }
     }
 
@@ -20,7 +20,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
     /// 확률에 의한 보상 아이템 ID 반환<br/>
     /// ※ 반환값 -1은 확률을 뚫지 못해서 해당 보상을 얻지 못하는 것을 의미
     /// </summary>
-    private void GetRewardItemId(MonsterRewardDatabase reward, Vector3 monsterPos, Transform parent)
+    private void GetRewardItemId(MonsterRewardDatabase reward, Transform monster)
     {
         if (!CanDrop(reward.dropProbability))
             return;
@@ -44,13 +44,12 @@ public class RewardSystem : PlainSingleton<RewardSystem>
                 {
                     minerals = DataManager.Instance.MineralData.GetAllItems().Where(item => item.itemType == MINERAL_TYPE.Mineral).ToList();
                 }
-                PoolManager.Instance.GetFromPool(minerals[Random.Range(0, minerals.Count)].id, monsterPos, parent);
+                ItemDropManager.Instance.DropItem(minerals[Random.Range(0, minerals.Count)].id, 1, monster);
                 break;
 
             case MONSTER_REWARD_TYPE.Jewel:
                 List<JewelDatabase> jewels = DataManager.Instance.JewelData.GetAllItems();
-                GameObject obj = PoolManager.Instance.GetFromPool(jewels[Random.Range(0, jewels.Count)].id, monsterPos, parent);
-                obj.GetComponent<JewelController>().Interact();
+                ItemDropManager.Instance.DropItem(jewels[Random.Range(0, jewels.Count)].id, 1, monster);
                 break;
 
             case MONSTER_REWARD_TYPE.Ingot:
@@ -64,7 +63,7 @@ public class RewardSystem : PlainSingleton<RewardSystem>
                 {
                     ingots = DataManager.Instance.MineralData.GetAllItems().Where(item => item.itemType == MINERAL_TYPE.Ingot).ToList();
                 }
-                PoolManager.Instance.GetFromPool(ingots[Random.Range(0, ingots.Count)].id, monsterPos, parent);
+                ItemDropManager.Instance.DropItem(ingots[Random.Range(0, ingots.Count)].id, 1, monster);
                 break;
         }
 

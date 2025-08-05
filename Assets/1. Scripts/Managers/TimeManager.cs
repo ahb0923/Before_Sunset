@@ -21,8 +21,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private void Start()
     {
         _maxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
-        // 일단 start에서 초기화 → 나중에 게임 매니저에서 관리
-        // 이 if문은 스타트씬에서 저장된 데이터를 로드했을때 호출이 되지않도록 만들어둔것입니다.
+
+        // 새 게임이면, 초기화 진행
         if (GlobalState.Index == -1)
             InitGameTime();
     }

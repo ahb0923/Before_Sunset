@@ -29,7 +29,6 @@ public class SaveManager : MonoSingleton<SaveManager>
         if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3 || GlobalState.Index == 99)
         {
             LoadGameFromGlobalIndex(GlobalState.Index);
-            GlobalState.Index = -1;
         }
     }
 

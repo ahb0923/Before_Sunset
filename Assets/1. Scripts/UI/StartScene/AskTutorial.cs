@@ -45,7 +45,10 @@ public class AskTutorial : MonoBehaviour
         {
             GameManager.Instance.SetTutorial(false);
             if (GlobalState.HasPlayedOpening)
+            {
+                GlobalState.Index = -1;
                 LoadingSceneController.LoadScene("MainScene");
+            }
             else
                 LoadingSceneController.LoadScene("OpeningScene");
         }
