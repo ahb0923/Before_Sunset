@@ -104,7 +104,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private void DropItem()
     {
-        int dropId = _data.dropMineralId;
+        int dropId = _data.dropItemId;
 
         // 기본 드랍
         SpawnDrop(dropId, Vector3.zero);
