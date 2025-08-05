@@ -76,7 +76,7 @@ public class QuestUI : MonoBehaviour
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-        LoadingSceneController.LoadScene("MainScene");
+        SaveManager.Instance.LoadGameFromSlot();
     }
 
     /// <summary>

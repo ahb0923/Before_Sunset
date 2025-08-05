@@ -130,6 +130,8 @@ public class ResultUI : MonoBehaviour
 
     public void OpenFail()
     {
+        TimeManager.Instance.PauseGame(true);
+
         IsOpen = true;
         RefreshFail();
         _rect.OpenAtCenter();
@@ -142,7 +144,16 @@ public class ResultUI : MonoBehaviour
         _failResultRect.CloseAndRestore();
         _rect.CloseAndRestore();
         TimeManager.Instance.PauseGame(false);
-        SaveManager.Instance.LoadGameFromSlot();
+
+        if(TimeManager.Instance.Day != 1)
+        {
+            SaveManager.Instance.LoadGameFromAutoSlot();
+        }
+        else 
+        {
+            // 1스테이지에서 죽으면 새 게임 시작
+            SaveManager.Instance.LoadGameFromSlot();
+        }
     }
     
     private void CloseOnExit()

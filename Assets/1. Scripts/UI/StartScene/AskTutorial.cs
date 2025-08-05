@@ -35,6 +35,7 @@ public class AskTutorial : MonoBehaviour
     {
         Close();
         GameManager.Instance.SetTutorial(true);
+        GlobalState.Index = -1;
         LoadingSceneController.LoadScene("TutorialScene");
     }
 
@@ -45,10 +46,7 @@ public class AskTutorial : MonoBehaviour
         {
             GameManager.Instance.SetTutorial(false);
             if (GlobalState.HasPlayedOpening)
-            {
-                GlobalState.Index = -1;
-                LoadingSceneController.LoadScene("MainScene");
-            }
+                SaveManager.Instance.LoadGameFromSlot();
             else
                 LoadingSceneController.LoadScene("OpeningScene");
         }
