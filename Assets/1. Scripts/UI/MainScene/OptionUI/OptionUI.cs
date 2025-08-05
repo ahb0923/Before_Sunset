@@ -165,7 +165,7 @@ public class OptionUI : MonoBehaviour, ICloseableUI
             return;
         }
 
-        if (DefenseManager.Instance.MonsterSpawner.IsMonsterAlive)
+        if (TimeManager.Instance.IsNight)
         {
             ToastManager.Instance.ShowToast("몬스터 디펜스 중에는 세이브를 할 수 없습니다!");
             return;

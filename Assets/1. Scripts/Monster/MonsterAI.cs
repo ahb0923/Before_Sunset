@@ -319,13 +319,12 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         _path?.ReleaseMonsterCount(); // 현재 몬스터를 경로 상에서 제외
         _monster.NotifyDeath(); // 자신을 감지하던 모든 타워에 몬스터 사망 알림
         _monster.Detector.DetectedObstacles.Clear(); // 몬스터가 감지한 타워 초기화
-        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(_monster); // 몬스터 스포너에게 몬스터 사망 알림
-
         AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Dead"); // 사망 효과음 재생
 
         yield return C_DeadAnimation();
 
-        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform.position, MapManager.Instance.ItemParent);
+        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(_monster); // 몬스터 스포너에게 몬스터 사망 알림
+        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform);
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
     }
 

@@ -5,7 +5,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     [Header("# Time Setting")]
     [SerializeField] private int _realMinDayLength = 5;
     private int _realSecDayLength => _realMinDayLength * 60;
-    private int _maxStage;
+    public int MaxStage { get; private set; }
 
     private float _dailyTimer;
     public bool IsNight => _dailyTimer >= _realSecDayLength;
@@ -20,10 +20,10 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     private void Start()
     {
-        _maxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
-        // 일단 start에서 초기화 → 나중에 게임 매니저에서 관리
-        // 이 if문은 스타트씬에서 저장된 데이터를 로드했을때 호출이 되지않도록 만들어둔것입니다.
-        if (GlobalState.Index == 0)
+        MaxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
+
+        // 새 게임이면, 초기화 진행
+        if (GlobalState.Index == -1)
             InitGameTime();
     }
 
@@ -72,16 +72,17 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer = 0f;
         _isSpawned = false;
+        _isRecallOver = false;
 
-        if (Day != _maxStage)
+        MapManager.Instance.ResetAllMaps();
+        SpawnManager.Instance.OnStageChanged();
+
+        if (Day != MaxStage)
         {
             Day++;
         }
-        else
-        {
-            // 게임 승리
-        }
 
+        UIManager.Instance.AutoSaveLoadSlot.Save();
         UIManager.Instance.GameTimeUI.SetDayText();
     }
 
@@ -124,7 +125,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SaveData(GameData data)
     {
-        data.timeData = new TimeSaveData(Day, _dailyTimer, IsNight);
+        data.timeData = new TimeSaveData(Day, _dailyTimer);
     }
 
     /// <summary>
@@ -143,7 +144,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         BasePlayer player = FindObjectOfType<BasePlayer>();
         if (player.IsInBase)
         {
-            Debug.Log("기지에요");
             return;
         }
 

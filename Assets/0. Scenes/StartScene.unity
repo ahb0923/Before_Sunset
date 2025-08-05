@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 996907b0ee9268c4db9b3bd740aaed40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GOD_MODE: 0
+  GOD_MODE: 1
 --- !u!4 &469453546
 Transform:
   m_ObjectHideFlags: 0
@@ -423,28 +423,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26546d0216bbdb343a3d34df4c7c8717, type: 3}
---- !u!114 &1137134813 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7759202813802313040, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-  m_PrefabInstance: {fileID: 2279700696326563589}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1187081612 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 287061436153987115, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-  m_PrefabInstance: {fileID: 2279700696326563589}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1216065835
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,11 +634,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9a41055cbf8aaa44a5ed067735c9f41, type: 3}
---- !u!224 &1903244287 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4989257812271838723, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-  m_PrefabInstance: {fileID: 2279700696326563589}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2279700696326563589
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -845,18 +818,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6953125442248524842, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-      propertyPath: _askRect
-      value: 
-      objectReference: {fileID: 1903244287}
-    - target: {fileID: 6953125442248524842, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-      propertyPath: _noButton
-      value: 
-      objectReference: {fileID: 1187081612}
-    - target: {fileID: 6953125442248524842, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
-      propertyPath: _yesButton
-      value: 
-      objectReference: {fileID: 1137134813}
     - target: {fileID: 7432080455339390818, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
       propertyPath: m_Pivot.x
       value: 0

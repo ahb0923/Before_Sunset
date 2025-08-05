@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class ItemDropManager : MonoSingleton<ItemDropManager>
+public class ItemDropManager : MonoSingleton<ItemDropManager>, ISaveable
 {
     private float _duration = 1.0f;
     [SerializeField] public float offsetRange = 0.05f;
@@ -21,8 +19,9 @@ public class ItemDropManager : MonoSingleton<ItemDropManager>
         for(int i=0; i<amount; i++)
         {
             GameObject dropObject = PoolManager.Instance.GetFromPool(id, dropTransform.position, transform);
+            dropObject.GetComponent<JewelController>()?.Interact();
 
-            if (  isMove)
+            if (isMove)
             {
                 Vector3 startPosition = dropTransform.position;
                 Vector3 endPosition = startPosition + new Vector3(Random.Range(-offsetRange, offsetRange), Random.Range(-offsetRange, offsetRange), 0f);
@@ -52,5 +51,42 @@ public class ItemDropManager : MonoSingleton<ItemDropManager>
             yield return null;
         }
         obj.position = endPos;
+    }
+
+    /// <summary>
+    /// 드랍 아이템 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        foreach (var obj in transform.GetComponentsInChildren<Transform>())
+        {
+            if (obj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                DropItemSaveData item = new DropItemSaveData(poolable.GetId(), obj.position);
+                data.dropItems.Add(item);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 드랍 아이템 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        // 떨어져 있는 드랍 아이템들 비활성화
+        foreach (var obj in transform.GetComponentsInChildren<Transform>())
+        {
+            if (obj.TryGetComponent<IPoolable>(out var poolable))
+            {
+                PoolManager.Instance.ReturnToPool(poolable.GetId(), obj.gameObject);
+            }
+        }
+
+        // 로드한 드랍 아이템 활성화
+        foreach (var item in data.dropItems)
+        {
+            GameObject obj = PoolManager.Instance.GetFromPool(item.id, item.position, transform);
+            obj.GetComponent<JewelController>()?.Interact();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -203,20 +204,46 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     {
     }
 
+    [ContextMenu("부숴버리기~")]
+    public void DestroySmelter()
+    {
+        var refundReq = DataManager.Instance.SmelterData.GetById(smelterID).buildRequirements;
+        foreach (var kvp in refundReq)
+        {
+            int refundAmount = Mathf.FloorToInt(kvp.Value * 0.9f);
+            if (refundAmount > 0)
+            {
+                InventoryManager.Instance.Inventory.AddItem(
+                    DataManager.Instance.ItemData.GetIdByName(kvp.Key),
+                    refundAmount
+                );
+            }
+        }
+
+        // 실제 파괴 처리
+        OnDamaged(new Damaged
+        {
+            Value = 99999,
+            Attacker = gameObject,
+            Victim = gameObject
+        });
+    }
     public void OnDamaged(Damaged damaged)
     {
         // 1) 부서지는 애니메이션
         // 2) 여기서 제련중이던 아이템 필드에 드롭
         // 3) 있다면 제련중이던 실제 정보값들 저장 위치 초기화
         // 4) 파괴 될 경우 50% 의 아이템 손실
-
+   
         if (InputItem != null)
         {
+            //int inputDropAmount = damaged.Attacker != gameObject ? InputItem.stack : InputItem.stack /= 2;
             ItemDropManager.Instance.DropItem(InputItem.Data.id, InputItem.stack, transform);
         }
 
         if (OutputItem != null)
         {
+            //int outputDropAmount = damaged.Attacker != gameObject ? OutputItem.stack : OutputItem.stack /= 2;
             ItemDropManager.Instance.DropItem(OutputItem.Data.id, OutputItem.stack, transform);
         }
 
@@ -226,7 +253,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 
     public void Interact()
     {
-        UIManager.Instance.SmelterUI.Open(this);
+        if (BuildManager.Instance.IsOnDestroy)
+        {
+            UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+            return;
+        }
+        else
+        {
+            UIManager.Instance.SmelterUI.Open(this);
+        }
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)

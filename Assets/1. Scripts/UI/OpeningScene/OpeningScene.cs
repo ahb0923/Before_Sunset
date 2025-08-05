@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class OpeningScene : MonoBehaviour
 {
     [Header("OpeningText")]
     [SerializeField] private GameObject _textPrefab;
-    [SerializeField] private GameObject _openingTextContainer;
+    [SerializeField] private GameObject _narrationTextContainer;
     [SerializeField] private List<string> _texts = new List<string>
     {
         "어느 날, 어둠 속에서 태어난 검은 원념의 존재들이 지상을 뒤덮기 시작했다.",
@@ -38,7 +39,7 @@ public class OpeningScene : MonoBehaviour
     [SerializeField] private GameObject _fadeInGo;
     [SerializeField] private Image _fadeInImage;
     
-    private Queue<OpeningText> _activeTexts = new Queue<OpeningText>();
+    private Queue<NarrationText> _activeTexts = new Queue<NarrationText>();
     private Queue<GameObject> _textPool = new Queue<GameObject>();
 
     private Coroutine _seqRoutine;
@@ -47,15 +48,15 @@ public class OpeningScene : MonoBehaviour
     private Tween _moveTween;
 
     private const int MAX_TEXT = 4;
-    private const string TEXT_PREFAB = "UI/OpeningText";
-    private const string OPENING_TEXT_CONTAINER = "OpeningTextContainer";
+    private const string TEXT_PREFAB = "UI/NarrationText";
+    private const string OPENING_TEXT_CONTAINER = "NarrationTextContainer";
     private const string BLINK_IMAGE = "BlinkImage";
     private const string FADE_IN = "FadeIn";
     
     private void Reset()
     {
         _textPrefab = Resources.Load<GameObject>(TEXT_PREFAB);
-        _openingTextContainer = Helper_Component.FindChildGameObjectByName(this.gameObject, OPENING_TEXT_CONTAINER);
+        _narrationTextContainer = Helper_Component.FindChildGameObjectByName(this.gameObject, OPENING_TEXT_CONTAINER);
         _blinkGo = Helper_Component.FindChildGameObjectByName(this.gameObject, BLINK_IMAGE);
         _blinkRect = _blinkGo.GetComponent<RectTransform>();
         _blinkImage = _blinkGo.GetComponent<Image>();
@@ -77,7 +78,7 @@ public class OpeningScene : MonoBehaviour
     {
         for (int i = 0; i < MAX_TEXT + 1; i++)
         {
-            var text = Instantiate(_textPrefab, _openingTextContainer.transform);
+            var text = Instantiate(_textPrefab, _narrationTextContainer.transform);
             _textPool.Enqueue(text);
             text.SetActive(false);
         }
@@ -108,9 +109,9 @@ public class OpeningScene : MonoBehaviour
     private IEnumerator C_Sequence(int i)
     {
         var go = GetText();
-        var text = go.GetComponent<OpeningText>();
+        var text = go.GetComponent<NarrationText>();
         _activeTexts.Enqueue(text);
-        text.ResetOpeningText();
+        text.ResetNarrationText();
         
         text.textMesh.text = _texts[i];
         _textRoutine = StartCoroutine(text.C_DOTextMesh(_textDuration));
@@ -184,7 +185,7 @@ public class OpeningScene : MonoBehaviour
             return t;
         }
 
-        return Instantiate(_textPrefab, _openingTextContainer.transform);
+        return Instantiate(_textPrefab, _narrationTextContainer.transform);
     }
 
     private void ReturnText(GameObject text)
