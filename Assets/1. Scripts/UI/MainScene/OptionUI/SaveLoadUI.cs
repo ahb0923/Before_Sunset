@@ -25,6 +25,11 @@ public class SaveLoadUI : MonoBehaviour, ICloseableUI
         _cancelButton.onClick.AddListener(Close);
     }
 
+    private void Start()
+    {
+        CloseUI();
+    }
+
     public void Open()
     {
         UIManager.Instance.OpenUI(this);

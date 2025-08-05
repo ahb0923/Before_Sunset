@@ -88,11 +88,13 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _wholeSoundSlider.onValueChanged.AddListener(OnWholeVolumeChanged);
         _bGSoundSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
         _effectSoundSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+        
+        CloseUI();
     }
 
     public void Open()
     {
-        UIManager.Instance.OpenUI(this);
+        UIManager.Instance.OpenUIClosingEveryUI(this);
     }
 
     public void Close()

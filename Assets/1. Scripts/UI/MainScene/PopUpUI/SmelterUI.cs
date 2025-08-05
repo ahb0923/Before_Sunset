@@ -61,7 +61,7 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
         _currentSmelter = smelter;
         
         if (!this.gameObject.activeInHierarchy)
-            UIManager.Instance.OpenUI(this);
+            UIManager.Instance.OpenUIClosingEveryUI(this);
         else
         {
             SetSmelterUI();

@@ -55,7 +55,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
                 return;
             }
 
-            UIManager.Instance.ResultUI.OpenClear(Day - 1);
+            UIManager.Instance.ResultUI.Open(Day - 1, true);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
     }
