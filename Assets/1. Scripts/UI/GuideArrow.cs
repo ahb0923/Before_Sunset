@@ -8,7 +8,8 @@ public class GuideArrow : MonoBehaviour
     [SerializeField] private Animator _anim;
     [SerializeField] private Transform _currentGoal;
 
-    private const float HIDE_DISTANCE = 3f; // 목표와의 거리
+    // 목표와의 거리
+    private const float HIDE_DISTANCE = 3f; 
     private bool _isArrowVisible = false;
 
     private void Update()
@@ -49,12 +50,12 @@ public class GuideArrow : MonoBehaviour
     /// <summary>화살표 켜기/끄기</summary>
     public void SetArrowVisible(bool visible)
     {
-        if (_isArrowVisible == visible) return; // 상태 변화 없으면 패스
+        if (_isArrowVisible == visible) return;
         _isArrowVisible = visible;
 
         if (_anim != null)
         {
-            _anim.SetBool("IsHide", !visible); // 🔹 visible 반대로 전달
+            _anim.SetBool("IsHide", !visible);
         }
     }
 }
