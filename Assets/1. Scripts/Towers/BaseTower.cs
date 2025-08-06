@@ -118,104 +118,24 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
                 break;
         }
     }
-
-
-    // ============<< IPoolable >>============
-    public int GetId()
+    public int GetObejctSize()
     {
-        return towerId;
-    }
-
-    /// <summary>
-    /// 풀링에서 오브젝트 생성 시 단 1번 실행
-    /// </summary>
-    public void OnInstantiate()
-    {
-        Init();
-    }
-
-    /// <summary>
-    /// 풀링에서 가져올 때 호출
-    /// </summary>
-    public void OnGetFromPool()
-    {
-        gameObject.SetActive(true);
-        ai.ResetStateMachine();
-        ai.SetState(TOWER_STATE.Construction, true);
-        ui.ResetHpBar();
-
-        PoolManager.Instance.GetFromPool(10002, transform.position+Vector3.up);
-        RenderUtil.SetSortingOrderByY(ui.icon);
-    }
-
-    /// <summary>
-    /// 풀링으로 반환할 때 호출
-    /// </summary>
-    public void OnReturnToPool()
-    {
-        ui.OffAttackArea();
-        ai.SetState(TOWER_STATE.None, true);
-        ui.icon.color = Color.white;
-        gameObject.SetActive(false);
-    }
-    // =======================================
-
-    public void Interact()
-    {
-        // 파괴 옵션 on일 경우
-        if (BuildManager.Instance.IsOnDestroy && !UIManager.Instance.DismantleUI.isActiveAndEnabled)
+        switch (towerType)
         {
-            UIManager.Instance.DismantleUI.OpenDismantleUI(InteractManager.Instance.GetCurrentTarget());
-            Debug.Log("dd : "+InteractManager.Instance.GetCurrentTarget());
-            return;
-        }
-
-        if (!UIManager.Instance.UpgradeUI.isActiveAndEnabled)
-        {
-            ui.OnAttackArea();
-            AudioManager.Instance.PlaySFX("UpgradeTower");
-            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+            case TOWER_TYPE.CooperTower:
+            case TOWER_TYPE.IronTower:
+            case TOWER_TYPE.DiaprismTower:
+            case TOWER_TYPE.HealTower:
+            case TOWER_TYPE.MagnetTower:
+                return 1;
+            case TOWER_TYPE.TopazTower:
+            case TOWER_TYPE.RubyTower:
+            case TOWER_TYPE.AquamarineTower:
+                return 3;
+            default:
+                return -1;
         }
     }
-
-    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
-    {
-        return true;
-    }
-
-    //public void OnPointerClick(PointerEventData eventData)
-    //{
-    //    // 파괴 옵션 on일 경우
-    //    if (BuildManager.Instance.isOnDestroy)
-    //    {
-    //        UIManager.Instance.DismantleUI.OpenDismantleUI(this);
-    //        return;
-    //    }
-
-    //    // 우클릭 업그레이드 UI
-    //    if (eventData.button == PointerEventData.InputButton.Right)
-    //    {
-    //        if (BuildManager.Instance.IsPlacing) return;
-    //        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
-    //    }
-
-    //    // 좌클릭 전깃줄 연결 시도
-    //    else if (eventData.button == PointerEventData.InputButton.Left)
-    //    {
-    //        if (LineDragConnector.Instance.IsDragging) return;
-
-    //        if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
-    //        {
-    //            if (wireTower.IsConnected)
-    //                ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
-    //            else
-    //            {
-    //                if (!LineDragConnector.Instance.IsDragging)
-    //                    LineDragConnector.Instance.BeginDrag(wireTower);
-    //            }
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// 파괴 메서드
@@ -233,7 +153,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
 
         // 환급
         RefundResources(req, refundRatio);
-        
+
         // 퀘스트 매니지먼트
         QuestManager.Instance.AddQuestAmount(QUEST_TYPE.DestroyBuilding);
 
@@ -283,22 +203,111 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         }
     }
 
-    public int GetObejctSize()
+    // ============<< IPoolable >>======================================================================================
+    public int GetId()
     {
-        switch (towerType)
+        return towerId;
+    }
+
+    /// <summary>
+    /// 풀링에서 오브젝트 생성 시 단 1번 실행
+    /// </summary>
+    public void OnInstantiate()
+    {
+        Init();
+    }
+
+    /// <summary>
+    /// 풀링에서 가져올 때 호출
+    /// </summary>
+    public void OnGetFromPool()
+    {
+        gameObject.SetActive(true);
+        ai.ResetStateMachine();
+        ai.SetState(TOWER_STATE.Construction, true);
+        ui.ResetHpBar();
+
+        PoolManager.Instance.GetFromPool(10002, transform.position+Vector3.up);
+        RenderUtil.SetSortingOrderByY(ui.icon);
+    }
+
+    /// <summary>
+    /// 풀링으로 반환할 때 호출
+    /// </summary>
+    public void OnReturnToPool()
+    {
+        ui.OffAttackArea();
+        ai.SetState(TOWER_STATE.None, true);
+        ui.icon.color = Color.white;
+        gameObject.SetActive(false);
+    }
+    // =====================================================================================================================
+
+
+    // ============<< IInteractable >>======================================================================================
+    public void Interact()
+    {
+        if (UIManager.Instance.DismantleUI.isActiveAndEnabled || UIManager.Instance.TowerUpgradeUI.isActiveAndEnabled)
+            return;
+
+        // 파괴 옵션 on일 경우
+        if (BuildManager.Instance.IsOnDestroy)
         {
-            case TOWER_TYPE.CooperTower:
-            case TOWER_TYPE.IronTower:
-            case TOWER_TYPE.DiaprismTower:
-            case TOWER_TYPE.HealTower:
-            case TOWER_TYPE.MagnetTower:
-                return 1;
-            case TOWER_TYPE.TopazTower:
-            case TOWER_TYPE.RubyTower:
-            case TOWER_TYPE.AquamarineTower:
-                return 3;
-            default: 
-                return -1;
+            UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+            Debug.Log("dd : "+InteractManager.Instance.GetCurrentTarget());
+            return;
+        }
+
+        if (!UIManager.Instance.UpgradeUI.isActiveAndEnabled)
+        {
+            ui.OnAttackArea();
+            AudioManager.Instance.PlaySFX("UpgradeTower");
+            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
         }
     }
+
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
+    {
+        return true;
+    }
+    // =====================================================================================================================
+
+
+
+
+
+
+    //public void OnPointerClick(PointerEventData eventData)
+    //{
+    //    // 파괴 옵션 on일 경우
+    //    if (BuildManager.Instance.isOnDestroy)
+    //    {
+    //        UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+    //        return;
+    //    }
+
+    //    // 우클릭 업그레이드 UI
+    //    if (eventData.button == PointerEventData.InputButton.Right)
+    //    {
+    //        if (BuildManager.Instance.IsPlacing) return;
+    //        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+    //    }
+
+    //    // 좌클릭 전깃줄 연결 시도
+    //    else if (eventData.button == PointerEventData.InputButton.Left)
+    //    {
+    //        if (LineDragConnector.Instance.IsDragging) return;
+
+    //        if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
+    //        {
+    //            if (wireTower.IsConnected)
+    //                ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
+    //            else
+    //            {
+    //                if (!LineDragConnector.Instance.IsDragging)
+    //                    LineDragConnector.Instance.BeginDrag(wireTower);
+    //            }
+    //        }
+    //    }
+    //}
 }

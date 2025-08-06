@@ -44,7 +44,7 @@ public class InteractImage : MonoBehaviour
             else
                 ToastManager.Instance.ShowToast("[System] 사이즈가 잘못되었습니다!");
         }
-        else if(interactable is Core || interactable is OreController || interactable is JewelController)
+        else if(interactable is Core || interactable is OreController)
         {
             if (size == 1)
             {

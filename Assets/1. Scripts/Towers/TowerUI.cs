@@ -26,7 +26,6 @@ public class TowerUI : MonoBehaviour
     public SpriteRenderer effectArea;
     public Animator animator;
 
-
     private void Reset()
     {
         canvas = Helper_Component.GetComponentInChildren<Canvas>(gameObject, "UI");
@@ -48,6 +47,7 @@ public class TowerUI : MonoBehaviour
     {
         _tower = baseTower;
         _tower.statHandler.OnHpChanged += UpdateHpBar;
+
     }
 
     public void SetHpBarAlpha(float alpha)
@@ -59,7 +59,6 @@ public class TowerUI : MonoBehaviour
     {
         float hp = Mathf.Lerp(0, _tower.statHandler.MaxHp, progress);
         UpdateHpBar(hp, _tower.statHandler.MaxHp);
-        //icon.color = new Color(icon.color.r, icon.color.g, icon.color.b, Mathf.Lerp(0.5f, 1f, progress));
     }
 
     /// <summary>

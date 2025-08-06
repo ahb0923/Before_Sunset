@@ -16,15 +16,15 @@ public class InteractManager : MonoSingleton<InteractManager>
     [Header("Interaction Layers")]
     public LayerMask interactableLayerMask = -1;
 
+    [SerializeField ] private InteractImage aimObject;
+
     private Camera _mainCamera;
     private BoxCollider2D _playerCollider;
     private IInteractable _currentTarget;
 
 
     private Vector2 _defaultHotspot = Vector2.zero;
-
-    [SerializeField ] private InteractImage aimObject;
-    private Texture2D currCursorImage;
+    private Texture2D _currentCursor;
 
     protected override void Awake()
     {
@@ -35,10 +35,10 @@ public class InteractManager : MonoSingleton<InteractManager>
         _mainCamera = Camera.main;
 
         if(defaultCursor != null)
-            currCursorImage = defaultCursor;
+            _currentCursor = defaultCursor;
 
         // 시작 시에 기본 커서
-        SetCursor(currCursorImage, _defaultHotspot, null);
+        SetCursor(_currentCursor, _defaultHotspot, null);
     }
 
     public void SetInGame()
@@ -58,12 +58,12 @@ public class InteractManager : MonoSingleton<InteractManager>
             return;
         }
         else 
-            SetCursor(currCursorImage, _defaultHotspot, null);
+            SetCursor(_currentCursor, _defaultHotspot, null);
 
         // UI 위면 기본 커서
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            SetCursor(currCursorImage, _defaultHotspot, null);
+            SetCursor(_currentCursor, _defaultHotspot, null);
             return;
         }
 
@@ -86,15 +86,15 @@ public class InteractManager : MonoSingleton<InteractManager>
     public void SetCursorDestroyImage(bool isDestroy)
     {
         if (isDestroy) 
-            currCursorImage = dismantleCursor;
+            _currentCursor = dismantleCursor;
         else
-            currCursorImage = defaultCursor;
+            _currentCursor = defaultCursor;
     }
 
     /// <summary> 상호 작용 시 커서 세팅 </summary>
     private void HandleInteractable(IInteractable interactable)
     {
-        float range = (interactable is OreController || interactable is JewelController) ? 1.5f : 5.0f;
+        float range = (interactable is OreController) ? 1.5f : 5.0f;
 
         if (interactable.IsInteractable(DefenseManager.Instance.mainPlayer.transform.position, range, _playerCollider))
         {

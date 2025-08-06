@@ -55,33 +55,36 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if(data.dropItemType == DROPITEM_TYPE.Jewel)
             {
                 float probability = data.spawnProbability / 100f;
-                if (UnityEngine.Random.value <= probability)
+
+                if (UnityEngine.Random.value <= probability) 
                     TryPlaceSingle(data);
-            }
-            else
-            {
-                Debug.Log($"{data.itemName} / {data.dropItemType} 여긴 미네랄만 나와야함ㅇㅇ");
-                int placed = 0;
-                int attempts = 0;
-                int maxAttempts = spawnMineralCount * 10;
-
-                while (placed < spawnMineralCount && attempts < maxAttempts)
+                else
                 {
-                    attempts++;
-                    Vector3 pos = GetRandomPositionInArea();
-
-                    if (!IsValidSpawnPosition(pos)) continue;
-                    if (IsTooClose(pos)) continue;
-
-                    OreDatabase selected = GetRandomByProbability();
-                    if (selected == null) continue;
-
-                    if (TryPlace(selected, pos))
-                        placed++;
+                    Debug.Log($"『{data.itemName}』확률에 패배! 소환 실패!");
                 }
             }
         }
+
+        int placed = 0;
+        int attempts = 0;
+        int maxAttempts = spawnMineralCount * 10;
+
+        while (placed < spawnMineralCount && attempts < maxAttempts)
+        {
+            attempts++;
+            Vector3 pos = GetRandomPositionInArea();
+
+            if (!IsValidSpawnPosition(pos)) continue;
+            if (IsTooClose(pos)) continue;
+
+            OreDatabase selected = GetRandomByProbability();
+            if (selected == null || selected.dropItemType == DROPITEM_TYPE.Jewel) continue;
+
+            if (TryPlace(selected, pos))
+                placed++;
+        }
     }
+
     /// <summary>
     /// 실제 광물 소환
     /// </summary>
@@ -91,21 +94,14 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private bool TryPlace(OreDatabase data, Vector3 pos)
     {
         int id = data.id;
-        GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
-        if (obj == null)
-        {
-            Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
-            return false;
-        }
+        Debug.Log($"{data.id} / {data.prefabName}");
 
-        if (parentTransform != null)
-            obj.transform.SetParent(parentTransform, false);
+        PoolManager.Instance.GetFromPool(id, pos, parentTransform);
 
-        obj.transform.position = pos;
-        obj.GetComponent<IPoolable>()?.OnGetFromPool();
         placedPositions.Add(pos);
         return true;
     }
+
     /// <summary>
     /// Jewel 스폰시에만 사용 TryPlace 가기 전 작업
     /// </summary>
@@ -118,9 +114,23 @@ public class ResourceSpawner<TData> : MonoBehaviour
         {
             Vector3 pos = GetRandomPositionInArea();
 
-            if (!IsValidSpawnPosition(pos)) continue;
-            if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
-            if (IsTooClose(pos)) continue;
+            if (!IsValidSpawnPosition(pos))
+            {
+                Debug.Log($"{data.itemName} : IsValidSpawnPosition 에서 걸러짐.");
+                continue; 
+            }
+            
+            if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) 
+            {
+                Debug.Log($"{data.itemName} : Physics2D.OverlapCircle 에서 걸러짐.");
+                continue;
+            }
+            
+            if (IsTooClose(pos)) 
+            {
+                Debug.Log($"{data.itemName} : IsTooClose 에서 걸러짐.");
+                continue; 
+            }
 
             TryPlace(data, pos);
             break;
@@ -153,8 +163,8 @@ public class ResourceSpawner<TData> : MonoBehaviour
         if (spawnZoneCollider == null) return false;
 
         // 스폰 불가능 레이어
-        Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
-        if (obstacleCollider != null) return false;
+        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
+        //if (obstacleCollider != null) return false;
 
         return true;
     }
@@ -204,8 +214,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
             {
                 // 위치 변환 없이 저장
                 savedStates.Add(stateComp.SaveState());
-
-                stateComp.OnReturnToPool();
             }
 
             toReturn.Add(parent.GetChild(i));
@@ -253,7 +261,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
             {
                 resource.LoadState(state);
-                resource.OnGetFromPool();
             }
 
             if (parentTransform != null)
