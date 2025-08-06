@@ -185,6 +185,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5917476589338095884, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
   m_PrefabInstance: {fileID: 475490970}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &475490972 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7508487163038984533, guid: f5359659b0883634a8fec5dc3f5dcf56, type: 3}
+  m_PrefabInstance: {fileID: 475490970}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &504581164
 GameObject:
   m_ObjectHideFlags: 0
@@ -41213,7 +41218,7 @@ MonoBehaviour:
   _mapSize: {x: 35, y: 35}
   _nodeSize: 1
   _monsterPenalty: 5
-  mainPlayer: {fileID: 0}
+  mainPlayer: {fileID: 475490972}
 --- !u!1 &7902746788758981008
 GameObject:
   m_ObjectHideFlags: 0
