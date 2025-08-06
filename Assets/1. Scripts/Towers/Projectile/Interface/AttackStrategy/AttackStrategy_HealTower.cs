@@ -14,7 +14,7 @@ public class AttackStrategy_HealTower : IAttackStrategy
             yield break;
 
         tower.ui.animator.SetTrigger("IsAttack");
-        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(50f / 200f, 80f / 255f, 50f / 255f, 50f / 255f));
+        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(50f / 200f, 80f / 255f, 50f / 255f, 50f / 255f), tower.statHandler.AttackRange + 0.5f);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(tower.transform.position, radius, LayerMask.GetMask("Tower"));
 

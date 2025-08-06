@@ -84,6 +84,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 placed++;
         }
     }
+
     /// <summary>
     /// 실제 광물 소환
     /// </summary>
@@ -93,33 +94,14 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private bool TryPlace(OreDatabase data, Vector3 pos)
     {
         int id = data.id;
+        Debug.Log($"{data.id} / {data.prefabName}");
 
-        /*
-        GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
-        if (obj == null)
-        {
-            Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
-            return false;
-        }
-
-        if (parentTransform != null)
-            obj.transform.SetParent(parentTransform, false);
-        obj.transform.position = pos;
-        */
-
-        if(parentTransform != null)
-        {
-            GameObject obj = PoolManager.Instance.GetFromPool(id, pos, parentTransform);
-            if (obj == null)
-            {
-                Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
-                return false;
-            }
-        }
+        PoolManager.Instance.GetFromPool(id, pos, parentTransform);
 
         placedPositions.Add(pos);
         return true;
     }
+
     /// <summary>
     /// Jewel 스폰시에만 사용 TryPlace 가기 전 작업
     /// </summary>
@@ -132,9 +114,23 @@ public class ResourceSpawner<TData> : MonoBehaviour
         {
             Vector3 pos = GetRandomPositionInArea();
 
-            if (!IsValidSpawnPosition(pos)) continue;
-            if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) continue;
-            if (IsTooClose(pos)) continue;
+            if (!IsValidSpawnPosition(pos))
+            {
+                Debug.Log($"{data.itemName} : IsValidSpawnPosition 에서 걸러짐.");
+                continue; 
+            }
+            
+            if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) 
+            {
+                Debug.Log($"{data.itemName} : Physics2D.OverlapCircle 에서 걸러짐.");
+                continue;
+            }
+            
+            if (IsTooClose(pos)) 
+            {
+                Debug.Log($"{data.itemName} : IsTooClose 에서 걸러짐.");
+                continue; 
+            }
 
             TryPlace(data, pos);
             break;
@@ -167,8 +163,8 @@ public class ResourceSpawner<TData> : MonoBehaviour
         if (spawnZoneCollider == null) return false;
 
         // 스폰 불가능 레이어
-        Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
-        if (obstacleCollider != null) return false;
+        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
+        //if (obstacleCollider != null) return false;
 
         return true;
     }
