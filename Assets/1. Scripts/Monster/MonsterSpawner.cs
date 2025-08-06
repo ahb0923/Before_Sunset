@@ -21,6 +21,12 @@ public class MonsterSpawner : MonoBehaviour
         _arrowDisplay = GetComponentInChildren<WarningArrow>();
     }
 
+    private void Start()
+    {
+        if(!GameManager.Instance.IsTutorial)
+            SetMonsterSpawnPoints();
+    }
+
     /// <summary>
     /// 몬스터 사망 시에 이 메서드를 호출하여 셋에서 제거
     /// </summary>
