@@ -30,10 +30,9 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return parentTransform;
     }
 
-    public void SetSpawnArea(Vector3 center, Vector2 size)
+    public void SetSpawnCenter(Vector3 center)
     {
         spawnAreaCenter3D = center;
-        spawnAreaSize = size;
     }
 
     /// <summary>
