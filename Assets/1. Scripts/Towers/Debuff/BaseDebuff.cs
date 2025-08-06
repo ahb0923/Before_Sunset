@@ -67,7 +67,7 @@ public abstract class BaseDebuff : MonoBehaviour, IPoolable
         }
 
         IsActive = false;
-        target.UnregisterDebuff(this); // 🔄 등록 해제
+        target.UnregisterDebuff(this);
     }
 
     public int GetId() => debuffId;
