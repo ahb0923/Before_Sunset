@@ -236,6 +236,15 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     /// </summary>
     public void OnReturnToPool()
     {
+        if (UIManager.Instance.TowerUpgradeUI.SelectedTower() == this && UIManager.Instance.TowerUpgradeUI.isActiveAndEnabled)
+        {
+            UIManager.Instance.TowerUpgradeUI.Close();
+        }
+
+        if (UIManager.Instance.DismantleUI.SelectedTower() == this && UIManager.Instance.DismantleUI.isActiveAndEnabled)
+        {
+            UIManager.Instance.DismantleUI.Close();
+        }
         ui.OffAttackArea();
         ai.SetState(TOWER_STATE.None, true);
         ui.icon.color = Color.white;
@@ -253,6 +262,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         // 파괴 옵션 on일 경우
         if (BuildManager.Instance.IsOnDestroy)
         {
+            BuildManager.Instance.IsOnDestroy = false;
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
             Debug.Log("dd : "+InteractManager.Instance.GetCurrentTarget());
             return;

@@ -20,7 +20,10 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     
     private RectTransform _rect;
     private BaseTower _selectedTower;
+    public BaseTower SelectedTower() => _selectedTower;
     private Smelter _selectedSmelter;
+    public Smelter SelectedSmelter() => _selectedSmelter;
+
     
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string BUILT_TIME_TEXT = "BuiltTimeText";
@@ -122,9 +125,8 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void Close()
     {
-        //if (_selectedTower != null) _selectedTower.ui.OffAttackArea();
-        Debug.Log(_selectedTower);
-        _selectedTower.ui.OffAttackArea();
+        if (_selectedTower!=null)
+            _selectedTower.ui.OffAttackArea();
         BuildManager.Instance.IsOnDestroy = false;
         InteractManager.Instance.SetCursorDestroyImage(false);
         UIManager.Instance.CloseUI(this);
