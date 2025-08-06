@@ -122,20 +122,12 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     private AudioSource GetAvailableSFXSource()
     {
-        foreach (var source in _sfxPool)
-        {
-            if (!source.isPlaying)
-                return source;
-        }
-
-        AudioSource newSource = gameObject.AddComponent<AudioSource>();
-        newSource.playOnAwake = false;
-        newSource.loop = false;
-        _sfxPool.Enqueue(newSource);
-        return newSource;
+        AudioSource source = _sfxPool.Dequeue();
+        _sfxPool.Enqueue(source);
+        return source;
     }
 
-    private System.Collections.IEnumerator ReturnToPoolWhenDone(AudioSource source, float delay)
+    private IEnumerator ReturnToPoolWhenDone(AudioSource source, float delay)
     {
         yield return new WaitForSeconds(delay);
         source.Stop();
