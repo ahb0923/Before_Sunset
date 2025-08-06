@@ -29,13 +29,14 @@ public class AudioManager : MonoSingleton<AudioManager>
         base.Awake();
         if (Instance != null)
             DontDestroyOnLoad(gameObject);
+        
+        LoadAllClips();
     }
 
     private void Start()
     {
         InitBGM();
         InitSFXPool();
-        LoadAllClips();
     }
 
     private void InitBGM()

@@ -94,6 +94,8 @@ public class StartSceneUI : MonoBehaviour
         // 배경 페이드아웃
         logoSequence.Append(_background.DOFade(0.8f, _duration)).OnComplete(()=>logoSequence.Kill());
         EnableButtons();
+
+        AudioManager.Instance.PlayBGM("Main");
         GlobalState.HasPlayedIntro = true;
     }
 
