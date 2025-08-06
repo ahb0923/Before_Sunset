@@ -108,9 +108,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     private void DropItem()
     {
         int dropId = _data.dropItemId;
-
-        // 기본 드랍
-        SpawnDrop(dropId, Vector3.zero);
+        int dropAmount = 1;
 
         if (_player == null)
         {
@@ -124,30 +122,10 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         if (bonusRate > 0f)
         {
             float rand = Random.Range(0f, 1f);
-            if (rand < bonusRate)
-            {
-                Vector3 offset = new Vector3(Random.Range(0.5f, 1f), Random.Range(0.5f, 1f), 0f);
-                SpawnDrop(dropId, offset);
-            }
+            if (rand < bonusRate) dropAmount += 1;
         }
-    }
 
-    private void SpawnDrop(int dropId, Vector3 positionOffset)
-    {
-        //Vector3 spawnPos = transform.position + positionOffset;
-
-        //GameObject dropObj = PoolManager.Instance.GetFromPool(dropId, spawnPos, MapManager.Instance.ItemParent);
-        ItemDropManager.Instance.DropItem(dropId, 1, transform, false);
-
-        /*
-        if (dropObj != null && dropObj.TryGetComponent<DropItemController>(out var dropItem))
-        {
-            dropItem.OnGetFromPool();
-        }
-        else
-        {
-            Debug.LogWarning($"[OreController] 드롭 아이템 풀에서 꺼내기 실패 ID: {dropId}");
-        }*/
+        ItemDropManager.Instance.DropItem(dropId, dropAmount, transform, false);
     }
 
     public void Interact()
