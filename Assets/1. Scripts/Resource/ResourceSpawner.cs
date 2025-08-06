@@ -8,16 +8,13 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private Vector3 spawnAreaCenter3D;
     private Vector2 spawnAreaSize = new Vector2(57f, 31f);
 
-    [SerializeField] private int spawnCount = 100;
+    [SerializeField] private int spawnMineralCount = 100;
+    [SerializeField] private int spawnJewelCount = 1;
     [SerializeField] private float overlapRadius = 1.0f;
     [SerializeField] private LayerMask obstacleLayerMask;
     [SerializeField] private LayerMask _spawnZoneLayer;
 
-    public Func<TData, int> GetId;
-    public Func<TData, int> GetSpawnStage;
-    public Func<TData, int> GetProbability;
-
-    private List<TData> spawnableList = new();
+    private List<OreDatabase> spawnableList = new();
     private List<Vector3> placedPositions = new();
 
     private Transform parentTransform;
@@ -38,58 +35,62 @@ public class ResourceSpawner<TData> : MonoBehaviour
         spawnAreaSize = size;
     }
 
-    public void SpawnResources(List<TData> dataList, int currentStage)
+    public void SpawnResources(int currentStage)
     {
+        var oreDatas = DataManager.Instance.OreData;
         spawnableList.Clear();
         placedPositions.Clear();
 
-        foreach (var data in dataList)
+        foreach (var data in oreDatas.GetAllItems())
         {
-            int id = GetId(data);
-
-            if ( id >= 200 || currentStage >= GetSpawnStage(data))
+            if (currentStage >= data.spawnStage)
                 spawnableList.Add(data);
         }
 
         if (spawnableList.Count == 0) return;
 
-        if (typeof(TData) == typeof(JewelDatabase))
+        
+        foreach(var data in spawnableList)
         {
-            foreach (var data in spawnableList)
+            if(data.dropItemType == DROPITEM_TYPE.Jewel)
             {
-                float probability = GetProbability(data) / 100f;
-                if (UnityEngine.Random.value > probability)
-                    continue;
-
-                TryPlaceSingle(data);
+                float probability = data.spawnProbability / 100f;
+                if (UnityEngine.Random.value <= probability)
+                    TryPlaceSingle(data);
             }
-        }
-        else // Ore: 가중치 기반
-        {
-            int placed = 0;
-            int attempts = 0;
-            int maxAttempts = spawnCount * 10;
-
-            while (placed < spawnCount && attempts < maxAttempts)
+            else
             {
-                attempts++;
-                Vector3 pos = GetRandomPositionInArea();
+                Debug.Log($"{data.itemName} / {data.dropItemType} 여긴 미네랄만 나와야함ㅇㅇ");
+                int placed = 0;
+                int attempts = 0;
+                int maxAttempts = spawnMineralCount * 10;
 
-                if (!IsValidSpawnPosition(pos)) continue;
-                if (IsTooClose(pos)) continue;
+                while (placed < spawnMineralCount && attempts < maxAttempts)
+                {
+                    attempts++;
+                    Vector3 pos = GetRandomPositionInArea();
 
-                TData selected = GetRandomByProbability();
-                if (selected == null) continue;
+                    if (!IsValidSpawnPosition(pos)) continue;
+                    if (IsTooClose(pos)) continue;
 
-                if (TryPlace(selected, pos))
-                    placed++;
+                    OreDatabase selected = GetRandomByProbability();
+                    if (selected == null) continue;
+
+                    if (TryPlace(selected, pos))
+                        placed++;
+                }
             }
         }
     }
-
-    private bool TryPlace(TData data, Vector3 pos)
+    /// <summary>
+    /// 실제 광물 소환
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    private bool TryPlace(OreDatabase data, Vector3 pos)
     {
-        int id = GetId(data);
+        int id = data.id;
         GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
         if (obj == null)
         {
@@ -105,11 +106,15 @@ public class ResourceSpawner<TData> : MonoBehaviour
         placedPositions.Add(pos);
         return true;
     }
-
-    private void TryPlaceSingle(TData data)
+    /// <summary>
+    /// Jewel 스폰시에만 사용 TryPlace 가기 전 작업
+    /// </summary>
+    /// <param name="data"></param>
+    private void TryPlaceSingle(OreDatabase data)
     {
-        int maxAttempts = 10;
-        for (int i = 0; i < maxAttempts; i++)
+        Debug.Log($"{data.itemName} / {data.dropItemType} 이거 소환됨 ㅇㅇ");
+
+        for (int i = 0; i < spawnJewelCount; i++)
         {
             Vector3 pos = GetRandomPositionInArea();
 
@@ -164,9 +169,9 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return false;
     }
 
-    private TData GetRandomByProbability()
+    private OreDatabase GetRandomByProbability()
     {
-        int totalWeight = spawnableList.Sum(d => GetProbability(d));
+        int totalWeight = spawnableList.Sum(d => d.spawnProbability);
         if (totalWeight <= 0) return default;
 
         int rand = UnityEngine.Random.Range(0, totalWeight);
@@ -174,7 +179,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         foreach (var data in spawnableList)
         {
-            sum += GetProbability(data);
+            sum += data.spawnProbability;
             if (rand < sum)
                 return data;
         }

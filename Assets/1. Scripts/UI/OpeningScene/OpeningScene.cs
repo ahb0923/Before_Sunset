@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class OpeningScene : MonoBehaviour
@@ -21,7 +20,6 @@ public class OpeningScene : MonoBehaviour
         "매일 낮, 빛이 희미하게 남아있는 시간에 자원을 모으고,",
         "코어의 힘이 약해지는 4일째 밤이 오면 코어를 파괴하려는 몬스터의 공격을 막아내야 한다.",
         "코어가 멈추는 순간, 마지막 희망마저 사라진다."
-        
     };
     [SerializeField] private float _textDuration = 3f;
     [SerializeField] private float _moveDuration = 1.5f;

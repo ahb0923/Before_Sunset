@@ -37,6 +37,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         _currentHP = _data.hp;
         FindPlayer();
         Init(_player);
+        Debug.Log($"{gameObject.name}소환한새기 누구야");
     }
 
     public void OnReturnToPool()
@@ -103,7 +104,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private void DropItem()
     {
-        int dropId = _data.dropMineralId;
+        int dropId = _data.dropItemId;
 
         // 기본 드랍
         SpawnDrop(dropId, Vector3.zero);

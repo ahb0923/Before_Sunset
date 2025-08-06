@@ -29,7 +29,7 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnDestroyModeStarted(InputAction.CallbackContext context)
     {
         BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
-        InteractManager.Instance.SetCursorImage(BuildManager.Instance.IsOnDestroy);
+        InteractManager.Instance.SetCursorDestroyImage(BuildManager.Instance.IsOnDestroy);
     }
 
     private void OnReturnHomeStarted(InputAction.CallbackContext context)
@@ -50,7 +50,7 @@ public class PlayerInputHandler : MonoBehaviour
         clickWorldPos.z = 0f;
 
         // interactable 레이어에서 충돌체 검색
-        LayerMask interactableLayer = LayerMask.GetMask("Tower", "Core", "Smelter", "Interactable");
+        LayerMask interactableLayer = LayerMask.GetMask("Tower", "Core", "Smelter");
         Collider2D col = Physics2D.OverlapPoint(clickWorldPos, interactableLayer);
 
         if (col == null) return;

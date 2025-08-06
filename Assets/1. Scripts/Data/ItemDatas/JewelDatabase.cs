@@ -7,5 +7,4 @@ using UnityEngine;
 public class JewelDatabase : ItemDatabase
 {
     public string prefabName;
-    public int spawnProbability;
 }
