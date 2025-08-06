@@ -163,8 +163,8 @@ public class ResourceSpawner<TData> : MonoBehaviour
         if (spawnZoneCollider == null) return false;
 
         // 스폰 불가능 레이어
-        Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
-        if (obstacleCollider != null) return false;
+        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
+        //if (obstacleCollider != null) return false;
 
         return true;
     }
