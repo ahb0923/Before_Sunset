@@ -55,31 +55,33 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if(data.dropItemType == DROPITEM_TYPE.Jewel)
             {
                 float probability = data.spawnProbability / 100f;
-                if (UnityEngine.Random.value <= probability)
+
+                if (UnityEngine.Random.value <= probability) 
                     TryPlaceSingle(data);
-            }
-            else
-            {
-                Debug.Log($"{data.itemName} / {data.dropItemType} 여긴 미네랄만 나와야함ㅇㅇ");
-                int placed = 0;
-                int attempts = 0;
-                int maxAttempts = spawnMineralCount * 10;
-
-                while (placed < spawnMineralCount && attempts < maxAttempts)
+                else
                 {
-                    attempts++;
-                    Vector3 pos = GetRandomPositionInArea();
-
-                    if (!IsValidSpawnPosition(pos)) continue;
-                    if (IsTooClose(pos)) continue;
-
-                    OreDatabase selected = GetRandomByProbability();
-                    if (selected == null) continue;
-
-                    if (TryPlace(selected, pos))
-                        placed++;
+                    Debug.Log($"『{data.itemName}』확률에 패배! 소환 실패!");
                 }
             }
+        }
+
+        int placed = 0;
+        int attempts = 0;
+        int maxAttempts = spawnMineralCount * 10;
+
+        while (placed < spawnMineralCount && attempts < maxAttempts)
+        {
+            attempts++;
+            Vector3 pos = GetRandomPositionInArea();
+
+            if (!IsValidSpawnPosition(pos)) continue;
+            if (IsTooClose(pos)) continue;
+
+            OreDatabase selected = GetRandomByProbability();
+            if (selected == null || selected.dropItemType == DROPITEM_TYPE.Jewel) continue;
+
+            if (TryPlace(selected, pos))
+                placed++;
         }
     }
     /// <summary>
@@ -91,6 +93,8 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private bool TryPlace(OreDatabase data, Vector3 pos)
     {
         int id = data.id;
+
+        /*
         GameObject obj = PoolManager.Instance.GetFromPool(id, pos);
         if (obj == null)
         {
@@ -100,9 +104,19 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         if (parentTransform != null)
             obj.transform.SetParent(parentTransform, false);
-
         obj.transform.position = pos;
-        obj.GetComponent<IPoolable>()?.OnGetFromPool();
+        */
+
+        if(parentTransform != null)
+        {
+            GameObject obj = PoolManager.Instance.GetFromPool(id, pos, parentTransform);
+            if (obj == null)
+            {
+                Debug.LogWarning($"Pool에서 오브젝트를 가져올 수 없습니다. ID: {id}");
+                return false;
+            }
+        }
+
         placedPositions.Add(pos);
         return true;
     }
@@ -204,8 +218,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
             {
                 // 위치 변환 없이 저장
                 savedStates.Add(stateComp.SaveState());
-
-                stateComp.OnReturnToPool();
             }
 
             toReturn.Add(parent.GetChild(i));
@@ -253,7 +265,6 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
             {
                 resource.LoadState(state);
-                resource.OnGetFromPool();
             }
 
             if (parentTransform != null)

@@ -94,7 +94,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     /// <summary> 상호 작용 시 커서 세팅 </summary>
     private void HandleInteractable(IInteractable interactable)
     {
-        float range = (interactable is OreController || interactable is JewelController) ? 1.5f : 5.0f;
+        float range = (interactable is OreController) ? 1.5f : 5.0f;
 
         if (interactable.IsInteractable(DefenseManager.Instance.mainPlayer.transform.position, range, _playerCollider))
         {
