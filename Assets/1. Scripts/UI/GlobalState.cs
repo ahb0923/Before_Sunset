@@ -3,7 +3,7 @@ public static class GlobalState
     /// <summary>
     /// 스타트씬 애니메이션 관련 불값
     /// </summary>
-    public static bool HasPlayedIntro= true;
+    public static bool HasPlayedIntro;
     
     /// <summary>
     /// 오프닝씬 진입 관련 불값
