@@ -3171,6 +3171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _exitLoadButton: {fileID: 7855525539968316390}
   _loadRect: {fileID: 5110525733473882415}
+  _startSceneAnimation: {fileID: 0}
 --- !u!1 &4269239749887922006
 GameObject:
   m_ObjectHideFlags: 0
@@ -6959,6 +6960,10 @@ MonoBehaviour:
   _loadGameText: {fileID: 6046546766288177087}
   _tutorialText: {fileID: 3057668061178817748}
   _exitGameText: {fileID: 2753755537782767900}
+  _newGameButtonImage: {fileID: 3633018094696842603}
+  _loadGameButtonImage: {fileID: 6715614296905251661}
+  _tutorialButtonImage: {fileID: 7741508290023872637}
+  _exitButtonImage: {fileID: 5045553383282899597}
   selectImage: {fileID: 0}
   askTutorial: {fileID: 0}
   load: {fileID: 0}

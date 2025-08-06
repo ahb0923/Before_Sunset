@@ -22,6 +22,10 @@ public class StartSceneUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _loadGameText;
     [SerializeField] private TextMeshProUGUI _tutorialText;
     [SerializeField] private TextMeshProUGUI _exitGameText;
+    [SerializeField] private Image _newGameButtonImage;
+    [SerializeField] private Image _loadGameButtonImage;
+    [SerializeField] private Image _tutorialButtonImage;
+    [SerializeField] private Image _exitButtonImage;
     
     [Header("Awake시 할당")]
     public SelectImage selectImage;
@@ -44,6 +48,10 @@ public class StartSceneUI : MonoBehaviour
         _loadGameButton = Helper_Component.FindChildComponent<Button>(this.transform, "LoadGameButton");
         _tutorialButton = Helper_Component.FindChildComponent<Button>(this.transform, "TutorialButton");
         _exitButton = Helper_Component.FindChildComponent<Button>(this.transform, "ExitGameButton");
+        _newGameButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "NewGameButton");
+        _loadGameButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "LoadGameButton");
+        _tutorialButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "TutorialButton");
+        _exitButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "ExitGameButton");
         _newGameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "NewGameButtonText");
         _loadGameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "LoadGameButtonText");
         _tutorialText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "TutorialButtonText");
@@ -59,6 +67,21 @@ public class StartSceneUI : MonoBehaviour
         _loadGameButton.onClick.AddListener(LoadGame);
         _tutorialButton.onClick.AddListener(Tutorial);
         _exitButton.onClick.AddListener(Exit);
+        
+        RaycastTarget(false);
+    }
+
+    private void RaycastTarget(bool isTrue)
+    {
+        _newGameButtonImage.raycastTarget = isTrue;
+        _loadGameButtonImage.raycastTarget = isTrue;
+        _tutorialButtonImage.raycastTarget = isTrue;
+        _exitButtonImage.raycastTarget = isTrue;
+        
+        _newGameText.raycastTarget = isTrue;
+        _loadGameText.raycastTarget = isTrue;
+        _tutorialText.raycastTarget = isTrue;
+        _exitGameText.raycastTarget = isTrue;
     }
     
     private void Start()
@@ -92,10 +115,15 @@ public class StartSceneUI : MonoBehaviour
         logoSequence.Insert(2.5f,_exitGameText.DOFade(1f, _duration));
         logoSequence.AppendInterval(0.5f);
         // 배경 페이드아웃
-        logoSequence.Append(_background.DOFade(0.8f, _duration)).OnComplete(()=>logoSequence.Kill());
-        EnableButtons();
-
-        AudioManager.Instance.PlayBGM("Main");
+        logoSequence.Append(_background.DOFade(0.8f, _duration)).
+            OnComplete(() =>
+            {
+                logoSequence.Kill();
+                EnableButtons();
+                RaycastTarget(true);
+                AudioManager.Instance.PlayBGM("Main");
+            });
+        
         GlobalState.HasPlayedIntro = true;
     }
 
