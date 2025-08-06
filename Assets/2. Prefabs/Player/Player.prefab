@@ -270,7 +270,6 @@ GameObject:
   - component: {fileID: 6686093153861780179}
   - component: {fileID: 5664015296897750482}
   - component: {fileID: 993159302880225653}
-  - component: {fileID: 8782732281581590776}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -302,7 +301,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7508487163038984533}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -503,41 +502,6 @@ MonoBehaviour:
   - Mineral
   - Ingot
   - Jewel
---- !u!58 &8782732281581590776
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7508487163038984533}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.41184673}
-  serializedVersion: 2
-  m_Radius: 0.22355404
 --- !u!1 &8192908079925631552
 GameObject:
   m_ObjectHideFlags: 0
