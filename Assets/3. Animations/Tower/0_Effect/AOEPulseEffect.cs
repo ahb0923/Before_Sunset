@@ -4,19 +4,21 @@ using UnityEngine;
 public class AOEPulseEffect : MonoBehaviour, IPoolable
 {
     [SerializeField] private Material pulseMaterial;
-    [SerializeField] private float duration = 0.5f;
-    [SerializeField] private float thickness = 0.2f;
+    [SerializeField] private float duration = 1f;
+    [SerializeField] private float thickness = 0.5f;
     [SerializeField] public Color color = Color.white;
-    private int id = 10001;
-    private bool isReverse = false;
+    private int _id = 10001;
+    private bool _isReverse = false;
 
-    private Material runtimeMaterial;
+    private Material _runtimeMaterial;
+    private SpriteRenderer _sprite;
 
     private void Awake()
     {
         // 머티리얼 인스턴스화 (다른 오브젝트와 공유 방지)
-        runtimeMaterial = new Material(pulseMaterial);
-        GetComponent<SpriteRenderer>().material = runtimeMaterial;
+        _runtimeMaterial = new Material(pulseMaterial);
+        _sprite = GetComponent<SpriteRenderer>();
+        _sprite.material = _runtimeMaterial;
     }
 
     public void Play()
@@ -26,33 +28,38 @@ public class AOEPulseEffect : MonoBehaviour, IPoolable
 
     private IEnumerator C_Pulse()
     {
-        runtimeMaterial.SetColor("_Color", color);
-        runtimeMaterial.SetFloat("_Thickness", thickness);
+        _runtimeMaterial.SetColor("_Color", color);
+        _runtimeMaterial.SetFloat("_Thickness", thickness);
 
         float time = 0f;
         while (time < duration)
         {
             time += Time.deltaTime;
             float progress = time / duration;
-            if (isReverse) 
+            if (_isReverse) 
                 progress = 1 - (time / duration);
-            runtimeMaterial.SetFloat("_Progress", progress);
+            _runtimeMaterial.SetFloat("_Progress", progress);
             yield return null;
         }
 
         // 종료 후 리셋 또는 오브젝트 비활성화
-        runtimeMaterial.SetFloat("_Progress", 0f);
-        PoolManager.Instance.ReturnToPool(id, gameObject);
+        _runtimeMaterial.SetFloat("_Progress", 0f);
+        PoolManager.Instance.ReturnToPool(_id, gameObject);
     }
 
     public void SetReverse()
     {
-        isReverse = true;
+        _isReverse = true;
+    }
+
+    public void SetSize(float size)
+    {
+        gameObject.transform.localScale = new Vector2 (size, size);
     }
 
     public int GetId()
     {
-        return id;
+        return _id;
     }
 
     public void OnInstantiate()
@@ -65,6 +72,6 @@ public class AOEPulseEffect : MonoBehaviour, IPoolable
 
     public void OnReturnToPool()
     {
-        isReverse=false;
+        _isReverse=false;
     }
 }

@@ -1193,7 +1193,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1349318923785594099, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000030517578
+      value: -0.00018310547
       objectReference: {fileID: 0}
     - target: {fileID: 1350270042997854497, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1753,7 +1753,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9074921222671413708, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00001335144
+      value: 0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
@@ -41183,7 +41183,6 @@ GameObject:
   - component: {fileID: 969134075631786501}
   - component: {fileID: 6366157773845696220}
   - component: {fileID: 3016360122183519438}
-  - component: {fileID: 6366157773845696221}
   - component: {fileID: 6366157773845696224}
   m_Layer: 0
   m_Name: Main Camera
@@ -41546,22 +41545,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4881548125829083928}
   m_Enabled: 1
---- !u!114 &6366157773845696221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4881548125829083928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EventMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_MaxRayIntersections: 0
 --- !u!114 &6366157773845696224
 MonoBehaviour:
   m_ObjectHideFlags: 0

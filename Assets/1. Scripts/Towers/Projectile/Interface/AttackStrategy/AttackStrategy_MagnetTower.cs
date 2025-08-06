@@ -12,7 +12,7 @@ public class AttackStrategy_MagnetTower : IAttackStrategy
 
 
         tower.ui.animator.SetTrigger("IsAttack");
-        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(255f / 255f, 0f / 255f, 255f / 255f, 50f / 255f), true);
+        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(255f / 255f, 0f / 255f, 255f / 255f, 50f / 255f), tower.statHandler.AttackRange, true);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
 
