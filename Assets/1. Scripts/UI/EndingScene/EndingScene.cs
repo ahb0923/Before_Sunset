@@ -230,7 +230,7 @@ public class EndingScene : MonoBehaviour
     private void PlayBGM()
     {
         AudioManager.Instance.SetBGMVolume(1f);
-        AudioManager.Instance.PlayBGM("NormalBase");
+        AudioManager.Instance.PlayBGM("Ending");
     }
     
     private void LoadScene()
