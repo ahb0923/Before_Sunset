@@ -1138,6 +1138,7 @@ GameObject:
   - component: {fileID: 1894689478672655312}
   - component: {fileID: 7223913218907994773}
   - component: {fileID: 3826218195694729981}
+  - component: {fileID: 626206551381648683}
   m_Layer: 5
   m_Name: AutoSaveSlot
   m_TagString: Untagged
@@ -1206,6 +1207,24 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &626206551381648683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 362205668176386906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77f2f58b57ec7d42b43cf5b90ee7c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotIndex: 99
+  savedStageTxt: {fileID: 6850734854286265427}
+  savedTimeTxt: {fileID: 5929666129829045724}
+  _saveBtn: {fileID: 0}
+  _loadBtn: {fileID: 8307641187363273844}
+  _isAutoSave: 1
 --- !u!1 &418511070254529777
 GameObject:
   m_ObjectHideFlags: 0
@@ -13500,7 +13519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0000076293945, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9132067432433055833
@@ -25354,7 +25373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000018566847}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &473895671670418753
@@ -26389,7 +26408,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000091552734}
+  m_AnchoredPosition: {x: 0, y: -0.00018310547}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1656321143683277829

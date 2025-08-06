@@ -10,10 +10,11 @@ public class MonsterSpawner : MonoBehaviour
     [SerializeField] private List<Transform> _spawnPoints;
     [SerializeField] private int[] _stageToUnlockDoor = new int[3];
     [SerializeField] private Transform _monsterParent;
-    [SerializeField] private float _warningTime = 1f;
 
     private HashSet<BaseMonster> _aliveMonsterSet = new HashSet<BaseMonster>();
     public bool IsMonsterAlive => _aliveMonsterSet.Count > 0;
+
+    private List<int> _spawnPointList;
 
     private void Awake()
     {
@@ -41,6 +42,47 @@ public class MonsterSpawner : MonoBehaviour
     }
 
     /// <summary>
+    /// 몬스터 스폰 포인트 설정 + 방향 표시
+    /// </summary>
+    public void SetMonsterSpawnPoints()
+    {
+        _spawnPointList = GetSpawnPointList(TimeManager.Instance.Day);
+
+        // 몬스터 웨이브 방향 이펙트 표시
+        foreach (int point in _spawnPointList)
+        {
+            _arrowDisplay.DisplayMonsterSpawnDirection((WARNING_DIRECTION)point, false);
+        }
+    }
+
+    /// <summary>
+    /// 몬스터 스폰 포인트 리스트 반환
+    /// </summary>
+    private List<int> GetSpawnPointList(int day)
+    {
+        if (GameManager.Instance.IsTutorial)
+            return new List<int> { 0 };
+
+        // 스테이지에 따라서 스폰 포인트가 늘어남
+        int spawnPointNum = 1;
+        foreach (int limit in _stageToUnlockDoor)
+        {
+            if (day >= limit)
+            {
+                spawnPointNum++;
+            }
+        }
+
+        List<int> spawnPointList = new List<int>() { 0, 1, 2, 3 };
+        for (int i = 0; i < 4 - spawnPointNum; i++)
+        {
+            spawnPointList.RemoveAt(Random.Range(0, spawnPointList.Count));
+        }
+
+        return spawnPointList;
+    }
+
+    /// <summary>
     /// 스테이지에 따른 모든 몬스터 소환
     /// </summary>
     public void SpawnAllMonsters()
@@ -58,21 +100,6 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     private IEnumerator C_SpawnMonsters(int day)
     {
-        // 스테이지에 따라서 스폰 포인트가 늘어남
-        int spawnPointNum = 1;
-        foreach (int limit in _stageToUnlockDoor)
-        {
-            if (day >= limit)
-            {
-                spawnPointNum++;
-            }
-        }
-
-        // 스폰 포인트가 1곳이면, 모든 웨이브 한 방향에서만 나옴
-        List<int> spawnPointList = null;
-        if (spawnPointNum == 1)
-            spawnPointList = GetSpawnPointList(spawnPointNum);
-
         int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(day);
         for (int i = 1; i <= waveCount; i++)
         {
@@ -82,12 +109,11 @@ public class MonsterSpawner : MonoBehaviour
             // 다음 웨이브 기다림
             yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
 
-            // 스폰 포인트가 여러 곳이면, 웨이브마다 무작위 방향에서 나옴
-            if (spawnPointNum != 1)
-                spawnPointList = GetSpawnPointList(spawnPointNum);
-
             // 몬스터 웨이브 방향 이펙트 표시
-            yield return C_DisplaySpawnDirection(spawnPointList);
+            foreach(int point in _spawnPointList)
+            {
+                _arrowDisplay.DisplayMonsterSpawnDirection((WARNING_DIRECTION)point, true);
+            }
 
             // 몬스터 웨이브 소환
             foreach (var pair in currentWaveData.waveInfo)
@@ -97,7 +123,7 @@ public class MonsterSpawner : MonoBehaviour
 
                 for (int j = 0; j < spawnCount; j++)
                 {
-                    for (int k = 0; k < spawnPointList.Count; k++)
+                    for (int k = 0; k < _spawnPointList.Count; k++)
                     {
                         // 코어가 부서지면, 스폰 중지
                         if (DefenseManager.Instance.Core.IsDead)
@@ -105,7 +131,7 @@ public class MonsterSpawner : MonoBehaviour
                             yield break;
                         }
 
-                        SpawnMonster(monsterID, spawnPointList[k]);
+                        SpawnMonster(monsterID, _spawnPointList[k]);
                         yield return null;
                     }
                 }
@@ -121,12 +147,11 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     private IEnumerator C_SpawnTutorialMonsters()
     {
-        yield return C_DisplaySpawnDirection(new List<int> {0});
+        // 몬스터 웨이브 방향 이펙트 표시
+        _arrowDisplay.DisplayMonsterSpawnDirection(WARNING_DIRECTION.Up, true);
 
         for (int i = 0; i < 3; i++)
         {
-            yield return Helper_Coroutine.WaitSeconds(0.5f);
-
             // 코어가 부서지면, 스폰 중지
             if (DefenseManager.Instance.Core.IsDead)
             {
@@ -135,36 +160,8 @@ public class MonsterSpawner : MonoBehaviour
 
             // 머프 3마리만 소환
             SpawnMonster(600, 0);
+            yield return null;
         }
-    }
-
-    /// <summary>
-    /// 몬스터 스폰 포인트 리스트 반환
-    /// </summary>
-    private List<int> GetSpawnPointList(int spawnPointNum)
-    {
-        List<int> spawnPointList = new List<int>() {0, 1, 2, 3};
-        for (int i = 0; i < 4 - spawnPointNum; i++)
-        {
-            spawnPointList.RemoveAt(Random.Range(0, spawnPointList.Count));
-        }
-
-        return spawnPointList;
-    }
-
-    /// <summary>
-    /// 방향 이펙트 표시
-    /// </summary>
-    private IEnumerator C_DisplaySpawnDirection(List<int> spawnPoints)
-    {
-        foreach(int spawnPoint in spawnPoints)
-        {
-            _arrowDisplay.OnWarning((WARNING_DIRECTION)spawnPoint);
-        }
-
-        yield return Helper_Coroutine.WaitSeconds(_warningTime);
-
-        _arrowDisplay.OffAllWarning();
     }
 
     /// <summary>
