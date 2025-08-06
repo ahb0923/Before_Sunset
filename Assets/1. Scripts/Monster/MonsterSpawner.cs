@@ -68,10 +68,12 @@ public class MonsterSpawner : MonoBehaviour
             }
         }
 
-        // 스폰 포인트가 1곳이면, 모든 웨이브 한 방향에서만 나옴
+        // 스폰 포인트 리스트 생성
         List<int> spawnPointList = null;
-        if (spawnPointNum == 1)
-            spawnPointList = GetSpawnPointList(spawnPointNum);
+        spawnPointList = GetSpawnPointList(spawnPointNum);
+
+        // 몬스터 웨이브 방향 이펙트 표시
+        yield return C_DisplaySpawnDirection(spawnPointList);
 
         int waveCount = DataManager.Instance.WaveData.GetWaveCountByStageId(day);
         for (int i = 1; i <= waveCount; i++)
@@ -81,13 +83,6 @@ public class MonsterSpawner : MonoBehaviour
 
             // 다음 웨이브 기다림
             yield return Helper_Coroutine.WaitSeconds(currentWaveData.summonDelay);
-
-            // 스폰 포인트가 여러 곳이면, 웨이브마다 무작위 방향에서 나옴
-            if (spawnPointNum != 1)
-                spawnPointList = GetSpawnPointList(spawnPointNum);
-
-            // 몬스터 웨이브 방향 이펙트 표시
-            yield return C_DisplaySpawnDirection(spawnPointList);
 
             // 몬스터 웨이브 소환
             foreach (var pair in currentWaveData.waveInfo)
