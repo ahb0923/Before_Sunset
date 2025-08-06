@@ -660,7 +660,7 @@ PrefabInstance:
     - target: {fileID: 752522750499344861, guid: d54af51b15d4b9145814b8329c466131, type: 3}
       propertyPath: highlightTilemap
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1603114504}
     - target: {fileID: 7257501209349996822, guid: d54af51b15d4b9145814b8329c466131, type: 3}
       propertyPath: m_Name
       value: BuildManager
@@ -932,6 +932,11 @@ PrefabInstance:
 --- !u!4 &1603114503 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 859104726000278566, guid: 47aeb8c8b40a6384f8951f3209dd456b, type: 3}
+  m_PrefabInstance: {fileID: 1603114502}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1839735485 &1603114504 stripped
+Tilemap:
+  m_CorrespondingSourceObject: {fileID: 8997244526127937217, guid: 47aeb8c8b40a6384f8951f3209dd456b, type: 3}
   m_PrefabInstance: {fileID: 1603114502}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1699865534
