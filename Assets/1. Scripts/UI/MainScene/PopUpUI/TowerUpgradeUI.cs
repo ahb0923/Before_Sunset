@@ -73,18 +73,11 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
     public void OpenUpgradeUI(BaseTower tower)
     {
         if (!this.gameObject.activeInHierarchy)
-        {
-            UIManager.Instance.OpenUI(this);
-            InitSlots(tower);
-            SetSlot(tower);
-            SetUpgradeUI(tower);
-        }
-        else
-        {
-            InitSlots(tower);
-            SetSlot(tower);
-            SetUpgradeUI(tower);
-        }
+            UIManager.Instance.OpenUIClosingEveryUI(this);
+        
+        InitSlots(tower);
+        SetSlot(tower);
+        SetUpgradeUI(tower);
     }
 
     public void Open()
@@ -100,11 +93,15 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
     public void OpenUI()
     {
+        if (_selectedTower != null) 
+            _selectedTower.ui.OnAttackArea();
         _rect.OpenAtCenter();
     }
 
     public void CloseUI()
     {
+        if (_selectedTower != null)
+            _selectedTower.ui.OffAttackArea();
         _rect.CloseAndRestore();
     }
    

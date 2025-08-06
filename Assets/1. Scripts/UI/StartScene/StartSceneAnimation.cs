@@ -233,7 +233,7 @@ public class StartSceneAnimation : MonoBehaviour
     }
 
         
-    private void CameraAction()
+    public void CameraAction()
     {
         
         Vector2 startPos = new Vector2(

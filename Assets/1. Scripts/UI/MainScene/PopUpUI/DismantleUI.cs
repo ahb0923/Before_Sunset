@@ -57,14 +57,10 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     private void Dismantle()
     {
         if (_selectedSmelter == null)
-        {
             _selectedTower.DestroyTower();
-        }
         else
-        {
             _selectedSmelter.DestroySmelter();
-        }
-            Close();
+        Close();
     }
 
     public void OpenDismantleUI(BaseTower tower)
@@ -72,7 +68,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _selectedSmelter = null;
         
         if (!this.gameObject.activeSelf)
-            UIManager.Instance.OpenUI(this);
+            UIManager.Instance.OpenUIClosingEveryUI(this);
 
         InitSlots(tower);
         SetSlot(tower);
@@ -84,12 +80,40 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
         _selectedTower = null;
 
         if (!this.gameObject.activeSelf)
-            UIManager.Instance.OpenUI(this);
+            UIManager.Instance.OpenUIClosingEveryUI(this);
 
         InitSlots(Smelter);
         SetSlot(Smelter);
         SetDismantleUI(Smelter);
     }
+    public void OpenDismantleUI(IInteractable obj)
+    {
+        if (obj is BaseTower){
+            _selectedSmelter = null;
+            BaseTower towerObj = obj as BaseTower;
+            if (!this.gameObject.activeSelf)
+                UIManager.Instance.OpenUIClosingEveryUI(this);
+
+            InitSlots(towerObj);
+            SetSlot(towerObj);
+            SetDismantleUI(towerObj);
+
+        }
+        else if(obj is Smelter)
+        {
+            _selectedTower = null;
+            Smelter smelterObj = obj as Smelter;
+            if (!this.gameObject.activeSelf)
+                UIManager.Instance.OpenUIClosingEveryUI(this);
+
+            InitSlots(smelterObj);
+            SetSlot(smelterObj);
+            SetDismantleUI(smelterObj);
+        }
+
+        
+    }
+
 
     public void Open()
     {
@@ -98,6 +122,11 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void Close()
     {
+        //if (_selectedTower != null) _selectedTower.ui.OffAttackArea();
+        Debug.Log(_selectedTower);
+        _selectedTower.ui.OffAttackArea();
+        BuildManager.Instance.IsOnDestroy = false;
+        InteractManager.Instance.SetCursorDestroyImage(false);
         UIManager.Instance.CloseUI(this);
     }
 
@@ -108,7 +137,6 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
 
     public void CloseUI()
     {
-        if (_selectedTower != null) _selectedTower.ui.ToggleAttackArea();
         _rect.CloseAndRestore();
     }
 
@@ -131,6 +159,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             slotComponent.InitIndex(_slots.Count - 1);
         }
     }
+    
     private void InitSlots(Smelter smelter)
     {
         _selectedSmelter = smelter;
@@ -173,6 +202,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
             _slots[i].ClearSlot();
         }
     }
+    
     private void SetSlot(Smelter smelter)
     {
         var costs = _selectedSmelter.smelterData.buildRequirements.ToList();

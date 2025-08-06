@@ -115,7 +115,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     
     public void Open()
     {
-        UIManager.Instance.OpenUI(this);
+        UIManager.Instance.OpenUIClosingEveryUI(this);
     }
     
     public void Close()

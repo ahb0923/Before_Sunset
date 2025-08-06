@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class BuildManager : MonoSingleton<BuildManager>
 {
@@ -30,7 +29,6 @@ public class BuildManager : MonoSingleton<BuildManager>
 
     private readonly List<Vector3Int> _highlightedTiles = new();
 
-    private float _lastRadius = -1f;
 
     private void Start()
     {

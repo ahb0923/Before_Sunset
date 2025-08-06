@@ -8,6 +8,8 @@ public class TutorialPortal : MonoBehaviour
 
     private IEnumerator C_MovePlayer(BasePlayer player)
     {
+        QuestManager.Instance?.Arrow?.SettingTarget(null);
+
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
             player.SetPlayerInBase(false);

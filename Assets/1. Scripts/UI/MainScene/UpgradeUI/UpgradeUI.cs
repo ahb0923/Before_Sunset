@@ -74,6 +74,7 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
     private void Start()
     {
         InitSlot();
+        CloseUI();
     }
 
     private List<KeyValuePair<string, int>> GetListOfUpgrade(Dictionary<string, int> dictionary, UPGRADE_CATEGORY category)
@@ -125,7 +126,7 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
 
     public void Open()
     {
-        UIManager.Instance.OpenUI(this);
+        UIManager.Instance.OpenUIClosingEveryUI(this);
     }
     
     public void Close()

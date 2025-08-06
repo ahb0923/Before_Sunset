@@ -138,58 +138,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fadeImage: {fileID: 0}
   fadeDuration: 1
---- !u!1 &5521393222604114617
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3069227268121796556}
-  - component: {fileID: 7535790609286089355}
-  m_Layer: 0
-  m_Name: JewelSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3069227268121796556
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5521393222604114617}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8008716648354778653}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7535790609286089355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5521393222604114617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98a558c43d714574a91dd08eddb8e3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnCount: 3
-  overlapRadius: 1
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 250614784
-  _spawnZoneLayer:
-    serializedVersion: 2
-    m_Bits: 268435456
 --- !u!1 &7752605428684956550
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1fb26c60c6fbb245a0af50103c1b05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnCount: 100
+  spawnMineralCount: 100
+  spawnJewelCount: 1
   overlapRadius: 1
   obstacleLayerMask:
     serializedVersion: 2
@@ -273,7 +222,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 631205778766837333}
-  - {fileID: 3069227268121796556}
   m_Father: {fileID: 4608648118185929707}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2331630599012535980
