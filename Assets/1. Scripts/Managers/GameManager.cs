@@ -53,5 +53,6 @@ public class GameManager : MonoSingleton<GameManager>
     public void GoToEndScene()
     {
         SceneManager.LoadScene("EndingScene");
+        AudioManager.Instance.StopAllSound();
     }
 }

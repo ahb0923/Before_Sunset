@@ -27,6 +27,9 @@ public class BattleUI : MonoBehaviour
     private readonly string _baseText = "불길한 기운이 느껴집니다";
     private readonly float _loopTime = 0.4f;
     private readonly float _returnTime = 5f;
+
+    private readonly string _warnText = "!! WARNING !!\n코어를 지켜주세요";
+    private readonly string _warnBeforeOneMinText = "!! WARNING !!\n곧 몬스터가 몰려올 것 같습니다";
     
     private const string RETURN = "Return";
     private const string RETURN_TEXT = "ReturnText";
@@ -98,7 +101,6 @@ public class BattleUI : MonoBehaviour
         if (!DefenseManager.Instance.MainBasePlayer.IsInBase)
         {
             DefenseManager.Instance.MainBasePlayer.InputHandler.StartRecall();
-
         }
     }
     
@@ -150,12 +152,36 @@ public class BattleUI : MonoBehaviour
         yield return new WaitForSeconds(1f);
         isRoutineDone = true;
     }
+    
+    public void ShowWarningBeforeOneMin()
+    {
+        _warningText.text = _warnBeforeOneMinText;
+        
+        if (_textTween != null && _textTween.IsPlaying())
+        {
+            _imageTween.Kill();
+            _imageTween = null;
+            
+            _textTween.Kill();
+            _textTween = null;
+        }
+        
+        OpenWarning();
+        _imageTween = _warningImage.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(5, LoopType.Yoyo);
+        _textTween = _warningText.DOFade(0f, 1f).SetEase(Ease.InOutSine).SetLoops(5, LoopType.Yoyo).OnComplete(StopWarning);
+    }
 
     public void StartWarning()
     {
+        _warningText.text = _warnText;
+        
         if (_textTween != null && _textTween.IsPlaying())
         {
-            return;
+            _imageTween.Kill();
+            _imageTween = null;
+            
+            _textTween.Kill();
+            _textTween = null;
         }
         
         OpenWarning();

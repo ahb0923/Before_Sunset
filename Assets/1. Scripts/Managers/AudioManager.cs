@@ -228,4 +228,19 @@ public class AudioManager : MonoSingleton<AudioManager>
                 source.UnPause();
         }
     }
+
+    public void StopAllSound()
+    {
+        if (bgmSource.isPlaying)
+            bgmSource.Stop();
+
+        foreach (var sound in _sfxPool)
+        {
+            if (sound.clip != null || sound.isPlaying)
+            {
+                sound.Stop();
+                sound.clip = null;
+            }
+        }
+    }
 }

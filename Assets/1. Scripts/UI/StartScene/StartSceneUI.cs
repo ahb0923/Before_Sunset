@@ -67,8 +67,6 @@ public class StartSceneUI : MonoBehaviour
         _loadGameButton.onClick.AddListener(LoadGame);
         _tutorialButton.onClick.AddListener(Tutorial);
         _exitButton.onClick.AddListener(Exit);
-        
-        RaycastTarget(false);
     }
 
     private void RaycastTarget(bool isTrue)
@@ -87,9 +85,9 @@ public class StartSceneUI : MonoBehaviour
     private void Start()
     {
         if (GlobalState.HasPlayedIntro)
-        {
             _backRect.OpenAtCenter();
-        }
+        else
+            RaycastTarget(false);
     }
 
     [Button]

@@ -1,4 +1,5 @@
 using UnityEngine;
+using NaughtyAttributes;
 
 public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
@@ -13,9 +14,16 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     public int Day { get; private set; }
 
+    private float _oneMinute = 60f;
+    private float _fifteenSeconds = 15f;
+    private float _tenSeconds = 10f;
+    
     private bool _isSpawned;
     private bool _isSpawnOver;
+    private bool _isWarned;
     private bool _isRecallOver;
+    private bool _isSkipped;
+    
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
@@ -31,7 +39,13 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer += Time.deltaTime;
 
-        if (DailyPercent >= 0.9f && !_isRecallOver)
+        if (_realSecDayLength - _oneMinute < _dailyTimer && !_isSkipped && !_isWarned)
+        {
+            UIManager.Instance.BattleUI.ShowWarningBeforeOneMin();
+            _isWarned = true;
+        }
+        
+        if (_realSecDayLength - _tenSeconds < _dailyTimer && !DefenseManager.Instance.IsPlayerInBase && !_isRecallOver)
         {
             UIManager.Instance.BattleUI.ShowReturnUI();
             _isRecallOver = true;
@@ -51,13 +65,19 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             _isSpawnOver = false;
             if(Day == MaxStage)
             {
-                GameManager.Instance.GoToEndScene();
+                UIManager.Instance.FadeIn(2f, GameManager.Instance.GoToEndScene);
                 return;
             }
 
             UIManager.Instance.ResultUI.Open(Day - 1, true);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
+    }
+
+    [Button]
+    private void AddDailyTime()
+    {
+        _dailyTimer = 230f;
     }
 
     /// <summary>
@@ -79,6 +99,8 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         _dailyTimer = 0f;
         _isSpawned = false;
         _isRecallOver = false;
+        _isWarned = false;
+        _isSkipped = false;
 
         MapManager.Instance.ResetAllMaps();
         SpawnManager.Instance.OnStageChanged();
@@ -121,7 +143,11 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
         else
         {
-            _dailyTimer = _realSecDayLength;
+            _isSkipped = true;
+            if (DefenseManager.Instance.IsPlayerInBase)
+                _dailyTimer = _realSecDayLength;
+            else
+                _dailyTimer = _realMinDayLength - _fifteenSeconds;
         }
 
         QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, 1);
