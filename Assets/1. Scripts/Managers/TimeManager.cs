@@ -33,12 +33,12 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
         if (DailyPercent >= 0.9f && !_isRecallOver)
         {
-            Recall();
+            UIManager.Instance.BattleUI.ShowReturnUI();
             _isRecallOver = true;
         }
 
         // 밤이 되면 몬스터 스폰
-        if (IsNight && !_isSpawned)
+        if (IsNight && !_isSpawned && DefenseManager.Instance.IsPlayerInBase)
         {
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
@@ -142,19 +142,5 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     public void LoadData(GameData data)
     {
         InitGameTime(data.timeData.dailyTime, data.timeData.day);
-    }
-
-    /// <summary>
-    /// 강제 귀환 메서드 → 이거 플레이어 쪽으로 옮겨야 함
-    /// </summary>
-    private void Recall()
-    {
-        BasePlayer player = FindObjectOfType<BasePlayer>();
-        if (player.IsInBase)
-        {
-            return;
-        }
-
-        player.InputHandler.StartRecall();
     }
 }

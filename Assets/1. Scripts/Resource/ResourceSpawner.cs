@@ -15,6 +15,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
     [SerializeField] private LayerMask _spawnZoneLayer;
 
     private List<OreDatabase> spawnableList = new();
+    private List<Vector3> spawnableTiles = new List<Vector3>();
     private List<Vector3> placedPositions = new();
 
     private Transform parentTransform;
@@ -29,12 +30,15 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return parentTransform;
     }
 
-    public void SetSpawnArea(Vector3 center, Vector2 size)
+    public void SetSpawnCenter(Vector3 center)
     {
         spawnAreaCenter3D = center;
-        spawnAreaSize = size;
     }
 
+    /// <summary>
+    /// 자원 스폰
+    /// </summary>
+    /// <param name="currentStage"></param>
     public void SpawnResources(int currentStage)
     {
         var oreDatas = DataManager.Instance.OreData;
@@ -49,6 +53,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
 
         if (spawnableList.Count == 0) return;
 
+        GetSpawnTiles();
         
         foreach(var data in spawnableList)
         {
@@ -74,14 +79,18 @@ public class ResourceSpawner<TData> : MonoBehaviour
             attempts++;
             Vector3 pos = GetRandomPositionInArea();
 
-            if (!IsValidSpawnPosition(pos)) continue;
+            if (pos == Vector3.zero) break;
+
             if (IsTooClose(pos)) continue;
 
             OreDatabase selected = GetRandomByProbability();
             if (selected == null || selected.dropItemType == DROPITEM_TYPE.Jewel) continue;
 
             if (TryPlace(selected, pos))
+            {
                 placed++;
+                spawnableTiles.Remove(pos);
+            }
         }
     }
 
@@ -94,10 +103,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
     private bool TryPlace(OreDatabase data, Vector3 pos)
     {
         int id = data.id;
-        Debug.Log($"{data.id} / {data.prefabName}");
-
         PoolManager.Instance.GetFromPool(id, pos, parentTransform);
-
         placedPositions.Add(pos);
         return true;
     }
@@ -108,54 +114,71 @@ public class ResourceSpawner<TData> : MonoBehaviour
     /// <param name="data"></param>
     private void TryPlaceSingle(OreDatabase data)
     {
-        Debug.Log($"{data.itemName} / {data.dropItemType} 이거 소환됨 ㅇㅇ");
-
         for (int i = 0; i < spawnJewelCount; i++)
         {
             Vector3 pos = GetRandomPositionInArea();
-
-            if (!IsValidSpawnPosition(pos))
+            if (pos == Vector3.zero)
             {
-                Debug.Log($"{data.itemName} : IsValidSpawnPosition 에서 걸러짐.");
-                continue; 
+                break;
             }
-            
-            if (Physics2D.OverlapCircle(pos, 0.1f, obstacleLayerMask)) 
-            {
-                Debug.Log($"{data.itemName} : Physics2D.OverlapCircle 에서 걸러짐.");
-                continue;
-            }
-            
             if (IsTooClose(pos)) 
             {
-                Debug.Log($"{data.itemName} : IsTooClose 에서 걸러짐.");
                 continue; 
             }
-
-            TryPlace(data, pos);
-            break;
+            if (TryPlace(data, pos))
+            {
+                spawnableTiles.Remove(pos);
+                break;
+            }
         }
     }
 
-    private Vector3 GetRandomPositionInArea()
+    /// <summary>
+    /// 스폰 영역 먼저 세팅
+    /// </summary>
+    public void GetSpawnTiles()
     {
-        float x = UnityEngine.Random.Range(
-            spawnAreaCenter3D.x - spawnAreaSize.x / 2f,
-            spawnAreaCenter3D.x + spawnAreaSize.x / 2f
-        );
-        float y = UnityEngine.Random.Range(
-            spawnAreaCenter3D.y - spawnAreaSize.y / 2f,
-            spawnAreaCenter3D.y + spawnAreaSize.y / 2f
-        );
-        float z = spawnAreaCenter3D.z;
+        spawnableTiles.Clear();
 
-        // 타일 중심으로 스냅
-        x = Mathf.Floor(x) + 0.5f;
-        y = Mathf.Floor(y) + 0.5f;
+        // 스폰 영역 계산
+        float minX = spawnAreaCenter3D.x - spawnAreaSize.x / 2f;
+        float maxX = spawnAreaCenter3D.x + spawnAreaSize.x / 2f;
+        float minY = spawnAreaCenter3D.y - spawnAreaSize.y / 2f;
+        float maxY = spawnAreaCenter3D.y + spawnAreaSize.y / 2f;
 
-        return new Vector3(x, y, z);
+        // 타일 위치 찾기
+        for (float x = minX; x < maxX; x++)
+        {
+            for (float y = minY; y < maxY; y++)
+            {
+                Vector3 pos = new Vector3(Mathf.Floor(x) + 0.5f, Mathf.Floor(y) + 0.5f, spawnAreaCenter3D.z);
+                if (IsValidSpawnPosition(pos))
+                {
+                    spawnableTiles.Add(pos);
+                }
+            }
+        }
     }
 
+    /// <summary>
+    /// 스폰 영역 내 랜덤 위치
+    /// </summary>
+    /// <returns></returns>
+    private Vector3 GetRandomPositionInArea()
+    {
+        if (spawnableTiles.Count == 0)
+        {
+            return Vector3.zero;
+        }
+        int randomIndex = UnityEngine.Random.Range(0, spawnableTiles.Count);
+        return spawnableTiles[randomIndex];
+    }
+
+    /// <summary>
+    /// 스폰존 레이어 찾기
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private bool IsValidSpawnPosition(Vector3 position)
     {
         // 스폰 가능 레이어
@@ -169,6 +192,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return true;
     }
 
+    // 없어도될듯 아마도..
     private bool IsTooClose(Vector3 pos)
     {
         foreach (var otherPos in placedPositions)
@@ -179,6 +203,10 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 광석 가중치 기반 랜덤 뽑기
+    /// </summary>
+    /// <returns></returns>
     private OreDatabase GetRandomByProbability()
     {
         int totalWeight = spawnableList.Sum(d => d.spawnProbability);
@@ -197,6 +225,11 @@ public class ResourceSpawner<TData> : MonoBehaviour
         return default;
     }
 
+    /// <summary>
+    /// 배치된 자원들 저장 (맵 그대로 꺼낼 때 사용)
+    /// </summary>
+    /// <param name="inactive"></param>
+    /// <returns></returns>
     public List<ResourceState> SaveCurrentStates(bool inactive = true)
     {
         var savedStates = new List<ResourceState>();
@@ -226,7 +259,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
     }
 
     /// <summary>
-    /// 저장이 완료된 리소스 오브젝트 비활성화
+    /// 저장이 완료된 자원 풀로 반환
     /// </summary>
     private void InactiveResources(List<Transform> savedResources)
     {
@@ -244,6 +277,11 @@ public class ResourceSpawner<TData> : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 저장된 상태 불러오기
+    /// </summary>
+    /// <param name="savedStates"></param>
+    /// <returns></returns>
     public List<GameObject> SpawnFromSavedStates(List<ResourceState> savedStates)
     {
         List<GameObject> spawnedObjects = new List<GameObject>();
