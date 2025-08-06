@@ -8,9 +8,7 @@ using UnityEngine.InputSystem;
 public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 {
     private OreSpawner oreSpawner;
-    private JewelSpawner jewelSpawner;
     private OreDataHandler oreHandler;
-    private JewelDataHandler jewelHandler;
 
     private Vector3 currentMapPosition = Vector3.zero;
     private int currentMapIndex = -1;
@@ -21,7 +19,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
     private void Start()
     {
         oreSpawner = Helper_Component.FindChildComponent<OreSpawner>(this.transform, "OreSpawner");
-        jewelSpawner = Helper_Component.FindChildComponent<JewelSpawner>(this.transform, "JewelSpawner");
 
         StartCoroutine(WaitForDataManagerInit());
     }
@@ -31,7 +28,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
             yield return null;
 
         oreHandler = DataManager.Instance.OreData;
-        jewelHandler = DataManager.Instance.JewelData;
     }
 
     private bool DataManagerReady()
@@ -62,7 +58,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
             // 1) 상태 저장
             List<ResourceState> saved = new();
             saved.AddRange(oreSpawner.SaveCurrentStates());
-            saved.AddRange(jewelSpawner.SaveCurrentStates());
             _mapResourceStates[currentMapIndex] = saved;
 
             // 2) 이전 맵 자원들 풀에 반환
@@ -71,10 +66,11 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
                 foreach (var obj in oldResources)
                 {
                     if (obj == null) continue;
+                    /*
                     if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
                     {
                         resource.OnReturnToPool();
-                    }
+                    }*/
                     PoolManager.Instance.ReturnToPool(obj.GetComponent<IPoolable>().GetId(), obj);
                 }
                 oldResources.Clear();
@@ -91,20 +87,16 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         }
 
         var oreContainer = GetContainer("OreContainer");
-        var jewelContainer = GetContainer("JewelContainer");
 
         oreSpawner.SetParentTransform(oreContainer);
-        jewelSpawner.SetParentTransform(jewelContainer);
 
         oreContainer.transform.position = Vector3.zero;
-        jewelContainer.transform.position = Vector3.zero;
 
         if (_mapResourceStates.TryGetValue(currentMapIndex, out var savedStates))
         {
             List<GameObject> newResources = new List<GameObject>();
 
             newResources.AddRange(oreSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id < 1000).ToList()));
-            newResources.AddRange(jewelSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id >= 1000).ToList()));
 
             _mapResources[currentMapIndex] = newResources;
         }
@@ -116,7 +108,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 
     private void SpawnAllAndStore()
     {
-        if (oreHandler == null || jewelHandler == null)
+        if (oreHandler == null)
         {
             Debug.LogWarning("SpawnManager: 데이터 핸들러가 세팅되지 않았습니다.");
             return;
@@ -124,19 +116,10 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 
         List<GameObject> spawnedObjects = new List<GameObject>();
 
-        List<OreDatabase> oreList = oreHandler.GetAllItems();
-        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
-
-        if (oreSpawner != null && oreList != null)
+        if (oreSpawner != null)
         {
-            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Day);
+            oreSpawner.SpawnResources(TimeManager.Instance.Day);
             spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.GetParentTransform()));
-        }
-
-        if (jewelSpawner != null && jewelList != null)
-        {
-            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Day);
-            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.GetParentTransform()));
         }
 
         _mapResources[currentMapIndex] = spawnedObjects;
@@ -164,7 +147,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
     private void ClearAll()
     {
         ClearChildren(oreSpawner?.GetParentTransform());
-        ClearChildren(jewelSpawner?.GetParentTransform());
         _mapResources.Clear();
     }
 
@@ -189,7 +171,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
     {
         currentMapPosition = mapPosition;
         oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
-        jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
     }
 
     /// <summary>
@@ -216,7 +197,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         // 현재 맵의 리소스 데이터 저장
         List<ResourceState> saved = new();
         saved.AddRange(oreSpawner.SaveCurrentStates(false));
-        saved.AddRange(jewelSpawner.SaveCurrentStates(false));
 
         mineData = new MineSaveData();
         mineData.mapId = currentMapIndex;

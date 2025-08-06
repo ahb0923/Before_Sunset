@@ -93,11 +93,15 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
     public void OpenUI()
     {
+        if (_selectedTower != null) 
+            _selectedTower.ui.OnAttackArea();
         _rect.OpenAtCenter();
     }
 
     public void CloseUI()
     {
+        if (_selectedTower != null)
+            _selectedTower.ui.OffAttackArea();
         _rect.CloseAndRestore();
     }
    

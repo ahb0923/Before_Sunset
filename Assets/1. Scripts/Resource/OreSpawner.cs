@@ -4,10 +4,4 @@ using UnityEngine;
 
 public class OreSpawner : ResourceSpawner<OreDatabase>
 {
-    private void Awake()
-    {
-        GetId = data => data.id;
-        GetSpawnStage = data => data.spawnStage;
-        GetProbability = data => data.spawnProbability;
-    }
 }

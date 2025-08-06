@@ -77,7 +77,11 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         _currentHP = state.HP;
         transform.position = state.Position;
     }
-
+    /// <summary>
+    /// 추후 기획이 방어력 추가로 변경된다면 사용
+    /// </summary>
+    /// <param name="pickaxePower"></param>
+    /// <returns></returns>
     public bool CanBeMined(int pickaxePower)
     {
         if (_data == null) return false;

@@ -85,7 +85,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         attackSensor.Init(this);
         InitAttackStrategy();
         buildInfo.Init(towerId, buildSize);
-        ui.ToggleAttackArea();
+        ui.OffAttackArea();
     }
 
     public void InitAttackStrategy()
@@ -153,7 +153,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     /// </summary>
     public void OnReturnToPool()
     {
-        ui.ToggleAttackArea();
+        ui.OffAttackArea();
         ai.SetState(TOWER_STATE.None, true);
         ui.icon.color = Color.white;
         gameObject.SetActive(false);
@@ -163,14 +163,19 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     public void Interact()
     {
         // 파괴 옵션 on일 경우
-        if (BuildManager.Instance.IsOnDestroy)
+        if (BuildManager.Instance.IsOnDestroy && !UIManager.Instance.DismantleUI.isActiveAndEnabled)
         {
-            UIManager.Instance.DismantleUI.OpenDismantleUI(this);
+            UIManager.Instance.DismantleUI.OpenDismantleUI(InteractManager.Instance.GetCurrentTarget());
+            Debug.Log("dd : "+InteractManager.Instance.GetCurrentTarget());
             return;
         }
-        ui.ToggleAttackArea();
-        AudioManager.Instance.PlaySFX("UpgradeTower");
-        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+
+        if (!UIManager.Instance.UpgradeUI.isActiveAndEnabled)
+        {
+            ui.OnAttackArea();
+            AudioManager.Instance.PlaySFX("UpgradeTower");
+            UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
+        }
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
@@ -211,6 +216,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     //        }
     //    }
     //}
+
     /// <summary>
     /// 파괴 메서드
     /// </summary>
@@ -231,7 +237,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         // 퀘스트 매니지먼트
         QuestManager.Instance.AddQuestAmount(QUEST_TYPE.DestroyBuilding);
 
-        ui.ToggleAttackArea();
+        ui.OffAttackArea();
 
         // 실제 파괴 처리
         statHandler.OnDamaged(new Damaged

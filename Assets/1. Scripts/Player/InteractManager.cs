@@ -20,12 +20,8 @@ public class InteractManager : MonoSingleton<InteractManager>
     private BoxCollider2D _playerCollider;
     private IInteractable _currentTarget;
 
-    private Texture2D _currentCursor;
-    private Vector2 _currentHotspot;
 
     private Vector2 _defaultHotspot = Vector2.zero;
-    private Vector2 _interactHotspot;
-    private Vector2 _outOfRangeHotspot;
 
     [SerializeField ] private InteractImage aimObject;
     private Texture2D currCursorImage;
@@ -37,8 +33,6 @@ public class InteractManager : MonoSingleton<InteractManager>
             DontDestroyOnLoad(this.gameObject);
 
         _mainCamera = Camera.main;
-        _interactHotspot = GetCursorCenter(interactCursor);
-        _outOfRangeHotspot = GetCursorCenter(outOfRangeCursor);
 
         if(defaultCursor != null)
             currCursorImage = defaultCursor;
@@ -85,12 +79,11 @@ public class InteractManager : MonoSingleton<InteractManager>
         }
         else
         {
-            //SetCursor(defaultCursor, _defaultHotspot, null);
             aimObject.gameObject.SetActive(false);
         }
     }
 
-    public void SetCursorImage(bool isDestroy)
+    public void SetCursorDestroyImage(bool isDestroy)
     {
         if (isDestroy) 
             currCursorImage = dismantleCursor;
@@ -101,18 +94,16 @@ public class InteractManager : MonoSingleton<InteractManager>
     /// <summary> 상호 작용 시 커서 세팅 </summary>
     private void HandleInteractable(IInteractable interactable)
     {
-        float range = (interactable is OreController || interactable is JewelController) ? 1.5f : 5.0f;
+        float range = (interactable is OreController) ? 1.5f : 5.0f;
 
         if (interactable.IsInteractable(DefenseManager.Instance.mainPlayer.transform.position, range, _playerCollider))
         {
-            //SetCursor(interactCursor, _interactHotspot, interactable);
             if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
             aimObject.SetNearCursor(interactable);
         }
         else
         {
-            //SetCursor(outOfRangeCursor, _outOfRangeHotspot, null);
             if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
             aimObject.SetFarCursor(interactable);
@@ -122,18 +113,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     /// <summary> 커서 설정 + 현재 타겟 갱신 </summary>
     private void SetCursor(Texture2D texture, Vector2 hotspot, IInteractable target)
     {
-        /*
-        if (_currentCursor == texture && _currentHotspot == hotspot)
-        {
-            if (target != null) _currentTarget = target; // null이면 유지
-            return;
-        }*/
-
-        //if ( BuildManager.Instance.IsOnDestroy) { texture = dismantleCursor; }
-
         Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
-        _currentCursor = texture;
-        _currentHotspot = hotspot;
         _currentTarget = target;
     }
 
