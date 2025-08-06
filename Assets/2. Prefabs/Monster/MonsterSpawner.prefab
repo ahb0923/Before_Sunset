@@ -222,7 +222,7 @@ Transform:
   m_Children:
   - {fileID: 2929485549909815702}
   - {fileID: 727782791731575410}
-  - {fileID: 7067322357703920838}
+  - {fileID: 76014649345318817}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4890797558510168791
@@ -244,7 +244,7 @@ MonoBehaviour:
   - {fileID: 2020608704552248769}
   _stageToUnlockDoor: 030000000600000009000000
   _monsterParent: {fileID: 727782791731575410}
---- !u!1001 &5772547532492192868
+--- !u!1001 &3676652204647476995
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -270,15 +270,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3605159371608125602, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3605159371608125602, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3605159371608125602, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3605159371608125602, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -301,8 +301,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
---- !u!4 &7067322357703920838 stripped
+--- !u!4 &76014649345318817 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3605159371608125602, guid: a2cfe024d0e0c4e4d9d56d3581cfe821, type: 3}
-  m_PrefabInstance: {fileID: 5772547532492192868}
+  m_PrefabInstance: {fileID: 3676652204647476995}
   m_PrefabAsset: {fileID: 0}

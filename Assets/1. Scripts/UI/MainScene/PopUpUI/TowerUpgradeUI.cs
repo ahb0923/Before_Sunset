@@ -22,6 +22,7 @@ public class TowerUpgradeUI : MonoBehaviour, ICloseableUI
 
     private RectTransform _rect;
     private BaseTower _selectedTower;
+    public BaseTower SelectedTower ()=> _selectedTower;
 
     private const string TARGET_NAME_TEXT = "TargetNameText";
     private const string TARGET_INFO_TEXT = "TargetInfoText";

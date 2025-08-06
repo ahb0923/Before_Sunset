@@ -201,6 +201,15 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 
     public void OnReturnToPool()
     {
+        if (UIManager.Instance.SmelterUI.CurrentSmelter() == this && UIManager.Instance.SmelterUI.isActiveAndEnabled)
+        {
+            UIManager.Instance.SmelterUI.Close();
+        }
+
+        if (UIManager.Instance.DismantleUI.SelectedSmelter() == this && UIManager.Instance.DismantleUI.isActiveAndEnabled)
+        {
+            UIManager.Instance.DismantleUI.Close();
+        }
     }
 
     [ContextMenu("부숴버리기~")]

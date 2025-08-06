@@ -25,6 +25,8 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
     private const string RECEIVE_BUTTON = "ReceiveButton";
     private const string CLOSE_BUTTON = "CloseSmelterButton";
 
+    public Smelter CurrentSmelter() => _currentSmelter;
+
     private void Reset()
     {
         _smelterNameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, SMELTER_NAME_TEXT);

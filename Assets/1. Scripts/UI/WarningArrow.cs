@@ -12,9 +12,21 @@ public enum WARNING_DIRECTION
 public class WarningArrow : MonoBehaviour
 {
     [SerializeField] private Transform UpSide;
+    private SpriteRenderer[] _upSpriters;
     [SerializeField] private Transform DownSide;
+    private SpriteRenderer[] _downSpriters;
     [SerializeField] private Transform LeftSide;
+    private SpriteRenderer[] _leftSpriters;
     [SerializeField] private Transform RightSide;
+    private SpriteRenderer[] _rightSpriters;
+
+    [SerializeField] private Color _originColor;
+    [SerializeField] private Color _displayColor;
+    [SerializeField] private float _informDuration = 5f;
+    [SerializeField] private float _warningDuration = 0.5f;
+    [SerializeField] private float _changingTime = 0.5f;
+
+    private Coroutine[] _displayCoroutines = new Coroutine[4];
 
     private void Reset()
     {
@@ -24,32 +36,97 @@ public class WarningArrow : MonoBehaviour
         RightSide = Helper_Component.FindChildByName(transform, "RightSide");
     }
 
+    private void Awake()
+    {
+        _upSpriters = UpSide.GetComponentsInChildren<SpriteRenderer>();
+        _downSpriters = DownSide.GetComponentsInChildren<SpriteRenderer>();
+        _leftSpriters = LeftSide.GetComponentsInChildren<SpriteRenderer>();
+        _rightSpriters = RightSide.GetComponentsInChildren<SpriteRenderer>();
+    }
+
     private void Start()
     {
         OffAllWarning();
     }
 
     /// <summary>
-    /// 특정방향 워닝 사인 On
+    /// 다음 스테이지의 몬스터 스폰 방향 표시
     /// </summary>
-    /// <param name="dir">나오는 방향</param>
-    public void OnWarning(WARNING_DIRECTION dir)
+    public void DisplayMonsterSpawnDirection(WARNING_DIRECTION dir, bool isWarning)
     {
+        Transform arrow = null;
+        SpriteRenderer[] renderers = null;
+
         switch (dir)
         {
             case WARNING_DIRECTION.Up:
-                UpSide.gameObject.SetActive(true);
+                arrow = UpSide;
+                renderers = _upSpriters;
                 break;
+
             case WARNING_DIRECTION.Down:
-                DownSide.gameObject.SetActive(true);
+                arrow = DownSide;
+                renderers = _downSpriters;
                 break;
+
             case WARNING_DIRECTION.Left:
-                LeftSide.gameObject.SetActive(true);
+                arrow = LeftSide;
+                renderers = _leftSpriters;
                 break;
+
             case WARNING_DIRECTION.Right:
-                RightSide.gameObject.SetActive(true);
+                arrow = RightSide;
+                renderers = _rightSpriters;
                 break;
         }
+
+        if (_displayCoroutines[(int)dir] != null)
+            StopCoroutine(_displayCoroutines[(int)dir]);
+        _displayCoroutines[(int)dir] = StartCoroutine(C_DisplayWithDurationi(arrow, renderers, isWarning , dir));
+    }
+
+    /// <summary>
+    /// 지속 시간 동안 화살표 활성화 후 비활성화
+    /// </summary>
+    private IEnumerator C_DisplayWithDurationi(Transform arrow, SpriteRenderer[] renderers, bool isWarning, WARNING_DIRECTION dir)
+    {
+        if(arrow == null || renderers == null)
+            yield break;
+        
+        arrow.gameObject.SetActive(true);
+        for (int i = 0; i < (isWarning ? 2 : 1); i++)
+        {
+            // 서서히 보이기
+            float timer = 0f;
+            while(timer <= _changingTime)
+            {
+                foreach (SpriteRenderer renderer in renderers)
+                {
+                    float alpha = isWarning ? _originColor.a : _displayColor.a;
+                    renderer.color = isWarning ? _originColor.WithAlpha(timer / _changingTime * alpha) : _displayColor.WithAlpha(timer / _changingTime * alpha);
+                }
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            yield return Helper_Coroutine.WaitSeconds(isWarning ? _warningDuration : _informDuration);
+
+            // 서서히 안 보이기
+            timer = _changingTime;
+            while (timer >= 0)
+            {
+                foreach (SpriteRenderer renderer in renderers)
+                {
+                    float alpha = isWarning ? _originColor.a : _displayColor.a;
+                    renderer.color = isWarning ? _originColor.WithAlpha(timer / _changingTime * alpha) : _displayColor.WithAlpha(timer / _changingTime * alpha);
+                }
+                timer -= Time.deltaTime;
+                yield return null;
+            }
+        }
+        arrow.gameObject.SetActive(false);
+
+        _displayCoroutines[(int)dir] = null;
     }
 
     /// <summary> 모든 워닝사인 OFF </summary>
@@ -61,6 +138,7 @@ public class WarningArrow : MonoBehaviour
         RightSide.gameObject.SetActive(false);
     }
 
+    #region For Editor
     [ContextMenu("up")]
     public void Upside()
     {
@@ -87,4 +165,5 @@ public class WarningArrow : MonoBehaviour
     {
         OffAllWarning();
     }
+    #endregion
 }

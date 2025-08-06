@@ -69,6 +69,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         Day = day;
 
         UIManager.Instance.GameTimeUI.SetDayText();
+        DefenseManager.Instance.MonsterSpawner.SetMonsterSpawnPoints();
     }
 
     /// <summary>
@@ -90,6 +91,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
         UIManager.Instance.AutoSaveLoadSlot.Save();
         UIManager.Instance.GameTimeUI.SetDayText();
+        DefenseManager.Instance.MonsterSpawner.SetMonsterSpawnPoints();
     }
 
     /// <summary>
