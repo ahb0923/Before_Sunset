@@ -275,7 +275,7 @@ public class PlayerController : MonoBehaviour
 
         IInteractable target = InteractManager.Instance.GetCurrentTarget();
 
-        if (target != null && !(target is OreController) && !(target is JewelController))
+        if (target != null && !(target is OreController))
         {
             target = null;
         }
@@ -291,7 +291,7 @@ public class PlayerController : MonoBehaviour
         _player.Animator.SetTrigger(BasePlayer.SWING);
 
         // 채광 효과음
-        if (target == null || !(target is OreController) && !(target is JewelController) && !target.IsInteractable(_player.transform.position, 5f, _player.PlayerCollider))
+        if (target == null || !(target is OreController) && !target.IsInteractable(_player.transform.position, 5f, _player.PlayerCollider))
         {
             // 헛스윙
             AudioManager.Instance.PlaySFX("SwingMiss");
@@ -321,7 +321,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        float range = (target is OreController || target is JewelController) ? 1.5f : 5.0f;
+        float range = (target is OreController) ? 1.5f : 5.0f;
 
         if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
             return;
@@ -345,18 +345,6 @@ public class PlayerController : MonoBehaviour
             }
 
             ore.Mine(_player.Stat.Pickaxe.damage);
-        }
-        else if (target is JewelController jewel)
-        {
-            int wallLayerMask = LayerMask.GetMask("Wall");
-            Vector2 playerPos = _player.transform.position;
-            Vector2 jewelPos = jewel.transform.position;
-
-            if (Physics2D.Linecast(playerPos, jewelPos, wallLayerMask))
-            {
-                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
-                return;
-            }
         }
 
         target.Interact();

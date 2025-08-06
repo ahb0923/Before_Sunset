@@ -15,6 +15,6 @@ public interface IResourceStateSavable
 {
     ResourceState SaveState();
     void LoadState(ResourceState state);
-    void OnGetFromPool();
-    void OnReturnToPool();
+    //void OnGetFromPool();
+    //void OnReturnToPool();
 }

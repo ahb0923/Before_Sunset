@@ -19,7 +19,6 @@ public class ItemDropManager : MonoSingleton<ItemDropManager>, ISaveable
         for(int i=0; i<amount; i++)
         {
             GameObject dropObject = PoolManager.Instance.GetFromPool(id, dropTransform.position, transform);
-            dropObject.GetComponent<JewelController>()?.Interact();
 
             if (isMove)
             {
@@ -86,7 +85,6 @@ public class ItemDropManager : MonoSingleton<ItemDropManager>, ISaveable
         foreach (var item in data.dropItems)
         {
             GameObject obj = PoolManager.Instance.GetFromPool(item.id, item.position, transform);
-            obj.GetComponent<JewelController>()?.Interact();
         }
     }
 }

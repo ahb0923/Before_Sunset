@@ -66,10 +66,11 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
                 foreach (var obj in oldResources)
                 {
                     if (obj == null) continue;
+                    /*
                     if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
                     {
                         resource.OnReturnToPool();
-                    }
+                    }*/
                     PoolManager.Instance.ReturnToPool(obj.GetComponent<IPoolable>().GetId(), obj);
                 }
                 oldResources.Clear();
