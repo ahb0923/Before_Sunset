@@ -105,6 +105,7 @@ public class StartSceneUI : MonoBehaviour
         // 로고 굴리기
         logoSequence.Append(_logoRect.DORotate(_originalRot, _duration2));
         logoSequence.Join(_logoRect.DOAnchorPos(_originalPos, _duration2));
+        logoSequence.InsertCallback(1.5f, PlayBGM);
         // 버튼 페이드인
         logoSequence.Insert(2.5f,_buttonContainer.DOAnchorPos(new Vector2(600f, 0), _duration));
         logoSequence.Insert(2.5f,_newGameText.DOFade(1f, _duration));
@@ -119,10 +120,15 @@ public class StartSceneUI : MonoBehaviour
                 logoSequence.Kill();
                 EnableButtons();
                 RaycastTarget(true);
-                AudioManager.Instance.PlayBGM("Main");
             });
         
         GlobalState.HasPlayedIntro = true;
+    }
+
+    private void PlayBGM()
+    {
+        AudioManager.Instance.StopAllSound();
+        AudioManager.Instance.PlayBGM("Main");
     }
 
     private void ResetTitle()
