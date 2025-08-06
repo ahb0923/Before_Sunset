@@ -28,6 +28,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnDestroyModeStarted(InputAction.CallbackContext context)
     {
+        if (UIManager.Instance.UpgradeUI.isActiveAndEnabled) return;
+
         BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
         InteractManager.Instance.SetCursorDestroyImage(BuildManager.Instance.IsOnDestroy);
     }
