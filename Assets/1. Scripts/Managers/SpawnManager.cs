@@ -44,14 +44,8 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         return container?.transform;
     }
 
-    public void OnMapChanged(Vector3 mapPosition, int mapIndex, Vector2[] spawnAreas)
+    public void OnMapChanged(Vector3 mapPosition, int mapIndex)
     {
-        if (spawnAreas == null || spawnAreas.Length < 2)
-        {
-            Debug.LogError("스폰 영역 정보가 부족합니다.");
-            return;
-        }
-
         // 현재 맵 상태 저장
         if (currentMapIndex != -1)
         {
@@ -79,7 +73,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 
         currentMapIndex = mapIndex;
         currentMapPosition = mapPosition;
-        SetMapPositionAndArea(mapPosition, spawnAreas[0], spawnAreas[1]);
+        SetMapPositionAndArea(mapPosition);
 
         if (currentMapIndex == 0)
         {
@@ -140,8 +134,7 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         ClearAll();
         _mapResources.Clear();
         _mapResourceStates.Clear();
-
-        SetMapPositionAndArea(Vector3.zero, Vector2.zero, Vector2.zero);
+        SetMapPositionAndArea(Vector3.zero);
     }
 
     private void ClearAll()
@@ -167,10 +160,10 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         }
     }
 
-    public void SetMapPositionAndArea(Vector3 mapPosition, Vector2 oreAreaSize, Vector2 jewelAreaSize)
+    public void SetMapPositionAndArea(Vector3 mapPosition)
     {
         currentMapPosition = mapPosition;
-        oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
+        oreSpawner?.SetSpawnCenter(mapPosition);
     }
 
     /// <summary>

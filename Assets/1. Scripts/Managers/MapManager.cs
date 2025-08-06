@@ -207,7 +207,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             _player.position = spawnPos;
 
             Vector2[] smallSpawnAreas = new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
-            _spawnManager?.OnMapChanged(_baseMap.transform.position, 0, smallSpawnAreas);
+            _spawnManager?.OnMapChanged(_baseMap.transform.position, 0);
         }
         else if (_activeMapInstances.TryGetValue(targetIndex, out var nextMap))
         {
@@ -217,8 +217,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             _player.position = spawnPos;
 
             Vector2[] spawnAreas = GetSpawnAreasByMapType(_mapPrefabIdMap[targetIndex]);
-            _spawnManager?.SetMapPositionAndArea(nextMap.transform.position, spawnAreas[0], spawnAreas[1]);
-            _spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex, spawnAreas);
+            _spawnManager?.SetMapPositionAndArea(nextMap.transform.position);
+            _spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex);
         }
 
         if (addToHistory)

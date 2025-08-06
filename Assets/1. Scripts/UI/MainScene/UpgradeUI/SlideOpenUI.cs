@@ -13,7 +13,8 @@ public class SlideOpenUI : MonoBehaviour
     [Header("설정")]
     [SerializeField] private float _animationDuration = 1f;
     [SerializeField] private float _rotationDuration = 0.5f;
-    [SerializeField] private float _slotHeight = 100f;
+    [SerializeField] private float _slotHeight = 120f;
+    [SerializeField] private float _space = 10f;
 
     private bool _isOpen = false;
     private Tween _windowTween;
@@ -83,6 +84,6 @@ public class SlideOpenUI : MonoBehaviour
     private float GetTargetHeight()
     {
         int childCount = _upgradeContainer.transform.childCount;
-        return childCount * _slotHeight + _layoutElement.minHeight;
+        return childCount * _slotHeight + _layoutElement.minHeight + _space;
     }
 }
