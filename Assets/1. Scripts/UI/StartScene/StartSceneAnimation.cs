@@ -126,12 +126,12 @@ public class StartSceneAnimation : MonoBehaviour
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Play();
         ShakeCamera(0.2f, 0.1f, 0.2f);
+        ShakeSound();
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Play();
         ShakeCamera(0.2f, 0.1f, 0.2f);
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        ShakeSound();
         yield return new WaitWhile(() => _dustParticleSystem.IsAlive());
         var main = _dustParticleSystem.main;
         main.duration = 9f;

@@ -69,6 +69,7 @@ public class OpeningScene : MonoBehaviour
         _fadeInGo.SetActive(false);
         _blinkGo.SetActive(false);
         InitTexts();
+        AudioManager.Instance.StopAllSound();
         StartCoroutine(C_StartOpening());
     }
 
