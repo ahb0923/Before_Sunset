@@ -9,7 +9,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private GameObject _baseMap;
     private Transform _player;
-    private Transform _core;
+    private Transform _gateRune;
 
     [SerializeField] private float _mapSpacing = 100f;
 
@@ -43,11 +43,11 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             else
                 Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 이름이 'Player'인지 확인하세요.");
         }
-        if (_core == null)
+        if (_gateRune == null)
         {
-            var coreGO = GameObject.Find("Core");
-            if (coreGO != null)
-                _core = coreGO.transform;
+            var gateRuneGO = GameObject.Find("GateRune");
+            if (gateRuneGO != null)
+                _gateRune = gateRuneGO.transform;
             else
                 Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
         }
@@ -116,19 +116,17 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
 
         MoveToMap(0, false);
-        _player.position = GetRandomPositionNearCore(1.0f);
+        _player.position = GetRandomPositionNearCore();
     }
 
-    private Vector3 GetRandomPositionNearCore(float radius = 1.0f)
+    private Vector3 GetRandomPositionNearCore()
     {
-        if (_core == null)
+        if (_gateRune == null)
         {
-            Debug.LogWarning("Core가 설정되지 않아 기본 위치 반환");
             return _baseMap.transform.position;
         }
 
-        Vector2 offset = Random.insideUnitCircle.normalized * Random.Range(0.3f, radius);
-        return _core.position + new Vector3(offset.x, offset.y, 0f);
+        return _gateRune.position + new Vector3(0f, -0.2f, 0f);
     }
 
     // 맵이동
