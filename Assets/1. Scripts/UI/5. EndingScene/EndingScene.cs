@@ -84,6 +84,7 @@ public class EndingScene : MonoBehaviour
         _endingCreditText.gameObject.SetActive(false);
         _endingCredit.gameObject.SetActive(false);
         InitTexts();
+        InteractManager.Instance.AimObject.gameObject.SetActive(false);
         AudioManager.Instance.SetSFXVolume(1f);
         AudioManager.Instance.SetBGMVolume(1f);
         StartCoroutine(C_StartEnding());

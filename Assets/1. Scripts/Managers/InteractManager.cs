@@ -17,6 +17,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     public LayerMask interactableLayerMask = -1;
 
     [SerializeField ] private InteractImage aimObject;
+    public InteractImage AimObject { get => aimObject; }
 
     private Camera _mainCamera;
     private BoxCollider2D _playerCollider;
