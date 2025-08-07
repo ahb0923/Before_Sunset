@@ -42,8 +42,6 @@ public class BasePlayer : MonoBehaviour
         InputHandler.Init(this);
 
         IsInBase = true;
-
-        DefenseManager.Instance.mainPlayer = gameObject;
     }
 
     private void LateUpdate()

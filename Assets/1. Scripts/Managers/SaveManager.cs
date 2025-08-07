@@ -14,15 +14,11 @@ public class SaveManager : MonoSingleton<SaveManager>
 {
     private const string SAVE_KEY_OFFSET = "SaveSlot_";
 
-    private BasePlayer _player;
-
     private HashSet<ISaveable> saveables = new HashSet<ISaveable>();
 
     protected override void Awake()
     {
         base.Awake();
-
-        _player = FindObjectOfType<BasePlayer>();
     }
 
     private void Start()
@@ -120,8 +116,8 @@ public class SaveManager : MonoSingleton<SaveManager>
 
         // 플레이어 위치 로드
         MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
-        _player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
-        _player.transform.position = data.playerPosition;
+        MapManager.Instance.Player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
+        MapManager.Instance.Player.transform.position = data.playerPosition;
 
         Debug.Log($"[SaveManager] {globalIndex}번 슬롯에서 게임 불러오기 완료");
     }
@@ -134,7 +130,10 @@ public class SaveManager : MonoSingleton<SaveManager>
     public void LoadGameFromSlot(int slotIndex = -1)
     {
         GlobalState.Index = slotIndex;
-        LoadingSceneController.LoadScene("MainScene");
+        if(GlobalState.HasPlayedOpening)
+            LoadingSceneController.LoadScene("MainScene");
+        else
+            LoadingSceneController.LoadScene("OpeningScene");
     }
 
     /// <summary>

@@ -31,10 +31,6 @@ public class AudioManager : MonoSingleton<AudioManager>
             DontDestroyOnLoad(gameObject);
         
         LoadAllClips();
-    }
-
-    private void Start()
-    {
         InitBGM();
         InitSFXPool();
     }
