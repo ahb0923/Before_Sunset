@@ -189,10 +189,10 @@ public class StartSceneAnimation : MonoBehaviour
     {
         float elapsed = 0f;
         bool isPlayed = false;
-        while (elapsed < 0.5f)
+        while (elapsed < 0.3f)
         {
             elapsed += Time.deltaTime;
-            float amount = Mathf.Clamp01(elapsed/0.7f);
+            float amount = Mathf.Clamp01(elapsed/0.3f);
             SetFill(sprite1, amount);
             SetFill(sprite2, amount);
             if (sprite3 != null)
@@ -200,7 +200,7 @@ public class StartSceneAnimation : MonoBehaviour
                 SetFill(sprite3, amount);
             }
 
-            if (elapsed >= 0.1f && !isPlayed)
+            if (elapsed >= 0.05f && !isPlayed)
             {
                 ExplosionSound();
                 isPlayed = true;

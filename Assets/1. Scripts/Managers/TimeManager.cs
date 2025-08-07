@@ -1,5 +1,4 @@
 using UnityEngine;
-using NaughtyAttributes;
 
 public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
@@ -72,12 +71,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             UIManager.Instance.ResultUI.Open(Day - 1, true);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
-    }
-
-    [Button]
-    private void AddDailyTime()
-    {
-        _dailyTimer = 230f;
     }
 
     /// <summary>
