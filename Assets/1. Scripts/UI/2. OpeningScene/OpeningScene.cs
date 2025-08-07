@@ -70,6 +70,8 @@ public class OpeningScene : MonoBehaviour
         _blinkGo.SetActive(false);
         InitTexts();
         AudioManager.Instance.StopAllSound();
+        AudioManager.Instance.SetSFXVolume(1f);
+        AudioManager.Instance.SetBGMVolume(1f);
         StartCoroutine(C_StartOpening());
     }
 
