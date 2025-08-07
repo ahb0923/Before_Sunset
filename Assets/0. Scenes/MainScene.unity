@@ -1195,6 +1195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3597868014110273802, guid: 77c22645ff1152141853b782277d3133, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3818716589062175449, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -1461,19 +1465,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 265
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -70
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
