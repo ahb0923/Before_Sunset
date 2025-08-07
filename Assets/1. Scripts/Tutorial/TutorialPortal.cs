@@ -25,7 +25,8 @@ public class TutorialPortal : MonoBehaviour
     {
         if (collision.TryGetComponent<BasePlayer>(out var player))
         {
-            StartCoroutine(C_MovePlayer(player));
+            if(QuestManager.Instance.CurQuest?.Type == QUEST_TYPE.MoveToMine)
+                StartCoroutine(C_MovePlayer(player));
         }
     }
 }
