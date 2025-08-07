@@ -1,7 +1,13 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseMonster : MonoBehaviour, IPoolable
 {
+    // 모든 몬스터들이 공유하는 전역변수, 몬스터들만의 고유 식별 ID
+    private static int _nextInstanceId = 0;
+    public int SpawnInstanceId { get; private set; }
+
     public static readonly int MOVE = Animator.StringToHash("Move");
     public static readonly int ATTACK = Animator.StringToHash("Attack");
     public static readonly int X = Animator.StringToHash("DirX");
@@ -26,11 +32,18 @@ public class BaseMonster : MonoBehaviour, IPoolable
 
     public bool IsDead => Ai.CurState == MONSTER_STATE.Dead;
 
+    // 자신을 타게팅하고 있는 타워들
+    private HashSet<TowerAttackSensor> _registeredSensors = new();
+
+    // 디버프 상태인지 체크
+    private Dictionary<DEBUFF_TYPE, BaseDebuff> _activeDebuffs = new();
+
+    public Action<Damaged> OnBeforeDamaged; 
+
     private void LateUpdate()
     {
         if (Spriter == null || Collider == null) return;
-
-        float yPos = Collider.offset.y - Collider.size.y / 2;
+        float yPos = Collider.offset.y - Collider.size.y * 0.5f;
         RenderUtil.SetSortingOrderByY(Spriter, yPos);
     }
 
@@ -59,7 +72,9 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnGetFromPool()
     {
+        SpawnInstanceId = ++_nextInstanceId;
         Stat.SetFullHp();
+        Stat.SetSpeed();
         HpBar.SetFullHpBar();
         Ai.InitExploreState();
     }
@@ -69,9 +84,9 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void OnReturnToPool()
     {
+        ForceRemoveAllDebuffs();
+        NotifyDeath();
         Ai.ChangeState(MONSTER_STATE.Invalid);
-        Detector.DetectedObstacles.Clear();
-        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(this);
     }
 
     /// <summary>
@@ -80,5 +95,74 @@ public class BaseMonster : MonoBehaviour, IPoolable
     public void SetMonsterTargeting(bool isAttackCore)
     {
         Detector.SetAttackCore(isAttackCore);
+    }
+
+    /// <summary>
+    /// 몬스터가 죽었을 때 자신을 감지하던 모든 타워에 알림
+    /// </summary>
+    public void NotifyDeath()
+    {
+        Debug.Log($"[몬스터] 죽음 알림 시작: {name} | 감지 센서 수: {_registeredSensors.Count}");
+        foreach (var sensor in _registeredSensors)
+        {
+            Debug.Log($"[몬스터] → 센서에 알림: {sensor.name}");
+            sensor.RemoveEnemy(gameObject);
+        }
+        _registeredSensors.Clear();
+    }
+
+    /// <summary>
+    /// 타워 공격목록 해시셋에 자신 등록
+    /// </summary>
+    /// <param name="sensor"></param>
+    public void RegisterSensor(TowerAttackSensor sensor)
+    {
+        _registeredSensors.Add(sensor);
+    }
+
+    /// <summary>
+    /// 타워 공격목록 해시셋에 자신 제거 
+    /// </summary>
+    /// <param name="sensor"></param>
+    public void UnregisterSensor(TowerAttackSensor sensor)
+    {
+        _registeredSensors.Remove(sensor);
+    }
+
+    public bool HasDebuff(DEBUFF_TYPE type)
+    {
+        return _activeDebuffs.ContainsKey(type);
+    }
+
+    public void RegisterDebuff(BaseDebuff debuff)
+    {
+        var type = debuff.DebuffType;
+
+        if (_activeDebuffs.ContainsKey(type))
+        {
+            _activeDebuffs[type].Remove();
+            PoolManager.Instance.ReturnToPool(_activeDebuffs[type].DebuffId, _activeDebuffs[type].gameObject);
+        }
+
+        _activeDebuffs[type] = debuff;
+    }
+
+    public void UnregisterDebuff(BaseDebuff debuff)
+    {
+        if (_activeDebuffs.ContainsKey(debuff.DebuffType))
+        {
+            _activeDebuffs.Remove(debuff.DebuffType);
+        }
+    }
+    public void ForceRemoveAllDebuffs()
+    {
+        var debuffs = new List<BaseDebuff>(_activeDebuffs.Values);
+
+        foreach (var debuff in debuffs)
+        {
+            debuff.Remove();
+            PoolManager.Instance.ReturnToPool(debuff.DebuffId, debuff.gameObject);
+        }
+        _activeDebuffs.Clear();
     }
 }

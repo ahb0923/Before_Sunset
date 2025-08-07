@@ -8,6 +8,13 @@ public class AttackStrategy_HealTower : IAttackStrategy
     {
         float radius = tower.statHandler.AttackRange;
         int healAmount = Mathf.RoundToInt(tower.statHandler.AttackPower);
+        Vector3 centerPos = tower.transform.position;
+
+        if (tower.ai.CurState == TOWER_STATE.Destroy)
+            yield break;
+
+        tower.ui.animator.SetTrigger("IsAttack");
+        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(50f / 200f, 80f / 255f, 50f / 255f, 50f / 255f), tower.statHandler.AttackRange + 0.5f);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(tower.transform.position, radius, LayerMask.GetMask("Tower"));
 
@@ -16,6 +23,8 @@ public class AttackStrategy_HealTower : IAttackStrategy
         {
             if (hit.gameObject == tower.gameObject) continue;
 
+            var towerAI = hit.GetComponent<TowerAI>();
+            if (towerAI != null && towerAI.CurState == TOWER_STATE.Destroy) continue;
 
             var hitStat = Helper_Component.GetComponent<TowerStatHandler>(hit);
             if (hitStat != null && hitStat.CurrHp < hitStat.MaxHp)
@@ -42,7 +51,7 @@ public class AttackStrategy_HealTower : IAttackStrategy
             //Debug.Log($"힐타워: {healables[i].name} 체력 {healAmount} 회복");
         }
 
-        yield return new WaitForSeconds(tower.statHandler.AttackSpeed);
+        yield return null;
     }
 }
 

@@ -22,6 +22,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private Vector2 _moveDir;
     private WaitForFixedUpdate _waitFixedDeltaTime = new WaitForFixedUpdate();
 
+    [SerializeField] private float _deadAnimDuration = 0.5f;
+
     protected override MONSTER_STATE InvalidState => MONSTER_STATE.Invalid;
 
     public void Init(BaseMonster monster, Animator animator)
@@ -63,7 +65,8 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         AddState(MONSTER_STATE.Dead, new StateElem
         {
-            Entered = Dead
+            Entered = () => StartCoroutine(C_Dead()),
+            Exited = () => _monster.Spriter.color = _monster.Spriter.color.WithAlpha(1f)
         });
     }
 
@@ -78,7 +81,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     }
 
     /// <summary>
-    /// 타겟과 경로에 대한 탐색 진행 
+    /// 타겟과 경로에 대한 탐색 진행
     /// </summary>
     private IEnumerator C_Explore()
     {
@@ -139,7 +142,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         // 3. 코어에서 가까운 거리 순으로 정렬된 리스트에서 해당 몬스터에게 가까운 순으로 순차적으로 경로 탐색 진행
         int count = 0;
-        while(count < 30)
+        while(count < 1000)
         {
             // 인터럽트 발생하면, 코루틴 탈출
             if (IsInterrupted)
@@ -195,13 +198,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             if (IsInterrupted)
             {
                 yield break;
-            }
-
-            // 일시 정지 시에는 이동 중지
-            if (TimeManager.Instance.IsGamePause)
-            {
-                yield return _waitFixedDeltaTime;
-                continue;
             }
 
             // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
@@ -261,6 +257,10 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             SetMonsterDirection(Target.position);
             _animator?.SetTrigger(BaseMonster.ATTACK);
 
+            // 공격 효과음 재생
+            AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Attack");
+
+
             // 공격 타입에 따른 원/근거리 공격
             switch (_monster.Stat.AttackType)
             {
@@ -304,7 +304,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // Attack Per Sec 동안 기다림
-            yield return Helper_Coroutine.C_WaitIfNotPaused(_monster.Stat.AttackPerSec, () => TimeManager.Instance.IsGamePause);
+            yield return Helper_Coroutine.WaitSeconds(_monster.Stat.AttackPerSec);
         }
 
         // 타겟이 없어지거나 멀어지면, 다시 탐색 상태 전환
@@ -314,15 +314,33 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// <summary>
     /// 사망 애니메이션 & 풀링 반환
     /// </summary>
-    private void Dead()
+    private IEnumerator C_Dead()
     {
-        // 몬스터가 사망했으므로, 현재 몬스터를 노드에서 제외
-        _path?.ReleaseMonsterCount();
+        _path?.ReleaseMonsterCount(); // 현재 몬스터를 경로 상에서 제외
+        _monster.NotifyDeath(); // 자신을 감지하던 모든 타워에 몬스터 사망 알림
+        _monster.Detector.DetectedObstacles.Clear(); // 몬스터가 감지한 타워 초기화
+        AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Dead"); // 사망 효과음 재생
 
-        // 사망 애니메이션 처리
-        Debug.Log($"{_monster.Stat.MonsterName} 몬스터 사망");
+        yield return C_DeadAnimation();
 
+        DefenseManager.Instance.MonsterSpawner.RemoveDeadMonster(_monster); // 몬스터 스포너에게 몬스터 사망 알림
+        RewardSystem.Instance.GenerateRewards(_monster.GetId(), transform);
         PoolManager.Instance.ReturnToPool(_monster.GetId(), gameObject);
+    }
+
+    /// <summary>
+    /// 점점 투명이 되는 사망 애니메이션
+    /// </summary>
+    private IEnumerator C_DeadAnimation()
+    {
+        float timer = 0f;
+        while(timer <= _deadAnimDuration)
+        {
+            _monster.Spriter.color = _monster.Spriter.color.WithAlpha(Mathf.Clamp01(1f - timer / _deadAnimDuration));
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
     }
 
     /// <summary>

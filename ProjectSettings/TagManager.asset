@@ -14,12 +14,12 @@ TagManager:
   - Tower
   - Monster
   - Core
-  - Ground
-  - Wall
+  - TowerBuildArea
+  - BlockRay
   - Projectile
   - Interactable
-  - 
-  - 
+  - Smelter
+  - Electricline
   - 
   - 
   - 
@@ -27,14 +27,14 @@ TagManager:
   - 
   - Ore
   - Jewel
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Mineral
+  - Ingot
+  - Ground
+  - Wall
+  - Stair
+  - Obstacle
+  - SpawnZone
+  - MineObject
   - 
   - 
   m_SortingLayers:
@@ -44,15 +44,24 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackEffect
+    uniqueID: 484805021
+    locked: 0
   - name: Tower
     uniqueID: 2170103857
-    locked: 0
-  - name: Player
-    uniqueID: 3517154999
     locked: 0
   - name: Obstacle
     uniqueID: 2323669537
     locked: 0
+  - name: Player
+    uniqueID: 3517154999
+    locked: 0
+  - name: FrontEffect
+    uniqueID: 2775807533
+    locked: 0
   - name: UI
     uniqueID: 3759000591
+    locked: 0
+  - name: Interactable
+    uniqueID: 3144159975
     locked: 0

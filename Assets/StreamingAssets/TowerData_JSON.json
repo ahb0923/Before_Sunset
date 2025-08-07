@@ -1,240 +1,381 @@
 [
   {
-    "id": "400",
+    "id": 400,
     "towerName": "구리 발사기",
     "flavorText": "구리와 기본 부품만으로 만들어낸 최초의 공격 수단.\n단일 표적을 처치하는데 특화되어 있다.",
-    "buildType": "Base",
+    "buildType": 0,
+    "attackType": 0,
     "nextUpgradeId": 401,
-    "attackType": "Projectile",
-    "level": 1,
-    "towerHp": 50,
-    "damage": 5,
-    "aps": 1,
-    "range": 3,
     "projectileId": 800,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 70.0,
+    "damage": 7.0,
+    "aps": 1.0,
+    "range": 3.0,
+    "spriteName": "Tower_Cooper_Sprite",
     "prefabName": "Tower_Cooper",
     "buildRequirements": {
-      "구리주괴": 15
+      "구리주괴": 2
     }
   },
   {
-    "id": "401",
+    "id": 401,
     "towerName": "구리 발사기+",
     "flavorText": "성능 향상을 위해 회로를 재정비한 개량형 구리 발사기.\n보다 강하게 단일 표적을 처치한다.",
-    "buildType": "Upgrade",
-    "attackType": "Projectile",
-    "level": 2,
-    "towerHp": 20,
-    "damage": 2,
-    "aps": -0.2,
+    "buildType": 1,
+    "attackType": 0,
+    "nextUpgradeId": null,
     "projectileId": 800,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 20.0,
+    "damage": 2.0,
+    "aps": -0.2,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
     "buildRequirements": {
-      "구리주괴": 15,
-      "철주괴": 20
+      "구리주괴": 3,
+      "철주괴": 2
     }
   },
   {
-    "id": "410",
+    "id": 410,
     "towerName": "철 캐논",
     "flavorText": "철을 이용해 만든 광역 공격 수단.\n느리지만 넓은 범위에 피해를 입힌다.",
-    "buildType": "Base",
+    "buildType": 0,
+    "attackType": 0,
     "nextUpgradeId": 411,
-    "attackType": "Projectile",
-    "level": 1,
-    "towerHp": 50,
-    "damage": 8,
-    "aps": 2,
-    "range": 5,
     "projectileId": 801,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 70.0,
+    "damage": 8.0,
+    "aps": 2.3,
+    "range": 5.0,
+    "spriteName": "Tower_Iron_Sprite",
     "prefabName": "Tower_Iron",
     "buildRequirements": {
-      "구리주괴": 10,
+      "구리주괴": 2,
+      "철주괴": 3
+    }
+  },
+  {
+    "id": 411,
+    "towerName": "철 캐논+",
+    "flavorText": "충격 장치를 덧댄 개량형 철 캐논.\n더 넓고 강한 폭발로 다수의 적을 제압한다.",
+    "buildType": 1,
+    "attackType": 0,
+    "nextUpgradeId": null,
+    "projectileId": 801,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 20.0,
+    "damage": 3.0,
+    "aps": -0.3,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "은주괴": 2,
+      "철주괴": 3
+    }
+  },
+  {
+    "id": 420,
+    "towerName": "전깃줄 타워",
+    "flavorText": "작성예정",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": 461,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 50.0,
+    "damage": 3.0,
+    "aps": 2.0,
+    "range": 1.0,
+    "spriteName": "Tower_Electricline_Sprite",
+    "prefabName": "Tower_Electricline",
+    "buildRequirements": {
+      "금주괴": 20,
       "철주괴": 30
     }
   },
   {
-    "id": "411",
-    "towerName": "철 캐논+",
-    "flavorText": "충격 장치를 덧댄 개량형 철 캐논.\n더 넓고 강한 폭발로 다수의 적을 제압한다.",
-    "buildType": "Upgrade",
-    "attackType": "Projectile",
-    "level": 2,
-    "towerHp": 20,
-    "damage": 5,
-    "aps": -0.3,
-    "projectileId": 801,
-    "buildRequirements": {
-      "철주괴": 30,
-      "은주괴": 20
-    }
-  },
-  {
-    "id": "420",
-    "towerName": "오팔 필드",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "nextUpgradeId": 421,
-    "attackType": "Areaofeffect",
-    "level": 1,
-    "towerHp": 70,
-    "damage": 5,
-    "aps": 0.5,
-    "range": 4,
-    "buildRequirements": {
-      "금주괴": 20,
-      "오팔": 5
-    }
-  },
-  {
-    "id": "421",
-    "towerName": "오팔 필드+",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "attackType": "Areaofeffect",
-    "level": 2,
-    "towerHp": 20,
-    "damage": 5,
-    "range": 1,
-    "buildRequirements": {
-      "금주괴": 40,
-      "오팔": 10
-    }
-  },
-  {
-    "id": "430",
-    "towerName": "다이아 프리즘",
-    "flavorText": "통통통통통통통통통 사후르",
-    "buildType": "Base",
-    "nextUpgradeId": 431,
-    "attackType": "Projectile",
-    "level": 1,
-    "towerHp": 70,
-    "damage": 12,
-    "reflectionDamage": 4,
-    "aps": 1.5,
-    "range": 4,
-    "projectileId": 803,
-    "prefabName": "Tower_Diaprism",
-    "buildRequirements": {
-      "탄자나이트": 4,
-      "다이아": 3
-    }
-  },
-  {
-    "id": "431",
-    "towerName": "다이아 프리즘+",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "attackType": "Projectile",
-    "level": 2,
-    "towerHp": 30,
-    "damage": 8,
-    "reflectionDamage": 4,
-    "aps": -0.3,
-    "range": 1,
-    "projectileId": 803,
-    "buildRequirements": {
-      "탄자나이트": 8,
-      "다이아": 10
-    }
-  },
-  {
-    "id": "440",
-    "towerName": "재생 타워",
-    "flavorText": "다친 타워 3개까지 고침 ㄹㅇ(코어는 못함 ㅋ)",
-    "buildType": "Base",
-    "nextUpgradeId": 441,
-    "attackType": "Areaofeffect",
-    "level": 1,
-    "towerHp": 30,
-    "damage": 7,
-    "aps": 3,
-    "range": 6,
-    "prefabName": "Tower_Heal",
-    "buildRequirements": {
-      "철주괴": 20,
-      "옥": 3
-    }
-  },
-  {
-    "id": "441",
-    "towerName": "재생 타워+",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "attackType": "Areaofeffect",
-    "level": 2,
-    "towerHp": 20,
-    "damage": 6,
-    "range": 2,
-    "buildRequirements": {
-      "철주괴": 30,
-      "옥": 7
-    }
-  },
-  {
-    "id": "450",
-    "towerName": "자력 타워",
-    "flavorText": "몬스터 고장내기 1황",
-    "buildType": "Base",
-    "nextUpgradeId": 451,
-    "attackType": "Areaofeffect",
-    "level": 1,
-    "towerHp": 100,
-    "damage": 6,
-    "aps": 3,
-    "range": 6,
-    "prefabName": "Tower_Magnet",
-    "buildRequirements": {
-      "금주괴": 20,
-      "자수정": 4
-    }
-  },
-  {
-    "id": "451",
-    "towerName": "자력 타워+",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "attackType": "Areaofeffect",
-    "level": 2,
-    "towerHp": 50,
-    "damage": 2,
-    "aps": -0.5,
-    "range": 1,
-    "buildRequirements": {
-      "금주괴": 30,
-      "자수정": 8
-    }
-  },
-  {
-    "id": "460",
-    "towerName": "전깃줄 타워",
-    "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "nextUpgradeId": 461,
-    "attackType": "Areaofeffect",
-    "level": 1,
-    "towerHp": 50,
-    "damage": 3,
-    "aps": 2,
-    "range": 1,
-    "buildRequirements": {
-      "철주괴": 30,
-      "금주괴": 20
-    }
-  },
-  {
-    "id": "461",
+    "id": 421,
     "towerName": "전깃줄 타워+",
     "flavorText": "작성예정",
-    "buildType": "Upgrade",
-    "attackType": "Areaofeffect",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": null,
     "level": 2,
-    "towerHp": 20,
-    "damage": 1,
+    "towerHp": 20.0,
+    "damage": 1.0,
     "aps": -0.2,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
     "buildRequirements": {
-      "철주괴": 30,
-      "금주괴": 30
+      "금주괴": 30,
+      "철주괴": 30
+    }
+  },
+  {
+    "id": 430,
+    "towerName": "다이아 프리즘",
+    "flavorText": "고대 마법이 깃든 보석들로 만든 공격수단.\n적을 타격한 뒤, 주위 적에게 튕겨 피해를 입힌다.",
+    "buildType": 0,
+    "attackType": 0,
+    "nextUpgradeId": 431,
+    "projectileId": 803,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 70.0,
+    "damage": 12.0,
+    "aps": 1.5,
+    "range": 4.0,
+    "spriteName": "Tower_Diaprism_Sprite",
+    "prefabName": "Tower_Diaprism",
+    "buildRequirements": {
+      "다이아몬드": 2,
+      "은주괴": 3,
+      "탄자나이트": 1
+    }
+  },
+  {
+    "id": 431,
+    "towerName": "다이아 프리즘+",
+    "flavorText": "마법의 힘이 충만해진 개량형 다이아 프리즘.\n적을 타격한 뒤, 주위 적에게 더 많은 피해를 튕겨낸다.",
+    "buildType": 1,
+    "attackType": 0,
+    "nextUpgradeId": null,
+    "projectileId": 803,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 30.0,
+    "damage": 8.0,
+    "aps": -0.3,
+    "range": 1.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "다이아몬드": 3,
+      "은주괴": 5,
+      "탄자나이트": 2
+    }
+  },
+  {
+    "id": 440,
+    "towerName": "재생 타워",
+    "flavorText": "옥의 생명력을 이용한 회복 장치.\n가장 많은 피해를 입은 타워 3개를 선택해 치료한다.",
+    "buildType": 0,
+    "attackType": 1,
+    "nextUpgradeId": 441,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 50.0,
+    "damage": 7.0,
+    "aps": 3.0,
+    "range": 6.0,
+    "spriteName": "Tower_Heal_Sprite",
+    "prefabName": "Tower_Heal",
+    "buildRequirements": {
+      "옥": 2,
+      "철주괴": 2
+    }
+  },
+  {
+    "id": 441,
+    "towerName": "재생 타워+",
+    "flavorText": "옥의 생명력을 응축한 개량형 재생 타워.\n보다 높은 회복력으로 아군 타워를 치료한다.",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 30.0,
+    "damage": 3.0,
+    "aps": 0.0,
+    "range": 2.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "옥": 3,
+      "철주괴": 3
+    }
+  },
+  {
+    "id": 450,
+    "towerName": "자력 타워",
+    "flavorText": "자수정의 자력을 활용한 견제형 타워.\n근처의 적을 끌어당겨 진형을 흐트려 놓는다.",
+    "buildType": 0,
+    "attackType": 1,
+    "nextUpgradeId": 451,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 150.0,
+    "damage": 6.0,
+    "aps": 7.0,
+    "range": 4.0,
+    "spriteName": "Tower_Magnet_Sprite",
+    "prefabName": "Tower_Magnet",
+    "buildRequirements": {
+      "금주괴": 3,
+      "자수정": 2
+    }
+  },
+  {
+    "id": 451,
+    "towerName": "자력 타워+",
+    "flavorText": "강한 자력으로 개량 된 자력 타워.\n더 넓은 범위의 적을 끌어당긴다.",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 50.0,
+    "damage": 2.0,
+    "aps": -2.0,
+    "range": 1.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "금주괴": 5,
+      "자수정": 3
+    }
+  },
+  {
+    "id": 460,
+    "towerName": "토파즈 필드",
+    "flavorText": "토파즈의 예리함을 닮아 적의 약점을 감지하는 타워.\n피격 된 적에게 취약 상태를 부여해 추가 피해를 받도록 한다.",
+    "buildType": 0,
+    "attackType": 1,
+    "nextUpgradeId": 461,
+    "projectileId": null,
+    "debuffId": 1404,
+    "level": 1,
+    "towerHp": 120.0,
+    "damage": 0.0,
+    "aps": 8.0,
+    "range": 7.0,
+    "spriteName": "Tower_Topaz_Sprite",
+    "prefabName": "Tower_Topaz",
+    "buildRequirements": {
+      "금주괴": 3,
+      "토파즈": 2
+    }
+  },
+  {
+    "id": 461,
+    "towerName": "토파즈 필드+",
+    "flavorText": "토파즈의 예리함을 극대화 한 개량형 토파즈 필드.\n취약 상태의 지속 시간이 늘어나고 피해량이 증가한다.",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": 1405,
+    "level": 2,
+    "towerHp": 50.0,
+    "damage": 0.0,
+    "aps": -2.0,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "금주괴": 5,
+      "토파즈": 3
+    }
+  },
+  {
+    "id": 470,
+    "towerName": "아쿠아마린 필드",
+    "flavorText": "아쿠아마린의 찬 기운을 활용한 타워.\n적의 이동속도를 일시적으로 감소시킨다.",
+    "buildType": 0,
+    "attackType": 1,
+    "nextUpgradeId": 471,
+    "projectileId": null,
+    "debuffId": 1402,
+    "level": 1,
+    "towerHp": 120.0,
+    "damage": 0.0,
+    "aps": 8.0,
+    "range": 7.0,
+    "spriteName": "Tower_Aquamarine_Sprite",
+    "prefabName": "Tower_Aquamarine",
+    "buildRequirements": {
+      "금주괴": 3,
+      "아쿠아마린": 2
+    }
+  },
+  {
+    "id": 471,
+    "towerName": "아쿠아마린 필드+",
+    "flavorText": "냉기의 힘이 강화 된 개량형 아쿠아 필드.\n강화 된 지속시간과 감속능력으로 적을 방해한다.",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": 1403,
+    "level": 2,
+    "towerHp": 50.0,
+    "damage": 0.0,
+    "aps": -2.0,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "금주괴": 5,
+      "아쿠아마린": 3
+    }
+  },
+  {
+    "id": 480,
+    "towerName": "루비 필드",
+    "flavorText": "루비의 열기를 담아 적을 태워내는 타워.\n피격 된 적에게 일정 시간 동안 지속 피해를 입힌다.",
+    "buildType": 0,
+    "attackType": 1,
+    "nextUpgradeId": 481,
+    "projectileId": null,
+    "debuffId": 1400,
+    "level": 1,
+    "towerHp": 120.0,
+    "damage": 0.0,
+    "aps": 8.0,
+    "range": 7.0,
+    "spriteName": "Tower_Ruby_Sprite",
+    "prefabName": "Tower_Ruby",
+    "buildRequirements": {
+      "금주괴": 3,
+      "루비": 2
+    }
+  },
+  {
+    "id": 481,
+    "towerName": "루비 필드+",
+    "flavorText": "강한 열기로 주변을 뜨겁게 달구는 개량형 루비 필드.\n더 강한 지속 피해를 입힌다.",
+    "buildType": 1,
+    "attackType": 1,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": 1401,
+    "level": 2,
+    "towerHp": 50.0,
+    "damage": 0.0,
+    "aps": -2.0,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "금주괴": 5,
+      "루비": 3
     }
   }
 ]

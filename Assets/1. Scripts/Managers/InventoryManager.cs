@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class InventoryManager : MonoSingleton<InventoryManager>
 {
@@ -24,7 +23,30 @@ public class InventoryManager : MonoSingleton<InventoryManager>
             var requiredAmount = dataList[i].Value;
             var amount = CountMaterial(dataName, items);
 
-            if (amount > requiredAmount)
+            if (amount >= requiredAmount)
+            {
+                continue;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public bool IsEnoughMaterial(EquipmentDatabase data)
+    {
+        List<KeyValuePair<string, int>> dataList = data.upgradeRequirements.ToList();
+        List<Item> items = Inventory.Items.ToList();
+
+        for (int i = 0; i < dataList.Count; i++)
+        {
+            var dataName = dataList[i].Key;
+            var requiredAmount = dataList[i].Value;
+            var amount = CountMaterial(dataName, items);
+
+            if (amount >= requiredAmount)
             {
                 continue;
             }

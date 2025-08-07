@@ -1,93 +1,457 @@
 [
   {
-    "stageId": "1000",
-    "summonDelay": "1",
-    "isAttackCore": "true",
+    "stageID": 1000,
+    "summonDelay": 1,
+    "isAttackCore": true,
     "waveInfo": {
-      "머프": 5,
+      "머프": 3
+    }
+  },
+  {
+    "stageID": 1001,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
       "드리즐": 3
     }
   },
   {
-    "stageId": "1001",
-    "summonDelay": "10",
-    "isAttackCore": "false",
+    "stageID": 1002,
+    "summonDelay": 15,
+    "isAttackCore": true,
     "waveInfo": {
+      "머프": 3
+    }
+  },
+  {
+    "stageID": 1010,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 2,
       "머프": 3,
-      "헤비": 2
-    }
-  },
-  {
-    "stageId": "1002",
-    "summonDelay": "10",
-    "isAttackCore": "true",
-    "waveInfo": {
-      "머프": 5,
-      "드리즐": 2
-    }
-  },
-  {
-    "stageId": "1010",
-    "summonDelay": "1",
-    "isAttackCore": "true",
-    "waveInfo": {
-      "머프": 5,
-      "드리즐": 3,
       "플리터": 2
     }
   },
   {
-    "stageId": "1011",
-    "summonDelay": "10",
-    "isAttackCore": "false",
+    "stageID": 1011,
+    "summonDelay": 15,
+    "isAttackCore": false,
     "waveInfo": {
-      "머프": 5,
-      "헤비": 2
+      "헤비": 1
     }
   },
   {
-    "stageId": "1012",
-    "summonDelay": "10",
-    "isAttackCore": "true",
+    "stageID": 1012,
+    "summonDelay": 15,
+    "isAttackCore": true,
     "waveInfo": {
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1013,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 2,
+      "머프": 2,
+      "플리터": 2
+    }
+  },
+  {
+    "stageID": 1020,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 3
+    }
+  },
+  {
+    "stageID": 1021,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1022,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "헤비": 1
+    }
+  },
+  {
+    "stageID": 1023,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 3,
+      "플리터": 2
+    }
+  },
+  {
+    "stageID": 1030,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 5
+    }
+  },
+  {
+    "stageID": 1031,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "그럼프": 1,
+      "헤비": 1
+    }
+  },
+  {
+    "stageID": 1032,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1033,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 5,
+      "머프": 5,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1034,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1040,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "헤비": 2,
+      "머프": 3
+    }
+  },
+  {
+    "stageID": 1041,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1042,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "그럼프": 1,
+      "헤비": 1
+    }
+  },
+  {
+    "stageID": 1043,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 5,
+      "머프": 5,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1044,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 5,
+      "머프": 5,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1050,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 5,
+      "헤비": 2,
+      "머프": 5
+    }
+  },
+  {
+    "stageID": 1051,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "그럼프": 1,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1052,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 7,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1053,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 7,
+      "헤비": 1,
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1054,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 5,
+      "머프": 5,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1060,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 7,
+      "머프": 7,
+      "플리터": 7
+    }
+  },
+  {
+    "stageID": 1061,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 3,
+      "헤비": 2,
+      "머프": 3,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1062,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 7,
+      "머프": 7,
+      "플리터": 7
+    }
+  },
+  {
+    "stageID": 1063,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "그럼프": 1,
+      "드리즐": 3,
+      "헤비": 1,
+      "머프": 5
+    }
+  },
+  {
+    "stageID": 1064,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 5,
+      "머프": 5,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1070,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 7,
+      "헤비": 2,
+      "머프": 7,
+      "플리터": 7
+    }
+  },
+  {
+    "stageID": 1071,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "그럼프": 1,
+      "드리즐": 3,
       "머프": 3,
       "플리터": 5
     }
   },
   {
-    "stageId": "1013",
-    "summonDelay": "10",
-    "isAttackCore": "false",
+    "stageID": 1072,
+    "summonDelay": 15,
+    "isAttackCore": true,
     "waveInfo": {
-      "머프": 2,
-      "드리즐": 2,
+      "드리즐": 5,
       "헤비": 1,
-      "플리터": 2
+      "머프": 5,
+      "플리터": 7
     }
   },
   {
-    "stageId": "1020",
-    "summonDelay": 0,
-    "isAttackCore": "true"
+    "stageID": 1073,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 5,
+      "헤비": 1,
+      "머프": 7,
+      "플리터": 5
+    }
   },
   {
-    "stageId": "1021",
-    "summonDelay": 0,
-    "isAttackCore": "false"
+    "stageID": 1074,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 3,
+      "머프": 7,
+      "플리터": 5
+    }
   },
   {
-    "stageId": "1022",
-    "summonDelay": 0,
-    "isAttackCore": "true"
+    "stageID": 1080,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "그럼프": 2,
+      "드리즐": 5,
+      "머프": 7,
+      "플리터": 5
+    }
   },
   {
-    "stageId": "1023",
-    "summonDelay": 0,
-    "isAttackCore": "false"
+    "stageID": 1081,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 7,
+      "머프": 10,
+      "플리터": 5
+    }
   },
   {
-    "stageId": "1024",
-    "summonDelay": 0,
-    "isAttackCore": "true"
+    "stageID": 1082,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 5,
+      "헤비": 2,
+      "머프": 7,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1083,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "그럼프": 1,
+      "드리즐": 7,
+      "머프": 10,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1084,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 7,
+      "머프": 10,
+      "플리터": 3
+    }
+  },
+  {
+    "stageID": 1090,
+    "summonDelay": 1,
+    "isAttackCore": true,
+    "waveInfo": {
+      "그럼프": 2,
+      "드리즐": 5,
+      "머프": 10,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1091,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 7,
+      "헤비": 2,
+      "머프": 10,
+      "플리터": 7
+    }
+  },
+  {
+    "stageID": 1092,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "그럼프": 1,
+      "드리즐": 7,
+      "머프": 15,
+      "플리터": 5
+    }
+  },
+  {
+    "stageID": 1093,
+    "summonDelay": 15,
+    "isAttackCore": false,
+    "waveInfo": {
+      "드리즐": 10,
+      "헤비": 1,
+      "머프": 10,
+      "플리터": 7
+    }
+  },
+  {
+    "stageID": 1094,
+    "summonDelay": 15,
+    "isAttackCore": true,
+    "waveInfo": {
+      "드리즐": 7,
+      "머프": 15,
+      "플리터": 10
+    }
   }
 ]

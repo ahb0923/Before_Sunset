@@ -9,12 +9,17 @@ public class AttackStrategy_CooperTower : IAttackStrategy
         var stat = tower.statHandler;
         var target = tower.attackSensor.CurrentTarget;
 
+        if (tower.ai.CurState == TOWER_STATE.Destroy)
+            yield break;
+
+        tower.ui.animator.SetTrigger("IsAttack");
+
         if (target == null)
         {
             tower.ai.SetState(TOWER_STATE.Idle);
             yield break;
         }
-        GameObject projObj = PoolManager.Instance.GetFromPool(stat.ProjectileID, tower.transform.position + Vector3.up * 2f, tower.transform);
+        GameObject projObj = PoolManager.Instance.GetFromPool((int)stat.ProjectileID, tower.transform.position + Vector3.up * 2f);
         Projectile proj = Helper_Component.GetComponent<Projectile>(projObj);
 
         var attackSettings = new ProjectileAttackSettings
@@ -32,6 +37,6 @@ public class AttackStrategy_CooperTower : IAttackStrategy
 
         proj.Init(attackSettings, movementSettings, new ProjectileMovement_StraightTarget(), new ProjectileAttack_Single());
 
-        yield return new WaitForSeconds(stat.AttackSpeed);
+        yield return null;
     }
 }

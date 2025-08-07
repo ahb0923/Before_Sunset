@@ -14,52 +14,49 @@ public class UIDebugWindow : EditorWindow
     {
         GUILayout.Label("UI Debug Tools", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("100번 아이템 추가"))
+        if (GUILayout.Button("100번 아이템 추가(돌)"))
         {
             InventoryManager.Instance.Inventory.AddItem(100,7);
         }
         
-        if (GUILayout.Button("110번 아이템 추가"))
+        if (GUILayout.Button("110번 아이템 추가(구리)"))
         {
             InventoryManager.Instance.Inventory.AddItem(110,9);
         }
         
-        if (GUILayout.Button("120번 아이템 추가"))
+        if (GUILayout.Button("120번 아이템 추가(철)"))
         {
             InventoryManager.Instance.Inventory.AddItem(120,9);
         }
         
-        if (GUILayout.Button("110번 아이템 15개 사용"))
+        if (GUILayout.Button("111번 아이템 추가(구리주괴)"))
         {
-            bool used = InventoryManager.Instance.Inventory.UseItem(110,15);
-            if (used)
-            {
-                Debug.Log("사용!");
-            }
-            else
-            {
-                Debug.Log("사용못함!");
-            }
+            InventoryManager.Instance.Inventory.AddItem(111,20);
         }
         
-        if (GUILayout.Button("200번 아이템 추가"))
+        if (GUILayout.Button("121번 아이템 추가(철주괴)"))
         {
-            InventoryManager.Instance.Inventory.AddItem(200,3);
+            InventoryManager.Instance.Inventory.AddItem(121,20);
         }
         
-        if (GUILayout.Button("제련소 열기"))
+        if (GUILayout.Button("131번 아이템 추가(은주괴)"))
         {
-            UIManager.Instance.SmelterUI.OpenSmelter();
+            InventoryManager.Instance.Inventory.AddItem(131,20);
         }
         
-        if (GUILayout.Button("코루틴 테스트"))
+        if (GUILayout.Button("141번 아이템 추가(금주괴)"))
         {
-            UIManager.Instance.BattleUI.ShowReturnUI();
+            InventoryManager.Instance.Inventory.AddItem(141,20);
         }
         
-        if (GUILayout.Button("하급제련소강제주입"))
+        if (GUILayout.Button("업그레이드창 열기"))
         {
-            UIManager.Instance.SmelterUI.SetSmelterUI(DataManager.Instance.SmelterData.GetById(900));
+            UIManager.Instance.UpgradeUI.Open();
+        }
+        
+        if (GUILayout.Button("정수 4개 추가"))
+        {
+            UpgradeManager.Instance.AddEssencePiece(120);
         }
     }
 }

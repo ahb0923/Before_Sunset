@@ -46,36 +46,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Inventory"",
+                    ""name"": ""Dash"",
                     ""type"": ""Button"",
-                    ""id"": ""14209cbf-0dfe-44ed-bf2d-671a50a00729"",
+                    ""id"": ""8d2bb46e-dc3b-4d29-8f27-3ac215512852"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Build"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
-                    ""id"": ""a575b56f-2659-4733-8d6b-bdb44da89c16"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""UnBuild"",
-                    ""type"": ""Button"",
-                    ""id"": ""2d4dbef9-f008-40ef-ac9b-30ce8e984064"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ReturnHome"",
-                    ""type"": ""Button"",
-                    ""id"": ""819cb2b9-9fe4-46c8-8346-87524b72af8e"",
+                    ""id"": ""143538fb-6aa4-4b15-8444-0a1a4de0ef98"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -140,17 +122,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ef5c74cf-375c-42a3-b859-3489634eff4a"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Swing"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""75a3a18b-13f5-4635-97b8-0c107b256712"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
@@ -162,7 +133,73 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""52d3e763-8fba-4736-843b-16483db6d149"",
+                    ""id"": ""25f9283d-5037-40e6-810b-f435504b582e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c6cdf688-2bfa-4669-a0ba-a67bb2b53cd0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""123631c5-6f0c-41b7-97f8-870e94e7c3dc"",
+            ""actions"": [
+                {
+                    ""name"": ""ReturnHome"",
+                    ""type"": ""Button"",
+                    ""id"": ""b53938f3-2bf5-4709-bbae-454e0b0ab353"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DestroyMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""d090edda-ce0c-461f-b253-63bee8ad550d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Build"",
+                    ""type"": ""Button"",
+                    ""id"": ""11fa54fd-3924-4872-bcac-8a7168db4877"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Inventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""6131f4e0-9873-488d-9c4d-7f73bf2f663b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""139f8f7b-b5d0-4f7c-b478-14aefb92ebfe"",
                     ""path"": ""<Keyboard>/tab"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -173,7 +210,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d28760b0-8df8-434e-9819-03dcdd004ae8"",
+                    ""id"": ""e3666b22-7cad-4f61-bc60-28f0da0c10ed"",
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -184,18 +221,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""41803f92-95bc-4825-8802-0446b3fb5e26"",
+                    ""id"": ""3d640ab0-4547-4c70-8574-1d1826c12ba1"",
                     ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""UnBuild"",
+                    ""action"": ""DestroyMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b1e6dddb-a2e4-4c0f-bb46-83a9e8c6637c"",
+                    ""id"": ""3f217618-784d-4dbe-836a-e7c7c6bdba66"",
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -213,10 +250,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Swing = m_Player.FindAction("Swing", throwIfNotFound: true);
-        m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
-        m_Player_Build = m_Player.FindAction("Build", throwIfNotFound: true);
-        m_Player_UnBuild = m_Player.FindAction("UnBuild", throwIfNotFound: true);
-        m_Player_ReturnHome = m_Player.FindAction("ReturnHome", throwIfNotFound: true);
+        m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_ReturnHome = m_Interaction.FindAction("ReturnHome", throwIfNotFound: true);
+        m_Interaction_DestroyMode = m_Interaction.FindAction("DestroyMode", throwIfNotFound: true);
+        m_Interaction_Build = m_Interaction.FindAction("Build", throwIfNotFound: true);
+        m_Interaction_Inventory = m_Interaction.FindAction("Inventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,20 +321,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Swing;
-    private readonly InputAction m_Player_Inventory;
-    private readonly InputAction m_Player_Build;
-    private readonly InputAction m_Player_UnBuild;
-    private readonly InputAction m_Player_ReturnHome;
+    private readonly InputAction m_Player_Dash;
+    private readonly InputAction m_Player_Interact;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Swing => m_Wrapper.m_Player_Swing;
-        public InputAction @Inventory => m_Wrapper.m_Player_Inventory;
-        public InputAction @Build => m_Wrapper.m_Player_Build;
-        public InputAction @UnBuild => m_Wrapper.m_Player_UnBuild;
-        public InputAction @ReturnHome => m_Wrapper.m_Player_ReturnHome;
+        public InputAction @Dash => m_Wrapper.m_Player_Dash;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -309,18 +346,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Swing.started += instance.OnSwing;
             @Swing.performed += instance.OnSwing;
             @Swing.canceled += instance.OnSwing;
-            @Inventory.started += instance.OnInventory;
-            @Inventory.performed += instance.OnInventory;
-            @Inventory.canceled += instance.OnInventory;
-            @Build.started += instance.OnBuild;
-            @Build.performed += instance.OnBuild;
-            @Build.canceled += instance.OnBuild;
-            @UnBuild.started += instance.OnUnBuild;
-            @UnBuild.performed += instance.OnUnBuild;
-            @UnBuild.canceled += instance.OnUnBuild;
-            @ReturnHome.started += instance.OnReturnHome;
-            @ReturnHome.performed += instance.OnReturnHome;
-            @ReturnHome.canceled += instance.OnReturnHome;
+            @Dash.started += instance.OnDash;
+            @Dash.performed += instance.OnDash;
+            @Dash.canceled += instance.OnDash;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -331,18 +362,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Swing.started -= instance.OnSwing;
             @Swing.performed -= instance.OnSwing;
             @Swing.canceled -= instance.OnSwing;
-            @Inventory.started -= instance.OnInventory;
-            @Inventory.performed -= instance.OnInventory;
-            @Inventory.canceled -= instance.OnInventory;
-            @Build.started -= instance.OnBuild;
-            @Build.performed -= instance.OnBuild;
-            @Build.canceled -= instance.OnBuild;
-            @UnBuild.started -= instance.OnUnBuild;
-            @UnBuild.performed -= instance.OnUnBuild;
-            @UnBuild.canceled -= instance.OnUnBuild;
-            @ReturnHome.started -= instance.OnReturnHome;
-            @ReturnHome.performed -= instance.OnReturnHome;
-            @ReturnHome.canceled -= instance.OnReturnHome;
+            @Dash.started -= instance.OnDash;
+            @Dash.performed -= instance.OnDash;
+            @Dash.canceled -= instance.OnDash;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -360,13 +385,88 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
+    private readonly InputAction m_Interaction_ReturnHome;
+    private readonly InputAction m_Interaction_DestroyMode;
+    private readonly InputAction m_Interaction_Build;
+    private readonly InputAction m_Interaction_Inventory;
+    public struct InteractionActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ReturnHome => m_Wrapper.m_Interaction_ReturnHome;
+        public InputAction @DestroyMode => m_Wrapper.m_Interaction_DestroyMode;
+        public InputAction @Build => m_Wrapper.m_Interaction_Build;
+        public InputAction @Inventory => m_Wrapper.m_Interaction_Inventory;
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        public void AddCallbacks(IInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
+            @ReturnHome.started += instance.OnReturnHome;
+            @ReturnHome.performed += instance.OnReturnHome;
+            @ReturnHome.canceled += instance.OnReturnHome;
+            @DestroyMode.started += instance.OnDestroyMode;
+            @DestroyMode.performed += instance.OnDestroyMode;
+            @DestroyMode.canceled += instance.OnDestroyMode;
+            @Build.started += instance.OnBuild;
+            @Build.performed += instance.OnBuild;
+            @Build.canceled += instance.OnBuild;
+            @Inventory.started += instance.OnInventory;
+            @Inventory.performed += instance.OnInventory;
+            @Inventory.canceled += instance.OnInventory;
+        }
+
+        private void UnregisterCallbacks(IInteractionActions instance)
+        {
+            @ReturnHome.started -= instance.OnReturnHome;
+            @ReturnHome.performed -= instance.OnReturnHome;
+            @ReturnHome.canceled -= instance.OnReturnHome;
+            @DestroyMode.started -= instance.OnDestroyMode;
+            @DestroyMode.performed -= instance.OnDestroyMode;
+            @DestroyMode.canceled -= instance.OnDestroyMode;
+            @Build.started -= instance.OnBuild;
+            @Build.performed -= instance.OnBuild;
+            @Build.canceled -= instance.OnBuild;
+            @Inventory.started -= instance.OnInventory;
+            @Inventory.performed -= instance.OnInventory;
+            @Inventory.canceled -= instance.OnInventory;
+        }
+
+        public void RemoveCallbacks(IInteractionActions instance)
+        {
+            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInteractionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InteractionActions @Interaction => new InteractionActions(this);
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnSwing(InputAction.CallbackContext context);
-        void OnInventory(InputAction.CallbackContext context);
-        void OnBuild(InputAction.CallbackContext context);
-        void OnUnBuild(InputAction.CallbackContext context);
+        void OnDash(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+    }
+    public interface IInteractionActions
+    {
         void OnReturnHome(InputAction.CallbackContext context);
+        void OnDestroyMode(InputAction.CallbackContext context);
+        void OnBuild(InputAction.CallbackContext context);
+        void OnInventory(InputAction.CallbackContext context);
     }
 }

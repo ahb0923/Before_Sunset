@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1400,
+    "debuffName": "화상",
+    "prefabName": "Debuff_Burn_1",
+    "debuffType": 0,
+    "duration": 5.0,
+    "effectValue": 2.0,
+    "flavorText": "몸이 불에 타버립니다. 너무 뜨거으ㅏㅏㅏ서 지속적으로 데미지를 입어요"
+  },
+  {
+    "id": 1401,
+    "debuffName": "상급화상",
+    "prefabName": "Debuff_Burn_2",
+    "debuffType": 0,
+    "duration": 5.0,
+    "effectValue": 5.0,
+    "flavorText": "몸이 불에 타버립니다. 너무 뜨거으ㅏㅏㅏ서 지속적으로 데미지를 입어요"
+  },
+  {
+    "id": 1402,
+    "debuffName": "빙결",
+    "prefabName": "Debuff_Frostbite_1",
+    "debuffType": 1,
+    "duration": 7.0,
+    "effectValue": 15.0,
+    "flavorText": "몸이 얼어붙어서 이동속도가 느려져요"
+  },
+  {
+    "id": 1403,
+    "debuffName": "상급빙결",
+    "prefabName": "Debuff_Frostbite_2",
+    "debuffType": 1,
+    "duration": 10.0,
+    "effectValue": 30.0,
+    "flavorText": "몸이 얼어붙어서 이동속도가 느려져요"
+  },
+  {
+    "id": 1404,
+    "debuffName": "감전",
+    "prefabName": "Debuff_Electricshock_1",
+    "debuffType": 2,
+    "duration": 7.0,
+    "effectValue": 30.0,
+    "flavorText": "감전 상태가 되어서 다른놈들이 때릴 때 더 아프게 맞아용 ㅋㅅㅋ"
+  },
+  {
+    "id": 1405,
+    "debuffName": "상급감전",
+    "prefabName": "Debuff_Electricshock_2",
+    "debuffType": 2,
+    "duration": 10.0,
+    "effectValue": 50.0,
+    "flavorText": "감전 상태가 되어서 다른놈들이 때릴 때 더 아프게 맞아용 ㅋㅅㅋ"
+  }
+]

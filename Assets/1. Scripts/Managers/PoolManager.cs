@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public interface IPoolable
 {
@@ -9,6 +8,8 @@ public interface IPoolable
     void OnGetFromPool();
     void OnReturnToPool();
 }
+
+
 
 [System.Serializable]
 public class ObjectPoolData
@@ -21,8 +22,14 @@ public class PoolManager : MonoSingleton<PoolManager>
 {
     [SerializeField] private List<ObjectPoolData> _objectPoolDatas = new List<ObjectPoolData>();
 
+    // 추후에 정리해서 데이터로 만들것.
+    [SerializeField] private GameObject _electircline;
+    [SerializeField] private GameObject _aoeEffect;
+    [SerializeField] private GameObject _buildGuage;
+
     private bool _isSet;
 
+    // 임시방편 코드 추후 데이터 제작 논의
     private Dictionary<int, GameObject> _prefabs;
     private Dictionary<int, Queue<GameObject>> _pools;
 
@@ -38,6 +45,8 @@ public class PoolManager : MonoSingleton<PoolManager>
     /// </summary>
     public void InitPool()
     {
+        SettingPrefab();
+
         _prefabs = new Dictionary<int, GameObject>();
         _pools = new Dictionary<int, Queue<GameObject>>();
 
@@ -65,6 +74,26 @@ public class PoolManager : MonoSingleton<PoolManager>
     public void SettingPrefab()
     {
         _objectPoolDatas.Clear();
+
+        // 이부분 일단 하드코딩입니다.////////////////////
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _electircline,
+            count = 10
+        });
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _aoeEffect,
+            count = 10
+        });
+        
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _buildGuage,
+            count = 10
+        });
+        // 여기까지 ///////////////////////////////////////
+
         foreach (var data in DataManager.Instance.MonsterData.GetAllItems())
         {
             var prefab = DataManager.Instance.MonsterData.GetPrefabById(data.id);
@@ -85,13 +114,85 @@ public class PoolManager : MonoSingleton<PoolManager>
                 _objectPoolDatas.Add(new ObjectPoolData
                 {
                     prefab = prefab,
-                    count = 5
+                    count = 1
                 });
             }
         }
         foreach (var data in DataManager.Instance.ProjectileData.GetAllItems())
         {
             var prefab = DataManager.Instance.ProjectileData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.SmelterData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.SmelterData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.OreData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.OreData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.JewelData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.JewelData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MineralData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MineralData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 10
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.MapData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.MapData.GetPrefabById(data.id);
+            if (prefab != null)
+            {
+                _objectPoolDatas.Add(new ObjectPoolData
+                {
+                    prefab = prefab,
+                    count = 1
+                });
+            }
+        }
+        foreach (var data in DataManager.Instance.DebuffData.GetAllItems())
+        {
+            var prefab = DataManager.Instance.DebuffData.GetPrefabById(data.id);
             if (prefab != null)
             {
                 _objectPoolDatas.Add(new ObjectPoolData

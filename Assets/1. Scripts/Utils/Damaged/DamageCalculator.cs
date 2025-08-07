@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,16 +13,18 @@ public class DamageCalculator
     /// <param name="armor"></param>
     /// <param name="ignoreDefense"></param>
     /// <returns></returns>
-    public static int CalcDamage(float attackDamage, float armor, bool ignoreDefense = false)
+    public static int CalcDamage(float attackDamage, float armor, bool ignoreDefense = false, float multiplier = 1f)
     {
         //float stability = Random.Range(0.8f, 1f);
         //float defensed = 1f / (armor + 111f) * 111f;
         //float damage = attackDamage * (ignoreDefense ? stability : stability * defensed);
-        float damage = attackDamage - armor;
+        float damage = attackDamage - (ignoreDefense ? 0 : armor);
         if (damage < 0)
             damage = 0;
-        int result = Mathf.RoundToInt(damage);
 
+        damage *= multiplier;
+
+        int result = Mathf.RoundToInt(damage);
         return result;
     }
 }

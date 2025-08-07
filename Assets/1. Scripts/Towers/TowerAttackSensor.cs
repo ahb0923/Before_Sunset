@@ -12,6 +12,7 @@ public class TowerAttackSensor : MonoBehaviour
     private GameObject _currentTarget;
     public GameObject CurrentTarget => _currentTarget;
 
+    private int _currentTargetSpawnId;
 
 
     [Header("[ 에디터 할당 ]")] 
@@ -58,6 +59,7 @@ public class TowerAttackSensor : MonoBehaviour
         if (detectedEnemies.Add(enemy))
         {
             Debug.Log($"적 진입: {enemy.name} | 총 {detectedEnemies.Count}명 감지됨");
+            enemy.GetComponent<BaseMonster>()?.RegisterSensor(this);
             if (_tower.ai.CurState != TOWER_STATE.Construction && detectedEnemies.Count == 1)
                 _tower.ai.SetState(TOWER_STATE.Attack);
         }
@@ -72,9 +74,12 @@ public class TowerAttackSensor : MonoBehaviour
         if (detectedEnemies.Remove(enemy))
         {
             Debug.Log($"[센서] 적 제거됨: {enemy.name} | 남은 {detectedEnemies.Count}명");
+            enemy.GetComponent<BaseMonster>()?.UnregisterSensor(this);
             if (enemy == _currentTarget)
             {
                 Debug.Log("[센서] 현재 타겟 제거 → 새 타겟 찾기");
+                _currentTarget = null;
+                _currentTargetSpawnId = -1;
                 RefreshTarget();
             }
             if (detectedEnemies.Count == 0)
@@ -95,7 +100,7 @@ public class TowerAttackSensor : MonoBehaviour
         foreach (var enemy in detectedEnemies)
         {
             // 검사하는 타이밍에 맞춰서 다른 타워가 해당 몬스터를 부숴버릴 경우에 대비
-            if (enemy == null) continue;
+            if (enemy == null || !enemy.activeSelf) continue;
 
             float dist = Vector3.Distance(origin, enemy.transform.position);
             if (dist < minDist)
@@ -155,6 +160,13 @@ public class TowerAttackSensor : MonoBehaviour
         return highHp;
     }
 
+    public void SetTarget(GameObject enemy)
+    {
+        _currentTarget = enemy;
+
+        var monster = enemy.GetComponent<BaseMonster>();
+        _currentTargetSpawnId = monster != null ? monster.SpawnInstanceId : -1;
+    }
 
     /// <summary>
     /// 현재 타겟을 새로이 설정할때 쓰는 메서드<br/>
@@ -167,15 +179,32 @@ public class TowerAttackSensor : MonoBehaviour
             Debug.Log("[센서] 건설 중이라 타겟 설정 안함");
             return;
         }
-        _currentTarget = NearestTarget();
 
-        if (_currentTarget != null)
+        // 타워 타입에 따라 다른 타겟 설정하도록
+        GameObject newTarget = NearestTarget();
+        switch (_tower.towerType)
         {
-            Debug.Log($"[센서] 새 타겟 설정: {_currentTarget.name}");
+            case TOWER_TYPE.CooperTower:
+            case TOWER_TYPE.IronTower:
+                newTarget = NearestTarget();
+                break;
+            case TOWER_TYPE.DiaprismTower:
+                newTarget = HighHpTarget();
+                break;
+        }
+
+        Debug.Log($"[센서] 남아있는 적 갯수 테스트용: {detectedEnemies.Count}");
+
+        if (newTarget != null)
+        {
+            SetTarget(newTarget);
+            Debug.Log($"[센서] 새 타겟 설정: {_currentTarget.name} (ID: {_currentTargetSpawnId})");
             _tower.ai.SetState(TOWER_STATE.Attack);
         }
         else
         {
+            _currentTarget = null;
+            _currentTargetSpawnId = -1;
             Debug.Log("[센서] 타겟 없음 → 대기 상태");
             _tower.ai.SetState(TOWER_STATE.Idle);
         }
@@ -186,9 +215,34 @@ public class TowerAttackSensor : MonoBehaviour
     /// </summary>
     public void CheckTargetValid()
     {
-        if (_currentTarget == null || !_currentTarget.activeSelf)
+        var monster = _currentTarget?.GetComponent<BaseMonster>();
+
+        if (_currentTarget == null || !_currentTarget.activeSelf || monster == null || monster.SpawnInstanceId != _currentTargetSpawnId)
         {
-            RefreshTarget();  // 가장 가까운 적으로 다시 설정
+            Debug.Log("[센서] 타겟이 유효하지 않음 → fallback 클린업 & 리프레시");
+            CleanupInvalidEnemies();
+            RefreshTarget();
+        }
+    }
+    /// <summary>
+    /// 타워에 남아있는 적 확실하게 제거
+    /// </summary>
+    public void CleanupInvalidEnemies()
+    {
+        List<GameObject> toRemove = new();
+
+        foreach (var enemy in detectedEnemies)
+        {
+            if (enemy == null || !enemy.activeSelf)
+            {
+                Debug.Log($"[센서] 클린업 대상: {(enemy == null ? "null" : enemy.name)}");
+                toRemove.Add(enemy);
+            }
+        }
+
+        foreach (var enemy in toRemove)
+        {
+            RemoveEnemy(enemy);
         }
     }
 
@@ -223,6 +277,7 @@ public class TowerAttackSensor : MonoBehaviour
                 if (other.gameObject == _currentTarget)
                 {
                     Debug.Log($"[센서] 현재 타겟 이탈: {other.name} → 타겟 갱신");
+                    _currentTarget = null;
                     RefreshTarget();
                 }
                 if (detectedEnemies.Count == 0)

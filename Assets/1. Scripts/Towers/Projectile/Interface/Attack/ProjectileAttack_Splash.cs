@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
@@ -16,7 +16,8 @@ public class ProjectileAttack_Splash : IProjectileAttack
                 Attacker = attackSettings.attacker,
                 Victim = hit.gameObject,
                 Value = attackSettings.damage,
-                IgnoreDefense = false
+                IgnoreDefense = false,
+                Multiplier = 1.0f
             });
         }
     }

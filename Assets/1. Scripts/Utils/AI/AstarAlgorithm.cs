@@ -17,6 +17,7 @@ public static class AstarAlgorithm
     public static void BindGrid(NodeGrid grid)
     {
         _bindGrid = grid;
+        _aGridStack.Clear();
     }
     
     /// <summary>
@@ -42,6 +43,9 @@ public static class AstarAlgorithm
 
         NodeGrid grid = _bindGrid;
         if (!grid.HasNode(center)) return false;
+
+        // 해당 노드가 타겟이면 true 반환
+        if (center.walkableIndex == targetIndex) return true;
 
         Vector2Int gridIndex = grid.GetGridIndex(center);
         int boundary = entitySize / 2;
@@ -422,12 +426,13 @@ public class NodeGrid
     }
 
     /// <summary>
-    /// 오브젝트 포지션과 사이즈에 따른 노드들의 Walkable Index 세팅
+    /// 오브젝트 포지션과 사이즈에 따른 노드들의 Walkable Index 세팅<br/>
+    /// ※ obstacleSize만 입력할 경우, obstacle을 해제하는 메서드 실행
     /// </summary>
     /// <param name="index">세팅할 인덱스</param>
     /// <param name="worldPos">오브젝트 월드 포지션</param>
     /// <param name="size">오브젝트 사이즈 (1x1이면 1)</param>
-    public void SetWalkableIndex(int index, Vector3 worldPos, int size)
+    public void SetWalkableIndex(Vector3 worldPos, ObstacleData data)
     {
         Vector2Int center = GetGridIndex(worldPos);
         if (center.x == -1) 
@@ -436,14 +441,34 @@ public class NodeGrid
             return;
         }
 
-        int boundary = size / 2;
+        int boundary = data.obstacleSize / 2;
         for (int x = center.x - boundary; x <= center.x + boundary; x++) 
         {
             for (int y = center.y - boundary; y <= center.y + boundary; y++) 
             {
                 if (!IsValidIndex(x, y)) continue;
 
-                Nodes[x, y].walkableIndex = index;
+                Nodes[x, y].walkableIndex = data.walkableId;
+            }
+        }
+    }
+    public void SetWalkableIndex(Vector3 worldPos, int obstacleSize)
+    {
+        Vector2Int center = GetGridIndex(worldPos);
+        if (center.x == -1)
+        {
+            Debug.LogWarning("[NodeGrid] 해당 오브젝트는 맵 바깥에 있습니다.");
+            return;
+        }
+
+        int boundary = obstacleSize / 2;
+        for (int x = center.x - boundary; x <= center.x + boundary; x++)
+        {
+            for (int y = center.y - boundary; y <= center.y + boundary; y++)
+            {
+                if (!IsValidIndex(x, y)) continue;
+
+                Nodes[x, y].walkableIndex = -1;
             }
         }
     }

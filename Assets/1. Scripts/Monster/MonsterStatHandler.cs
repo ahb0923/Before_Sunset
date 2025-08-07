@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MonsterStatHandler : MonoBehaviour, IDamageable
@@ -5,6 +6,11 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     private BaseMonster _monster;
 
     [SerializeField] private MonsterDatabase _data;
+    
+    [SerializeField] private Material _hitMat;
+    private Material _originMat;
+    [SerializeField] private float _hitDuration = 0.1f;
+    private Coroutine _hitCoroutine;
 
     public string MonsterName { get; private set; }
     public ATTACK_TYPE AttackType { get; private set; }
@@ -12,7 +18,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
 
     public int MaxHp { get; private set; }
     public int CurHp { get; private set; }
-    
+
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
     public float AttackRange { get; private set; }
@@ -43,11 +49,29 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         Speed = _data.speed;
         Size = _data.size;
         Context = _data.context;
+
+        _originMat = _monster.Spriter.material;
     }
 
+    /// <summary>
+    /// HP 모두 회복
+    /// </summary>
     public void SetFullHp()
     {
         CurHp = MaxHp;
+    }
+
+    /// <summary>
+    /// 스피드 설정<br/>
+    /// ※ 매개변수 없으면, 기존 스피드 값으로 설정
+    /// </summary>
+    public void SetSpeed(float speed)
+    {
+        Speed = speed;
+    }
+    public void SetSpeed()
+    {
+        Speed = _data.speed;
     }
 
     /// <summary>
@@ -58,14 +82,16 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     {
         if (_monster.IsDead) return;
 
+        _monster.OnBeforeDamaged?.Invoke(damaged);
+
         if (damaged.Attacker == null)
         {
-            Debug.LogWarning("타격 대상 못찾음!");
+            //Debug.LogWarning("타격 대상 못찾음!");
             return;
         }
 
-        Debug.Log($"[{damaged.Attacker}]로부터 『{damaged.Value}』데미지 - {gameObject.name}");
-        CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense);
+        //Debug.Log($"[{damaged.Attacker}]로부터 『{damaged.FinalDamage}』데미지 - {gameObject.name}");
+        CurHp -= DamageCalculator.CalcDamage(damaged.Value, 0f, damaged.IgnoreDefense, damaged.Multiplier);
         CurHp = Mathf.Max(CurHp, 0);
         _monster.HpBar.UpdateHpBar(CurHp);
 
@@ -73,5 +99,21 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         {
             _monster.Ai.ChangeState(MONSTER_STATE.Dead);
         }
+        else
+        {
+            if(_hitCoroutine != null)
+            {
+                StopCoroutine( _hitCoroutine);
+            }
+            _hitCoroutine = StartCoroutine(C_Hit());
+        }
+    }
+
+    private IEnumerator C_Hit()
+    {
+        _monster.Spriter.material = _hitMat;
+        yield return Helper_Coroutine.WaitSeconds(_hitDuration);
+        _monster.Spriter.material = _originMat;
+        _hitCoroutine = null;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +13,8 @@ public class ProjectileAttack_Single : IProjectileAttack
             Attacker = attackSettings.attacker,
             Victim = attackSettings.target,
             Value = attackSettings.damage,
-            IgnoreDefense = false
+            IgnoreDefense = false,
+            Multiplier = 1.0f
         });
     }
 }

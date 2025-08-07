@@ -6,6 +6,7 @@ public class SmelterDatabase
 {
     public int id;
     public string smelterName;
+    public string prefabName;
     public int hp;
 
 

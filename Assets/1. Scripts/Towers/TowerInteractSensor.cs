@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
-{
+public class TowerInteractSensor : MonoBehaviour
+{ 
     [SerializeField] private Collider2D _collider;
     [SerializeField] private SpriteRenderer _sprite;
     [SerializeField] private LayerMask _layer;
@@ -22,10 +22,14 @@ public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log($"[Enter] {other.gameObject.name}");
         if (((1 << other.gameObject.layer) & _layer) != 0)
         {
             if (_inside.Add(other.gameObject))
+            {
+                Debug.Log("Set to transparent");
                 SetSpriteAlpha(0.5f);
+            }
         }
     }
 
@@ -64,14 +68,4 @@ public class TowerInteractSensor : MonoBehaviour, IPointerClickHandler
         SetSpriteAlpha(_inside.Count > 0 ? 0.5f : 1f);
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData.button == PointerEventData.InputButton.Right)
-        {
-            if (BuildManager.Instance.IsPlacing) return;
-
-            var data = DataManager.Instance.TowerData.GetByName(_tower.statHandler.TowerName);
-            UIManager.Instance.UpgradeUI.OpenUpgradeUI(data);
-        }
-    }
 }

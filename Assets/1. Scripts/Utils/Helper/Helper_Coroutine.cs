@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,6 +45,24 @@ public static class Helper_Coroutine
                 timer -= Time.deltaTime; // 일시정지가 아니면, 현재 프레임의 시간만큼 타이머 감소
                 yield return null; // 다음 프레임까지 대기
             }
+        }
+    }
+
+    /// <summary>
+    /// 지정 시간 동안 대기하되, 중간에 조건을 만족하면 즉시 종료
+    /// </summary>
+    /// <param name="seconds">대기 시간</param>
+    /// <param name="interruptCheck">중단 조건</param>
+    public static IEnumerator WaitWithInterrupt(float seconds, Func<bool> interruptCheck)
+    {
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            if (interruptCheck != null && interruptCheck())
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
     }
 

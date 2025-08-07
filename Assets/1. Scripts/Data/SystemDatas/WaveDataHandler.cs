@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class WaveDataHandler : BaseDataHandler<WaveDatabase>
 {
-    //protected override string DataUrl => "https://script.google.com/macros/s/your-tower-sheet-id/exec"; (링크 수정 필요)
-
     private const int STAGE_ID = 1000;
     private const int GROUP_SIZE = 10;
 

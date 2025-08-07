@@ -1,132 +1,129 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class SpawnManager : MonoBehaviour
+public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
 {
-    [Header("스포너 컴포넌트")]
-    [SerializeField] private OreSpawner oreSpawner;
-    [SerializeField] private JewelSpawner jewelSpawner;
+    private OreSpawner oreSpawner;
+    private OreDataHandler oreHandler;
 
     private Vector3 currentMapPosition = Vector3.zero;
-
-    private OreDataHandler oreHandler = new OreDataHandler();
-    private JewelDataHandler jewelHandler = new JewelDataHandler();
-
-    private bool oreDataLoaded = false;
-    private bool jewelDataLoaded = false;
-
     private int currentMapIndex = -1;
 
-    private Dictionary<int, List<GameObject>> mapResources = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<GameObject>> _mapResources = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, List<ResourceState>> _mapResourceStates = new();
 
-    private async void Start()
+    private void Start()
     {
-        await LoadAllDataAsync();
+        oreSpawner = Helper_Component.FindChildComponent<OreSpawner>(this.transform, "OreSpawner");
 
-        currentMapIndex = 0;
+        StartCoroutine(WaitForDataManagerInit());
+    }
+    private IEnumerator WaitForDataManagerInit()
+    {
+        while (!DataManagerReady())
+            yield return null;
+
+        oreHandler = DataManager.Instance.OreData;
     }
 
-    private async Task LoadAllDataAsync()
+    private bool DataManagerReady()
     {
-        if (!oreDataLoaded)
-        {
-            await oreHandler.LoadAsyncLocal();
-            oreDataLoaded = true;
-        }
-
-        if (!jewelDataLoaded)
-        {
-            await jewelHandler.LoadAsyncLocal();
-            jewelDataLoaded = true;
-        }
+        var task = DataManager.Instance.InitCheck();
+        return task.IsCompleted && DataManager.Instance.OreData != null && DataManager.Instance.JewelData != null;
     }
 
-    public void OnMapChanged(Vector3 mapPosition, int mapIndex, Vector2[] spawnAreas)
+    private Transform GetContainer(string containerName)
     {
-        if (spawnAreas == null || spawnAreas.Length < 2)
-        {
-            Debug.LogError("스폰 영역 정보가 부족합니다.");
-            return;
-        }
+        var container = GameObject.Find(containerName);
+        if (container == null)
+            Debug.LogWarning($"컨테이너 {containerName}를 찾을 수 없습니다.");
+        return container?.transform;
+    }
 
-        if (currentMapIndex == mapIndex)
-        {
-            // 이미 스폰된 오브젝트 활성화
-            SetMapResourcesActive(mapIndex, true);
-            return;
-        }
-
-        // 이전 맵 오브젝트 비활성화
+    public void OnMapChanged(Vector3 mapPosition, int mapIndex)
+    {
+        // 현재 맵 상태 저장
         if (currentMapIndex != -1)
-            SetMapResourcesActive(currentMapIndex, false);
+        {
+            // 1) 상태 저장
+            List<ResourceState> saved = new();
+            saved.AddRange(oreSpawner.SaveCurrentStates());
+            _mapResourceStates[currentMapIndex] = saved;
+
+            // 2) 이전 맵 자원들 풀에 반환
+            if (_mapResources.TryGetValue(currentMapIndex, out var oldResources))
+            {
+                foreach (var obj in oldResources)
+                {
+                    if (obj == null) continue;
+                    /*
+                    if (obj.TryGetComponent<IResourceStateSavable>(out var resource))
+                    {
+                        resource.OnReturnToPool();
+                    }*/
+                    PoolManager.Instance.ReturnToPool(obj.GetComponent<IPoolable>().GetId(), obj);
+                }
+                oldResources.Clear();
+            }
+        }
 
         currentMapIndex = mapIndex;
         currentMapPosition = mapPosition;
-
-        SetMapPositionAndArea(mapPosition, spawnAreas[0], spawnAreas[1]);
+        SetMapPositionAndArea(mapPosition);
 
         if (currentMapIndex == 0)
         {
-            Debug.Log("기본맵이라 자원 스폰하지 않음");
             return;
         }
 
-        if (mapResources.ContainsKey(currentMapIndex))
+        var oreContainer = GetContainer("OreContainer");
+
+        oreSpawner.SetParentTransform(oreContainer);
+
+        oreContainer.transform.position = Vector3.zero;
+
+        if (_mapResourceStates.TryGetValue(currentMapIndex, out var savedStates))
         {
-            // 기존 스폰 오브젝트 재활성화
-            SetMapResourcesActive(currentMapIndex, true);
+            List<GameObject> newResources = new List<GameObject>();
+
+            newResources.AddRange(oreSpawner.SpawnFromSavedStates(savedStates.Where(s => s.Id < 1000).ToList()));
+
+            _mapResources[currentMapIndex] = newResources;
         }
         else
         {
-            // 새로 스폰 후 저장
             SpawnAllAndStore();
         }
     }
 
-    public void SetMapResourcesActive(int mapIndex, bool active)
-    {
-        if (mapResources.TryGetValue(mapIndex, out var resources))
-        {
-            foreach (var obj in resources)
-                obj.SetActive(active);
-        }
-    }
-
-    public void SetMapPositionAndArea(Vector3 mapPosition, Vector2 oreAreaSize, Vector2 jewelAreaSize)
-    {
-        currentMapPosition = mapPosition;
-        oreSpawner?.SetSpawnArea(currentMapPosition, oreAreaSize);
-        jewelSpawner?.SetSpawnArea(currentMapPosition, jewelAreaSize);
-    }
-
     private void SpawnAllAndStore()
     {
-        if (!oreDataLoaded || !jewelDataLoaded) return;
+        if (oreHandler == null)
+        {
+            Debug.LogWarning("SpawnManager: 데이터 핸들러가 세팅되지 않았습니다.");
+            return;
+        }
 
         List<GameObject> spawnedObjects = new List<GameObject>();
 
-        List<OreDatabase> oreList = oreHandler.GetAllItems();
-        List<JewelDatabase> jewelList = jewelHandler.GetAllItems();
-
-        if (oreSpawner != null && oreList != null)
+        if (oreSpawner != null)
         {
-            oreSpawner.SpawnResources(oreList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.transform));
+            oreSpawner.SpawnResources(TimeManager.Instance.Day);
+            spawnedObjects.AddRange(GetChildrenGameObjects(oreSpawner.GetParentTransform()));
         }
 
-        if (jewelSpawner != null && jewelList != null)
-        {
-            jewelSpawner.SpawnResources(jewelList, TimeManager.Instance.Stage);
-            spawnedObjects.AddRange(GetChildrenGameObjects(jewelSpawner.transform));
-        }
-
-        mapResources[currentMapIndex] = spawnedObjects;
+        _mapResources[currentMapIndex] = spawnedObjects;
     }
 
     private List<GameObject> GetChildrenGameObjects(Transform parent)
     {
         List<GameObject> list = new List<GameObject>();
+        if (parent == null) return list;
+
         for (int i = 0; i < parent.childCount; i++)
             list.Add(parent.GetChild(i).gameObject);
         return list;
@@ -135,14 +132,15 @@ public class SpawnManager : MonoBehaviour
     public void OnStageChanged()
     {
         ClearAll();
-        mapResources.Clear();
+        _mapResources.Clear();
+        _mapResourceStates.Clear();
+        SetMapPositionAndArea(Vector3.zero);
     }
 
     private void ClearAll()
     {
-        ClearChildren(oreSpawner?.transform);
-        ClearChildren(jewelSpawner?.transform);
-        mapResources.Clear();
+        ClearChildren(oreSpawner?.GetParentTransform());
+        _mapResources.Clear();
     }
 
     private void ClearChildren(Transform parent)
@@ -151,5 +149,84 @@ public class SpawnManager : MonoBehaviour
 
         for (int i = parent.childCount - 1; i >= 0; i--)
             Destroy(parent.GetChild(i).gameObject);
+    }
+
+    public void SetMapResourcesActive(int mapIndex, bool active)
+    {
+        if (_mapResources.TryGetValue(mapIndex, out var resources))
+        {
+            foreach (var obj in resources)
+                obj.SetActive(active);
+        }
+    }
+
+    public void SetMapPositionAndArea(Vector3 mapPosition)
+    {
+        currentMapPosition = mapPosition;
+        oreSpawner?.SetSpawnCenter(mapPosition);
+    }
+
+    /// <summary>
+    /// 광산에 스폰된 광석과 쥬얼 데이터 저장
+    /// </summary>
+    public void SaveData(GameData data)
+    {
+        MineSaveData mineData;
+
+        // 이전 맵의 리소스 데이터 저장
+        foreach (var key in _mapResourceStates.Keys)
+        {
+            mineData = new MineSaveData();
+            mineData.mapId = key;
+            foreach(ResourceState resource in _mapResourceStates[key])
+            {
+                if(!resource.IsMined)
+                    mineData.resources.Add(new ResourceSaveData(resource.Id, resource.Position, resource.HP));
+            }
+
+            data.spawnedMines.Add(mineData);
+        }
+
+        // 현재 맵의 리소스 데이터 저장
+        List<ResourceState> saved = new();
+        saved.AddRange(oreSpawner.SaveCurrentStates(false));
+
+        mineData = new MineSaveData();
+        mineData.mapId = currentMapIndex;
+        foreach (ResourceState resource in saved)
+        {
+            if (!resource.IsMined)
+                mineData.resources.Add(new ResourceSaveData(resource.Id, resource.Position, resource.HP));
+        }
+
+        data.spawnedMines.Add(mineData);
+    }
+
+    /// <summary>
+    /// 광산에 스폰된 광석과 쥬얼 데이터 로드
+    /// </summary>
+    public void LoadData(GameData data)
+    {
+        _mapResourceStates.Clear();
+
+        foreach(MineSaveData mineData in data.spawnedMines)
+        {
+            List<ResourceState> resourceStates = new List<ResourceState>();
+
+            foreach(ResourceSaveData resourceData in mineData.resources)
+            {
+                ResourceState resourceState = new ResourceState()
+                {
+                    Id = resourceData.resourceId,
+                    Position = resourceData.position,
+                    HP = resourceData.curHp,
+                    IsMined = false
+                };
+
+                resourceStates.Add(resourceState);
+            }
+
+            _mapResourceStates[mineData.mapId] = resourceStates;
+        }
     }
 }

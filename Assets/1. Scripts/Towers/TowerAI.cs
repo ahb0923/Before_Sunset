@@ -1,10 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Build.Pipeline.Utilities;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UI;
 
 public enum TOWER_STATE
 {
@@ -18,7 +13,7 @@ public enum TOWER_ATTACK_TYPE
 {
     Projectile,
     Areaofeffect,
-    Healing
+    Trap
 }
 
 
@@ -26,13 +21,15 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 {
     private BaseTower _tower;
     private bool _isDestroy = false;
-
+    private bool _isFirstAttack = false;
+    private Animator _animator;
     protected override TOWER_STATE InvalidState => TOWER_STATE.None;
 
 
     public void Init(BaseTower baseTower)
     {
         _tower = baseTower;
+        _animator = _tower.ui.animator;
     }
 
     protected override void OnAwake()
@@ -82,6 +79,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     public void SetState(TOWER_STATE state, bool force = false)
     {
+        if (state == TOWER_STATE.Attack)
+            _isFirstAttack = true;
         TransitionTo(state, force);
         /*
         if (state == TOWER_STATE.Construction)
@@ -104,34 +103,26 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
         //int spriteIndex = 0;
 
         // 방어코드 기본 0으로 초기화 하긴함
-        stat.CurrHp = 0f;
-        icon.color = ColorExtensions.WithAlpha(icon.color, 0.5f);
+        //stat.CurrHp = 0f;
+        stat.CurrHp = stat.MaxHp;
 
+        
         while (elapsed < totalTime)
         {
             elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / totalTime);
-            stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
+            //float t = Mathf.Clamp01(elapsed / totalTime);
+           // stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
 
-            ui.UpdateHpBar(stat.CurrHp, stat.MaxHp);
-            /*
-            // 일정 시간마다 스프라이트 전환
-            if (spriteIndex < sprites.Count && elapsed >= interval * spriteIndex)
-            {
-                icon.sprite = sprites[spriteIndex];
-                //AudioManager.Instance().PlaySfx(SFX_TYPE.Building_Place);
-                spriteIndex++;
-            }*/
+            //_tower.ui.SetConstructionProgress(t);
+
 
             yield return null;
         }
 
-        // 건설 완료 후 체력 100% 보장
-        stat.CurrHp = stat.MaxHp;
-        ui.hpBar_immediate.fillAmount = 1f;
-        ui.hpBar_delay.fillAmount = 1f;
-        icon.color = ColorExtensions.WithAlpha(icon.color, 1f);
 
+        // 건설 완료 후 체력 100% 보장
+        //_tower.ui.SetConstructionProgress(1f);
+        //stat.CurrHp = stat.MaxHp;
 
         /*
         // 건설 직후, 공격 범위 내 적 검색
@@ -147,18 +138,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
     protected virtual IEnumerator C_Idle()
     {
-        /*
-        if (_isNowBuilding)
-        {
-            _isNowBuilding = false;
-            _tower.attackSensor.ScanInitialEnemies();
-
-            if (_tower.attackSensor.HasDetectedEnemy())
-                CurState = TOWER_STATE.Attack;
-            else
-                CurState = TOWER_STATE.Idle;
-        }
-        yield return null;*/
         _tower.attackSensor.ScanInitialEnemies();
 
         if (_tower.attackSensor.HasDetectedEnemy())
@@ -171,22 +150,44 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     protected virtual IEnumerator C_Attack()
     {
+        if (CurState == TOWER_STATE.Destroy)
+            yield break;
+
+        if (_isFirstAttack)
+        {
+            //Debug.Log("[C_Attack] 공격 진입 직후 1회 스킵");
+            _isFirstAttack = false;
+            //yield return Helper_Coroutine.WaitSeconds(_tower.statHandler.AttackSpeed);
+            yield return Helper_Coroutine.WaitSeconds(1.0f);
+        }
+
+        if (CurState == TOWER_STATE.Destroy)
+            yield break;
+
+        if (_tower.attackSensor.CurrentTarget == null || !_tower.attackSensor.CurrentTarget.activeSelf)
+        {
+            _tower.attackSensor.CheckTargetValid();
+            yield break; // 상태 Idle로 전환될 것
+        }
+ 
+        AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
+
         while (true)
         {
-            if (IsInterrupted)
+            if (IsInterrupted || CurState == TOWER_STATE.Destroy)
             {
-                Debug.Log("[C_Attack] 상태 중단 감지");
+               // Debug.Log("[C_Attack] 상태 중단 감지");
                 yield break;
             }
 
-            switch (_tower.statHandler.attackType)
+            switch (_tower.statHandler.AttackType)
             {
                 case TOWER_ATTACK_TYPE.Projectile:
                     _tower.attackSensor.CheckTargetValid();
                     GameObject target = _tower.attackSensor.CurrentTarget;
                     if (target == null)
                     {
-                        Debug.Log("타겟 없음, Idle로 전환");
+                        //Debug.Log("타겟 없음, Idle로 전환");
                         CurState = TOWER_STATE.Idle;
                         yield break;
                     }
@@ -195,39 +196,32 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     break;
             }
 
-            if (_tower.ai.CurState == TOWER_STATE.Destroy) yield break;
-
             yield return _tower.attackStrategy.Attack(_tower);
+
+            if (CurState == TOWER_STATE.Destroy)
+                yield break;
+
+            yield return Helper_Coroutine.WaitWithInterrupt(_tower.statHandler.AttackSpeed, () => CurState == TOWER_STATE.Destroy || IsInterrupted);
         }
-    }
-
-    private IEnumerator PullTargetCoroutine(GameObject target, Vector3 center, float speed)
-    {
-        Debug.Log(target);
-        //var ai = target.GetComponent<MonsterAI>();
-        //if (ai != null) ai.enabled = false;
-
-        while (target != null && target.activeSelf)
-        {
-            Vector3 dir = (center - target.transform.position).normalized;
-            target.transform.position += dir * speed * Time.deltaTime;
-
-            if (Vector3.Distance(center, target.transform.position) < 2f)
-                break;
-
-            yield return null;
-        }
-        //if (ai != null) ai.enabled = true;
     }
     private IEnumerator C_Destroy()
     {
         Debug.Log("C_Destroy() 실행됨");
-
-        yield return null;
+        if (_animator != null)
+        {
+            _animator.SetTrigger("IsDestroy");
+        }
+        AudioManager.Instance.PlaySFX("DestroyedTower");
+        yield return Helper_Coroutine.WaitSeconds(0.4f);
 
         _isDestroy = true;
         DefenseManager.Instance.RemoveObstacle(transform);
+        if (_tower.towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
+        {
+            wireTower.Disconnect();
+        }
         PoolManager.Instance.ReturnToPool(_tower.statHandler.ID, gameObject);
+       
 
         yield return null;
     }

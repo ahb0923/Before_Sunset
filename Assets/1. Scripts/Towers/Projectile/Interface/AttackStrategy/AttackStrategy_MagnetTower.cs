@@ -10,6 +10,10 @@ public class AttackStrategy_MagnetTower : IAttackStrategy
         float pullSpeed = tower.statHandler.AttackPower;
         Vector3 centerPos = tower.transform.position;
 
+
+        tower.ui.animator.SetTrigger("IsAttack");
+        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(255f / 255f, 0f / 255f, 255f / 255f, 50f / 255f), tower.statHandler.AttackRange, true);
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
 
         List<GameObject> candidates = new();
@@ -28,7 +32,7 @@ public class AttackStrategy_MagnetTower : IAttackStrategy
             tower.StartCoroutine(PullTargetCoroutine(pullTarget, centerPos, pullSpeed));
         }
 
-        yield return new WaitForSeconds(tower.statHandler.AttackSpeed);
+        yield return null;
     }
 
     private IEnumerator PullTargetCoroutine(GameObject target, Vector3 center, float speed)

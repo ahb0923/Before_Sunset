@@ -19,6 +19,10 @@ public class MonsterDataHandler : BaseDataHandler<MonsterDatabase>
         Debug.LogWarning($"[MonsterDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
+    protected override void AfterLoaded()
+    {
+        SettingPrefab();
+    }
 
     public void SettingPrefab()
     {

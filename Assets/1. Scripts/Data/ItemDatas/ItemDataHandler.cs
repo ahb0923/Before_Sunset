@@ -47,9 +47,28 @@ public class ItemDataHandler
             _byType[classType] = list = new();
         list.Add(item);
     }
-    
-    public ItemDatabase GetId(int id) => _byId.TryGetValue(id, out var value) ? value : null;
-    public ItemDatabase GetName(string name) => _byName.TryGetValue(name, out var value) ? value : null;
-    public IEnumerable<T> GetType<T>() where T : ItemDatabase =>
+
+    /// <summary>
+    /// ID로 아이템 데이터 조회
+    /// </summary>
+    public ItemDatabase GetById(int id) =>
+        _byId.TryGetValue(id, out var item) ? item : null;
+
+    /// <summary>
+    /// 이름으로 아이템 데이터 조회
+    /// </summary>
+    public ItemDatabase GetByName(string name) =>
+        _byName.TryGetValue(name, out var item) ? item : null;
+
+    /// <summary>
+    /// 이름으로 아이템 ID 조회 (실패 시 -1)
+    /// </summary>
+    public int GetIdByName(string name) =>
+        _byName.TryGetValue(name, out var item) ? item.id : -1;
+
+    /// <summary>
+    /// 타입별 아이템 데이터 조회
+    /// </summary>
+    public IEnumerable<T> GetByType<T>() where T : ItemDatabase =>
         _byType.TryGetValue(typeof(T), out var list) ? list.Cast<T>() : Enumerable.Empty<T>();
 }
