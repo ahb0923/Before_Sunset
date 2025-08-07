@@ -167,6 +167,6 @@ public class TowerUI : MonoBehaviour
     public void SetEffectSize(float radius)
     {
         radius += 0.5f;
-        effectArea.size = new Vector2 (radius, radius);
+        effectArea.transform.localScale = new Vector2 (radius, radius);
     }
 }

@@ -33,7 +33,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
 
 
     public Collider2D mainCollider;
-    public Collider2D _attackCollider;
+    public CircleCollider2D _attackCollider;
     public Collider2D _buildCollider;
     public Collider2D _interactCollider;
 
@@ -60,7 +60,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         mainCollider = Helper_Component.GetComponent<Collider2D>(gameObject);
 
         // 이동 필요
-        _attackCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "AttackArea");
+        _attackCollider = Helper_Component.FindChildComponent<CircleCollider2D>(transform, "AttackArea");
 
         // 이동 필요
         _interactCollider = Helper_Component.FindChildComponent<Collider2D>(transform, "InteractArea");

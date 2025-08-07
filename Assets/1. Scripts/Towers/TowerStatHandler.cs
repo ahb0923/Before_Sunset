@@ -82,6 +82,7 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
         BuildRequirements = _data.buildRequirements;
         AccumulatedCosts = new Dictionary<string, int>(BuildRequirements);
 
+        _tower._attackCollider.radius = AttackRange + 0.5f;
         _tower.ui.SetEffectSize(AttackRange);
     }
 
@@ -146,12 +147,14 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeTower, NextupgradeID ?? -1);
 
             ID = upgradeData.id;
-            Level = upgradeData.level;
-            CurrHp += upgradeData.towerHp;
+            Level = upgradeData.level; 
             MaxHp += upgradeData.towerHp;
+            CurrHp += upgradeData.towerHp;
             AttackPower += upgradeData.damage;
             AttackSpeed += upgradeData.aps;
             AttackRange += upgradeData.range;
+
+            _tower._attackCollider.radius = AttackRange + 0.5f;
             _tower.ui.SetEffectSize(AttackRange);
 
             BuildType = upgradeData.buildType;

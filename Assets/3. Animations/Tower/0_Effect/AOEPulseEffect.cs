@@ -54,6 +54,7 @@ public class AOEPulseEffect : MonoBehaviour, IPoolable
 
     public void SetSize(float size)
     {
+        size += 0.5f;
         gameObject.transform.localScale = new Vector2 (size, size);
     }
 
