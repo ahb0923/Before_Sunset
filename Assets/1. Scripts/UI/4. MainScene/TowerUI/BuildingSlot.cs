@@ -183,7 +183,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        bool isInBase = DefenseManager.Instance.mainPlayer.GetComponent<BasePlayer>().IsInBase;
+        bool isInBase = MapManager.Instance.Player.IsInBase;
         if (!isInBase)
         {
             ToastManager.Instance.ShowToast("광산에서는 설치할 수 없습니다.");
