@@ -2,6 +2,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using NaughtyAttributes;
+using System.Net.Mime;
 using TMPro;
 
 public class StartSceneUI : MonoBehaviour
@@ -11,6 +12,7 @@ public class StartSceneUI : MonoBehaviour
     [SerializeField] private Image _logoImage;
     [SerializeField] private RectTransform _backRect;
     [SerializeField] private RectTransform _logoRect;
+    [SerializeField] private Image _fadeImage;
     
     [Header("버튼")]
     [SerializeField] private RectTransform _buttonContainer;
@@ -43,6 +45,7 @@ public class StartSceneUI : MonoBehaviour
         _logoImage = Helper_Component.FindChildComponent<Image>(this.transform, "LogoImage");
         _backRect = Helper_Component.FindChildComponent<RectTransform>(this.transform, "Background");
         _logoRect = Helper_Component.FindChildComponent<RectTransform>(this.transform, "LogoImage");
+        _fadeImage = Helper_Component.FindChildComponent<Image>(this.transform, "FadeImage");
         _buttonContainer = Helper_Component.FindChildComponent<RectTransform>(this.transform, "ButtonContainer");
         _newGameButton = Helper_Component.FindChildComponent<Button>(this.transform, "NewGameButton");
         _loadGameButton = Helper_Component.FindChildComponent<Button>(this.transform, "LoadGameButton");
@@ -68,8 +71,16 @@ public class StartSceneUI : MonoBehaviour
         _tutorialButton.onClick.AddListener(Tutorial);
         _exitButton.onClick.AddListener(Exit);
     }
+    
+    private void Start()
+    {
+        if (GlobalState.HasPlayedIntro)
+            Open();
+        else
+            RaycastTarget(false);
+    }
 
-    private void RaycastTarget(bool isTrue)
+    public void RaycastTarget(bool isTrue)
     {
         _newGameButtonImage.raycastTarget = isTrue;
         _loadGameButtonImage.raycastTarget = isTrue;
@@ -81,13 +92,10 @@ public class StartSceneUI : MonoBehaviour
         _tutorialText.raycastTarget = isTrue;
         _exitGameText.raycastTarget = isTrue;
     }
-    
-    private void Start()
+
+    public void Open()
     {
-        if (GlobalState.HasPlayedIntro)
-            _backRect.OpenAtCenter();
-        else
-            RaycastTarget(false);
+        _backRect.OpenAtCenter();
     }
 
     [Button]
@@ -196,5 +204,15 @@ public class StartSceneUI : MonoBehaviour
         selectImage.HideImage();
         Application.Quit();
 #endif
+    }
+
+    public void FadeOut()
+    {
+        _fadeImage.gameObject.SetActive(true);
+        _fadeImage.DOFade(0f, 2f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            RaycastTarget(true);
+            _fadeImage.gameObject.SetActive(false);
+        });
     }
 }
