@@ -98,10 +98,7 @@ public class OpeningScene : MonoBehaviour
 
     private void LoadScene()
     {
-        if (GlobalState.ToTutorial)
-            SceneManager.LoadScene("TutorialScene");
-        else
-            SaveManager.Instance.LoadGameFromSlot();
+        SaveManager.Instance.LoadGameFromSlot();
     }
     
     private IEnumerator C_Sequence(int i)

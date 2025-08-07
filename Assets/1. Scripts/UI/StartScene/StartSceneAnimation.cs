@@ -68,9 +68,8 @@ public class StartSceneAnimation : MonoBehaviour
         else
         {
             CameraAction();
+            AudioManager.Instance.PlayBGM("Main");
         }
-
-        AudioManager.Instance.PlayBGM("Main");
     }
 
     [Button]
@@ -78,7 +77,22 @@ public class StartSceneAnimation : MonoBehaviour
     {
         _movingCharacter.SetActive(true);
         Vector2 target = new Vector2(-2f, -1.2f);
-        _movingCharacter.transform.DOMove(target, 5f).SetEase(Ease.Linear).OnComplete(StartIdle);
+        
+        Sequence seq = DOTween.Sequence();
+        seq.Append(_movingCharacter.transform.DOMove(target, 5f).SetEase(Ease.Linear).OnComplete(StartIdle));
+        seq.InsertCallback(0.6f, WalkSound);
+        seq.InsertCallback(1.2f, WalkSound);
+        seq.InsertCallback(1.8f, WalkSound);
+        seq.InsertCallback(2.4f, WalkSound);
+        seq.InsertCallback(3.0f, WalkSound);
+        seq.InsertCallback(3.6f, WalkSound);
+        seq.InsertCallback(4.2f, WalkSound);
+        seq.InsertCallback(4.8f, WalkSound);
+    }
+
+    private void WalkSound()
+    {
+        AudioManager.Instance.PlaySFX("UIClick");
     }
 
     private void StartIdle()
@@ -117,6 +131,7 @@ public class StartSceneAnimation : MonoBehaviour
         ShakeCamera(0.2f, 0.1f, 0.2f);
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        ShakeSound();
         yield return new WaitWhile(() => _dustParticleSystem.IsAlive());
         var main = _dustParticleSystem.main;
         main.duration = 9f;
@@ -126,6 +141,11 @@ public class StartSceneAnimation : MonoBehaviour
         _miningCharacter.SetActive(false);
         _dust1.SetActive(false);
         StartIdle2();
+    }
+
+    private void ShakeSound()
+    {
+        AudioManager.Instance.PlaySFX("EarthRumble");
     }
 
     private void StartIdle2()
@@ -157,17 +177,20 @@ public class StartSceneAnimation : MonoBehaviour
     {
         _explosionContainer1.SetActive(true);
         StartCoroutine(C_Explode(_explosion1, _explosion2));
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         _explosionContainer2.SetActive(true);
         StartCoroutine(C_Explode(_explosion3, _explosion4, _explosion5));
-        yield return new WaitForSeconds(2f);
+        AudioManager.Instance.PlaySFX("Hit");
+        yield return new WaitForSeconds(1f);
+        _dust2.SetActive(false);
         StartCircleExplode();
     }
 
     private IEnumerator C_Explode(SpriteRenderer sprite1, SpriteRenderer sprite2, SpriteRenderer sprite3 = null)
     {
         float elapsed = 0f;
-        while (elapsed < 0.7f)
+        bool isPlayed = false;
+        while (elapsed < 0.5f)
         {
             elapsed += Time.deltaTime;
             float amount = Mathf.Clamp01(elapsed/0.7f);
@@ -176,6 +199,12 @@ public class StartSceneAnimation : MonoBehaviour
             if (sprite3 != null)
             {
                 SetFill(sprite3, amount);
+            }
+
+            if (elapsed >= 0.1f && !isPlayed)
+            {
+                ExplosionSound();
+                isPlayed = true;
             }
             
             yield return null;
@@ -187,6 +216,11 @@ public class StartSceneAnimation : MonoBehaviour
             SetFill(sprite3, 1f);
         }
     }
+
+    private void ExplosionSound()
+    {
+        AudioManager.Instance.PlaySFX("토파즈 필드");
+    }
     
     private void SetFill(SpriteRenderer sprite, float amount)
     {
@@ -197,7 +231,13 @@ public class StartSceneAnimation : MonoBehaviour
     {
         _circleExplosion.SetActive(true);
         _circleExplosion.transform.localScale = Vector3.zero;
+        LoudExplosionSound();
         _circleExplosion.transform.DOScale(Vector3.one * 32f, 0.5f).OnComplete(StartCircleFadeIn);
+    }
+
+    private void LoudExplosionSound()
+    {
+        AudioManager.Instance.PlaySFX("Explosion");
     }
 
     [Button]

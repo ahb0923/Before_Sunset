@@ -76,7 +76,10 @@ public class QuestUI : MonoBehaviour
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-        SaveManager.Instance.LoadGameFromSlot();
+        if (GlobalState.HasPlayedOpening)
+            SaveManager.Instance.LoadGameFromSlot();
+        else
+            LoadingSceneController.LoadScene("OpeningScene");
     }
 
     /// <summary>

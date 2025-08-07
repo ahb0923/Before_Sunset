@@ -1,11 +1,15 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoSingleton<UIManager>
 {
+    [Header("Fade In & Out")]
+    [SerializeField] private Image _fadeImage;
+    private Tween _fadeTween;
+    
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
 
     public bool isResultUIOpen = false;
@@ -28,6 +32,11 @@ public class UIManager : MonoSingleton<UIManager>
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
     public SaveLoadSlot AutoSaveLoadSlot { get; private set; }
+
+    private void Reset()
+    {
+        _fadeImage = Helper_Component.FindChildComponent<Image>(this.transform, "ScreenFadeImage");
+    }
 
     protected override void Awake()
     {
@@ -150,5 +159,43 @@ public class UIManager : MonoSingleton<UIManager>
             ui.CloseUI();
         }
         _uiStack.Clear();
+    }
+
+    public void FadeIn(float duration = 1f, Action onComplete = null)
+    {
+        _fadeImage.gameObject.SetActive(true);
+
+        if (_fadeTween != null)
+        {
+            _fadeTween.Kill();
+            _fadeTween = null;
+        }
+        
+        _fadeImage.color = new Color(0, 0, 0, 0);
+        _fadeTween = _fadeImage.DOFade(1f, duration).OnComplete(() =>
+        {
+            _fadeTween.Kill();
+            _fadeTween = null;
+            onComplete?.Invoke();
+        });
+    }
+
+    public void FadeOut(float duration = 1f, Action onComplete = null)
+    {
+        _fadeImage.gameObject.SetActive(true);
+        
+        if (_fadeTween != null)
+        {
+            _fadeTween.Kill();
+            _fadeTween = null;
+        }
+
+        _fadeImage.color = new Color(0, 0, 0, 1);
+        _fadeTween = _fadeImage.DOFade(0f, duration).OnComplete(() =>
+        {
+            _fadeTween.Kill();
+            _fadeTween = null;
+            onComplete?.Invoke();
+        });
     }
 }

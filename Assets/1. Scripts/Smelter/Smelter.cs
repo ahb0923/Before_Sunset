@@ -256,6 +256,7 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         }
 
         StopAllCoroutines();
+        DefenseManager.Instance.RemoveObstacle(transform);
         PoolManager.Instance.ReturnToPool(smelterID, gameObject);
     }
 

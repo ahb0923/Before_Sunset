@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : MonoSingleton<AudioManager>
 {
-    public static AudioManager Instance;
-
     private float _wholeVolume = 1f;
     private float _bgmVolume = 0.5f;
     private float _sfxVolume = 0.2f;
 
     private float _originalBgVolume;
     private float _originalSfxVolume;
-    
+
     private bool _isWholeSoundMute = false;
     private bool _isBGSoundMute = false;
     private bool _isSFXSoundMute = false;
@@ -26,20 +24,19 @@ public class AudioManager : MonoBehaviour
     private Dictionary<string, AudioClip> _bgmClips = new();
     private Dictionary<string, AudioClip> _sfxClips = new();
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
+        base.Awake();
+        if (Instance != null)
             DontDestroyOnLoad(gameObject);
-            InitBGM();
-            InitSFXPool();
-            LoadAllClips();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        
+        LoadAllClips();
+    }
+
+    private void Start()
+    {
+        InitBGM();
+        InitSFXPool();
     }
 
     private void InitBGM()
@@ -130,7 +127,7 @@ public class AudioManager : MonoBehaviour
         return source;
     }
 
-    private System.Collections.IEnumerator ReturnToPoolWhenDone(AudioSource source, float delay)
+    private IEnumerator ReturnToPoolWhenDone(AudioSource source, float delay)
     {
         yield return new WaitForSeconds(delay);
         source.Stop();
@@ -194,5 +191,48 @@ public class AudioManager : MonoBehaviour
         _sfxVolume = (_isWholeSoundMute || _isSFXSoundMute) ? 0f : _originalSfxVolume * _wholeVolume;
         
         bgmSource.volume = _bgmVolume;
+    }
+
+    public void PauseAllSound()
+    {
+        // BGM 일시정지
+        if (bgmSource.isPlaying)
+            bgmSource.Pause();
+
+        // SFX 일시정지
+        foreach (var source in _sfxPool)
+        {
+            if (source.isPlaying)
+                source.Pause();
+        }
+    }
+
+    public void ResumeAllSound()
+    {
+        // BGM 재생
+        if (bgmSource.clip != null && !bgmSource.isPlaying)
+            bgmSource.UnPause();
+
+        // SFX 재생
+        foreach (var source in _sfxPool)
+        {
+            if (source.clip != null && !source.isPlaying)
+                source.UnPause();
+        }
+    }
+
+    public void StopAllSound()
+    {
+        if (bgmSource.isPlaying)
+            bgmSource.Stop();
+
+        foreach (var sound in _sfxPool)
+        {
+            if (sound.clip != null || sound.isPlaying)
+            {
+                sound.Stop();
+                sound.clip = null;
+            }
+        }
     }
 }

@@ -117,13 +117,14 @@ GameObject:
   - component: {fileID: 6591016502138050058}
   - component: {fileID: 6674273311834525501}
   - component: {fileID: 8728962741753140533}
+  - component: {fileID: 228671122677504374}
   m_Layer: 0
   m_Name: Dust2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6591016502138050058
 Transform:
   m_ObjectHideFlags: 0
@@ -212,6 +213,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &228671122677504374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926288306934578847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acef2c49921f2bc49b5f4c3970778972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1526648406626151806
 GameObject:
   m_ObjectHideFlags: 0
@@ -5719,6 +5732,7 @@ GameObject:
   - component: {fileID: 1059168329773094798}
   - component: {fileID: 1102527127367104210}
   - component: {fileID: 3172362232951982285}
+  - component: {fileID: 2541533162656109443}
   m_Layer: 0
   m_Name: MiningCharacter
   m_TagString: Untagged
@@ -5816,6 +5830,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2541533162656109443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5676383827831752058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e38145eca7f2f464886f15cbb061641c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5909713090946970890
 GameObject:
   m_ObjectHideFlags: 0

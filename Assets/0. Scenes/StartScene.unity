@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 996907b0ee9268c4db9b3bd740aaed40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GOD_MODE: 1
+  GOD_MODE: 0
 --- !u!4 &469453546
 Transform:
   m_ObjectHideFlags: 0
@@ -661,6 +661,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2742677472884001895, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
+      propertyPath: _startSceneAnimation
+      value: 
+      objectReference: {fileID: 855037361}
     - target: {fileID: 3567910530011862226, guid: a4ec8a7c58ec5a34690b77c463acfe2b, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -979,7 +983,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1526648406626151806, guid: ba07cbcaad8a5164b84939ec9ecf142f, type: 3}
+    - target: {fileID: 926288306934578847, guid: ba07cbcaad8a5164b84939ec9ecf142f, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -990,14 +994,6 @@ PrefabInstance:
     - target: {fileID: 6998694545634891538, guid: ba07cbcaad8a5164b84939ec9ecf142f, type: 3}
       propertyPath: m_Name
       value: StartSceneAnimation
-      objectReference: {fileID: 0}
-    - target: {fileID: 6998694545634891538, guid: ba07cbcaad8a5164b84939ec9ecf142f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8472781648019748670, guid: ba07cbcaad8a5164b84939ec9ecf142f, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

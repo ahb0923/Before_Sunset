@@ -22,8 +22,7 @@ public class WarningArrow : MonoBehaviour
 
     [SerializeField] private Color _originColor;
     [SerializeField] private Color _displayColor;
-    [SerializeField] private float _informDuration = 5f;
-    [SerializeField] private float _warningDuration = 0.5f;
+    [SerializeField] private float _duration = 0.5f;
     [SerializeField] private float _changingTime = 0.5f;
 
     private Coroutine[] _displayCoroutines = new Coroutine[4];
@@ -92,9 +91,10 @@ public class WarningArrow : MonoBehaviour
     {
         if(arrow == null || renderers == null)
             yield break;
-        
+
         arrow.gameObject.SetActive(true);
-        for (int i = 0; i < (isWarning ? 2 : 1); i++)
+        int repeat = 2;
+        while(repeat > 0)
         {
             // 서서히 보이기
             float timer = 0f;
@@ -109,7 +109,7 @@ public class WarningArrow : MonoBehaviour
                 yield return null;
             }
 
-            yield return Helper_Coroutine.WaitSeconds(isWarning ? _warningDuration : _informDuration);
+            yield return Helper_Coroutine.WaitSeconds(_duration);
 
             // 서서히 안 보이기
             timer = _changingTime;
@@ -123,6 +123,8 @@ public class WarningArrow : MonoBehaviour
                 timer -= Time.deltaTime;
                 yield return null;
             }
+
+            if(isWarning) repeat--;
         }
         arrow.gameObject.SetActive(false);
 
