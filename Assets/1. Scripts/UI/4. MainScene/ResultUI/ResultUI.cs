@@ -98,14 +98,14 @@ public class ResultUI : MonoBehaviour, ICloseableUI
         }
     }
     
-    public void Open(int stage, bool isClear)
+    public void Open(bool isClear, int stage = -1)
     {
         IsOpen = true;
         _isClear = isClear;
+        TimeManager.Instance.PauseGame(true);
+        
         if (isClear)
         {
-            TimeManager.Instance.PauseGame(true);
-
             InitSlots(stage);
             RefreshSlots(stage);
             RefreshShard(stage);

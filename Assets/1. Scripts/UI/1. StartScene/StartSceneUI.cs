@@ -127,7 +127,6 @@ public class StartSceneUI : MonoBehaviour
 
     private void PlayBGM()
     {
-        AudioManager.Instance.StopAllSound();
         AudioManager.Instance.PlayBGM("Main");
     }
 

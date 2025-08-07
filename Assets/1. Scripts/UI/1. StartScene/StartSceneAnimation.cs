@@ -200,7 +200,7 @@ public class StartSceneAnimation : MonoBehaviour
                 SetFill(sprite3, amount);
             }
 
-            if (elapsed >= 0.05f && !isPlayed)
+            if (elapsed >= 0.1f && !isPlayed)
             {
                 ExplosionSound();
                 isPlayed = true;
@@ -218,7 +218,7 @@ public class StartSceneAnimation : MonoBehaviour
 
     private void ExplosionSound()
     {
-        AudioManager.Instance.PlaySFX("토파즈 필드");
+        AudioManager.Instance.PlaySFX("Raser");
     }
     
     private void SetFill(SpriteRenderer sprite, float amount)

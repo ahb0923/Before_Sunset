@@ -255,6 +255,13 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
             ItemDropManager.Instance.DropItem(OutputItem.Data.id, OutputItem.stack, transform);
         }
 
+        if (DragManager.DraggingItem != null)
+        {
+            ItemDropManager.Instance.DropItem(DragManager.DraggingItem.Data.id, DragManager.DraggingItem.stack, transform);
+        }
+        
+        Destroy(DragManager.DraggingIcon);
+        DragManager.Clear();
         StopAllCoroutines();
         DefenseManager.Instance.RemoveObstacle(transform);
         PoolManager.Instance.ReturnToPool(smelterID, gameObject);

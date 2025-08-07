@@ -108,6 +108,8 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     /// </summary>
     public void RemoveObstacle(Transform obstacle)
     {
+        if (!_obstacleDict.ContainsKey(obstacle)) return;
+
         // walkabla ID 반환
         int walkableId = _obstacleDict[obstacle].walkableId;
         if (!_walkableIdStack.Contains(walkableId)) _walkableIdStack.Push(walkableId);
