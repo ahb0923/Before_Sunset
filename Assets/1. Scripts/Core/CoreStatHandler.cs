@@ -54,8 +54,8 @@ public class CoreStatHandler : MonoBehaviour
 
         // 현재 레벨에 맞춰 모든 업그레이드 적용
         ApplyHPUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HP));
-        ApplyAttackPowerUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackDamage));
-        ApplyAttackRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackRange));
+        //ApplyAttackPowerUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackDamage));
+        //ApplyAttackRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackRange));
         ApplySightRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.SightRange));
     }
 

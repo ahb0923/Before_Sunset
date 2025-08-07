@@ -59,6 +59,12 @@ public class QuestManager : MonoSingleton<QuestManager>
                     _arrow?.SettingTarget(_targets[curTargetIndex]);
                 }
             }
+
+            // 타임 스킵 퀘스트일 때, 타임 스킵 버튼 활성화
+            if(curQuest.Type == QUEST_TYPE.TimeSkip)
+            {
+                TimeManager.Instance.OnSkipQuest();
+            }
         }
 
         UIManager.Instance.QuestUI.DisplayClear(curQuest);

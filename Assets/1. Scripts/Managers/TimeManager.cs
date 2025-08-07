@@ -20,7 +20,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private bool _isSpawnOver;
     private bool _isWarned;
     private bool _isRecallOver;
-    
+
+    private bool _isSkipQuest = false;
+
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
@@ -116,6 +118,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     }
 
     /// <summary>
+    /// 타임 스킵 퀘스트 활성화 시 호출
+    /// </summary>
+    public void OnSkipQuest()
+    {
+        _isSkipQuest = true;
+    }
+
+    /// <summary>
     /// true면 일시 정지, false면 일시 정지 해제
     /// </summary>
     public void PauseGame(bool doPause)
@@ -129,6 +139,12 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SkipHalfDay()
     {
+        if (GameManager.Instance.IsTutorial && !_isSkipQuest)
+        {
+            ToastManager.Instance.ShowToast("아직은 시간 스킵을 할 수 없습니다!");
+            return;
+        }
+
         if (IsNight)
         {
             ToastManager.Instance.ShowToast("몬스터 웨이브 중에는 스킵이 불가능합니다!");
