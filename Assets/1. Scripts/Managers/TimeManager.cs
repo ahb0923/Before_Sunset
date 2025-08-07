@@ -70,7 +70,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
                 return;
             }
 
-            UIManager.Instance.ResultUI.Open(Day - 1, true);
+            UIManager.Instance.ResultUI.Open(true, Day - 1);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
     }
