@@ -101,7 +101,7 @@ public class OpeningScene : MonoBehaviour
 
     private void LoadScene()
     {
-        SaveManager.Instance.LoadGameFromSlot();
+        SceneManager.LoadScene("MainScene");
     }
     
     private IEnumerator C_Sequence(int i)

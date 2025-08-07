@@ -47,10 +47,7 @@ public class AskTutorial : MonoBehaviour
         if (!_clickTutorialBtn)
         {
             GameManager.Instance.SetTutorial(false);
-            if (GlobalState.HasPlayedOpening)
-                SaveManager.Instance.LoadGameFromSlot();
-            else
-                LoadingSceneController.LoadScene("OpeningScene");
+            SaveManager.Instance.LoadGameFromSlot();
         }
 
         _startSceneAnimation.CameraAction();

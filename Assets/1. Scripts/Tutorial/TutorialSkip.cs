@@ -27,10 +27,6 @@ public class TutorialSkip : MonoBehaviour
     {
         TimeManager.Instance.PauseGame(false);
         GameManager.Instance.SetTutorial(false);
-
-        if (GlobalState.HasPlayedOpening)
-            SaveManager.Instance.LoadGameFromSlot();
-        else
-            LoadingSceneController.LoadScene("OpeningScene");
+        SaveManager.Instance.LoadGameFromSlot();
     }
 }

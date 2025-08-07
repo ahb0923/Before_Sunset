@@ -130,7 +130,10 @@ public class SaveManager : MonoSingleton<SaveManager>
     public void LoadGameFromSlot(int slotIndex = -1)
     {
         GlobalState.Index = slotIndex;
-        LoadingSceneController.LoadScene("MainScene");
+        if(GlobalState.HasPlayedOpening)
+            LoadingSceneController.LoadScene("MainScene");
+        else
+            LoadingSceneController.LoadScene("OpeningScene");
     }
 
     /// <summary>
