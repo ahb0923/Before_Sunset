@@ -44,7 +44,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     public void SetInGame()
     {
         _mainCamera = Camera.main;
-        _playerCollider = DefenseManager.Instance.mainPlayer.GetComponent<BoxCollider2D>();
+        _playerCollider = MapManager.Instance.Player.transform.GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -96,7 +96,7 @@ public class InteractManager : MonoSingleton<InteractManager>
     {
         float range = (interactable is OreController) ? 1.5f : 5.0f;
 
-        if (interactable.IsInteractable(DefenseManager.Instance.mainPlayer.transform.position, range, _playerCollider))
+        if (interactable.IsInteractable(MapManager.Instance.Player.transform.position, range, _playerCollider))
         {
             if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);

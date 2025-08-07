@@ -98,9 +98,9 @@ public class BattleUI : MonoBehaviour
         StartDotRoutine();
         yield return new WaitUntil(() => _returnRoutine == null);
         CloseReturn();
-        if (!DefenseManager.Instance.MainBasePlayer.IsInBase)
+        if (!MapManager.Instance.Player.IsInBase)
         {
-            DefenseManager.Instance.MainBasePlayer.InputHandler.StartRecall();
+            MapManager.Instance.Player.InputHandler.StartRecall();
         }
     }
     

@@ -45,14 +45,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
         
         // 10초 전에 기지 강제 귀환
-        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !DefenseManager.Instance.IsPlayerInBase && !_isRecallOver)
+        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !MapManager.Instance.Player.IsInBase && !_isRecallOver)
         {
             UIManager.Instance.BattleUI.ShowReturnUI();
             _isRecallOver = true;
         }
 
         // 밤이 되면 몬스터 스폰
-        if (IsNight && !_isSpawned && DefenseManager.Instance.IsPlayerInBase)
+        if (IsNight && !_isSpawned && MapManager.Instance.Player.IsInBase)
         {
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
@@ -143,7 +143,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         else
         {
             _isWarned = true;
-            if (DefenseManager.Instance.IsPlayerInBase)
+            if (MapManager.Instance.Player.IsInBase)
                 _dailyTimer = _realSecDayLength;
             else
                 _dailyTimer = _realSecDayLength - RETURN_TIME;

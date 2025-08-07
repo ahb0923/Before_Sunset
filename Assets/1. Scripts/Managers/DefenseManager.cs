@@ -25,11 +25,6 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     [Header("# A Star Setting")]
     [SerializeField] private int _monsterPenalty = 5;
 
-    public GameObject mainPlayer;
-
-    public BasePlayer MainBasePlayer => mainPlayer?.GetComponent<BasePlayer>();
-    public bool IsPlayerInBase => MainBasePlayer != null && MainBasePlayer.IsInBase;
-
     // 맵 장애물(코어 & 타워) 설정
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
