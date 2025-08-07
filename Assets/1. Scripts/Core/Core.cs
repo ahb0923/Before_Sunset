@@ -74,7 +74,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         {
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
-            UIManager.Instance.ResultUI.OpenFail();
+            UIManager.Instance.ResultUI.Open(false);
         }
     }
 
