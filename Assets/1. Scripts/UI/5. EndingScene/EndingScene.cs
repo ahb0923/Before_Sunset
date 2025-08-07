@@ -84,6 +84,8 @@ public class EndingScene : MonoBehaviour
         _endingCreditText.gameObject.SetActive(false);
         _endingCredit.gameObject.SetActive(false);
         InitTexts();
+        AudioManager.Instance.SetSFXVolume(1f);
+        AudioManager.Instance.SetBGMVolume(1f);
         StartCoroutine(C_StartEnding());
     }
 
@@ -193,12 +195,16 @@ public class EndingScene : MonoBehaviour
         
         float start = 0f;
         float end = 17f;
+        float loop = 1.4f;
         
         Sequence seq = DOTween.Sequence();
-        seq.AppendCallback(PlayHeartBeat);
         seq.AppendInterval(0.2f);
         seq.Append(_mainCamera.DOFieldOfView(50f, 15f).SetEase(Ease.Linear));
-        seq.Join(DOVirtual.Float(start, end, 0.5f, val => _bloom.intensity.value = val).SetLoops(42, LoopType.Yoyo).OnComplete(StartEndingCredit));
+        seq.Join(DOVirtual.Float(start, end, 0.7f, val => _bloom.intensity.value = val).SetLoops(42, LoopType.Yoyo).OnComplete(StartEndingCredit));
+        for (int i = 0; i <= 20; i++)
+        {
+            seq.InsertCallback(loop * i + 0.5f, PlayHeartBeat);
+        }
     }
 
     private void StartEndingCredit()
@@ -219,7 +225,7 @@ public class EndingScene : MonoBehaviour
     private void PlayHeartBeat()
     {
         AudioManager.Instance.SetSFXVolume(1f);
-        AudioManager.Instance.PlaySFX("HeartBeat");
+        AudioManager.Instance.PlaySFX("HeartBeat1");
     }
 
     private void StopHeartBeat()

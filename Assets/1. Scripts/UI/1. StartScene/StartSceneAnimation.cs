@@ -61,6 +61,9 @@ public class StartSceneAnimation : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.Instance.SetSFXVolume(1f);
+        AudioManager.Instance.SetBGMVolume(1f);
+        
         if (!GlobalState.HasPlayedIntro)
         {
             StartMove();
@@ -80,14 +83,10 @@ public class StartSceneAnimation : MonoBehaviour
         
         Sequence seq = DOTween.Sequence();
         seq.Append(_movingCharacter.transform.DOMove(target, 5f).SetEase(Ease.Linear).OnComplete(StartIdle));
-        seq.InsertCallback(0.6f, WalkSound);
-        seq.InsertCallback(1.2f, WalkSound);
-        seq.InsertCallback(1.8f, WalkSound);
-        seq.InsertCallback(2.4f, WalkSound);
-        seq.InsertCallback(3.0f, WalkSound);
-        seq.InsertCallback(3.6f, WalkSound);
-        seq.InsertCallback(4.2f, WalkSound);
-        seq.InsertCallback(4.8f, WalkSound);
+        for (int i = 0; i < 8; i++)
+        {
+            seq.InsertCallback(0.6f * (i + 1), WalkSound);
+        }
     }
 
     private void WalkSound()
