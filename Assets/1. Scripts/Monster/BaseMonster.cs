@@ -74,6 +74,7 @@ public class BaseMonster : MonoBehaviour, IPoolable
     {
         SpawnInstanceId = ++_nextInstanceId;
         Stat.SetFullHp();
+        Stat.SetSpeed();
         HpBar.SetFullHpBar();
         Ai.InitExploreState();
     }

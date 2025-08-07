@@ -22,7 +22,7 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
     public int AttackPower { get; private set; }
     public float AttackPerSec { get; private set; }
     public float AttackRange { get; private set; }
-    public float Speed { get; set; }
+    public float Speed { get; private set; }
     public int Size { get; private set; }
     public string Context { get; private set; }
 
@@ -53,9 +53,25 @@ public class MonsterStatHandler : MonoBehaviour, IDamageable
         _originMat = _monster.Spriter.material;
     }
 
+    /// <summary>
+    /// HP 모두 회복
+    /// </summary>
     public void SetFullHp()
     {
         CurHp = MaxHp;
+    }
+
+    /// <summary>
+    /// 스피드 설정<br/>
+    /// ※ 매개변수 없으면, 기존 스피드 값으로 설정
+    /// </summary>
+    public void SetSpeed(float speed)
+    {
+        Speed = speed;
+    }
+    public void SetSpeed()
+    {
+        Speed = _data.speed;
     }
 
     /// <summary>

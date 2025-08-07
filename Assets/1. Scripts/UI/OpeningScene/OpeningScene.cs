@@ -18,7 +18,7 @@ public class OpeningScene : MonoBehaviour
         "그 빛은 원념의 존재들에게 강한 저항력을 가진 유일한 힘이었다.",
         "그러나 빛의 힘은 약해지는 중이었고 어둠은 지하까지 손을 뻗치기 시작한다.",
         "매일 낮, 빛이 희미하게 남아있는 시간에 자원을 모으고,",
-        "코어의 힘이 약해지는 4일째 밤이 오면 코어를 파괴하려는 몬스터의 공격을 막아내야 한다.",
+        "코어의 힘이 약해지는 밤이 오면 코어를 파괴하려는 몬스터의 공격을 막아내야 한다.",
         "코어가 멈추는 순간, 마지막 희망마저 사라진다."
     };
     [SerializeField] private float _textDuration = 3f;
@@ -69,6 +69,7 @@ public class OpeningScene : MonoBehaviour
         _fadeInGo.SetActive(false);
         _blinkGo.SetActive(false);
         InitTexts();
+        AudioManager.Instance.StopAllSound();
         StartCoroutine(C_StartOpening());
     }
 

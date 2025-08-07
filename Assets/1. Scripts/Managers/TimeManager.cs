@@ -14,15 +14,13 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 
     public int Day { get; private set; }
 
-    private float _oneMinute = 60f;
-    private float _fifteenSeconds = 15f;
-    private float _tenSeconds = 10f;
+    private const float WARNING_TIME = 60f;
+    private const float RETURN_TIME = 10f;
     
     private bool _isSpawned;
     private bool _isSpawnOver;
     private bool _isWarned;
     private bool _isRecallOver;
-    private bool _isSkipped;
     
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
@@ -39,13 +37,15 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer += Time.deltaTime;
 
-        if (_realSecDayLength - _oneMinute < _dailyTimer && !_isSkipped && !_isWarned)
+        // 1분 전에 경고 알림
+        if (_realSecDayLength - _dailyTimer <= WARNING_TIME && !_isWarned)
         {
             UIManager.Instance.BattleUI.ShowWarningBeforeOneMin();
             _isWarned = true;
         }
         
-        if (_realSecDayLength - _tenSeconds < _dailyTimer && !DefenseManager.Instance.IsPlayerInBase && !_isRecallOver)
+        // 10초 전에 기지 강제 귀환
+        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !DefenseManager.Instance.IsPlayerInBase && !_isRecallOver)
         {
             UIManager.Instance.BattleUI.ShowReturnUI();
             _isRecallOver = true;
@@ -100,7 +100,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         _isSpawned = false;
         _isRecallOver = false;
         _isWarned = false;
-        _isSkipped = false;
 
         MapManager.Instance.ResetAllMaps();
         SpawnManager.Instance.OnStageChanged();
@@ -143,11 +142,11 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
         else
         {
-            _isSkipped = true;
+            _isWarned = true;
             if (DefenseManager.Instance.IsPlayerInBase)
                 _dailyTimer = _realSecDayLength;
             else
-                _dailyTimer = _realMinDayLength - _fifteenSeconds;
+                _dailyTimer = _realSecDayLength - RETURN_TIME;
         }
 
         QuestManager.Instance?.SetQuestAmount(QUEST_TYPE.TimeSkip, -1, 1);

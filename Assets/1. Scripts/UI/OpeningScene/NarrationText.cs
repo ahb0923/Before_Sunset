@@ -20,6 +20,11 @@ public class NarrationText : MonoBehaviour
     {
         textMesh.maxVisibleCharacters = 0;
 
+        // Sequence seq = DOTween.Sequence();
+        // seq.AppendCallback(KeyBoardSound);
+        // seq.Append(DOTween.To(x => textMesh.maxVisibleCharacters = (int)x,
+        //     0f, textMesh.text.Length, duration).SetEase(Ease.Linear).SetAutoKill(false));
+        KeyBoardSound();
         Tween tween = DOTween.To(x => textMesh.maxVisibleCharacters = (int)x,
             0f, textMesh.text.Length, duration).SetEase(Ease.Linear).SetAutoKill(false);
 
@@ -31,6 +36,7 @@ public class NarrationText : MonoBehaviour
                 Input.GetKeyDown(KeyCode.Space) ||
                 Input.GetKeyDown(KeyCode.Return))
             {
+                AudioManager.Instance.StopAllSound();
                 tween.Complete();
                 isSkipped = true;
             }
@@ -40,10 +46,16 @@ public class NarrationText : MonoBehaviour
         if (!isSkipped)
         {
             yield return tween.WaitForCompletion();
+            AudioManager.Instance.StopAllSound();
         }
         
         textMesh.maxVisibleCharacters = int.MaxValue;
         tween.Kill();
+    }
+
+    private void KeyBoardSound()
+    {
+        AudioManager.Instance.PlaySFX("Keyboard");
     }
     
     public void MoveText(float moveAmount, float duration)
