@@ -17,14 +17,14 @@ public class Debuff_Frostbite : BaseDebuff
         var statHandler = target.Stat;
         originalMoveSpeed = statHandler.Speed;
 
-        float slowFactor = slowRate; 
-        statHandler.Speed *= slowFactor;
+        float slowFactor = slowRate;
+        statHandler.SetSpeed(originalMoveSpeed * slowFactor);
 
         // 디버프 지속시간만큼 대기
         yield return new WaitForSeconds(duration);
 
         // 원래 속도로 복원
-        statHandler.Speed = originalMoveSpeed;
+        statHandler.SetSpeed();
 
         // 디버프 제거 및 풀로 반환
         Remove();
