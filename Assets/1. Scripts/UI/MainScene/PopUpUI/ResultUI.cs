@@ -237,6 +237,6 @@ public class ResultUI : MonoBehaviour, ICloseableUI
     private void RefreshFail()
     {
         _failBestRecordText.text = "";
-        _failCurrentRecordText.text = $"{TimeManager.Instance.Day:D2}주";
+        _failCurrentRecordText.text = $"{TimeManager.Instance.Day:D2}일";
     }
 }
