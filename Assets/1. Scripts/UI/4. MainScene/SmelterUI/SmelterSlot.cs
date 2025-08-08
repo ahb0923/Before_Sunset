@@ -342,6 +342,8 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             {
                 inventory.Items[DragManager.OriginItemSlot.SlotIndex] = smelterItem;
                 _currentSmelter.SetInputItem(DragManager.DraggingItem);
+                _currentSmelter.StopSmelting();
+                _currentSmelter.TrySmelt();
             }
         }
         else if (DragManager.OriginSmelterSlot != null)
