@@ -149,7 +149,12 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         float hpRatio = statHandler.CurrHp / statHandler.MaxHp;
         float refundRatio = 0f;
 
-        refundRatio = GetRefundRatio(hpRatio);
+        //『선정님이 건들수 있는 유일한 코드1』
+        // => 환급 비율 계산 메서드(환급 감소율 적용시)
+        //refundRatio = GetRefundRatio(hpRatio);
+
+        // 100% 환불 시
+        refundRatio = 1.0f;
 
         // 환급
         RefundResources(req, refundRatio);
@@ -175,10 +180,14 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     /// <returns>환급 비율</returns>
     public float GetRefundRatio(float hpRatio)
     {
+        // 『선정님이 건들수 있는 유일한 코드2』
+        // 80 퍼센트 이상일대 90퍼 환불
         if (hpRatio >= 0.8f)
             return 0.9f;
+        // 50 퍼센트 이상일 때 70퍼 환불
         else if (hpRatio >= 0.5f)
             return 0.7f;
+        // 50퍼 미만일때 35%환불
         else
             return 0.35f;
     }
