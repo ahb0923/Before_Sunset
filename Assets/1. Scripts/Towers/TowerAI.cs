@@ -170,8 +170,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             yield break; // 상태 Idle로 전환될 것
         }
  
-        AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
-
         while (true)
         {
             if (IsInterrupted || CurState == TOWER_STATE.Destroy)
@@ -195,6 +193,8 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                 case TOWER_ATTACK_TYPE.Areaofeffect:
                     break;
             }
+
+            AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
 
             yield return _tower.attackStrategy.Attack(_tower);
 

@@ -9,6 +9,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
 
     private GameObject _baseMap;
     private Transform _player;
+    public BasePlayer Player => _player?.GetComponent<BasePlayer>();
     private Transform _gateRune;
 
     [SerializeField] private float _mapSpacing = 100f;

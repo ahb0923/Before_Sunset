@@ -1,5 +1,4 @@
 using UnityEngine;
-using NaughtyAttributes;
 
 public class TimeManager : MonoSingleton<TimeManager>, ISaveable
 {
@@ -21,7 +20,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private bool _isSpawnOver;
     private bool _isWarned;
     private bool _isRecallOver;
-    
+
+    private bool _isSkipQuest = false;
+
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
@@ -45,14 +46,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         }
         
         // 10초 전에 기지 강제 귀환
-        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !DefenseManager.Instance.IsPlayerInBase && !_isRecallOver)
+        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !MapManager.Instance.Player.IsInBase && !_isRecallOver)
         {
             UIManager.Instance.BattleUI.ShowReturnUI();
             _isRecallOver = true;
         }
 
         // 밤이 되면 몬스터 스폰
-        if (IsNight && !_isSpawned && DefenseManager.Instance.IsPlayerInBase)
+        if (IsNight && !_isSpawned && MapManager.Instance.Player.IsInBase)
         {
             _isSpawned = true;
             DefenseManager.Instance.MonsterSpawner.SpawnAllMonsters();
@@ -69,15 +70,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
                 return;
             }
 
-            UIManager.Instance.ResultUI.Open(Day - 1, true);
+            UIManager.Instance.ResultUI.Open(true, Day - 1);
             AudioManager.Instance.PlayBGM("NormalBase");
         }
-    }
-
-    [Button]
-    private void AddDailyTime()
-    {
-        _dailyTimer = 230f;
     }
 
     /// <summary>
@@ -123,6 +118,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     }
 
     /// <summary>
+    /// 타임 스킵 퀘스트 활성화 시 호출
+    /// </summary>
+    public void OnSkipQuest()
+    {
+        _isSkipQuest = true;
+    }
+
+    /// <summary>
     /// true면 일시 정지, false면 일시 정지 해제
     /// </summary>
     public void PauseGame(bool doPause)
@@ -136,6 +139,12 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SkipHalfDay()
     {
+        if (GameManager.Instance.IsTutorial && !_isSkipQuest)
+        {
+            ToastManager.Instance.ShowToast("아직은 시간 스킵을 할 수 없습니다!");
+            return;
+        }
+
         if (IsNight)
         {
             ToastManager.Instance.ShowToast("몬스터 웨이브 중에는 스킵이 불가능합니다!");
@@ -143,7 +152,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         else
         {
             _isWarned = true;
-            if (DefenseManager.Instance.IsPlayerInBase)
+            if (MapManager.Instance.Player.IsInBase)
                 _dailyTimer = _realSecDayLength;
             else
                 _dailyTimer = _realSecDayLength - RETURN_TIME;
