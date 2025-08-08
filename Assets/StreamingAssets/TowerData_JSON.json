@@ -12,7 +12,7 @@
     "towerHp": 70.0,
     "damage": 7.0,
     "aps": 1.0,
-    "range": 3.0,
+    "range": 4.0,
     "spriteName": "Tower_Cooper_Sprite",
     "prefabName": "Tower_Cooper",
     "buildRequirements": {
@@ -52,7 +52,7 @@
     "level": 1,
     "towerHp": 70.0,
     "damage": 8.0,
-    "aps": 2.3,
+    "aps": 3.2,
     "range": 5.0,
     "spriteName": "Tower_Iron_Sprite",
     "prefabName": "Tower_Iron",
@@ -180,8 +180,8 @@
     "level": 1,
     "towerHp": 50.0,
     "damage": 7.0,
-    "aps": 3.0,
-    "range": 6.0,
+    "aps": 4.0,
+    "range": 5.0,
     "spriteName": "Tower_Heal_Sprite",
     "prefabName": "Tower_Heal",
     "buildRequirements": {
@@ -227,7 +227,7 @@
     "spriteName": "Tower_Magnet_Sprite",
     "prefabName": "Tower_Magnet",
     "buildRequirements": {
-      "금주괴": 3,
+      "은주괴": 3,
       "자수정": 2
     }
   },
@@ -262,15 +262,15 @@
     "projectileId": null,
     "debuffId": 1404,
     "level": 1,
-    "towerHp": 120.0,
+    "towerHp": 70.0,
     "damage": 0.0,
     "aps": 8.0,
-    "range": 7.0,
+    "range": 6.0,
     "spriteName": "Tower_Topaz_Sprite",
     "prefabName": "Tower_Topaz",
     "buildRequirements": {
-      "금주괴": 3,
-      "토파즈": 2
+      "토파즈": 2,
+      "은주괴": 3
     }
   },
   {
@@ -283,7 +283,7 @@
     "projectileId": null,
     "debuffId": 1405,
     "level": 2,
-    "towerHp": 50.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
@@ -304,15 +304,15 @@
     "projectileId": null,
     "debuffId": 1402,
     "level": 1,
-    "towerHp": 120.0,
+    "towerHp": 70.0,
     "damage": 0.0,
     "aps": 8.0,
-    "range": 7.0,
+    "range": 5.0,
     "spriteName": "Tower_Aquamarine_Sprite",
     "prefabName": "Tower_Aquamarine",
     "buildRequirements": {
-      "금주괴": 3,
-      "아쿠아마린": 2
+      "아쿠아마린": 2,
+      "은주괴": 3
     }
   },
   {
@@ -325,7 +325,7 @@
     "projectileId": null,
     "debuffId": 1403,
     "level": 2,
-    "towerHp": 50.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
@@ -346,15 +346,15 @@
     "projectileId": null,
     "debuffId": 1400,
     "level": 1,
-    "towerHp": 120.0,
+    "towerHp": 70.0,
     "damage": 0.0,
-    "aps": 8.0,
-    "range": 7.0,
+    "aps": 7.0,
+    "range": 6.0,
     "spriteName": "Tower_Ruby_Sprite",
     "prefabName": "Tower_Ruby",
     "buildRequirements": {
-      "금주괴": 3,
-      "루비": 2
+      "루비": 2,
+      "은주괴": 3
     }
   },
   {
@@ -367,7 +367,7 @@
     "projectileId": null,
     "debuffId": 1401,
     "level": 2,
-    "towerHp": 50.0,
+    "towerHp": 30.0,
     "damage": 0.0,
     "aps": -2.0,
     "range": 0.0,
@@ -376,6 +376,46 @@
     "buildRequirements": {
       "금주괴": 5,
       "루비": 3
+    }
+  },
+  {
+    "id": 490,
+    "towerName": "돌벽",
+    "flavorText": "흔한 자원으로 만들 수 있는 단단한 방어벽\n적으로부터 코어를 지킨다.",
+    "buildType": 1,
+    "attackType": 2,
+    "nextUpgradeId": 491,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 1,
+    "towerHp": 150.0,
+    "damage": 0.0,
+    "aps": 0.0,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "돌": 10
+    }
+  },
+  {
+    "id": 491,
+    "towerName": "금벽",
+    "flavorText": "희귀한 자원으로 만들어낸 강력한 방어벽\n적으로부터 코어를 확실하게 지켜낸다.",
+    "buildType": 1,
+    "attackType": 2,
+    "nextUpgradeId": null,
+    "projectileId": null,
+    "debuffId": null,
+    "level": 2,
+    "towerHp": 150.0,
+    "damage": 0.0,
+    "aps": 0.0,
+    "range": 0.0,
+    "spriteName": null,
+    "prefabName": null,
+    "buildRequirements": {
+      "금주괴": 3
     }
   }
 ]

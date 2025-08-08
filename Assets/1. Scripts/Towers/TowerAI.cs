@@ -194,7 +194,10 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     break;
             }
 
-            AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
+            if (MapManager.Instance.Player.IsInBase)
+            {
+                AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
+            }
 
             yield return _tower.attackStrategy.Attack(_tower);
 
