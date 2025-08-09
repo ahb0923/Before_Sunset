@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private const float ORE_INTERACT_RANGE = 1.5F;
+
     private BasePlayer _player;
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
@@ -184,17 +186,10 @@ public class PlayerController : MonoBehaviour
         SetAnimationDirection(_dashDirection);
 
         // 대시 사운드
-        AudioManager.Instance.PlaySFX("Dash");
+        // AudioManager.Instance.PlaySFX("Dash");
 
         // 대시 이펙트
         _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
-
-        int playerLayer = LayerMask.NameToLayer("Player");
-        int towerLayer = LayerMask.NameToLayer("Tower");
-        int smelterLayer = LayerMask.NameToLayer("Smelter");
-
-        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, true);
-        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, true);
 
         float elapsed = 0f;
         Vector2 startPos = _player.Rigid.position;
@@ -209,13 +204,6 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
-
-        //if (MapManager.Instance.Player.IsInBase)
-        //{
-        //    _playerCollider.enabled = true;
-        //}
-        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, false);
-        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, false);
 
         _isDashing = false;
         Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
@@ -334,35 +322,9 @@ public class PlayerController : MonoBehaviour
         {
             ToastManager.Instance.ShowToast("목표가 존재하지 않습니다.");
             return;
-
         }
 
-        float range = (target is OreController) ? 0.5f : 5.0f;
-
-        if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
-            return;
-
-        if (target is OreController ore)
-        {
-            int wallLayerMask = LayerMask.GetMask("Wall");
-            Vector2 playerPos = _player.transform.position;
-            Vector2 orePos = ore.transform.position;
-
-            if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
-            {
-                ToastManager.Instance.ShowToast("해당 위치에서 채굴할 수 없습니다.");
-                return;
-            }
-
-            if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
-            {
-                ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
-                return;
-            }
-
-            ore.Mine(_player.Stat.Pickaxe.damage);
-        }
-
+        if (!target.IsInteractable(_player.transform.position, ORE_INTERACT_RANGE, _player.PlayerCollider)) return;
         target.Interact();
     }
 

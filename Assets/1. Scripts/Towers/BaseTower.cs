@@ -268,7 +268,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         if (InteractManager.Instance.IsPointerOverRealUI()) return;
 
-        InteractManager.Instance.OffPrevTargetAttackArea();
+        //InteractManager.Instance.OffPrevTargetAttackArea();
 
         // 파괴 옵션 on일 경우, 해제 ui 출력   
         if (BuildManager.Instance.IsOnDestroy)
@@ -277,6 +277,12 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
             return;
         }
+
+        // 클릭 기준 AttackArea 소유자 교체(이전 소유자 끄기)
+        InteractManager.Instance.NotifyInteract(this);
+
+        // 현재 타워 AttackArea 켬
+        ui.OnAttackArea();
 
         // 업그레이드 창 on일 경우, 업그레이드 ui창 출력
         if (!UIManager.Instance.UpgradeUI.isActiveAndEnabled)
@@ -287,14 +293,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
         }
     }
 
-    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
-    {
-        return true;
-    }
-
-    public void OffAttackArea()
-    {
-        ui.OffAttackArea();
-    }
+    public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider) => true;
+    public void OffAttackArea() => ui.OffAttackArea();
     // =====================================================================================================================
 }
