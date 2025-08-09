@@ -96,7 +96,7 @@ public class CoreStatHandler : MonoBehaviour
             _lighting.localScale = new Vector3(finalRange, finalRange, 1f);
         }
 
-        Debug.Log($"[Core] 시야 범위 적용됨: {finalRange}");
+        //Debug.Log($"[Core] 시야 범위 적용됨: {finalRange}");
     }
 
     private void UpdateStats()

@@ -314,6 +314,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void TryInteractTarget(IInteractable target)
     {
+        if (InteractManager.Instance.IsPointerOverRealUI()) return;
+
         if (target == null)
         {
             ToastManager.Instance.ShowToast("목표가 존재하지 않습니다.");
@@ -334,7 +336,7 @@ public class PlayerController : MonoBehaviour
 
             if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
             {
-                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
+                ToastManager.Instance.ShowToast("해당 위치에서 채굴할 수 없습니다.");
                 return;
             }
 

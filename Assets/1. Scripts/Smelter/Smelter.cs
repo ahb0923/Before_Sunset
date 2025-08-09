@@ -269,6 +269,8 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
 
     public void Interact()
     {
+        if (InteractManager.Instance.IsPointerOverRealUI()) return;
+
         if (BuildManager.Instance.IsOnDestroy)
         {
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
@@ -288,5 +290,10 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
     public int GetObejctSize()
     {
         return 1;
+    }
+
+    public void OffAttackArea()
+    {
+        throw new NotImplementedException();
     }
 }

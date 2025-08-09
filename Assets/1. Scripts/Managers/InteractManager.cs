@@ -7,6 +7,8 @@ using UnityEngine.Rendering;
 
 public class InteractManager : MonoSingleton<InteractManager>
 {
+    private static readonly List<RaycastResult> _uiRayResults = new();
+
     [Header("Cursor Textures")]
     public Texture2D defaultCursor;
     public Texture2D dismantleCursor;
@@ -16,16 +18,19 @@ public class InteractManager : MonoSingleton<InteractManager>
     [Header("Interaction Layers")]
     public LayerMask interactableLayerMask = -1;
 
-    [SerializeField ] private InteractImage aimObject;
+    [SerializeField] private InteractImage aimObject;
     public InteractImage AimObject { get => aimObject; }
 
     private Camera _mainCamera;
     private BoxCollider2D _playerCollider;
+    private IInteractable _prevTarget;
     private IInteractable _currentTarget;
 
 
     private Vector2 _defaultHotspot = Vector2.zero;
     private Texture2D _currentCursor;
+    public IInteractable GetCurrentTarget() => _currentTarget;
+    public IInteractable GetPrevTarget() => _prevTarget;
 
     protected override void Awake()
     {
@@ -61,8 +66,7 @@ public class InteractManager : MonoSingleton<InteractManager>
         else 
             SetCursor(_currentCursor, _defaultHotspot, null);
 
-        // UI 위면 기본 커서
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+        if (IsPointerOverRealUI())
         {
             SetCursor(_currentCursor, _defaultHotspot, null);
             return;
@@ -83,7 +87,28 @@ public class InteractManager : MonoSingleton<InteractManager>
             aimObject.gameObject.SetActive(false);
         }
     }
+    public bool IsPointerOverRealUI()
+    {
+        if (EventSystem.current == null) return false;
 
+        var pointer = new PointerEventData(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+
+        _uiRayResults.Clear();
+        EventSystem.current.RaycastAll(pointer, _uiRayResults);
+
+        // 스크림(혹은 무시할 UI)만 걸린 경우는 제외
+        for (int i = _uiRayResults.Count - 1; i >= 0; i--)
+        {
+            var go = _uiRayResults[i].gameObject;
+            if (go.GetComponent<IgnoreCursorUI>() != null)
+                _uiRayResults.RemoveAt(i);
+        }
+
+        return _uiRayResults.Count > 0;
+    }
     public void SetCursorDestroyImage(bool isDestroy)
     {
         if (isDestroy) 
@@ -97,15 +122,19 @@ public class InteractManager : MonoSingleton<InteractManager>
     {
         float range = (interactable is OreController) ? 1.5f : 5.0f;
 
+        if (!ReferenceEquals(_currentTarget, interactable))
+        {
+            _prevTarget = _currentTarget;
+            _currentTarget = interactable;
+        }
+
         if (interactable.IsInteractable(MapManager.Instance.Player.transform.position, range, _playerCollider))
         {
-            if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
             aimObject.SetNearCursor(interactable);
         }
         else
         {
-            if (interactable != null) _currentTarget = interactable;
             aimObject.gameObject.SetActive(true);
             aimObject.SetFarCursor(interactable);
         }
@@ -115,7 +144,6 @@ public class InteractManager : MonoSingleton<InteractManager>
     private void SetCursor(Texture2D texture, Vector2 hotspot, IInteractable target)
     {
         Cursor.SetCursor(texture, hotspot, CursorMode.Auto);
-        _currentTarget = target;
     }
 
     /// <summary> 커서 중앙 계산 </summary>
@@ -132,10 +160,9 @@ public class InteractManager : MonoSingleton<InteractManager>
         return pos.x < 0 || pos.y < 0 || pos.x > Screen.width || pos.y > Screen.height;
     }
 
-    private void SetTargetingImage(Transform obj)
+    public void OffPrevTargetAttackArea()
     {
-        
+        if(_prevTarget is BaseTower prevTower && !ReferenceEquals(_prevTarget, _currentTarget))
+            _prevTarget.OffAttackArea();
     }
-
-    public IInteractable GetCurrentTarget() => _currentTarget;
 }

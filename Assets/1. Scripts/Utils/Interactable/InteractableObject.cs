@@ -81,4 +81,9 @@ public class InteractableObject : MonoBehaviour, IInteractable
     {
         return 1;
     }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
+    }
 }
