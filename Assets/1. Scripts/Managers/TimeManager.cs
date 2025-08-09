@@ -131,7 +131,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     public void PauseGame(bool doPause)
     {
         Time.timeScale = doPause ? 0f : 1f;
-        Debug.Log($"게임 일시 정지 : {doPause}");
+        // Debug.Log($"게임 일시 정지 : {doPause}");
     }
 
     /// <summary>
