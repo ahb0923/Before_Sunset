@@ -11,6 +11,7 @@ public enum UPGRADE_TYPE
     HP,
     AttackRange,
     AttackPower
+    //HPRegen
 }
 public enum UPGRADE_CATEGORY
 {

@@ -8,7 +8,6 @@ public class PlayerController : MonoBehaviour
     private BasePlayer _player;
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
-    private BoxCollider2D _playerCollider;
     private EquipmentDatabase _equippedPickaxe;
 
     private Vector2 _moveDir;
@@ -132,7 +131,6 @@ public class PlayerController : MonoBehaviour
     {
         _player = player;
         _playerEffect = GetComponent<PlayerEffect>();
-        _playerCollider = GetComponent<BoxCollider2D>();
         _equippedPickaxe = player.Stat.Pickaxe;
 
         _actions = player.InputActions;
@@ -191,19 +189,12 @@ public class PlayerController : MonoBehaviour
         // 대시 이펙트
         _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
 
-        // 충돌 무시
-        //if (MapManager.Instance.Player.IsInBase)
-        //{
-        //    _playerCollider.enabled = false;
-        //}
         int playerLayer = LayerMask.NameToLayer("Player");
         int towerLayer = LayerMask.NameToLayer("Tower");
         int smelterLayer = LayerMask.NameToLayer("Smelter");
-        int coreLayer = LayerMask.NameToLayer("Core");
 
         Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, true);
         Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, true);
-        Physics2D.IgnoreLayerCollision(playerLayer, coreLayer, true);
 
         float elapsed = 0f;
         Vector2 startPos = _player.Rigid.position;
@@ -225,7 +216,6 @@ public class PlayerController : MonoBehaviour
         //}
         Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, false);
         Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, false);
-        Physics2D.IgnoreLayerCollision(playerLayer, coreLayer, false);
 
         _isDashing = false;
         Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
@@ -347,7 +337,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        float range = (target is OreController) ? 1.0f : 5.0f;
+        float range = (target is OreController) ? 0.5f : 5.0f;
 
         if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
             return;
