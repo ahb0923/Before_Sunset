@@ -65,7 +65,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
                     TryPlaceSingle(data);
                 else
                 {
-                    Debug.Log($"『{data.itemName}』확률에 패배! 소환 실패!");
+                    //Debug.Log($"『{data.itemName}』확률에 패배! 소환 실패!");
                 }
             }
         }

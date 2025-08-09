@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private const float ORE_INTERACT_RANGE = 1.5F;
+
     private BasePlayer _player;
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
@@ -320,35 +322,9 @@ public class PlayerController : MonoBehaviour
         {
             ToastManager.Instance.ShowToast("목표가 존재하지 않습니다.");
             return;
-
         }
 
-        float range = (target is OreController) ? 1.5f : 5.0f;
-
-        if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
-            return;
-
-        if (target is OreController ore)
-        {
-            int wallLayerMask = LayerMask.GetMask("Wall");
-            Vector2 playerPos = _player.transform.position;
-            Vector2 orePos = ore.transform.position;
-
-            if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
-            {
-                ToastManager.Instance.ShowToast("해당 위치에서 채굴할 수 없습니다.");
-                return;
-            }
-
-            if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
-            {
-                ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
-                return;
-            }
-
-            ore.Mine(_player.Stat.Pickaxe.damage);
-        }
-
+        if (!target.IsInteractable(_player.transform.position, ORE_INTERACT_RANGE, _player.PlayerCollider)) return;
         target.Interact();
     }
 

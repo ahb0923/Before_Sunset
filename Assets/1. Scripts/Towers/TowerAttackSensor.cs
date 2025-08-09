@@ -198,14 +198,14 @@ public class TowerAttackSensor : MonoBehaviour
         if (newTarget != null)
         {
             SetTarget(newTarget);
-            Debug.Log($"[센서] 새 타겟 설정: {_currentTarget.name} (ID: {_currentTargetSpawnId})");
+            //Debug.Log($"[센서] 새 타겟 설정: {_currentTarget.name} (ID: {_currentTargetSpawnId})");
             _tower.ai.SetState(TOWER_STATE.Attack);
         }
         else
         {
             _currentTarget = null;
             _currentTargetSpawnId = -1;
-            Debug.Log("[센서] 타겟 없음 → 대기 상태");
+            //Debug.Log("[센서] 타겟 없음 → 대기 상태");
             _tower.ai.SetState(TOWER_STATE.Idle);
         }
     }
@@ -235,7 +235,7 @@ public class TowerAttackSensor : MonoBehaviour
         {
             if (enemy == null || !enemy.activeSelf)
             {
-                Debug.Log($"[센서] 클린업 대상: {(enemy == null ? "null" : enemy.name)}");
+                //Debug.Log($"[센서] 클린업 대상: {(enemy == null ? "null" : enemy.name)}");
                 toRemove.Add(enemy);
             }
         }
@@ -273,10 +273,10 @@ public class TowerAttackSensor : MonoBehaviour
         {
             if (detectedEnemies.Remove(other.gameObject))
             {
-                 Debug.Log($"적 이탈: {other.name} | 남은 {detectedEnemies.Count}명");
+                // Debug.Log($"적 이탈: {other.name} | 남은 {detectedEnemies.Count}명");
                 if (other.gameObject == _currentTarget)
                 {
-                    Debug.Log($"[센서] 현재 타겟 이탈: {other.name} → 타겟 갱신");
+                   // Debug.Log($"[센서] 현재 타겟 이탈: {other.name} → 타겟 갱신");
                     _currentTarget = null;
                     RefreshTarget();
                 }
