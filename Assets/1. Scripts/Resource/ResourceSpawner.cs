@@ -6,7 +6,7 @@ using UnityEngine;
 public class ResourceSpawner<TData> : MonoBehaviour
 {
     private Vector3 _spawnAreaCenter3D;
-    private Vector2 _spawnAreaSize = new Vector2(57f, 31f);
+    private Vector2 _spawnAreaSize = new Vector2(90f, 60f);
 
     [SerializeField] private int _spawnMineralCount = 100;
     [SerializeField] private float _overlapRadius = 1.0f;
