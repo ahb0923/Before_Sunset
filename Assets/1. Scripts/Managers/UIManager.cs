@@ -121,7 +121,7 @@ public class UIManager : MonoSingleton<UIManager>
     {
         var ui = _uiStack.Pop();
         ui.CloseUI();
-        BuildManager.Instance.IsOnDestroy = false;
+        //BuildManager.Instance.IsOnDestroy = false;
         InteractManager.Instance.SetCursorDestroyImage(false);
     }
 

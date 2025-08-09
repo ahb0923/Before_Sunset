@@ -151,4 +151,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         return 1;
 
     }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
+    }
 }

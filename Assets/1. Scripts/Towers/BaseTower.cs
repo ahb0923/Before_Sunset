@@ -236,11 +236,12 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     /// </summary>
     public void OnReturnToPool()
     {
+        // 타워 업그레이드 창 On인 상태에서 해당 타워가 파괴될 경우 UI Off
         if (UIManager.Instance.TowerUpgradeUI.SelectedTower() == this && UIManager.Instance.TowerUpgradeUI.isActiveAndEnabled)
         {
             UIManager.Instance.TowerUpgradeUI.Close();
         }
-
+        // 타워 파괴 창 On인 상태에서 해당 타워가 파괴될 경우 UI Off
         if (UIManager.Instance.DismantleUI.SelectedTower() == this && UIManager.Instance.DismantleUI.isActiveAndEnabled)
         {
             UIManager.Instance.DismantleUI.Close();
@@ -256,18 +257,19 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     // ============<< IInteractable >>======================================================================================
     public void Interact()
     {
-        if (UIManager.Instance.DismantleUI.isActiveAndEnabled || UIManager.Instance.TowerUpgradeUI.isActiveAndEnabled)
-            return;
+        if (InteractManager.Instance.IsPointerOverRealUI()) return;
 
-        // 파괴 옵션 on일 경우
+        InteractManager.Instance.OffPrevTargetAttackArea();
+
+        // 파괴 옵션 on일 경우, 해제 ui 출력   
         if (BuildManager.Instance.IsOnDestroy)
         {
-            BuildManager.Instance.IsOnDestroy = false;
+            //BuildManager.Instance.IsOnDestroy = false;
             UIManager.Instance.DismantleUI.OpenDismantleUI(this);
-            Debug.Log("dd : "+InteractManager.Instance.GetCurrentTarget());
             return;
         }
 
+        // 업그레이드 창 on일 경우, 업그레이드 ui창 출력
         if (!UIManager.Instance.UpgradeUI.isActiveAndEnabled)
         {
             ui.OnAttackArea();
@@ -280,44 +282,10 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         return true;
     }
+
+    public void OffAttackArea()
+    {
+        ui.OffAttackArea();
+    }
     // =====================================================================================================================
-
-
-
-
-
-
-    //public void OnPointerClick(PointerEventData eventData)
-    //{
-    //    // 파괴 옵션 on일 경우
-    //    if (BuildManager.Instance.isOnDestroy)
-    //    {
-    //        UIManager.Instance.DismantleUI.OpenDismantleUI(this);
-    //        return;
-    //    }
-
-    //    // 우클릭 업그레이드 UI
-    //    if (eventData.button == PointerEventData.InputButton.Right)
-    //    {
-    //        if (BuildManager.Instance.IsPlacing) return;
-    //        UIManager.Instance.TowerUpgradeUI.OpenUpgradeUI(this);
-    //    }
-
-    //    // 좌클릭 전깃줄 연결 시도
-    //    else if (eventData.button == PointerEventData.InputButton.Left)
-    //    {
-    //        if (LineDragConnector.Instance.IsDragging) return;
-
-    //        if (towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
-    //        {
-    //            if (wireTower.IsConnected)
-    //                ToastManager.Instance.ShowToast("이미 연결된 타워입니다!");
-    //            else
-    //            {
-    //                if (!LineDragConnector.Instance.IsDragging)
-    //                    LineDragConnector.Instance.BeginDrag(wireTower);
-    //            }
-    //        }
-    //    }
-    //}
 }
