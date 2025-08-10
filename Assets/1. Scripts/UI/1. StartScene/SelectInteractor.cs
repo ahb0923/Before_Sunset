@@ -16,7 +16,7 @@ public class SelectInteractor : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     private void Calculate()
     {
-        _startPosition = _rect.anchoredPosition + new Vector2(600f, 0f);
+        _startPosition = _rect.anchoredPosition + new Vector2(600f, 0f) + new Vector2(-136.005f, 260.025f);
         _leftPosition = _startPosition - new Vector2(_rect.rect.width * 0.5f, 0f);
         _rightPosition = _startPosition + new Vector2(_rect.rect.width * 0.5f, 0f);
     }
