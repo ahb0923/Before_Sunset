@@ -21,8 +21,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     private Dictionary<(int, Portal.PortalDirection), int> _portalMapLinks = new();
     private Dictionary<int, List<InteractableState>> _interactableStates = new();
 
-    private SpawnManager _spawnManager;
-
     protected override void Awake()
     {
         base.Awake();
@@ -45,8 +43,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
 
         _baseMap.SetActive(true);
-        _spawnManager = FindObjectOfType<SpawnManager>();
-        MoveToMap(0, false);
         AudioManager.Instance.PlayBGM("NormalBase");
     }
 
@@ -185,7 +181,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             _player.position = spawnPos;
 
             Vector2[] smallSpawnAreas = new Vector2[] { new Vector2(60f, 32f), new Vector2(60f, 32f) };
-            _spawnManager?.OnMapChanged(_baseMap.transform.position, 0);
+            SpawnManager.Instance.OnMapChanged(_baseMap.transform.position, 0);
         }
         else if (_activeMapInstances.TryGetValue(targetIndex, out var nextMap))
         {
@@ -195,8 +191,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             _player.position = spawnPos;
 
             Vector2[] spawnAreas = GetSpawnAreasByMapType(_mapPrefabIdMap[targetIndex]);
-            _spawnManager?.SetMapPositionAndArea(nextMap.transform.position);
-            _spawnManager?.OnMapChanged(nextMap.transform.position, targetIndex);
+            SpawnManager.Instance.OnMapChanged(nextMap.transform.position, targetIndex);
         }
 
         if (addToHistory)
@@ -425,9 +420,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        // 현재 있던 모든 맵 초기화
-        ResetAllMaps();
-
         _nextMapIndex = data.mapLinks.nextMapIndex;
 
         foreach (int stack in data.mapLinks.mapHistory)
@@ -444,10 +436,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;
         }
-        // 플레이어 위치 로드
-        MoveToMap(data.mapLinks.currentMapIndex, false);
-        Player.SetPlayerInBase(CurrentMapIndex == 0);
-        Player.transform.position = data.playerPosition;
     }
 
     private void SaveInteractableStates(GameObject map, int mapIndex)
