@@ -446,25 +446,29 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
+        // 현재 있던 모든 맵 초기화
+        ResetAllMaps();
+
         _nextMapIndex = data.mapLinks.nextMapIndex;
 
-        _mapHistory.Clear();
-        foreach(int stack in data.mapLinks.mapHistory)
+        foreach (int stack in data.mapLinks.mapHistory)
         {
             _mapHistory.Push(stack);
         }
 
-        _mapPrefabIdMap.Clear();
         foreach(var pair in data.mapLinks.prefabIdDict)
         {
             _mapPrefabIdMap[pair.key] = pair.value;
         }
 
-        _portalMapLinks.Clear();
         foreach(var pair in data.mapLinks.portalMapLinks)
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;
         }
+        // 플레이어 위치 로드
+        MoveToMap(data.mapLinks.currentMapIndex, false);
+        Player.SetPlayerInBase(CurrentMapIndex == 0);
+        Player.transform.position = data.playerPosition;
     }
 
     private void SaveInteractableStates(GameObject map, int mapIndex)

@@ -155,7 +155,7 @@ public class PlayerInputHandler : MonoBehaviour
             UIManager.Instance.RecallUI.CloseRecall();
 
             if (GameManager.Instance.IsTutorial)
-                transform.position = new Vector3(0, 2, 0);
+                transform.position = new Vector3(11, 12, 0);
             else
             {
                 MapManager.Instance.ReturnToHomeMap();

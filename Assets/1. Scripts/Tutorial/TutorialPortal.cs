@@ -3,30 +3,26 @@ using UnityEngine;
 
 public class TutorialPortal : MonoBehaviour
 {
+    [SerializeField] private int _portalIndex = 0;
     [SerializeField] private Transform _moveTransform;
-    [SerializeField] private TutorialSpawn _spawner;
 
     private IEnumerator C_MovePlayer(BasePlayer player)
     {
-        QuestManager.Instance?.Arrow?.SettingTarget(null);
-
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
-            player.SetPlayerInBase(false);
-            _spawner.SpawnOres();
-
+            QuestManager.Instance.AddQuestAmount(QUEST_TYPE.MoveToMine, _portalIndex);
+            QuestManager.Instance.SetArrowTargetIndex(_portalIndex);
+            player.SetPlayerInBase(_portalIndex == 0);
             player.transform.position = _moveTransform.position;
         }));
 
-        QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.MoveToMine);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.TryGetComponent<BasePlayer>(out var player))
         {
-            if(QuestManager.Instance.CurQuest?.Type == QUEST_TYPE.MoveToMine)
-                StartCoroutine(C_MovePlayer(player));
+            StartCoroutine(C_MovePlayer(player));
         }
     }
 }

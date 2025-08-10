@@ -16,7 +16,6 @@ public class GuideArrow : MonoBehaviour
         if (_currentGoal == null)
         {
             SetArrowVisible(false);
-            return;
         }
 
         float distance = Vector3.Distance(_currentGoal.position, transform.position);
