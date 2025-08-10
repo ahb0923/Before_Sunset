@@ -26,6 +26,7 @@ public class PoolManager : MonoSingleton<PoolManager>
     [SerializeField] private GameObject _electircline;
     [SerializeField] private GameObject _aoeEffect;
     [SerializeField] private GameObject _buildGuage;
+    [SerializeField] private GameObject _miningEffect;
 
     private bool _isSet;
 
@@ -91,6 +92,12 @@ public class PoolManager : MonoSingleton<PoolManager>
         {
             prefab = _buildGuage,
             count = 10
+        });
+
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _miningEffect,
+            count = 2
         });
         // 여기까지 ///////////////////////////////////////
 
