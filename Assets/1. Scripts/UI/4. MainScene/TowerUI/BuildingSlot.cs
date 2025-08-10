@@ -52,6 +52,7 @@ public class BuildingSlot : MonoBehaviour, IPointerEnterHandler, IPointerClickHa
             buildingPrefab = DataManager.Instance.TowerData.GetPrefabById(_currentBuildID);
 
             _buildingIcon.sprite = DataManager.Instance.TowerData.GetSpriteById(_currentBuildID);
+         
             _buildingIcon.preserveAspect = true;
             _buildingName.text = data.towerName;
             
