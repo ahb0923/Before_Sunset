@@ -5,82 +5,72 @@ using UnityEngine;
 
 public class ResourceSpawner<TData> : MonoBehaviour
 {
-    private Vector3 spawnAreaCenter3D;
-    private Vector2 spawnAreaSize = new Vector2(57f, 31f);
+    private Vector3 _spawnAreaCenter3D;
+    private Vector2 _spawnAreaSize = new Vector2(90f, 60f);
 
-    [SerializeField] private int spawnMineralCount = 100;
-    [SerializeField] private int spawnJewelCount = 1;
-    [SerializeField] private float overlapRadius = 1.0f;
-    [SerializeField] private LayerMask obstacleLayerMask;
+    [SerializeField] private int _spawnMineralCount = 100;
+    [SerializeField] private float _overlapRadius = 1.0f;
+    [SerializeField] private LayerMask _obstacleLayerMask;
     [SerializeField] private LayerMask _spawnZoneLayer;
 
-    private List<OreDatabase> spawnableList = new();
-    private List<Vector3> spawnableTiles = new List<Vector3>();
-    private List<Vector3> placedPositions = new();
+    private List<OreDatabase> _spawnableList = new();
+    private List<Vector3> _spawnableTiles = new();
+    private List<Vector3> _placedPositions = new();
 
-    private Transform parentTransform;
+    private Transform _parentTransform;
 
     public void SetParentTransform(Transform parent)
     {
-        parentTransform = parent;
+        _parentTransform = parent;
     }
 
     public Transform GetParentTransform()
     {
-        return parentTransform;
+        return _parentTransform;
     }
 
     public void SetSpawnCenter(Vector3 center)
     {
-        spawnAreaCenter3D = center;
+        _spawnAreaCenter3D = center;
     }
 
     /// <summary>
     /// 자원 스폰
     /// </summary>
-    /// <param name="currentStage"></param>
     public void SpawnResources(int currentStage)
     {
         var oreDatas = DataManager.Instance.OreData;
-        spawnableList.Clear();
-        placedPositions.Clear();
+        _spawnableList.Clear();
+        _placedPositions.Clear();
 
+        // 자원 필터링
         foreach (var data in oreDatas.GetAllItems())
         {
             if (currentStage >= data.spawnStage)
-                spawnableList.Add(data);
+                _spawnableList.Add(data);
         }
+        if (_spawnableList.Count == 0) return;
 
-        if (spawnableList.Count == 0) return;
-
+        // 스폰 가능 타일 검사
         GetSpawnTiles();
-        
-        foreach(var data in spawnableList)
-        {
-            if(data.dropItemType == DROPITEM_TYPE.Jewel)
-            {
-                float probability = data.spawnProbability / 100f;
 
-                if (UnityEngine.Random.value <= probability) 
-                    TryPlaceSingle(data);
-                else
-                {
-                    //Debug.Log($"『{data.itemName}』확률에 패배! 소환 실패!");
-                }
-            }
+        // 쥬얼 스폰
+        foreach (var data in _spawnableList)
+        {
+            if (data.dropItemType == DROPITEM_TYPE.Jewel)
+                SpawnJewels(data);
         }
 
+        // 광물 스폰
         int placed = 0;
         int attempts = 0;
-        int maxAttempts = spawnMineralCount * 10;
+        int maxAttempts = _spawnMineralCount * 10;
 
-        while (placed < spawnMineralCount && attempts < maxAttempts)
+        while (placed < _spawnMineralCount && attempts < maxAttempts)
         {
             attempts++;
             Vector3 pos = GetRandomPositionInArea();
-
             if (pos == Vector3.zero) break;
-
             if (IsTooClose(pos)) continue;
 
             OreDatabase selected = GetRandomByProbability();
@@ -89,48 +79,49 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if (TryPlace(selected, pos))
             {
                 placed++;
-                spawnableTiles.Remove(pos);
+                _spawnableTiles.Remove(pos);
             }
         }
     }
 
     /// <summary>
-    /// 실제 광물 소환
+    /// 쥬얼 스폰
     /// </summary>
-    /// <param name="data"></param>
-    /// <param name="pos"></param>
-    /// <returns></returns>
+    private void SpawnJewels(OreDatabase data)
+    {
+        int attempts = 0;
+        int maxAttempts = 10;
+
+        while (attempts < maxAttempts && _spawnableTiles.Count > 0)
+        {
+            attempts++;
+
+            // 타일 랜덤 선택
+            Vector3 pos = GetRandomPositionInArea();
+            if (pos == Vector3.zero) break;
+            if (IsTooClose(pos)) continue;
+
+            // 확률 검사
+            float probability = data.spawnProbability / 100f;
+            if (UnityEngine.Random.value <= probability)
+            {
+                if (TryPlace(data, pos))
+                {
+                    _spawnableTiles.Remove(pos);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 실제 자원 배치
+    /// </summary>
     private bool TryPlace(OreDatabase data, Vector3 pos)
     {
         int id = data.id;
-        PoolManager.Instance.GetFromPool(id, pos, parentTransform);
-        placedPositions.Add(pos);
+        PoolManager.Instance.GetFromPool(id, pos, _parentTransform);
+        _placedPositions.Add(pos);
         return true;
-    }
-
-    /// <summary>
-    /// Jewel 스폰시에만 사용 TryPlace 가기 전 작업
-    /// </summary>
-    /// <param name="data"></param>
-    private void TryPlaceSingle(OreDatabase data)
-    {
-        for (int i = 0; i < spawnJewelCount; i++)
-        {
-            Vector3 pos = GetRandomPositionInArea();
-            if (pos == Vector3.zero)
-            {
-                break;
-            }
-            if (IsTooClose(pos)) 
-            {
-                continue; 
-            }
-            if (TryPlace(data, pos))
-            {
-                spawnableTiles.Remove(pos);
-                break;
-            }
-        }
     }
 
     /// <summary>
@@ -138,23 +129,22 @@ public class ResourceSpawner<TData> : MonoBehaviour
     /// </summary>
     public void GetSpawnTiles()
     {
-        spawnableTiles.Clear();
+        _spawnableTiles.Clear();
 
-        // 스폰 영역 계산
-        float minX = spawnAreaCenter3D.x - spawnAreaSize.x / 2f;
-        float maxX = spawnAreaCenter3D.x + spawnAreaSize.x / 2f;
-        float minY = spawnAreaCenter3D.y - spawnAreaSize.y / 2f;
-        float maxY = spawnAreaCenter3D.y + spawnAreaSize.y / 2f;
+        float minX = _spawnAreaCenter3D.x - _spawnAreaSize.x / 2f;
+        float maxX = _spawnAreaCenter3D.x + _spawnAreaSize.x / 2f;
+        float minY = _spawnAreaCenter3D.y - _spawnAreaSize.y / 2f;
+        float maxY = _spawnAreaCenter3D.y + _spawnAreaSize.y / 2f;
 
         // 타일 위치 찾기
         for (float x = minX; x < maxX; x++)
         {
             for (float y = minY; y < maxY; y++)
             {
-                Vector3 pos = new Vector3(Mathf.Floor(x) + 0.5f, Mathf.Floor(y) + 0.5f, spawnAreaCenter3D.z);
+                Vector3 pos = new Vector3(Mathf.Floor(x) + 0.5f, Mathf.Floor(y) + 0.5f, _spawnAreaCenter3D.z);
                 if (IsValidSpawnPosition(pos))
                 {
-                    spawnableTiles.Add(pos);
+                    _spawnableTiles.Add(pos);
                 }
             }
         }
@@ -166,12 +156,11 @@ public class ResourceSpawner<TData> : MonoBehaviour
     /// <returns></returns>
     private Vector3 GetRandomPositionInArea()
     {
-        if (spawnableTiles.Count == 0)
-        {
+        if (_spawnableTiles.Count == 0)
             return Vector3.zero;
-        }
-        int randomIndex = UnityEngine.Random.Range(0, spawnableTiles.Count);
-        return spawnableTiles[randomIndex];
+
+        int randomIndex = UnityEngine.Random.Range(0, _spawnableTiles.Count);
+        return _spawnableTiles[randomIndex];
     }
 
     /// <summary>
@@ -186,7 +175,7 @@ public class ResourceSpawner<TData> : MonoBehaviour
         if (spawnZoneCollider == null) return false;
 
         // 스폰 불가능 레이어
-        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, obstacleLayerMask);
+        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, _obstacleLayerMask);
         //if (obstacleCollider != null) return false;
 
         return true;
@@ -195,9 +184,9 @@ public class ResourceSpawner<TData> : MonoBehaviour
     // 없어도될듯 아마도..
     private bool IsTooClose(Vector3 pos)
     {
-        foreach (var otherPos in placedPositions)
+        foreach (var otherPos in _placedPositions)
         {
-            if (Vector3.Distance(pos, otherPos) < overlapRadius)
+            if (Vector3.Distance(pos, otherPos) < _overlapRadius)
                 return true;
         }
         return false;
@@ -209,13 +198,13 @@ public class ResourceSpawner<TData> : MonoBehaviour
     /// <returns></returns>
     private OreDatabase GetRandomByProbability()
     {
-        int totalWeight = spawnableList.Sum(d => d.spawnProbability);
+        int totalWeight = _spawnableList.Sum(d => d.spawnProbability);
         if (totalWeight <= 0) return default;
 
         int rand = UnityEngine.Random.Range(0, totalWeight);
         int sum = 0;
 
-        foreach (var data in spawnableList)
+        foreach (var data in _spawnableList)
         {
             sum += data.spawnProbability;
             if (rand < sum)
@@ -301,8 +290,8 @@ public class ResourceSpawner<TData> : MonoBehaviour
                 resource.LoadState(state);
             }
 
-            if (parentTransform != null)
-                obj.transform.SetParent(parentTransform, false);
+            if (_parentTransform != null)
+                obj.transform.SetParent(_parentTransform, false);
 
             obj.SetActive(true);
             spawnedObjects.Add(obj);

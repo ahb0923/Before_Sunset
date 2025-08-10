@@ -24,20 +24,22 @@ public class PlayerController : MonoBehaviour
     private float _lastDashTime = -10f;
     private Vector2 _dashDirection;
 
+    private bool _isEnterPortal;
+
     private bool _isSwing => _swingCoroutine != null;
     private bool _isRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
-        if (PlayerInputHandler._isRecallInProgress || _isDashing) return;
+        if (PlayerInputHandler._isRecallInProgress || _isDashing || _isEnterPortal) return;
 
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        if (_isDashing) return;
+        if (_isDashing || _isEnterPortal) return;
         _moveDir = context.ReadValue<Vector2>().normalized;
     }
 
@@ -50,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDashStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling || _isDashing || BuildManager.Instance.IsPlacing) return;
+        if (_isRecalling || _isDashing || BuildManager.Instance.IsPlacing || _isEnterPortal) return;
 
         // 쿨타임 체크
         if (Time.time - _lastDashTime < _player.Stat.DashCooldown) return;
@@ -60,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing) return;
+        if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing || _isEnterPortal) return;
 
         _isSwingButtonHeld = true;
 
@@ -110,7 +112,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_isSwing || _isRecalling) return;
 
-        if (!_isDashing)
+        if (!_isDashing && !_isEnterPortal)
         {
             if (_moveDir != Vector2.zero)
             {
@@ -186,10 +188,17 @@ public class PlayerController : MonoBehaviour
         SetAnimationDirection(_dashDirection);
 
         // 대시 사운드
-        // AudioManager.Instance.PlaySFX("Dash");
+        AudioManager.Instance.PlaySFX("Dash");
 
         // 대시 이펙트
         _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
+
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int towerLayer = LayerMask.NameToLayer("Tower");
+        int smelterLayer = LayerMask.NameToLayer("Smelter");
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, true);
 
         float elapsed = 0f;
         Vector2 startPos = _player.Rigid.position;
@@ -204,6 +213,9 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, false);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, false);
 
         _isDashing = false;
         Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
@@ -342,5 +354,18 @@ public class PlayerController : MonoBehaviour
         }
         _player.Animator.SetFloat(BasePlayer.X, moveDir.x);
         _player.Animator.SetFloat(BasePlayer.Y, moveDir.y);
+    }
+
+    public void SetEnterPortal(bool value)
+    {
+        _isEnterPortal = value;
+        if (value)
+        {
+            _moveDir = Vector2.zero;
+            _player.Animator.SetBool(BasePlayer.MOVE, false);
+
+            _actions.Player.Move.Disable();
+            _actions.Player.Move.Enable();
+        }
     }
 }

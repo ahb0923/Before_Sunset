@@ -418,6 +418,10 @@ PrefabInstance:
       propertyPath: fadeImage
       value: 
       objectReference: {fileID: 1728414978}
+    - target: {fileID: 4254957602475716768, guid: c097f65801382a24a97cb3a84b97b73b, type: 3}
+      propertyPath: _fadeImage
+      value: 
+      objectReference: {fileID: 1728414978}
     - target: {fileID: 4608648118185929707, guid: c097f65801382a24a97cb3a84b97b73b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1862,19 +1866,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 265
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9096168707020071859, guid: 77c22645ff1152141853b782277d3133, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -70
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2153,6 +2157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coreName: 
+  _maxHp: 500
 --- !u!114 &549505505921083717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2265,7 +2270,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _size: 3
-  _maxHp: 500
   _hpBar: {fileID: 4630651402846448551}
 --- !u!4 &1558932715149328285
 Transform:

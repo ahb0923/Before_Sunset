@@ -10,7 +10,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     private GameObject _baseMap;
     private Transform _player;
     public BasePlayer Player => _player?.GetComponent<BasePlayer>();
-    private Transform _gateRune;
 
     [SerializeField] private float _mapSpacing = 100f;
 
@@ -117,17 +116,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
 
         MoveToMap(0, false);
-        _player.position = GetRandomPositionNearCore();
-    }
-
-    private Vector3 GetRandomPositionNearCore()
-    {
-        if (_gateRune == null)
-        {
-            return _baseMap.transform.position;
-        }
-
-        return _gateRune.position + new Vector3(0f, -0.2f, 0f);
+        _player.position = _player.position = new Vector3(0f, -0.2f, 0f);
     }
 
     // 맵이동
@@ -136,8 +125,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         if (TimeManager.Instance.IsNight && !PlayerInputHandler._isRecallInProgress) return;
 
         if (targetIndex == CurrentMapIndex) return;
-
-        _spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);
 
         // 현재 맵 비활성화
         if (CurrentMapIndex == 0)

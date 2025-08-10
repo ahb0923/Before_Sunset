@@ -159,14 +159,14 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         if (_collider == null) return false;
 
-        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
+        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y + 0.5f);
         Vector2 closestPoint = _collider.ClosestPoint(playerPos2D);
         float centerToEdge = Vector2.Distance(playerPos2D, closestPoint);
 
         float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        return edgeToEdgeDistance <= 1.5f;
+        return edgeToEdgeDistance <= 0.5f;
     }
 
     public int GetObejctSize()

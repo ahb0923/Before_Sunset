@@ -151,15 +151,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
             Destroy(parent.GetChild(i).gameObject);
     }
 
-    public void SetMapResourcesActive(int mapIndex, bool active)
-    {
-        if (_mapResources.TryGetValue(mapIndex, out var resources))
-        {
-            foreach (var obj in resources)
-                obj.SetActive(active);
-        }
-    }
-
     public void SetMapPositionAndArea(Vector3 mapPosition)
     {
         currentMapPosition = mapPosition;
