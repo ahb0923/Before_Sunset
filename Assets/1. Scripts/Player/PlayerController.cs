@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
     private EquipmentDatabase _equippedPickaxe;
+    private PlayerInputHandler _inputHandler;
 
     private Vector2 _moveDir;
     private Vector3 _clickDir;
@@ -40,7 +41,16 @@ public class PlayerController : MonoBehaviour
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         if (_isDashing || _isEnterPortal) return;
-        _moveDir = context.ReadValue<Vector2>().normalized;
+
+        Vector2 newMoveDir = context.ReadValue<Vector2>().normalized;
+
+        // 움직임이 시작되면 귀환 취소
+        if (newMoveDir != Vector2.zero && PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+        }
+
+        _moveDir = newMoveDir;
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
@@ -57,12 +67,26 @@ public class PlayerController : MonoBehaviour
         // 쿨타임 체크
         if (Time.time - _lastDashTime < _player.Stat.DashCooldown) return;
 
+        // 대시 귀환 취소
+        if (PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+            if (PlayerInputHandler._isRecallInProgress) return;
+        }
+
         TryDash();
     }
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
         if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing || _isEnterPortal) return;
+
+        // 스윙 귀환 취소
+        if (PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+            if (PlayerInputHandler._isRecallInProgress) return;
+        }
 
         _isSwingButtonHeld = true;
 
@@ -136,6 +160,7 @@ public class PlayerController : MonoBehaviour
         _player = player;
         _playerEffect = GetComponent<PlayerEffect>();
         _equippedPickaxe = player.Stat.Pickaxe;
+        _inputHandler = GetComponent<PlayerInputHandler>(); // 추가
 
         _actions = player.InputActions;
         _actions.Player.Move.started += OnMoveStarted;

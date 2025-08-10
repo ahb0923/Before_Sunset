@@ -101,8 +101,19 @@ public class ResourceSpawner<TData> : MonoBehaviour
             if (pos == Vector3.zero) break;
             if (IsTooClose(pos)) continue;
 
-            // 확률 검사
             float probability = data.spawnProbability / 100f;
+
+            // 맵 타입 가져오기
+            int currentMapId = MapManager.Instance.CurrentMapIndex;
+            var mapData = DataManager.Instance.MapData.GetById(currentMapId);
+
+            // 레어 광산
+            if (mapData != null && mapData.mapType == MAP_TYPE.MineRare)
+            {
+                probability += 0.4f;
+            }
+
+            // 확률 적용
             if (UnityEngine.Random.value <= probability)
             {
                 if (TryPlace(data, pos))
@@ -170,18 +181,18 @@ public class ResourceSpawner<TData> : MonoBehaviour
     /// <returns></returns>
     private bool IsValidSpawnPosition(Vector3 position)
     {
-        // 스폰 가능 레이어
-        Collider2D spawnZoneCollider = Physics2D.OverlapCircle(position, 0.3f, _spawnZoneLayer);
+        // 스폰 가능 영역 체크
+        Collider2D spawnZoneCollider = Physics2D.OverlapPoint(position, _spawnZoneLayer);
         if (spawnZoneCollider == null) return false;
 
-        // 스폰 불가능 레이어
-        //Collider2D obstacleCollider = Physics2D.OverlapCircle(position, 0.3f, _obstacleLayerMask);
-        //if (obstacleCollider != null) return false;
+        // 장애물 체크
+        Collider2D obstacleCollider = Physics2D.OverlapPoint(position, _obstacleLayerMask);
+        if (obstacleCollider != null) return false;
 
         return true;
     }
 
-    // 없어도될듯 아마도..
+    // 다른 광석들이랑 가까운지
     private bool IsTooClose(Vector3 pos)
     {
         foreach (var otherPos in _placedPositions)

@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class RecallUI : MonoBehaviour
 {
     public event Action OnCountdownFinished;
+    public event Action OnRecallCanceled;
 
     [Header("UI References")]
-    [SerializeField] private Image _recallIconProgressBar;
     [SerializeField] private Image _recallProgressBar;
     [SerializeField] private GameObject _recallBar;
 
@@ -19,13 +19,11 @@ public class RecallUI : MonoBehaviour
 
     private RectTransform _rect;
     
-    private const string RECALL_ICON_PROGRESS_BAR = "RecallIconProgressBar";
     private const string RECALL_PROGRESS_BAR = "RecallProgressBar";
     private const string RECALL_BAR = "RecallBar";
     
     private void Reset()
     {
-        _recallIconProgressBar = Helper_Component.FindChildComponent<Image>(this.transform.parent, RECALL_ICON_PROGRESS_BAR);
         _recallProgressBar = Helper_Component.FindChildComponent<Image>(this.transform, RECALL_PROGRESS_BAR);
         _recallBar = Helper_Component.FindChildGameObjectByName(this.gameObject, RECALL_BAR);
         _playerTransform = GameObject.Find("Player").transform;
@@ -52,7 +50,6 @@ public class RecallUI : MonoBehaviour
 
     public void CloseRecall()
     {
-        _recallIconProgressBar.fillAmount = 0f;
         _rect.CloseAndRestore();
     }
 
@@ -64,32 +61,36 @@ public class RecallUI : MonoBehaviour
         _recallBar.transform.position = screenPos;
     }
 
-    public void ShowRecallIcon()
-    {
-        _recallIconProgressBar.fillAmount = 0f;
-    }
-
-    public void UpdateHoldProgress(float progress)
-    {
-        _recallIconProgressBar.fillAmount = Mathf.Clamp01(progress);
-    }
-
     public void StartRecallCountdown()
     {
         OpenRecall();
+        StopAllCoroutines();
         StartCoroutine(C_UpdateCountdown());
+    }
+
+    public void CancelRecall()
+    {
+        StopAllCoroutines();
+        _recallProgressBar.fillAmount = 0f;
+        CloseRecall();
+        OnRecallCanceled?.Invoke();
     }
 
     private IEnumerator C_UpdateCountdown()
     {
         float duration = 1.5f;
         float elapsed = 0f;
+
+        _recallProgressBar.fillAmount = 0f;
+
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             _recallProgressBar.fillAmount = 0f + (elapsed / duration);
             yield return null;
         }
+
+        _recallProgressBar.fillAmount = 1f;
         OnCountdownFinished?.Invoke();
     }
 }
