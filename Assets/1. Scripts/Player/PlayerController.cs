@@ -193,6 +193,13 @@ public class PlayerController : MonoBehaviour
         // 대시 이펙트
         _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
 
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int towerLayer = LayerMask.NameToLayer("Tower");
+        int smelterLayer = LayerMask.NameToLayer("Smelter");
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, true);
+
         float elapsed = 0f;
         Vector2 startPos = _player.Rigid.position;
 
@@ -206,6 +213,9 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, false);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, false);
 
         _isDashing = false;
         Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
