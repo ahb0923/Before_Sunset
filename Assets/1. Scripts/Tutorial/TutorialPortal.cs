@@ -9,6 +9,7 @@ public class TutorialPortal : MonoBehaviour
     private IEnumerator C_MovePlayer(BasePlayer player)
     {
         QuestManager.Instance.SetArrowTargetIndex();
+        MapManager.Instance.Player.Controller.SetEnterPortal(true);
 
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {

@@ -133,6 +133,13 @@ public class CoreStatHandler : MonoBehaviour
     public void SetHp(int hp)
     {
         CurHp = Mathf.Clamp(hp, 0, Stats.MaxHp);
+
+        if (GameManager.Instance.IsTutorial)
+        {
+            CurHp = 10;
+            ToastManager.Instance.ShowToast("코어는 플레이어를 슬프지 하지 않게 하려고 버텼다!");
+        }
+
         if (_core.HpBar != null)
             _core.HpBar.fillAmount = (float)CurHp / Stats.MaxHp;
     }

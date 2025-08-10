@@ -2141,6 +2141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coreName: 
+  _maxHp: 500
 --- !u!114 &561736193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2154,7 +2155,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _size: 3
-  _maxHp: 500
   _hpBar: {fileID: 175300188}
 --- !u!61 &561736194
 BoxCollider2D:
@@ -70038,8 +70038,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83b4d475301058940aecb004e2ae8e8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 2761966822481594523}
-  fadeDuration: 1
+  _fadeImage: {fileID: 2761966822481594523}
+  _fadeDuration: 1
 --- !u!4 &6716009852149929970
 Transform:
   m_ObjectHideFlags: 0
@@ -87632,12 +87632,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1fb26c60c6fbb245a0af50103c1b05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnMineralCount: 100
-  spawnJewelCount: 1
-  overlapRadius: 1
-  obstacleLayerMask:
+  _spawnMineralCount: 100
+  _overlapRadius: 1
+  _obstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 250614784
+    m_Bits: 0
   _spawnZoneLayer:
     serializedVersion: 2
     m_Bits: 268435456

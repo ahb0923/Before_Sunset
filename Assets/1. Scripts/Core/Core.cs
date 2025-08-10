@@ -53,13 +53,6 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
 
         if (_statHandler.CurHp == 0)
         {
-            if (GameManager.Instance.IsTutorial)
-            {
-                SetHp(10);
-                ToastManager.Instance.ShowToast("코어는 플레이어를 슬프지 하지 않게 하려고 버텼다!");
-                return;
-            }
-
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
             UIManager.Instance.ResultUI.Open(false);
