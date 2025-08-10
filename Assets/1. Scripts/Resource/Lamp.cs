@@ -61,4 +61,9 @@ public class Lamp : MonoBehaviour, IInteractable
 
         return edgeToEdgeDistance <= _interactionRange;
     }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
+    }
 }

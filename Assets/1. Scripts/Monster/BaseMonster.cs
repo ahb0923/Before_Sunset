@@ -102,10 +102,10 @@ public class BaseMonster : MonoBehaviour, IPoolable
     /// </summary>
     public void NotifyDeath()
     {
-        Debug.Log($"[몬스터] 죽음 알림 시작: {name} | 감지 센서 수: {_registeredSensors.Count}");
+        //Debug.Log($"[몬스터] 죽음 알림 시작: {name} | 감지 센서 수: {_registeredSensors.Count}");
         foreach (var sensor in _registeredSensors)
         {
-            Debug.Log($"[몬스터] → 센서에 알림: {sensor.name}");
+            //Debug.Log($"[몬스터] → 센서에 알림: {sensor.name}");
             sensor.RemoveEnemy(gameObject);
         }
         _registeredSensors.Clear();
@@ -128,12 +128,21 @@ public class BaseMonster : MonoBehaviour, IPoolable
     {
         _registeredSensors.Remove(sensor);
     }
-
+    /// <summary>
+    /// 몬스터가 해당 디버프를 가지고 있는지 체크 <br/>
+    /// 디버프를 중첩해서 걸지 않게 하기 위함
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public bool HasDebuff(DEBUFF_TYPE type)
     {
         return _activeDebuffs.ContainsKey(type);
     }
 
+    /// <summary>
+    /// 몬스터에게 디버프 등록
+    /// </summary>
+    /// <param name="debuff"></param>
     public void RegisterDebuff(BaseDebuff debuff)
     {
         var type = debuff.DebuffType;
@@ -147,6 +156,10 @@ public class BaseMonster : MonoBehaviour, IPoolable
         _activeDebuffs[type] = debuff;
     }
 
+    /// <summary>
+    /// 몬스터에게 디버프 해제
+    /// </summary>
+    /// <param name="debuff"></param>
     public void UnregisterDebuff(BaseDebuff debuff)
     {
         if (_activeDebuffs.ContainsKey(debuff.DebuffType))
@@ -154,6 +167,11 @@ public class BaseMonster : MonoBehaviour, IPoolable
             _activeDebuffs.Remove(debuff.DebuffType);
         }
     }
+
+    /// <summary>
+    /// 모든 디버프 해제
+    /// 풀로 돌아갈때 확실하게 디버프 다 떼주는 용도
+    /// </summary>
     public void ForceRemoveAllDebuffs()
     {
         var debuffs = new List<BaseDebuff>(_activeDebuffs.Values);

@@ -30,12 +30,26 @@ public class StartSceneAnimation : MonoBehaviour
     [SerializeField] private SpriteRenderer _explosion5;
     [SerializeField] private GameObject _circleExplosion;
     [SerializeField] private GameObject _circleFadeIn;
+    [SerializeField] private SpriteRenderer _circleFade;
+    
+    [SerializeField] private Canvas _canvas;
     
     private Vector2 _bottomLeft = new Vector2(31.5f, -4.5f);
     private Vector2 _topRight = new Vector2(84.5f, 17.5f);
     
     private Coroutine _cameraCoroutine;
+    
+    private Sequence _moveSequence;
+    private Coroutine _idleRoutine1;
+    private Coroutine _miningRoutine;
+    private Coroutine _idleRoutine2;
+    private Coroutine _explodeRoutine;
+    private Coroutine _explodeRoutine2;
+    private Coroutine _explodeRoutine3;
+    private Coroutine _shakeRoutine;
 
+    private bool _isSkip = false;
+    
     private void Reset()
     {
         _mainCamera = GameObject.Find("Main Camera");
@@ -50,6 +64,7 @@ public class StartSceneAnimation : MonoBehaviour
         _explosionContainer2 = Helper_Component.FindChildGameObjectByName(this.gameObject, "ExplosionContainer2");
         _circleExplosion = Helper_Component.FindChildGameObjectByName(this.gameObject, "CircleExplosion");
         _circleFadeIn = Helper_Component.FindChildGameObjectByName(this.gameObject, "CircleFadeIn");
+        _circleFade = Helper_Component.FindChildComponent<SpriteRenderer>(this.transform, "CircleFadeIn");
         
         _dustParticleSystem = Helper_Component.FindChildComponent<ParticleSystem>(this.transform, "DustParticle");
         _explosion1 = Helper_Component.FindChildComponent<SpriteRenderer>(this.transform, "Explosion1");
@@ -57,6 +72,8 @@ public class StartSceneAnimation : MonoBehaviour
         _explosion3 = Helper_Component.FindChildComponent<SpriteRenderer>(this.transform, "Explosion3");
         _explosion4 = Helper_Component.FindChildComponent<SpriteRenderer>(this.transform, "Explosion4");
         _explosion5 = Helper_Component.FindChildComponent<SpriteRenderer>(this.transform, "Explosion5");
+        
+        _canvas = Helper_Component.FindChildComponent<Canvas>(this.transform, "SkipCanvas");
     }
 
     private void Start()
@@ -75,17 +92,70 @@ public class StartSceneAnimation : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isSkip)
+        {
+            _isSkip = true;
+            Skip();
+        }
+    }
+
+    private void Skip()
+    {
+        if (_moveSequence != null)
+            _moveSequence.Kill();
+        if (_idleRoutine1 != null)
+            StopCoroutine(_idleRoutine1);
+        if (_idleRoutine2 != null)
+            StopCoroutine(_idleRoutine2);
+        if (_miningRoutine != null)
+            StopCoroutine(_miningRoutine);
+        if (_explodeRoutine != null)
+            StopCoroutine(_explodeRoutine);
+        if (_explodeRoutine2 != null)
+            StopCoroutine(_explodeRoutine2);
+        if (_explodeRoutine3 != null)
+            StopCoroutine(_explodeRoutine3);
+        if (_shakeRoutine != null)
+            StopCoroutine(_shakeRoutine);
+        
+        _movingCharacter.SetActive(false);
+        _idleCharacter.SetActive(false);
+        _miningCharacter.SetActive(false);
+        _runningCharacter.SetActive(false);
+        _dust1.SetActive(false);
+        _dust2.SetActive(false);
+        _dustParticle.SetActive(false);
+        _explosionContainer1.SetActive(false);
+        _explosionContainer2.SetActive(false);
+        _circleExplosion.SetActive(false);
+        _canvas.gameObject.SetActive(false);
+
+        AudioManager.Instance.StopAllSound();
+        _circleFade.color = new Color(0f, 0f, 0f, 0f);
+        _circleFadeIn.SetActive(true);
+        _circleFade.DOFade(1f, 2f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            GlobalState.HasPlayedIntro = true;
+            CameraAction();
+            AudioManager.Instance.PlayBGM("Main");
+            StartSceneManager.Instance.StartSceneUI.Open();
+            StartSceneManager.Instance.StartSceneUI.FadeOut();
+        });
+    }
+    
     [Button]
     private void StartMove()
     {
         _movingCharacter.SetActive(true);
         Vector2 target = new Vector2(-2f, -1.2f);
         
-        Sequence seq = DOTween.Sequence();
-        seq.Append(_movingCharacter.transform.DOMove(target, 5f).SetEase(Ease.Linear).OnComplete(StartIdle));
+        _moveSequence = DOTween.Sequence();
+        _moveSequence.Append(_movingCharacter.transform.DOMove(target, 5f).SetEase(Ease.Linear).OnComplete(StartIdle));
         for (int i = 0; i < 8; i++)
         {
-            seq.InsertCallback(0.6f * (i + 1), WalkSound);
+            _moveSequence.InsertCallback(0.6f * (i + 1), WalkSound);
         }
     }
 
@@ -93,12 +163,12 @@ public class StartSceneAnimation : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("UIClick");
     }
-
+    
     private void StartIdle()
     {
         _movingCharacter.SetActive(false);
         _idleCharacter.SetActive(true);
-        StartCoroutine(C_Idle());
+        _idleRoutine1 = StartCoroutine(C_Idle());
     }
 
     private IEnumerator C_Idle()
@@ -107,13 +177,12 @@ public class StartSceneAnimation : MonoBehaviour
         _idleCharacter.SetActive(false);
         StartMining();
     }
-
-    [Button]
+    
     private void StartMining()
     {
         _miningCharacter.SetActive(true);
         _dust1.SetActive(true);
-        StartCoroutine(C_Mining());
+        _miningRoutine = StartCoroutine(C_Mining());
     }
 
     private IEnumerator C_Mining()
@@ -146,18 +215,18 @@ public class StartSceneAnimation : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("EarthRumble");
     }
-
+    
     private void StartIdle2()
     {
         _idleCharacter.SetActive(true);
         _dust2.SetActive(true);
-        StartCoroutine(C_Idle2());
+        _idleRoutine2 = StartCoroutine(C_Idle2());
     }
-
+    
     private IEnumerator C_Idle2()
     {
         yield return new WaitForSeconds(1f);
-        StartCoroutine(C_StartExplode());
+        _explodeRoutine = StartCoroutine(C_StartExplode());
         yield return new WaitForSeconds(1.5f);
         _idleCharacter.SetActive(false);
         StartRunning();
@@ -175,16 +244,16 @@ public class StartSceneAnimation : MonoBehaviour
     private IEnumerator C_StartExplode()
     {
         _explosionContainer1.SetActive(true);
-        StartCoroutine(C_Explode(_explosion1, _explosion2));
+        _explodeRoutine2 = StartCoroutine(C_Explode(_explosion1, _explosion2));
         yield return new WaitForSeconds(1.5f);
         _explosionContainer2.SetActive(true);
-        StartCoroutine(C_Explode(_explosion3, _explosion4, _explosion5));
+        _explodeRoutine3 = StartCoroutine(C_Explode(_explosion3, _explosion4, _explosion5));
         AudioManager.Instance.PlaySFX("Hit");
         yield return new WaitForSeconds(1f);
         _dust2.SetActive(false);
         StartCircleExplode();
     }
-
+    
     private IEnumerator C_Explode(SpriteRenderer sprite1, SpriteRenderer sprite2, SpriteRenderer sprite3 = null)
     {
         float elapsed = 0f;
@@ -242,9 +311,9 @@ public class StartSceneAnimation : MonoBehaviour
     [Button]
     private void ShakeCamera(float duration = 0.2f, float intensity = 0.1f, float delay = 0f)
     {
-        StartCoroutine(C_Shake(duration, intensity, delay));
+        _shakeRoutine = StartCoroutine(C_Shake(duration, intensity, delay));
     }
-
+    
     private IEnumerator C_Shake(float duration, float intensity, float delay)
     {
         Vector3 original = _mainCamera.transform.position;

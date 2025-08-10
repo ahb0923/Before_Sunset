@@ -11,13 +11,16 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private int _currentHP;
 
+    private Animator _animator;
+
     [SerializeField] private int _id;
     public int GetId() => _id;
 
 
     private void Awake()
     {
-        _collider = GetComponent<Collider2D>();
+        _collider = Helper_Component.GetComponent<Collider2D>(gameObject);
+        _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
     }
 
     public void Init(BasePlayer basePlayer)
@@ -130,6 +133,26 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void Interact()
     {
+        int wallLayerMask = LayerMask.GetMask("Wall");
+        Vector2 playerPos = _player.transform.position;
+
+        if (Physics2D.Linecast(playerPos, transform.position, wallLayerMask))
+        {
+            ToastManager.Instance.ShowToast("해당 위치에서 채굴할 수 없습니다.");
+            return;
+        }
+
+        /*
+        if (_player.Stat.Pickaxe.crushingForce < _data.def)
+        {
+            ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
+            return;
+        }*/
+        if(gameObject.activeInHierarchy)
+            EffectManager.Instance.MiningEffect(transform);
+        _animator.ResetTrigger("IsMining");
+        _animator.SetTrigger("IsMining");
+        Mine(_player.Stat.Pickaxe.damage);
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
@@ -150,5 +173,10 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         return 1;
 
+    }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
     }
 }
