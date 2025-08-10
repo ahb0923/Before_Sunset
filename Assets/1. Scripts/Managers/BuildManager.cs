@@ -55,8 +55,17 @@ public class BuildManager : MonoSingleton<BuildManager>
         _isPlacing = true;
 
         DefenseManager.Instance.DragIcon.Show();
-        DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
 
+        if (towerPrefab != null)
+        {
+            var data = DataManager.Instance.TowerData.GetById(ID);
+            DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite, data.range, _buildInfo.attackRangeColor);
+        }
+        else
+        {
+            DefenseManager.Instance.DragIcon.SetIcon(_buildInfo.spriteRenderer.sprite);
+        }
+        
         CalculateBuildableTiles(_groundTilemap, DefenseManager.Instance.Core.transform, DefenseManager.Instance.Core.GetLightAreaRadius());
         ShowHighlightTiles();
     }

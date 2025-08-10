@@ -21,6 +21,7 @@ public class BasePlayer : MonoBehaviour
     public PlayerStatHandler Stat { get; private set; }
     public Animator Animator { get; private set; }
     public PlayerInputActions InputActions { get; private set; }
+    public PlayerEffect Effect { get; private set; }
 
     public bool IsInBase { get; private set; }
 
@@ -33,6 +34,7 @@ public class BasePlayer : MonoBehaviour
         Stat = GetComponent<PlayerStatHandler>();
         Animator = GetComponentInChildren<Animator>();
         InputActions = new PlayerInputActions();
+        Effect = Helper_Component.GetComponent<PlayerEffect>(this);
     }
 
     private void Start()

@@ -8,15 +8,7 @@ public class BuildInfo : MonoBehaviour, IBuildable
     public int id;
     public Vector2Int buildSize = new Vector2Int(1, 1); // 1x1 또는 2x2 등
     public SpriteRenderer spriteRenderer;
-    private void Awake()
-    {
-
-    }
-    private void Start()
-    {
-        if(spriteRenderer == null)
-            spriteRenderer = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
-    }
+    public Color attackRangeColor;
 
     public void Init(int id, Vector2Int buildSize)
     {

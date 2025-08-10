@@ -24,6 +24,8 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
 
     public void Interact()
     {
+        if (InteractManager.Instance.IsPointerOverRealUI()) return;
+
         UIManager.Instance.UpgradeUI.Open();
     }
 
@@ -110,5 +112,10 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     public int GetObejctSize()
     {
         return 3;
+    }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
     }
 }
