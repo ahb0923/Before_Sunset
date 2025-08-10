@@ -49,38 +49,34 @@ MonoBehaviour:
     <Title>k__BackingField: "\uAD11\uC0B0 \uC785\uC7A5"
     <Description>k__BackingField: "\uD654\uC0B4\uD45C\uB97C \uB530\uB77C, \uAD11\uC0B0\uC5D0
       \uC785\uC7A5\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
-    <objectId>k__BackingField: -1
+    <ProvidedItems>k__BackingField: []
+    <objectId>k__BackingField: 1
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 1
     <Title>k__BackingField: "\uCC44\uAD11(1)"
-    <Description>k__BackingField: "\uB3CC\uC744 1\uAC1C \uCC44\uAD11\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <Description>k__BackingField: "\uC88C\uD074\uB9AD\uC744 \uB204\uB974\uBA74 \uCC44\uAD11\uC744
+      \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uB3CC\uC744 1\uAC1C \uCC44\uAD11\uD558\uC138\uC694."
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: 100
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 0
     <Title>k__BackingField: "\uAD11\uC0B0 \uC774\uB3D9"
     <Description>k__BackingField: "\uD654\uC0B4\uD45C\uB97C \uB530\uB77C, \uB2E4\uC74C
       \uAD11\uC0B0\uC73C\uB85C \uC774\uB3D9\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
-    <objectId>k__BackingField: -1
+    <ProvidedItems>k__BackingField: []
+    <objectId>k__BackingField: 2
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 1
     <Title>k__BackingField: "\uCC44\uAD11(2)"
     <Description>k__BackingField: "\uAD6C\uB9AC \uAD11\uC11D\uC744 1\uAC1C \uCC44\uAD11\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: 110
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 2
     <Title>k__BackingField: "\uAE30\uC9C0 \uADC0\uD658"
     <Description>k__BackingField: "R\uD0A4\uB97C \uD640\uB4DC\uD558\uC5EC, \uAE30\uC9C0\uB85C
       \uADC0\uD658\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: -1
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 3
@@ -88,33 +84,36 @@ MonoBehaviour:
     <Description>k__BackingField: "E\uD0A4\uB97C \uB20C\uB7EC, \uC81C\uC791 \uD0ED\uC744
       \uC5F4 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC81C\uC791 \uD0ED\uC5D0\uC11C \uD558\uAE09
       \uC81C\uB828\uC18C\uB97C 1\uAC1C \uC124\uCE58\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: 100
-    <InventoryItemAmount>k__BackingField: 10
+    <ProvidedItems>k__BackingField:
+    - itemId: 100
+      itemAmount: 9
     <objectId>k__BackingField: 900
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 1
     <Title>k__BackingField: "\uC81C\uB828"
-    <Description>k__BackingField: "\uD558\uAE09 \uC81C\uB828\uC18C\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC,
-      \uAD6C\uB9AC \uAD11\uC11D\uC744 1\uAC1C\uB97C \uC81C\uB828\uD574 \uAD6C\uB9AC
-      \uC8FC\uAD34 1\uAC1C\uB97C \uD68D\uB4DD\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <Description>k__BackingField: "\uBAA8\uB4E0 \uD0C0\uC6CC\uB294 \uC81C\uB828\uB41C
+      \uC8FC\uAD34\uB97C \uC0AC\uC6A9\uD569\uB2C8\uB2E4. \uC81C\uB828\uC18C\uB97C
+      \uC6B0\uD074\uB9AD\uD558\uC5EC, \uAD6C\uB9AC \uC8FC\uAD34 1\uAC1C\uB97C \uC81C\uB828\uD558\uC138\uC694."
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: 111
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 3
     <Title>k__BackingField: "\uD0C0\uC6CC \uC124\uCE58"
-    <Description>k__BackingField: "\uAD6C\uB9AC \uBC1C\uC0AC\uAE30 2\uAC1C\uB97C
-      \uC124\uCE58\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: 111
-    <InventoryItemAmount>k__BackingField: 10
+    <Description>k__BackingField: "\uD770\uC0C9 \uD654\uC0B4\uD45C \uBC29\uD5A5\uC73C\uB85C
+      \uBAAC\uC2A4\uD130\uAC00 \uC2A4\uD3F0\uB429\uB2C8\uB2E4. \uC774\uC5D0 \uB9DE\uCD94\uC5B4\uC11C
+      \uAD6C\uB9AC \uBC1C\uC0AC\uAE30 2\uAC1C\uB97C \uC124\uCE58\uD558\uC138\uC694."
+    <ProvidedItems>k__BackingField:
+    - itemId: 111
+      itemAmount: 3
     <objectId>k__BackingField: 400
     <ClearAmount>k__BackingField: 2
   - <Type>k__BackingField: 4
     <Title>k__BackingField: "\uD0C0\uC6CC \uC5C5\uADF8\uB808\uC774\uB4DC"
     <Description>k__BackingField: "\uAD6C\uB9AC \uBC1C\uC0AC\uAE30\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC,
       \uAD6C\uB9AC \uBC1C\uC0AC\uAE30\uB97C \uC5C5\uADF8\uB808\uC774\uB4DC \uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: 121
-    <InventoryItemAmount>k__BackingField: 4
+    <ProvidedItems>k__BackingField:
+    - itemId: 111
+      itemAmount: 5
     <objectId>k__BackingField: 401
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 5
@@ -122,15 +121,13 @@ MonoBehaviour:
     <Description>k__BackingField: "\uC6B0\uCE21 \uC0C1\uB2E8 \uAC00\uC6B4\uB370\uC758
       \uC2A4\uD0B5 \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC5EC, \uBC24\uC73C\uB85C
       \uC774\uB3D9\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: -1
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 6
     <Title>k__BackingField: "\uBAAC\uC2A4\uD130 \uCC98\uCE58"
     <Description>k__BackingField: "\uBAAC\uC2A4\uD130 3\uB9C8\uB9AC\uB97C \uCC98\uCE58\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: 600
     <ClearAmount>k__BackingField: 3
   - <Type>k__BackingField: 7
@@ -138,8 +135,7 @@ MonoBehaviour:
     <Description>k__BackingField: "X\uD0A4\uB97C \uB204\uB974\uBA74 \uD574\uCCB4
       \uBAA8\uB4DC\uAC00 \uD65C\uC131\uD654\uB429\uB2C8\uB2E4. \uAD6C\uB9AC \uBC1C\uC0AC\uAE30\uB97C
       \uC6B0\uD074\uB9AD\uD558\uC5EC \uAC74\uBB3C\uC744 \uD574\uCCB4\uD558\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: -1
     <ClearAmount>k__BackingField: 1
   - <Type>k__BackingField: 8
@@ -147,11 +143,9 @@ MonoBehaviour:
     <Description>k__BackingField: "\uCF54\uC5B4\uB97C \uC6B0\uD074\uB9AD\uD558\uC5EC,
       \uCF54\uC5B4 \uC5C5\uADF8\uB808\uC774\uB4DC\uB97C 1\uAC1C \uC774\uC0C1 \uC801\uC6A9\uD574
       \uBCF4\uC138\uC694."
-    <InventoryItemId>k__BackingField: -1
-    <InventoryItemAmount>k__BackingField: 0
+    <ProvidedItems>k__BackingField: []
     <objectId>k__BackingField: -1
     <ClearAmount>k__BackingField: 1
-  _arrow: {fileID: 0}
-  _targets:
+  _portals:
   - {fileID: 0}
   - {fileID: 0}

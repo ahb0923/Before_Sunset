@@ -21,17 +21,18 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private bool _isWarned;
     private bool _isRecallOver;
 
-    private bool _isSkipQuest = false;
-
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()
     {
         MaxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
 
-        // 새 게임이면, 초기화 진행
+        // 새 게임이면, 초기화 진행 + 1일차 자동 저장
         if (GlobalState.Index == -1)
+        {
             InitGameTime();
+            UIManager.Instance.AutoSaveLoadSlot.Save();
+        }
     }
 
     private void Update()
@@ -118,14 +119,6 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     }
 
     /// <summary>
-    /// 타임 스킵 퀘스트 활성화 시 호출
-    /// </summary>
-    public void OnSkipQuest()
-    {
-        _isSkipQuest = true;
-    }
-
-    /// <summary>
     /// true면 일시 정지, false면 일시 정지 해제
     /// </summary>
     public void PauseGame(bool doPause)
@@ -139,11 +132,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     /// </summary>
     public void SkipHalfDay()
     {
-        if (GameManager.Instance.IsTutorial && !_isSkipQuest)
-        {
-            ToastManager.Instance.ShowToast("아직은 시간 스킵을 할 수 없습니다!");
-            return;
-        }
+        if (!QuestManager.Instance.IsPossibleToAction(QUEST_TYPE.TimeSkip)) return;
 
         if (IsNight)
         {

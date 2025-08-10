@@ -16,10 +16,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     {
         _spriter = GetComponentInChildren<SpriteRenderer>();
         _statHandler = GetComponent<CoreStatHandler>();
-    }
 
-    private void Start()
-    {
         _statHandler.Init(this);
     }
 

@@ -18,7 +18,7 @@ public class CoreStatHandler : MonoBehaviour
     public CoreUpgradeStats Stats { get; private set; } = new CoreUpgradeStats();
 
     private Core _core;
-    private Transform _lighting;
+    [SerializeField] private Transform _lighting;
 
     [SerializeField] private int _maxHp = 500;
     public int MaxHp => _maxHp;
@@ -60,7 +60,8 @@ public class CoreStatHandler : MonoBehaviour
         _core = core;
 
         Stats = new CoreUpgradeStats();
-        _lighting = transform.Find("Lighting");
+        if(_lighting == null)
+            _lighting = transform.Find("Lighting");
 
         // 게임 시작시 현재 업그레이드 레벨에 맞춰 스탯 적용
         SetFullHp();
@@ -133,6 +134,13 @@ public class CoreStatHandler : MonoBehaviour
     public void SetHp(int hp)
     {
         CurHp = Mathf.Clamp(hp, 0, Stats.MaxHp);
+
+        if (GameManager.Instance.IsTutorial && CurHp <= 10)
+        {
+            CurHp = 10;
+            ToastManager.Instance.ShowToast("코어는 플레이어를 슬프지 하지 않게 하려고 버텼다!");
+        }
+
         if (_core.HpBar != null)
             _core.HpBar.fillAmount = (float)CurHp / Stats.MaxHp;
     }
