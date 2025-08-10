@@ -154,12 +154,10 @@ public class PlayerInputHandler : MonoBehaviour
         {
             UIManager.Instance.RecallUI.CloseRecall();
 
-            if (GameManager.Instance.IsTutorial)
-                transform.position = new Vector3(11, 12, 0);
+            if(GameManager.Instance.IsTutorial)
+                _player.transform.position = Vector3.zero;
             else
-            {
                 MapManager.Instance.ReturnToHomeMap();
-            }
 
             _isRecallStarted = false;
             _isRecallInProgress = false;

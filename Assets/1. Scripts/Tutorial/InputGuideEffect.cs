@@ -17,7 +17,7 @@ public class InputGameObject
 
 public class InputGuideEffect : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
+    [SerializeField] private List<Animator> _animators;
     [SerializeField] private List<InputGameObject> _inputGameObjects;
     [SerializeField] private float _duration;
     [SerializeField] private bool _isToggle;
@@ -49,7 +49,11 @@ public class InputGuideEffect : MonoBehaviour
         _index = _index + 1 >= _inputGameObjects.Count ? 0 : _index + 1;
 
         _inputGameObjects[_index].SetPressed(true);
-        _animator.SetTrigger("Trigger");
+
+        foreach(Animator animator in _animators)
+        {
+            animator.SetTrigger("Trigger");
+        }
         if (!_isToggle)
             StartCoroutine(C_PressedOnce());
     }

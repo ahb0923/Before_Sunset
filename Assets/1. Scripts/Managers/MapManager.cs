@@ -49,8 +49,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             var gateRuneGO = GameObject.Find("GateRune");
             if (gateRuneGO != null)
                 _gateRune = gateRuneGO.transform;
-            else
-                Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
+            //else
+            //    Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
         }
 
         _baseMap.SetActive(true);

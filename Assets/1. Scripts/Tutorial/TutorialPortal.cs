@@ -8,6 +8,8 @@ public class TutorialPortal : MonoBehaviour
 
     private IEnumerator C_MovePlayer(BasePlayer player)
     {
+        QuestManager.Instance.SetArrowTargetIndex();
+
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
             QuestManager.Instance.AddQuestAmount(QUEST_TYPE.MoveToMine, _portalIndex);
@@ -15,7 +17,6 @@ public class TutorialPortal : MonoBehaviour
             player.SetPlayerInBase(_portalIndex == 0);
             player.transform.position = _moveTransform.position;
         }));
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

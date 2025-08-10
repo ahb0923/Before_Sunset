@@ -64,7 +64,15 @@ public class QuestManager : MonoSingleton<QuestManager>
                 UpgradeManager.Instance.AddEssencePiece(300);
             }
 
-            SetArrowTargetIndex(1);
+            // 두번째 광산 입장 퀘스트는 2번 포탈로 설정 으로 설정
+            if (_curQuest.Type == QUEST_TYPE.MoveToMine)
+            {
+                SetArrowTargetIndex(1);
+            }
+            else
+            {
+                _guideArrow.SettingTarget(null);
+            }
         }
 
         UIManager.Instance.QuestUI.DisplayClear(_curQuest);
@@ -120,9 +128,15 @@ public class QuestManager : MonoSingleton<QuestManager>
     /// <summary>
     /// 화살표 타겟 설정
     /// </summary>
-    public void SetArrowTargetIndex(int index)
+    public void SetArrowTargetIndex(int index = -1)
     {
         if (!GameManager.Instance.IsTutorial || index >= _portals.Count || _curQuest.Type != QUEST_TYPE.MoveToMine) return;
+        
+        if (index == -1) 
+        {
+            _guideArrow.SettingTarget(null);
+            return; 
+        }
 
         _guideArrow.SettingTarget(_portals[index]);
     }
