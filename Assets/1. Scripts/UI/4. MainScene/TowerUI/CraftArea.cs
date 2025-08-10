@@ -85,10 +85,17 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     public void GetBaseTowerList()
     {
         var towerDatas = DataManager.Instance.TowerData.GetAllItems();
+        foreach (var towerData in towerDatas)
+        {
+            if (towerData.attackType == TOWER_ATTACK_TYPE.Barricade)
+            {
+                _baseTowerData.Add(towerData);
+            }
+        }
 
         foreach (var towerData in towerDatas)
         {
-            if (towerData.buildType == TOWER_BUILD_TYPE.Base)
+            if (towerData.buildType == TOWER_BUILD_TYPE.Base && towerData.attackType != TOWER_ATTACK_TYPE.Barricade)
             {
                 _baseTowerData.Add(towerData);
             }

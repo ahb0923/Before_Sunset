@@ -20,7 +20,7 @@ public enum TOWER_TYPE
     TopazTower,
     RubyTower,
     AquamarineTower,
-    Electricline
+    Barricade
 }
 public class BaseTower : MonoBehaviour, IPoolable, IInteractable
 {
@@ -92,6 +92,9 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         switch (towerType)
         {
+            case TOWER_TYPE.Barricade:
+                attackStrategy = null;
+                break;
             case TOWER_TYPE.CooperTower:
                 attackStrategy = new AttackStrategy_CooperTower();
                 break;
@@ -122,6 +125,7 @@ public class BaseTower : MonoBehaviour, IPoolable, IInteractable
     {
         switch (towerType)
         {
+            case TOWER_TYPE.Barricade:
             case TOWER_TYPE.CooperTower:
             case TOWER_TYPE.IronTower:
             case TOWER_TYPE.DiaprismTower:
