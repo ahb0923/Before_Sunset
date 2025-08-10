@@ -829,6 +829,10 @@ PrefabInstance:
       propertyPath: highlightTilemap
       value: 
       objectReference: {fileID: 1603114504}
+    - target: {fileID: 752522750499344861, guid: d54af51b15d4b9145814b8329c466131, type: 3}
+      propertyPath: _buildingLayer.m_Bits
+      value: 1074112
+      objectReference: {fileID: 0}
     - target: {fileID: 7257501209349996822, guid: d54af51b15d4b9145814b8329c466131, type: 3}
       propertyPath: m_Name
       value: BuildManager
