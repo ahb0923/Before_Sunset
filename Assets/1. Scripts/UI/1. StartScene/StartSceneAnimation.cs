@@ -36,7 +36,6 @@ public class StartSceneAnimation : MonoBehaviour
     private Coroutine _explodeRoutine;
     private Coroutine _explodeRoutine2;
     private Coroutine _explodeRoutine3;
-    private Coroutine _shakeRoutine;
 
     private bool _isSkip = false;
     
@@ -107,8 +106,8 @@ public class StartSceneAnimation : MonoBehaviour
             StopCoroutine(_explodeRoutine2);
         if (_explodeRoutine3 != null)
             StopCoroutine(_explodeRoutine3);
-        if (_shakeRoutine != null)
-            StopCoroutine(_shakeRoutine);
+        if (StartSceneManager.Instance.ShakeCameraCoroutine != null)
+            StopCoroutine(StartSceneManager.Instance.ShakeCameraCoroutine);
         
         // _movingCharacter.SetActive(false);
         // _idleCharacter.SetActive(false);
