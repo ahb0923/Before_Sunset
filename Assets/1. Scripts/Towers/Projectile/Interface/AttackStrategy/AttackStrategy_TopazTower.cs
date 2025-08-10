@@ -14,7 +14,7 @@ public class AttackStrategy_TopazTower : IAttackStrategy
             yield break;
 
         tower.ui.animator.SetTrigger("IsAttack");
-        AoeEffectManager.Instance.TriggerAOE(centerPos, new Color(240f / 255f, 200f / 255f, 50f / 255f, 50f / 255f), tower.statHandler.AttackRange + 0.5f);
+        EffectManager.Instance.TriggerAOE(centerPos, new Color(240f / 255f, 200f / 255f, 50f / 255f, 50f / 255f), tower.statHandler.AttackRange + 0.5f);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, LayerMask.GetMask("Monster"));
 

@@ -11,13 +11,16 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private int _currentHP;
 
+    private Animator _animator;
+
     [SerializeField] private int _id;
     public int GetId() => _id;
 
 
     private void Awake()
     {
-        _collider = GetComponent<Collider2D>();
+        _collider = Helper_Component.GetComponent<Collider2D>(gameObject);
+        _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
     }
 
     public void Init(BasePlayer basePlayer)
@@ -145,8 +148,10 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
             ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
             return;
         }*/
-
-        _player.Effect.PlayMiningEffect(transform);
+        if(gameObject.activeInHierarchy)
+            EffectManager.Instance.MiningEffect(transform);
+        _animator.ResetTrigger("IsMining");
+        _animator.SetTrigger("IsMining");
         Mine(_player.Stat.Pickaxe.damage);
     }
 

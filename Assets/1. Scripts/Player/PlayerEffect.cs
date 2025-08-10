@@ -12,18 +12,10 @@ public class PlayerEffect : MonoBehaviour
     private SpriteRenderer playerSpriteRenderer;
     private Transform playerTransform;
 
-    [SerializeField]private ParticleSystem attackEffect;
-
     private void Awake()
     {
         playerTransform = transform;
         playerSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
-
-    public void PlayMiningEffect(Transform transform)
-    {
-        attackEffect.transform.position = transform.position;
-        attackEffect.Play(transform);
     }
 
     public void PlayDashEffect(float dashDuration)
