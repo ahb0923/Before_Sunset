@@ -186,15 +186,7 @@ public class ResultUI : MonoBehaviour, ICloseableUI
         UIManager.Instance.CloseUI(this);
         TimeManager.Instance.PauseGame(false);
 
-        if(TimeManager.Instance.Day != 1)
-        {
-            SaveManager.Instance.LoadGameFromAutoSlot();
-        }
-        else 
-        {
-            // 1스테이지에서 죽으면 새 게임 시작
-            SaveManager.Instance.LoadGameFromSlot();
-        }
+        SaveManager.Instance.LoadGameFromAutoSlot();
     }
     
     private void CloseOnExit()

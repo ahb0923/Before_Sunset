@@ -28,7 +28,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
         MaxStage = DataManager.Instance.ClearRewardData.GetAllItems().Count + 1;
 
         // 새 게임이면, 초기화 진행 + 1일차 자동 저장
-        if (GlobalState.Index == -1)
+        if (GlobalState.Index == -1 && !GameManager.Instance.IsTutorial)
         {
             InitGameTime();
             UIManager.Instance.AutoSaveLoadSlot.Save();
