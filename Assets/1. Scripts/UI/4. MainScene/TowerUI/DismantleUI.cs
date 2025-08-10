@@ -127,7 +127,7 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     {
         if (_selectedTower!=null)
             _selectedTower.ui.OffAttackArea();
-        InteractManager.Instance.SetCursorDestroyImage(false);
+        //InteractManager.Instance.SetCursorDestroyImage(false);
         UIManager.Instance.CloseUI(this);
     }
 
