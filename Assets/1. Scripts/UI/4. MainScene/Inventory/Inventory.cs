@@ -152,6 +152,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
             }
         }
         _addedSlotIndex.Clear();
+        UIManager.Instance.ItemToastUI.ShowToast(item.Data.itemName);
         QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.GainItem, id, quantity);
 
         var slots = UIManager.Instance.CraftArea.buildSlots;

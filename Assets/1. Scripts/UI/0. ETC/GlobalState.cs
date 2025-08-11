@@ -33,6 +33,9 @@ public static class GlobalState
     /// </summary>
     public static int ResolutionIndex = 1;
     
+    /// <summary>
+    /// 해상도 목록
+    /// </summary>
     public static readonly Vector2Int[] Resolutions =
     {
         new Vector2Int(1366, 768),
