@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class GameTimeUI : MonoBehaviour
 {
     [SerializeField] private Image _dayImageUI;
+    [SerializeField] private Image _dayPercentageUI;
     [SerializeField] private TextMeshProUGUI _dayText;
     [SerializeField] private List<Sprite> _dayImages;
+    [SerializeField] private List<Sprite> _dayPercentage;
     [SerializeField] private Sprite _nightImage;
 
     private void Update()
@@ -23,19 +25,34 @@ public class GameTimeUI : MonoBehaviour
         if (TimeManager.Instance.IsNight)
         {
             _dayImageUI.sprite = _nightImage;
+            _dayPercentageUI.sprite = _dayPercentage[_dayPercentage.Count - 1];
         }
         else
         {
             for (int i = 1; i <= _dayImages.Count; i++)
             {
-                float flag = (float) i / _dayImages.Count;
-                if(flag > TimeManager.Instance.DailyPercent)
+                if(IsChangeSprite(i, _dayImages.Count))
                 {
                     _dayImageUI.sprite = _dayImages[i - 1];
                     break;
                 }
             }
+
+            for (int i = 1; i <= _dayPercentage.Count; i++)
+            {
+                if (IsChangeSprite(i, _dayPercentage.Count))
+                {
+                    _dayPercentageUI.sprite = _dayPercentage[i - 1];
+                    break;
+                }
+            }
         }
+    }
+
+    private bool IsChangeSprite(int num, int max)
+    {
+        float flag = (float)num / max;
+        return flag > TimeManager.Instance.DailyPercent;
     }
 
     /// <summary>
