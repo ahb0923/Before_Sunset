@@ -174,13 +174,9 @@ public class UpgradeUI : MonoBehaviour, ICloseableUI
             ToastManager.Instance.ShowToast("정수가 부족합니다.");
             return;
         }
-        
-        UpgradeManager.Instance.FixResetCounter();
-        UpgradeManager.Instance.InitUpgrade();
-        UpgradeManager.Instance.DiscardVirtualUpgrade();
-        UpgradeManager.Instance.SetVirtualUpgrade();
-        UpgradeManager.Instance.SetVirtualEssence();
-        
+
+        UpgradeManager.Instance.ResetUpgrades();
+
         Refresh();
         RefreshSlot();
         UIManager.Instance.EssenceUI.Refresh();
