@@ -341,7 +341,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
-        yield return Helper_Coroutine.WaitSeconds(0.5f / _player.Stat.MiningSpeed);
+        yield return Helper_Coroutine.WaitSeconds(0.5f / (_player.Stat.MiningSpeed / 100f));
 
         TryInteractTarget(target);
 

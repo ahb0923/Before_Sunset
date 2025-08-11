@@ -438,19 +438,16 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     {
         _nextMapIndex = data.mapLinks.nextMapIndex;
 
-        _mapHistory.Clear();
         foreach(int stack in data.mapLinks.mapHistory)
         {
             _mapHistory.Push(stack);
         }
 
-        _mapPrefabIdMap.Clear();
         foreach(var pair in data.mapLinks.prefabIdDict)
         {
             _mapPrefabIdMap[pair.key] = pair.value;
         }
 
-        _portalMapLinks.Clear();
         foreach(var pair in data.mapLinks.portalMapLinks)
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;

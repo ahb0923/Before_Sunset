@@ -4,21 +4,15 @@ using UnityEngine;
 public class TargetDetector : MonoBehaviour
 {
     private BaseMonster _monster;
-    private CircleCollider2D _collider;
-
     public List<Transform> DetectedObstacles { get; private set; }
 
+    /// <summary>
+    /// 타겟 감지기 초기화
+    /// </summary>
     public void Init(BaseMonster monster)
     {
         _monster = monster;
-        _collider = GetComponent<CircleCollider2D>();
-        
         DetectedObstacles = new List<Transform>();
-    }
-
-    public void SetAttackCore(bool isAttackCore)
-    {
-        _collider.enabled = !isAttackCore;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -72,15 +72,6 @@ public class ItemDropManager : MonoSingleton<ItemDropManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        // 떨어져 있는 드랍 아이템들 비활성화
-        foreach (var obj in transform.GetComponentsInChildren<Transform>())
-        {
-            if (obj.TryGetComponent<IPoolable>(out var poolable))
-            {
-                PoolManager.Instance.ReturnToPool(poolable.GetId(), obj.gameObject);
-            }
-        }
-
         // 로드한 드랍 아이템 활성화
         foreach (var item in data.dropItems)
         {
