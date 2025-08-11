@@ -44,7 +44,6 @@ public class AskTutorial : MonoBehaviour
         Close();
         if (!_clickTutorialBtn)
         {
-            GameManager.Instance.SetTutorial(false);
             SaveManager.Instance.LoadGameFromSlot();
         }
         else
