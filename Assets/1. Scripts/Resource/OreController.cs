@@ -11,6 +11,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private int _currentHP;
 
+    private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
     [SerializeField] private int _id;
@@ -21,6 +22,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
     {
         _collider = Helper_Component.GetComponent<Collider2D>(gameObject);
         _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
+        _spriteRenderer = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
     }
 
     public void Init(BasePlayer basePlayer)
@@ -37,8 +39,8 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnGetFromPool()
     {
+        _spriteRenderer.size = new Vector3(1, 1, 1);
         _animator.Play("Ore_Idle", 0, 0f);
-        _animator.Update(0f);
 
         _currentHP = _data.hp;
         FindPlayer();

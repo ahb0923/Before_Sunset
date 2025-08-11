@@ -14,8 +14,8 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
 
     private void Awake()
     {
-        _spriter = GetComponentInChildren<SpriteRenderer>();
-        _statHandler = GetComponent<CoreStatHandler>();
+        _spriter = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
+        _statHandler = Helper_Component.GetComponent<CoreStatHandler>(gameObject);
 
         _statHandler.Init(this);
     }
