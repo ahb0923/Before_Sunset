@@ -79,34 +79,33 @@ public class CoreStatHandler : MonoBehaviour
 
         // 현재 레벨에 맞춰 모든 업그레이드 적용
         ApplyHPUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HP));
-        //ApplyHpRegenUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HpRegen));
+        ApplyHpRegenUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HpRegen));
         ApplySightRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.SightRange));
     }
 
     private void ResetToBaseStats()
     {
-        _hpIncrease = 0f;
-        _hpRegenIncrease = 0f;
-        _sightIncrease = 0f;
+        _hpIncrease = _baseMaxHp;
+        _hpRegenIncrease = _baseHpRegen;
+        _sightIncrease = _baseSightRange;
     }
 
     // 개별 업그레이드 적용 메서드들
     public void ApplyHPUpgrade(float increaseAmount)
     {
-        _hpIncrease += increaseAmount;
+        _hpIncrease = increaseAmount;
         UpdateStats();
     }
 
     public void ApplyHpRegenUpgrade(float increaseAmount)
     {
-        _hpRegenIncrease += increaseAmount;
+        _hpRegenIncrease = increaseAmount;
         UpdateStats();
     }
 
     public void ApplySightRangeUpgrade(float increaseAmount)
     {
-        _sightIncrease = increaseAmount;
-        Stats.SightRange = _baseSightRange + _sightIncrease;
+        Stats.SightRange = increaseAmount;
 
         if (_lighting != null)
         {
@@ -118,8 +117,8 @@ public class CoreStatHandler : MonoBehaviour
     {
         int oldMaxHp = Stats.MaxHp;
 
-        Stats.MaxHp = Mathf.RoundToInt(_baseMaxHp + _hpIncrease);
-        Stats.HpRegen = _baseHpRegen + _hpRegenIncrease;
+        Stats.MaxHp = Mathf.RoundToInt(_hpIncrease);
+        Stats.HpRegen = _hpRegenIncrease;
 
         if (_core != null && oldMaxHp != Stats.MaxHp)
         {

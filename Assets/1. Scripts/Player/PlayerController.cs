@@ -90,8 +90,8 @@ public class PlayerController : MonoBehaviour
 
         _isSwingButtonHeld = true;
 
-        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed)
-            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.MiningSpeed);
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed / 100f)
+            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.MiningSpeed / 100f);
 
         // 첫 번째 스윙 실행
         if (_swingCoroutine == null)

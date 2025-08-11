@@ -67,24 +67,33 @@ public class UpgradeSlot : MonoBehaviour
 
             switch (data.statType)
             {
-                case UPGRADE_TYPE.MoveSpeed:
                 case UPGRADE_TYPE.MiningSpeed:
                 case UPGRADE_TYPE.DropRate:
-                    _currentValueText.text = $"+{data.increaseRate} %";
+                    _currentValueText.text = $"{data.increaseRate} %";
                     _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} %";
                     break;
 
                 case UPGRADE_TYPE.SightRange:
-                case UPGRADE_TYPE.AttackRange:
-                    _currentValueText.text = $"+{data.increaseRate} 칸";
+                    _currentValueText.text = $"{data.increaseRate} 칸";
                     _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} 칸";
                     break;
 
+                case UPGRADE_TYPE.MoveSpeed:
                 case UPGRADE_TYPE.HP:
-                case UPGRADE_TYPE.AttackPower:
+                    _currentValueText.text = $"{data.increaseRate}";
+                    _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate}";
+                    break;
+
+                case UPGRADE_TYPE.HpRegen:
                     _currentValueText.text = $"+{data.increaseRate}";
                     _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate}";
                     break;
+
+                case UPGRADE_TYPE.DashCooldown:
+                    _currentValueText.text = $"{data.increaseRate} 초";
+                    _nextValueText.text = $"-0.2 초";  // 추후 데이터가 추가될경우 double 형 연산 혹은 반올림 소수 한자리까지 적용할 것
+                    break;
+
 
                 default:
                     Debug.LogWarning("정의되지 않은 업그레이드 타입입니다.");
@@ -96,22 +105,28 @@ public class UpgradeSlot : MonoBehaviour
             DisableUpgrade();
             switch (data.statType)
             {
-                case UPGRADE_TYPE.MoveSpeed:
+
                 case UPGRADE_TYPE.MiningSpeed:
                 case UPGRADE_TYPE.DropRate:
-                    _currentValueText.text = $"+{data.increaseRate} %";
+                    _currentValueText.text = $"{data.increaseRate} %";
                     break;
 
                 case UPGRADE_TYPE.SightRange:
-                case UPGRADE_TYPE.AttackRange:
-                    _currentValueText.text = $"+{data.increaseRate} 칸";
+                    _currentValueText.text = $"{data.increaseRate} 칸";
                     break;
 
+                case UPGRADE_TYPE.MoveSpeed:
                 case UPGRADE_TYPE.HP:
-                case UPGRADE_TYPE.AttackPower:
+                    _currentValueText.text = $"{data.increaseRate}";
+                    break;
+
+                case UPGRADE_TYPE.HpRegen:
                     _currentValueText.text = $"+{data.increaseRate}";
                     break;
 
+                case UPGRADE_TYPE.DashCooldown:
+                    _currentValueText.text = $"{data.increaseRate} 초";
+                    break;
                 default:
                     Debug.LogWarning("정의되지 않은 업그레이드 타입입니다.");
                     break;
