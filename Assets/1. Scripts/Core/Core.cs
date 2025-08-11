@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     public int Size => _size;
     [SerializeField] private Image _hpBar;
     public Image HpBar => _hpBar;
+    private Animator _animator;
     public bool IsDead { get; private set; }
 
     private SpriteRenderer _spriter;
@@ -16,7 +18,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     {
         _spriter = GetComponentInChildren<SpriteRenderer>();
         _statHandler = GetComponent<CoreStatHandler>();
-
+        _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
         _statHandler.Init(this);
     }
 
@@ -52,8 +54,47 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         {
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
-            UIManager.Instance.ResultUI.Open(false);
+
+            // 게임 일시정지
+            Time.timeScale = 0f;
+
+            StartCoroutine(DeathSequence());
+
+            //UIManager.Instance.ResultUI.Open(false);
         }
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        // 카메라 줌인 효과
+        Camera mainCam = Camera.main;
+        float startSize = mainCam.orthographicSize;
+        float targetSize = 2.5f;
+        float zoomDuration = 1.5f;
+        float elapsed = 0f;
+
+        Vector3 startPos = mainCam.transform.position;
+        Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, mainCam.transform.position.z);
+
+
+        while (elapsed < zoomDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = elapsed / zoomDuration;
+            mainCam.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
+            mainCam.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        // 죽음 애니메이션 실행
+        _animator.SetTrigger("IsDead");
+
+        // 애니메이션 길이만큼 대기
+        AnimatorStateInfo state = _animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSecondsRealtime(state.length);
+
+        // 실패 UI 출력
+        UIManager.Instance.ResultUI.Open(false);
     }
 
     /// <summary>
