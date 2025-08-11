@@ -74,7 +74,6 @@ public class UpgradeSlot : MonoBehaviour
                     break;
 
                 case UPGRADE_TYPE.SightRange:
-                case UPGRADE_TYPE.AttackRange:
                     _currentValueText.text = $"{data.increaseRate} 칸";
                     _nextValueText.text = $"+{nextData.increaseRate - data.increaseRate} 칸";
                     break;
@@ -113,7 +112,6 @@ public class UpgradeSlot : MonoBehaviour
                     break;
 
                 case UPGRADE_TYPE.SightRange:
-                case UPGRADE_TYPE.AttackRange:
                     _currentValueText.text = $"{data.increaseRate} 칸";
                     break;
 
