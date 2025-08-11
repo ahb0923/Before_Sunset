@@ -84,8 +84,9 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     {
         _dailyTimer = dailyTime;
         Day = day;
-
         UIManager.Instance.GameTimeUI.SetDayText();
+
+        DefenseManager.Instance.MonsterSpawner.SetMonsterSpawnPoints();
     }
 
     /// <summary>
