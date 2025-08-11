@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -28,7 +29,12 @@ public class CraftMaterialArea : MonoBehaviour
             slot.SetActive(false);
         }
     }
-    
+
+    private void Start()
+    {
+        this.gameObject.SetActive(false);
+    }
+
     public void SetMaterialSlot(TowerDatabase data)
     {
         List<KeyValuePair<string, int>> dataList = data.buildRequirements.ToList();

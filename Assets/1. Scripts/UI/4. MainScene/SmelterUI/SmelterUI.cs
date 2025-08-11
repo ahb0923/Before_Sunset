@@ -89,7 +89,7 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void OpenUI()
     {
-        AudioManager.Instance.PlaySFX("OpenSmelter");
+        AudioManager.Instance.PlaySFX("Smelter");
         
         SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();

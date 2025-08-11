@@ -6,8 +6,8 @@ public class ItemToastUI : MonoBehaviour
     [SerializeField] private GameObject _toastPrefab;
     [SerializeField] private int _initialCount = 10;
 
-    private Queue<GameObject> _toastPool = new Queue<GameObject>();
-    private Queue<GameObject> _activeToasts = new Queue<GameObject>();
+    private Queue<ItemToast> _toastPool = new Queue<ItemToast>();
+    private Queue<ItemToast> _activeToasts = new Queue<ItemToast>();
 
     private const string TOAST_PREFAB = "UI/ItemToast";
     
@@ -26,7 +26,8 @@ public class ItemToastUI : MonoBehaviour
         for (int i = 0; i < _initialCount; i++)
         {
             var toast = Instantiate(_toastPrefab, this.transform);
-            _toastPool.Enqueue(toast);
+            var itemToast = toast.GetComponent<ItemToast>();
+            _toastPool.Enqueue(itemToast);
             toast.SetActive(false);
         }
     }
@@ -34,11 +35,10 @@ public class ItemToastUI : MonoBehaviour
     public void ShowToast(string itemName)
     {
         var toast = GetToast();
-        var toastSlot = toast.GetComponent<ItemToast>();
-        toastSlot.ShowToast(itemName);
+        toast.ShowToast(itemName);
     }
 
-    private GameObject GetToast()
+    private ItemToast GetToast()
     {
         if (_toastPool.Count > 0)
         {
@@ -55,9 +55,17 @@ public class ItemToastUI : MonoBehaviour
         }
     }
 
-    public void ReturnToast(GameObject toast)
+    public void ReturnToast(ItemToast toast)
     {
         toast.gameObject.SetActive(false);
         _toastPool.Enqueue(toast);
+    }
+
+    public void StopToast()
+    {
+        foreach (var toast in _activeToasts)
+        {
+            toast.InitToast();
+        }
     }
 }

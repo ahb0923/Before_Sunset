@@ -20,13 +20,14 @@ public class SlideOpenUI : MonoBehaviour
     private Tween _windowTween;
     private Tween _buttonTween;
     
-    private const string TOGGLE_BUTTON = "ToggleButton";
+    private const string TOGGLE_BUTTON = "UpgradeBar";
+    private const string TOGGLE_RECT = "ToggleImage";
     private const string UPGRADE_CONTAINER = "UpgradeContainer";
 
     private void Reset()
     {
         _toggleButton = Helper_Component.FindChildComponent<Button>(this.transform, TOGGLE_BUTTON);
-        _toggleButtonRectTransform = Helper_Component.FindChildComponent<RectTransform>(this.transform, TOGGLE_BUTTON);
+        _toggleButtonRectTransform = Helper_Component.FindChildComponent<RectTransform>(this.transform, TOGGLE_RECT);
         _upgradeContainer = Helper_Component.FindChildGameObjectByName(this.gameObject, UPGRADE_CONTAINER);
         _layoutElement = GetComponent<LayoutElement>();
     }

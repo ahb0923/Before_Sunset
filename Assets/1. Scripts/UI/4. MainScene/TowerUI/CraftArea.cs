@@ -44,6 +44,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     private void Start()
     {
         TowerButton();
+        this.gameObject.SetActive(false);
     }
 
     private void TowerButton()
@@ -133,6 +134,7 @@ public class CraftArea : MonoBehaviour, ICloseableUI
     public void OpenUI()
     {
         this.gameObject.SetActive(true);
+        AudioManager.Instance.PlaySFX("BuildUI");
     }
 
     public void CloseUI()

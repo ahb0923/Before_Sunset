@@ -6025,8 +6025,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: -2053718689, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -6054,7 +6054,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 2
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -6065,7 +6065,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 407855132, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -6483,14 +6483,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7960785, g: 0.67058825, b: 0.48627454, a: 1}
+  m_Color: {r: 0.8784314, g: 0.8784314, b: 0.8784314, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1212377843, guid: 8929c51d7f5506d45b5eec929a9e8d15, type: 3}
+  m_Sprite: {fileID: -2053718689, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6530,7 +6530,7 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: -206636311, guid: 8929c51d7f5506d45b5eec929a9e8d15, type: 3}
+    m_PressedSprite: {fileID: 407855132, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -8671,7 +8671,6 @@ MonoBehaviour:
   _yesButton: {fileID: 7759202813802313040}
   _noButton: {fileID: 287061436153987115}
   _askRect: {fileID: 4989257812271838723}
-  _startSceneAnimation: {fileID: 0}
 --- !u!1 &7215278327951935549
 GameObject:
   m_ObjectHideFlags: 0
@@ -10400,6 +10399,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1998636541267372362}
     m_Modifications:
+    - target: {fileID: 1393939841609692026, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -41006976, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
     - target: {fileID: 2891771570690986782, guid: 7a5f1e955e707f74497208307149e025, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -10483,6 +10486,30 @@ PrefabInstance:
     - target: {fileID: 4879401217148098027, guid: 7a5f1e955e707f74497208307149e025, type: 3}
       propertyPath: m_Name
       value: Window
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256306810718578185, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256306810718578185, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1802552078, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
+    - target: {fileID: 7633028351836941611, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633028351836941611, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633028351836941611, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7633028351836941611, guid: 7a5f1e955e707f74497208307149e025, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
