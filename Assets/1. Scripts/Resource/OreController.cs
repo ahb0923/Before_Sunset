@@ -168,7 +168,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        return edgeToEdgeDistance <= 0.5f;
+        return edgeToEdgeDistance <= 1f;
     }
 
     public int GetObejctSize()
