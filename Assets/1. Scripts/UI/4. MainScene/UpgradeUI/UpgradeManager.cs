@@ -9,12 +9,13 @@ public enum PLAYER_STATUS_TYPE
     MiningSpeed,
     DropRate,
     SightRange,
+    DashCooldown,
 }
 
 public enum CORE_STATUS_TYPE
 {
     HP,
-    //HPRegen,
+    HpRegen,
     SightRange,
 }
 
@@ -25,7 +26,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
     public Dictionary<string, int> BaseUpgrade { get; private set; }
     public Dictionary<string, int> FixedUpgrade { get; private set; }
     public Dictionary<string, int> VirtualUpgrade { get; private set; }
-    
+
     public int Essence { get; private set; }
     public int EssencePiece { get; private set; }
     public int VirtualEssence { get; private set; }
@@ -47,7 +48,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         _upgradeDataHandler = DataManager.Instance.UpgradeData;
         _playerStatHandler = FindObjectOfType<PlayerStatHandler>();
         _coreStatHandler = FindObjectOfType<CoreStatHandler>();
-        
+
         InitUpgrade();
         BaseUpgrade = new Dictionary<string, int>(FixedUpgrade);
     }
@@ -59,13 +60,14 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         { PLAYER_STATUS_TYPE.MoveSpeed, 0 },
         { PLAYER_STATUS_TYPE.MiningSpeed, 0 },
         { PLAYER_STATUS_TYPE.DropRate, 0 },
+        { PLAYER_STATUS_TYPE.DashCooldown, 0 },
         { PLAYER_STATUS_TYPE.SightRange, 0 }
     };
 
         CoreStatus = new()
     {
         { CORE_STATUS_TYPE.HP, 0 },
-        //{ CORE_STATUS_TYPE.HPRegen, 0 },
+        { CORE_STATUS_TYPE.HpRegen, 0 },
         { CORE_STATUS_TYPE.SightRange, 0 },
     };
     }
@@ -77,7 +79,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
 
         List<UpgradeDatabase> upgradeList = DataManager.Instance.UpgradeData.GetAllItems();
         List<UpgradeDatabase> upgrades = upgradeList.Where(u => u.level == 0).ToList();
-        
+
         FixedUpgrade = new Dictionary<string, int>();
         for (int i = 0; i < upgrades.Count; i++)
         {
@@ -191,6 +193,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             PLAYER_STATUS_TYPE.MoveSpeed => UPGRADE_TYPE.MoveSpeed,
             PLAYER_STATUS_TYPE.MiningSpeed => UPGRADE_TYPE.MiningSpeed,
             PLAYER_STATUS_TYPE.DropRate => UPGRADE_TYPE.DropRate,
+            PLAYER_STATUS_TYPE.DashCooldown => UPGRADE_TYPE.DashCooldown,
             PLAYER_STATUS_TYPE.SightRange => UPGRADE_TYPE.SightRange,
             _ => throw new ArgumentException($"Unknown player status type: {statusType}")
         };
@@ -204,7 +207,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         return statusType switch
         {
             CORE_STATUS_TYPE.HP => UPGRADE_TYPE.HP,
-            //CORE_STATUS_TYPE.HPRegen => UPGRADE_TYPE.HPRegen,
+            CORE_STATUS_TYPE.HpRegen => UPGRADE_TYPE.HpRegen,
             CORE_STATUS_TYPE.SightRange => UPGRADE_TYPE.SightRange,
             _ => throw new ArgumentException($"Unknown core status type: {statusType}")
         };
@@ -228,6 +231,9 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             case PLAYER_STATUS_TYPE.DropRate:
                 _playerStatHandler.ApplyDropRateUpgrade(upgradeData.increaseRate);
                 break;
+            case PLAYER_STATUS_TYPE.DashCooldown:
+                _playerStatHandler.ApplyDropRateUpgrade(upgradeData.increaseRate);
+                break;
             case PLAYER_STATUS_TYPE.SightRange:
                 _playerStatHandler.ApplySightRangeUpgrade(upgradeData.increaseRate);
                 break;
@@ -246,9 +252,9 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             case CORE_STATUS_TYPE.HP:
                 _coreStatHandler.ApplyHPUpgrade(upgradeData.increaseRate);
                 break;
-            //case CORE_STATUS_TYPE.HPRegen:
-            //    _coreStatHandler.ApplyHpRegenUpgrade(upgradeData.increaseRate);
-            //    break;
+            case CORE_STATUS_TYPE.HpRegen:
+                _coreStatHandler.ApplyHpRegenUpgrade(upgradeData.increaseRate);
+                break;
             case CORE_STATUS_TYPE.SightRange:
                 _coreStatHandler.ApplySightRangeUpgrade(upgradeData.increaseRate);
                 break;
@@ -279,7 +285,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
     public float GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE statusType)
     {
         int currentLevel = PlayerStatus[statusType];
-        if (currentLevel == 0) return 0f;
+        //if (currentLevel == 0) return 0f;
 
         UpgradeDatabase currentUpgrade = GetPlayerUpgradeData(statusType, currentLevel);
         return currentUpgrade?.increaseRate ?? 0f;
@@ -291,7 +297,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
     public float GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE statusType)
     {
         int currentLevel = CoreStatus[statusType];
-        if (currentLevel == 0) return 0f;
+        //if (currentLevel == 0) return 0f;
 
         UpgradeDatabase currentUpgrade = GetCoreUpgradeData(statusType, currentLevel);
         return currentUpgrade?.increaseRate ?? 0f;
@@ -321,6 +327,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
                     UPGRADE_TYPE.MoveSpeed => PLAYER_STATUS_TYPE.MoveSpeed,
                     UPGRADE_TYPE.MiningSpeed => PLAYER_STATUS_TYPE.MiningSpeed,
                     UPGRADE_TYPE.DropRate => PLAYER_STATUS_TYPE.DropRate,
+                    UPGRADE_TYPE.DashCooldown => PLAYER_STATUS_TYPE.DashCooldown,
                     UPGRADE_TYPE.SightRange => PLAYER_STATUS_TYPE.SightRange,
                     _ => throw new ArgumentOutOfRangeException()
                 };
@@ -332,7 +339,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
                 var type = data.statType switch
                 {
                     UPGRADE_TYPE.HP => CORE_STATUS_TYPE.HP,
-                    //UPGRADE_TYPE.HPRegen => CORE_STATUS_TYPE.HPRegen,
+                    UPGRADE_TYPE.HpRegen => CORE_STATUS_TYPE.HpRegen,
                     UPGRADE_TYPE.SightRange => CORE_STATUS_TYPE.SightRange,
                     _ => throw new ArgumentOutOfRangeException()
                 };
@@ -376,7 +383,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
 
         UpdateStatusFromFixedUpgrade();
     }
-    
+
     public void AddEssencePiece(int amount)
     {
         EssencePiece += amount;
@@ -386,7 +393,7 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             Essence += EssencePiece / 30;
             EssencePiece %= 30;
         }
-        
+
         UIManager.Instance.EssenceUI.Refresh();
     }
 
@@ -425,17 +432,17 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         data.esenceSaveData.usedEssence = UsedEssence;
         data.esenceSaveData.resetCounter = ResetCounter;
 
-        foreach(var pair in PlayerStatus)
+        foreach (var pair in PlayerStatus)
         {
             data.esenceSaveData.playerUpgradeDict.Add(pair);
         }
 
-        foreach(var pair in CoreStatus)
+        foreach (var pair in CoreStatus)
         {
             data.esenceSaveData.coreUpgradeDict.Add(pair);
         }
 
-        foreach(var pair in FixedUpgrade)
+        foreach (var pair in FixedUpgrade)
         {
             data.esenceSaveData.doneUpgradeDict.Add(pair);
         }
@@ -451,17 +458,17 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         UsedEssence = data.esenceSaveData.usedEssence;
         ResetCounter = data.esenceSaveData.resetCounter;
 
-        foreach(var pair in data.esenceSaveData.playerUpgradeDict)
+        foreach (var pair in data.esenceSaveData.playerUpgradeDict)
         {
             PlayerStatus[pair.key] = pair.value;
         }
 
-        foreach(var pair in data.esenceSaveData.coreUpgradeDict)
+        foreach (var pair in data.esenceSaveData.coreUpgradeDict)
         {
             CoreStatus[pair.key] = pair.value;
         }
 
-        foreach(var pair in data.esenceSaveData.doneUpgradeDict)
+        foreach (var pair in data.esenceSaveData.doneUpgradeDict)
         {
             FixedUpgrade[pair.key] = pair.value;
         }

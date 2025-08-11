@@ -28,6 +28,7 @@ public class UIManager : MonoSingleton<UIManager>
     public SmelterUI SmelterUI { get; private set; }
     public UpgradeUI UpgradeUI { get; private set; }
     public EssenceUI EssenceUI { get; private set; }
+    public ItemToastUI ItemToastUI { get; private set; }
     public TutorialSkip TutorialSkipButton { get; private set; }
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
@@ -56,6 +57,7 @@ public class UIManager : MonoSingleton<UIManager>
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
         UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
         EssenceUI = Helper_Component.FindChildComponent<EssenceUI>(this.transform, "EssenceUI");
+        ItemToastUI = Helper_Component.FindChildComponent<ItemToastUI>(this.transform, "ItemToastUI");
         TutorialSkipButton = Helper_Component.FindChildComponent<TutorialSkip>(transform, "TurorialSkipButton");
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
         DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
@@ -119,6 +121,8 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void CloseLastUI()
     {
+        if (isResultUIOpen)
+            return;
         var ui = _uiStack.Pop();
         ui.CloseUI();
         //BuildManager.Instance.IsOnDestroy = false;

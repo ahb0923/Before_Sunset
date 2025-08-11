@@ -2,7 +2,6 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using NaughtyAttributes;
-using System.Net.Mime;
 using TMPro;
 
 public class StartSceneUI : MonoBehaviour
@@ -19,20 +18,24 @@ public class StartSceneUI : MonoBehaviour
     [SerializeField] private Button _newGameButton;
     [SerializeField] private Button _loadGameButton;
     [SerializeField] private Button _tutorialButton;
+    [SerializeField] private Button _optionButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private TextMeshProUGUI _newGameText;
     [SerializeField] private TextMeshProUGUI _loadGameText;
     [SerializeField] private TextMeshProUGUI _tutorialText;
+    [SerializeField] private TextMeshProUGUI _optionText;
     [SerializeField] private TextMeshProUGUI _exitGameText;
     [SerializeField] private Image _newGameButtonImage;
     [SerializeField] private Image _loadGameButtonImage;
     [SerializeField] private Image _tutorialButtonImage;
+    [SerializeField] private Image _optionButtonImage;
     [SerializeField] private Image _exitButtonImage;
     
     [Header("Awake시 할당")]
     public SelectImage selectImage;
     public AskTutorial askTutorial;
     public Load load;
+    public StartOption startOption;
     
     private float _duration = 1f;
     private float _duration2 = 2f;
@@ -50,14 +53,17 @@ public class StartSceneUI : MonoBehaviour
         _newGameButton = Helper_Component.FindChildComponent<Button>(this.transform, "NewGameButton");
         _loadGameButton = Helper_Component.FindChildComponent<Button>(this.transform, "LoadGameButton");
         _tutorialButton = Helper_Component.FindChildComponent<Button>(this.transform, "TutorialButton");
+        _optionButton = Helper_Component.FindChildComponent<Button>(this.transform, "OptionButton");
         _exitButton = Helper_Component.FindChildComponent<Button>(this.transform, "ExitGameButton");
         _newGameButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "NewGameButton");
         _loadGameButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "LoadGameButton");
         _tutorialButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "TutorialButton");
+        _optionButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "OptionButton");
         _exitButtonImage = Helper_Component.FindChildComponent<Image>(this.transform, "ExitGameButton");
         _newGameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "NewGameButtonText");
         _loadGameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "LoadGameButtonText");
         _tutorialText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "TutorialButtonText");
+        _optionText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "OptionButtonText");
         _exitGameText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, "ExitGameButtonText");
     }
 
@@ -66,9 +72,11 @@ public class StartSceneUI : MonoBehaviour
         selectImage = Helper_Component.FindChildComponent<SelectImage>(this.transform, "SelectContainer");
         askTutorial = Helper_Component.FindChildComponent<AskTutorial>(this.transform, "AskTutorial");
         load = Helper_Component.FindChildComponent<Load>(this.transform, "Load");
+        startOption = Helper_Component.FindChildComponent<StartOption>(this.transform, "Option");
         _newGameButton.onClick.AddListener(NewGame);
         _loadGameButton.onClick.AddListener(LoadGame);
         _tutorialButton.onClick.AddListener(Tutorial);
+        _optionButton.onClick.AddListener(Option);
         _exitButton.onClick.AddListener(Exit);
     }
     
@@ -85,11 +93,13 @@ public class StartSceneUI : MonoBehaviour
         _newGameButtonImage.raycastTarget = isTrue;
         _loadGameButtonImage.raycastTarget = isTrue;
         _tutorialButtonImage.raycastTarget = isTrue;
+        _optionButtonImage.raycastTarget = isTrue;
         _exitButtonImage.raycastTarget = isTrue;
         
         _newGameText.raycastTarget = isTrue;
         _loadGameText.raycastTarget = isTrue;
         _tutorialText.raycastTarget = isTrue;
+        _optionText.raycastTarget = isTrue;
         _exitGameText.raycastTarget = isTrue;
     }
 
@@ -119,10 +129,11 @@ public class StartSceneUI : MonoBehaviour
         logoSequence.Insert(2.5f,_newGameText.DOFade(1f, _duration));
         logoSequence.Insert(2.5f,_loadGameText.DOFade(1f, _duration));
         logoSequence.Insert(2.5f,_tutorialText.DOFade(1f, _duration));
+        logoSequence.Insert(2.5f,_optionText.DOFade(1f, _duration));
         logoSequence.Insert(2.5f,_exitGameText.DOFade(1f, _duration));
         logoSequence.AppendInterval(0.5f);
         // 배경 페이드아웃
-        logoSequence.Append(_background.DOFade(0.8f, _duration)).
+        logoSequence.Append(_background.DOFade(0.9372549f, _duration)).
             OnComplete(() =>
             {
                 logoSequence.Kill();
@@ -153,6 +164,7 @@ public class StartSceneUI : MonoBehaviour
         _newGameText.alpha = 0f;
         _loadGameText.alpha = 0f;
         _tutorialText.alpha = 0f;
+        _optionText.alpha = 0f;
         _exitGameText.alpha = 0f;
     }
 
@@ -161,6 +173,7 @@ public class StartSceneUI : MonoBehaviour
         _newGameButton.interactable = true;
         _loadGameButton.interactable = true;
         _tutorialButton.interactable = true;
+        _optionButton.interactable = true;
         _exitButton.interactable = true;
     }
 
@@ -169,38 +182,46 @@ public class StartSceneUI : MonoBehaviour
         _newGameButton.interactable = false;
         _loadGameButton.interactable = false;
         _tutorialButton.interactable = false;
+        _optionButton.interactable = false;
         _exitButton.interactable = false;
     }
 
     private void NewGame()
     {
-        StartSceneManager.Instance.StartSceneAnimation.StopCamera();
+        StartSceneManager.Instance.StopCamera();
         selectImage.HideImage();
         askTutorial.Open(false);
     }
 
     private void LoadGame()
     {
-        StartSceneManager.Instance.StartSceneAnimation.StopCamera();
+        StartSceneManager.Instance.StopCamera();
         selectImage.HideImage();
         load.Open();
     }
 
     private void Tutorial()
     {
-        StartSceneManager.Instance.StartSceneAnimation.StopCamera();
+        StartSceneManager.Instance.StopCamera();
         selectImage.HideImage();
         askTutorial.Open(true);
+    }
+
+    private void Option()
+    {
+        StartSceneManager.Instance.StopCamera();
+        selectImage.HideImage();
+        startOption.Open();
     }
 
     private void Exit()
     {
 #if UNITY_EDITOR
-        StartSceneManager.Instance.StartSceneAnimation.StopCamera();
+        StartSceneManager.Instance.StopCamera();
         selectImage.HideImage();
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-        StartSceneManager.Instance.StartSceneAnimation.StopCamera();
+        StartSceneManager.Instance.StopCamera();
         selectImage.HideImage();
         Application.Quit();
 #endif

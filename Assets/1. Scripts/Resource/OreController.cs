@@ -120,12 +120,13 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
         // 확률 계산
         float dropRate = _player.Stat.DropRate;
-        float bonusRate = dropRate - 1.0f;
+        float bonusRate = dropRate / 100f - 1f;
 
-        if (bonusRate > 0f)
+        while (bonusRate > 0f)
         {
             float rand = Random.Range(0f, 1f);
             if (rand < bonusRate) dropAmount += 1;
+            bonusRate -= 1f;
         }
 
         ItemDropManager.Instance.DropItem(dropId, dropAmount, transform, false);

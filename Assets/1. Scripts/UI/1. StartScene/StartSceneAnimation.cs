@@ -1,15 +1,10 @@
 using DG.Tweening;
 using NaughtyAttributes;
-using System;
 using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class StartSceneAnimation : MonoBehaviour
 {
-    [Header("카메라")]
-    [SerializeField] private GameObject _mainCamera;
-    
     [Header("캐릭터")]
     [SerializeField] private GameObject _movingCharacter;
     [SerializeField] private GameObject _idleCharacter;
@@ -34,11 +29,6 @@ public class StartSceneAnimation : MonoBehaviour
     
     [SerializeField] private Canvas _canvas;
     
-    private Vector2 _bottomLeft = new Vector2(31.5f, -4.5f);
-    private Vector2 _topRight = new Vector2(84.5f, 17.5f);
-    
-    private Coroutine _cameraCoroutine;
-    
     private Sequence _moveSequence;
     private Coroutine _idleRoutine1;
     private Coroutine _miningRoutine;
@@ -46,13 +36,11 @@ public class StartSceneAnimation : MonoBehaviour
     private Coroutine _explodeRoutine;
     private Coroutine _explodeRoutine2;
     private Coroutine _explodeRoutine3;
-    private Coroutine _shakeRoutine;
 
     private bool _isSkip = false;
     
     private void Reset()
     {
-        _mainCamera = GameObject.Find("Main Camera");
         _movingCharacter = Helper_Component.FindChildGameObjectByName(this.gameObject, "MovingCharacter");
         _idleCharacter = Helper_Component.FindChildGameObjectByName(this.gameObject, "IdleCharacter");
         _miningCharacter = Helper_Component.FindChildGameObjectByName(this.gameObject, "MiningCharacter");
@@ -87,8 +75,9 @@ public class StartSceneAnimation : MonoBehaviour
         }
         else
         {
-            CameraAction();
+            StartSceneManager.Instance.CameraAction();
             AudioManager.Instance.PlayBGM("Main");
+            this.gameObject.SetActive(false);
         }
     }
 
@@ -117,28 +106,30 @@ public class StartSceneAnimation : MonoBehaviour
             StopCoroutine(_explodeRoutine2);
         if (_explodeRoutine3 != null)
             StopCoroutine(_explodeRoutine3);
-        if (_shakeRoutine != null)
-            StopCoroutine(_shakeRoutine);
+        if (StartSceneManager.Instance.ShakeCameraCoroutine != null)
+            StopCoroutine(StartSceneManager.Instance.ShakeCameraCoroutine);
         
-        _movingCharacter.SetActive(false);
-        _idleCharacter.SetActive(false);
-        _miningCharacter.SetActive(false);
-        _runningCharacter.SetActive(false);
-        _dust1.SetActive(false);
-        _dust2.SetActive(false);
-        _dustParticle.SetActive(false);
-        _explosionContainer1.SetActive(false);
-        _explosionContainer2.SetActive(false);
-        _circleExplosion.SetActive(false);
-        _canvas.gameObject.SetActive(false);
+        // _movingCharacter.SetActive(false);
+        // _idleCharacter.SetActive(false);
+         _miningCharacter.SetActive(false);
+        // _runningCharacter.SetActive(false);
+        // _dust1.SetActive(false);
+         _dust2.SetActive(false);
+        // _dustParticle.SetActive(false);
+        // _explosionContainer1.SetActive(false);
+        // _explosionContainer2.SetActive(false);
+        // _circleExplosion.SetActive(false);
+         _canvas.gameObject.SetActive(false);
+        AudioManager.Instance.SetWholeMute(true);
 
-        AudioManager.Instance.StopAllSound();
         _circleFade.color = new Color(0f, 0f, 0f, 0f);
         _circleFadeIn.SetActive(true);
         _circleFade.DOFade(1f, 2f).SetEase(Ease.Linear).OnComplete(() =>
         {
             GlobalState.HasPlayedIntro = true;
-            CameraAction();
+            StartSceneManager.Instance.CameraAction();
+            AudioManager.Instance.StopAllSound();
+            AudioManager.Instance.SetWholeMute(false);
             AudioManager.Instance.PlayBGM("Main");
             StartSceneManager.Instance.StartSceneUI.Open();
             StartSceneManager.Instance.StartSceneUI.FadeOut();
@@ -190,21 +181,21 @@ public class StartSceneAnimation : MonoBehaviour
         _dustParticle.SetActive(true);
         yield return new WaitForSeconds(0.2f);
         _dustParticleSystem.Play();
-        ShakeCamera(0.2f, 0.1f, 0.2f);
+        StartSceneManager.Instance.ShakeCamera(0.2f, 0.1f, 0.2f);
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Play();
-        ShakeCamera(0.2f, 0.1f, 0.2f);
+        StartSceneManager.Instance.ShakeCamera(0.2f, 0.1f, 0.2f);
         ShakeSound();
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Play();
-        ShakeCamera(0.2f, 0.1f, 0.2f);
+        StartSceneManager.Instance.ShakeCamera(0.2f, 0.1f, 0.2f);
         yield return new WaitForSeconds(1f);
         _dustParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         yield return new WaitWhile(() => _dustParticleSystem.IsAlive());
         var main = _dustParticleSystem.main;
         main.duration = 9f;
         _dustParticleSystem.Play();
-        ShakeCamera(9f, 0.1f);
+        StartSceneManager.Instance.ShakeCamera(9f, 0.1f);
         yield return new WaitForSeconds(2f);
         _miningCharacter.SetActive(false);
         _dust1.SetActive(false);
@@ -307,25 +298,6 @@ public class StartSceneAnimation : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("Explosion");
     }
-
-    [Button]
-    private void ShakeCamera(float duration = 0.2f, float intensity = 0.1f, float delay = 0f)
-    {
-        _shakeRoutine = StartCoroutine(C_Shake(duration, intensity, delay));
-    }
-    
-    private IEnumerator C_Shake(float duration, float intensity, float delay)
-    {
-        Vector3 original = _mainCamera.transform.position;
-        yield return new WaitForSeconds(delay);
-        while (duration > 0f)
-        {
-            _mainCamera.transform.position = original + new Vector3(Random.Range(-intensity, intensity), Random.Range(-intensity, intensity), 0f);
-            duration -= Time.deltaTime;
-            yield return null;
-        }
-        _mainCamera.transform.position = original;
-    }
     
     private void StartCircleFadeIn()
     {
@@ -336,60 +308,9 @@ public class StartSceneAnimation : MonoBehaviour
 
     private void AnimationOff()
     {
-        CameraAction();
+        StartSceneManager.Instance.CameraAction();
+        _canvas.gameObject.SetActive(false);
+        _isSkip = true;
         StartSceneManager.Instance.StartSceneUI.TitleAnimation();
-    }
-
-        
-    public void CameraAction()
-    {
-        
-        Vector2 startPos = new Vector2(
-            Random.Range(_bottomLeft.x, _topRight.x),
-            Random.Range(_bottomLeft.y, _topRight.y));
-        _mainCamera.transform.position = new Vector3(startPos.x, startPos.y, -10f);
-
-        Vector2[] dirs =
-        {
-            new Vector2(1f, 1f), new Vector2(1f, -1f), new Vector2(-1f, 1f), new Vector2(-1f, -1f)
-        };
-        Vector2 dir = dirs[Random.Range(0, dirs.Length)].normalized;
-
-        _cameraCoroutine = StartCoroutine(C_BounceCamera(dir));
-    }
-
-    private IEnumerator C_BounceCamera(Vector2 dir)
-    {
-        while (true)
-        {
-            Vector3 pos = _mainCamera.transform.position;
-            
-            Vector3 nextPos = pos + (Vector3)(dir * 2f * Time.deltaTime);
-
-            if (nextPos.x < _bottomLeft.x || nextPos.x > _topRight.x)
-            {
-                dir.x *= -1;
-                nextPos.x = Mathf.Clamp(nextPos.x, _bottomLeft.x, _topRight.x);
-            }
-
-            if (nextPos.y < _bottomLeft.y || nextPos.y > _topRight.y)
-            {
-                dir.y *= -1;
-                nextPos.y = Mathf.Clamp(nextPos.y, _bottomLeft.y, _topRight.y);
-            }
-            _mainCamera.transform.position = nextPos;
-            yield return null;
-        }
-    }
-    
-    public void StopCamera()
-    {
-        if (_cameraCoroutine == null)
-        {
-            return;
-        }
-
-        StopCoroutine(_cameraCoroutine);
-        _cameraCoroutine = null;
     }
 }
