@@ -7,11 +7,8 @@ public class PlayerInputHandler : MonoBehaviour
     private BasePlayer _player;
     private PlayerInputActions _actions;
 
-    [SerializeField] private float _returnKeyHeldTime = 1f;
-
     private bool _isRecallStarted;
-    private bool _isHeldReturnKey;
-    private float _heldTimer;
+    private bool _isForcedRecall = false;
 
     public static bool _isRecallInProgress { get; private set; } = false;
 
@@ -36,14 +33,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnReturnHomeStarted(InputAction.CallbackContext context)
     {
-        _isHeldReturnKey = true;
-    }
-
-    private void OnReturnHomeCanceled(InputAction.CallbackContext context)
-    {
-        _heldTimer = 0f;
-        UIManager.Instance.RecallUI.UpdateHoldProgress(0f);
-        _isHeldReturnKey = false;
+        // 바로 귀환 시작
+        if (!_player.IsInBase && !_isRecallStarted)
+        {
+            StartRecall();
+        }
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
@@ -86,23 +80,10 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Interaction.Inventory.started -= OnInventoryStarted;
         _actions.Interaction.Build.started -= OnBuildStarted;
         _actions.Interaction.DestroyMode.started -= OnDestroyModeStarted;
-        _actions.Interaction.ReturnHome.performed -= OnReturnHomeStarted;
+        _actions.Interaction.ReturnHome.started -= OnReturnHomeStarted;
         _actions.Player.Dash.performed -= OnDashPerformed;
     }
     #endregion
-
-    private void Update()
-    {
-        if (_player.IsInBase || _isRecallStarted || !_isHeldReturnKey) return;
-
-        _heldTimer += Time.deltaTime;
-        UIManager.Instance.RecallUI.UpdateHoldProgress(_heldTimer / _returnKeyHeldTime);
-
-        if (_heldTimer >= _returnKeyHeldTime)
-        {
-            StartRecall();
-        }
-    }
 
     /// <summary>
     /// 키보드 인풋 핸들러 초기화
@@ -117,27 +98,47 @@ public class PlayerInputHandler : MonoBehaviour
         _actions.Interaction.Build.started += OnBuildStarted;
         _actions.Interaction.DestroyMode.started += OnDestroyModeStarted;
         _actions.Interaction.ReturnHome.started += OnReturnHomeStarted;
-        _actions.Interaction.ReturnHome.canceled += OnReturnHomeCanceled;
         _actions.Player.Dash.performed += OnDashPerformed;
         _actions.Interaction.Enable();
 
         UIManager.Instance.RecallUI.OnCountdownFinished += OnRecallCountdownFinished;
+        UIManager.Instance.RecallUI.OnRecallCanceled += OnRecallCanceled;
 
         _isRecallStarted = false;
-        _isHeldReturnKey = false;
-        _heldTimer = 0f;
     }
 
     /// <summary>
-    /// 귀환 키보드 일정 시간 눌렀을 때, 귀환 시작
+    /// R키 한 번 누르면 귀환 시작
     /// </summary>
     public void StartRecall()
     {
+        StartRecall(false);
+    }
+
+    /// <summary>
+    /// 귀환 시작 (강제 귀환 여부 지정 가능)
+    /// </summary>
+    public void StartRecall(bool isForced)
+    {
         _isRecallStarted = true;
         _isRecallInProgress = true;
-        _heldTimer = 0f;
+        _isForcedRecall = isForced;
 
         UIManager.Instance.RecallUI.StartRecallCountdown();
+    }
+
+    /// <summary>
+    /// 귀환 취소
+    /// </summary>
+    public void CancelRecall()
+    {
+        // 강제 귀환은 리턴
+        if (!_isRecallStarted || _isForcedRecall) return;
+
+        _isRecallStarted = false;
+        _isRecallInProgress = false;
+
+        UIManager.Instance.RecallUI.CancelRecall();
     }
 
     /// <summary>
@@ -148,21 +149,30 @@ public class PlayerInputHandler : MonoBehaviour
         StartCoroutine(C_Recall());
     }
 
+    /// <summary>
+    /// 귀환이 취소되었을 때
+    /// </summary>
+    private void OnRecallCanceled()
+    {
+        _isRecallStarted = false;
+        _isRecallInProgress = false;
+        _isForcedRecall = false;
+    }
+
     private IEnumerator C_Recall()
     {
         yield return StartCoroutine(ScreenFadeController.Instance.FadeInOut(() =>
         {
             UIManager.Instance.RecallUI.CloseRecall();
 
-            if (GameManager.Instance.IsTutorial)
-                transform.position = new Vector3(0, 2, 0);
+            if(GameManager.Instance.IsTutorial)
+                _player.transform.position = Vector3.zero;
             else
-            {
                 MapManager.Instance.ReturnToHomeMap();
-            }
 
             _isRecallStarted = false;
             _isRecallInProgress = false;
+            _isForcedRecall = false;
             _player.SetPlayerInBase(true);
         }));
 

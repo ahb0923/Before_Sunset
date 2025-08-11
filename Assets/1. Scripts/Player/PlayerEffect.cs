@@ -31,16 +31,9 @@ public class PlayerEffect : MonoBehaviour
     private IEnumerator C_CreateDashImages(float dashDuration)
     {
         float elapsed = 0f;
-        bool isPlay = false;
         
         while (elapsed < dashDuration)
         {
-            if (!isPlay)
-            {
-                isPlay = true;
-                AudioManager.Instance.PlaySFX("Dash");
-            }
-            
             CreateDashImage();
             elapsed += dashImageInterval;
             yield return new WaitForSeconds(dashImageInterval);

@@ -140,6 +140,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
             }
         }
 
+        if (!QuestManager.Instance.IsPossibleToAction(QUEST_TYPE.UpgradeTower)) return;
+
         if (checkRequirements)
         {
             foreach (var item in upgradeData.buildRequirements)

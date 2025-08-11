@@ -115,6 +115,8 @@ public class BuildManager : MonoSingleton<BuildManager>
 
     private void TryPlace(Vector3 worldPos)
     {
+        if (!QuestManager.Instance.IsPossibleToAction(QUEST_TYPE.PlaceBuilding)) return;
+
         if (TryBuildTower(_buildInfo, worldPos))
         {
             // 추후 개선 요구 이름 포함으로 찾는거 위험함
@@ -173,7 +175,6 @@ public class BuildManager : MonoSingleton<BuildManager>
                     InventoryManager.Instance.Inventory.UseItem(item.Key, item.Value);
             }
         }
-
 
         // 배치 성공
         var obj = PoolManager.Instance.GetFromPool(prefab.id, cellCenter, _buildablePool);

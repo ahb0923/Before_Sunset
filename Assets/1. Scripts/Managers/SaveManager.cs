@@ -115,8 +115,8 @@ public class SaveManager : MonoSingleton<SaveManager>
         }
 
         // 플레이어 위치 로드
+        MapManager.Instance.Player.SetPlayerInBase(data.mapLinks.currentMapIndex == 0);
         MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
-        MapManager.Instance.Player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
         MapManager.Instance.Player.transform.position = data.playerPosition;
 
         Debug.Log($"[SaveManager] {globalIndex}번 슬롯에서 게임 불러오기 완료");

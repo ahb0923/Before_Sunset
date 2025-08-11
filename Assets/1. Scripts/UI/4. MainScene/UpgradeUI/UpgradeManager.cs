@@ -14,9 +14,8 @@ public enum PLAYER_STATUS_TYPE
 public enum CORE_STATUS_TYPE
 {
     HP,
+    //HPRegen,
     SightRange,
-    //AttackRange,
-    //AttackDamage,
 }
 
 public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
@@ -66,9 +65,8 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         CoreStatus = new()
     {
         { CORE_STATUS_TYPE.HP, 0 },
+        //{ CORE_STATUS_TYPE.HPRegen, 0 },
         { CORE_STATUS_TYPE.SightRange, 0 },
-        //{ CORE_STATUS_TYPE.AttackRange, 0 },
-        //{ CORE_STATUS_TYPE.AttackDamage, 0 },
     };
     }
 
@@ -206,9 +204,8 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         return statusType switch
         {
             CORE_STATUS_TYPE.HP => UPGRADE_TYPE.HP,
+            //CORE_STATUS_TYPE.HPRegen => UPGRADE_TYPE.HPRegen,
             CORE_STATUS_TYPE.SightRange => UPGRADE_TYPE.SightRange,
-            //CORE_STATUS_TYPE.AttackRange => UPGRADE_TYPE.AttackRange,
-            //CORE_STATUS_TYPE.AttackDamage => UPGRADE_TYPE.AttackPower,
             _ => throw new ArgumentException($"Unknown core status type: {statusType}")
         };
     }
@@ -249,11 +246,8 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             case CORE_STATUS_TYPE.HP:
                 _coreStatHandler.ApplyHPUpgrade(upgradeData.increaseRate);
                 break;
-            //case CORE_STATUS_TYPE.AttackRange:
-            //    _coreStatHandler.ApplyAttackRangeUpgrade(upgradeData.increaseRate);
-            //    break;
-            //case CORE_STATUS_TYPE.AttackDamage:
-            //    _coreStatHandler.ApplyAttackPowerUpgrade(upgradeData.increaseRate);
+            //case CORE_STATUS_TYPE.HPRegen:
+            //    _coreStatHandler.ApplyHpRegenUpgrade(upgradeData.increaseRate);
             //    break;
             case CORE_STATUS_TYPE.SightRange:
                 _coreStatHandler.ApplySightRangeUpgrade(upgradeData.increaseRate);
@@ -338,9 +332,8 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
                 var type = data.statType switch
                 {
                     UPGRADE_TYPE.HP => CORE_STATUS_TYPE.HP,
+                    //UPGRADE_TYPE.HPRegen => CORE_STATUS_TYPE.HPRegen,
                     UPGRADE_TYPE.SightRange => CORE_STATUS_TYPE.SightRange,
-                    //UPGRADE_TYPE.AttackRange => CORE_STATUS_TYPE.AttackRange,
-                    //UPGRADE_TYPE.AttackPower => CORE_STATUS_TYPE.AttackDamage,
                     _ => throw new ArgumentOutOfRangeException()
                 };
 

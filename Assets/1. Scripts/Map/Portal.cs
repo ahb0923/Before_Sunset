@@ -10,14 +10,17 @@ public class Portal : MonoBehaviour
     public PortalDirection CurrentPortalDirection => _portalDirection;
 
     private Coroutine _triggerCoroutine;
-    private bool _isPlayerInside = false;
     private BasePlayer _player;
+
+    private bool _isPlayerInside = false;
 
     [SerializeField] private float _stayTimeToTrigger = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+
+        MapManager.Instance.Player.Controller.SetEnterPortal(true);
 
         if (_player == null)
             _player = other.GetComponentInChildren<BasePlayer>();

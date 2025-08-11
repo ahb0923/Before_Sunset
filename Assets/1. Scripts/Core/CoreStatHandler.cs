@@ -6,9 +6,8 @@ public class CoreUpgradeStats
 {
     public int Level = 1;
     public int MaxHp = 500;
-    public float AttackPower = 10f;
-    public float AttackRange = 5f;
-    public float AttackCooldown = 2f;
+    public float HpRegen = 1f;
+    public float SightRange = 7f;
 }
 
 public class CoreStatHandler : MonoBehaviour
@@ -19,28 +18,54 @@ public class CoreStatHandler : MonoBehaviour
     public CoreUpgradeStats Stats { get; private set; } = new CoreUpgradeStats();
 
     private Core _core;
-    private Transform _lighting;
+    [SerializeField] private Transform _lighting;
+
+    [SerializeField] private int _maxHp = 500;
+    public int MaxHp => _maxHp;
+    public int CurHp { get; private set; }
 
     // 기본 스탯
     private int _baseMaxHp = 500;
-    private float _baseAttackPower = 10f;
-    private float _baseAttackRange = 5f;
+    private float _baseHpRegen = 1f;
     private float _baseSightRange = 7f;
 
-    // 현재 적용된 보너스
-    private float _currentHpBonus = 0f;
-    private float _currentAttackPowerBonus = 0f;
-    private float _currentAttackRangeBonus = 0f;
-    private float _currentSightRangeBonus = 0f;
+    // 업그레이드
+    private float _hpIncrease = 0f;
+    private float _hpRegenIncrease = 0f;
+    private float _sightIncrease = 0f;
 
-    private void Awake()
+    private float _regenTimer = 2f;
+
+    private void Start()
     {
+        StartCoroutine(HpRegenCoroutine());
+    }
+
+    private IEnumerator HpRegenCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_regenTimer);
+
+            if (_core != null && !_core.IsDead && CurHp < Stats.MaxHp)
+            {
+                int regenAmount = Mathf.RoundToInt(Stats.HpRegen);
+                SetHp(CurHp + regenAmount);
+            }
+        }
+    }
+
+    public void Init(Core core)
+    {
+        _core = core;
+
         Stats = new CoreUpgradeStats();
-        _core = GetComponent<Core>();
-        _lighting = transform.Find("Lighting");
+        if(_lighting == null)
+            _lighting = transform.Find("Lighting");
 
         // 게임 시작시 현재 업그레이드 레벨에 맞춰 스탯 적용
-        Invoke(nameof(ApplyAllUpgrades), 0.1f); // UpgradeManager 초기화 후에 실행
+        SetFullHp();
+        Invoke(nameof(ApplyAllUpgrades), 0.1f);
     }
 
     /// <summary>
@@ -54,67 +79,74 @@ public class CoreStatHandler : MonoBehaviour
 
         // 현재 레벨에 맞춰 모든 업그레이드 적용
         ApplyHPUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HP));
-        //ApplyAttackPowerUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackDamage));
-        //ApplyAttackRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.AttackRange));
+        //ApplyHpRegenUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.HpRegen));
         ApplySightRangeUpgrade(UpgradeManager.Instance.GetCurrentCoreUpgradeEffect(CORE_STATUS_TYPE.SightRange));
     }
 
     private void ResetToBaseStats()
     {
-        _currentHpBonus = 0f;
-        _currentAttackPowerBonus = 0f;
-        _currentAttackRangeBonus = 0f;
-        _currentSightRangeBonus = 0f;
+        _hpIncrease = 0f;
+        _hpRegenIncrease = 0f;
+        _sightIncrease = 0f;
     }
 
     // 개별 업그레이드 적용 메서드들
     public void ApplyHPUpgrade(float increaseAmount)
     {
-        _currentHpBonus += increaseAmount;
+        _hpIncrease += increaseAmount;
         UpdateStats();
     }
 
-    public void ApplyAttackPowerUpgrade(float increaseAmount)
+    public void ApplyHpRegenUpgrade(float increaseAmount)
     {
-        _currentAttackPowerBonus += increaseAmount;
+        _hpRegenIncrease += increaseAmount;
         UpdateStats();
     }
 
-    public void ApplyAttackRangeUpgrade(float increaseAmount)
+    public void ApplySightRangeUpgrade(float increaseAmount)
     {
-        _currentAttackRangeBonus += increaseAmount;
-        UpdateStats();
-    }
-
-    public void ApplySightRangeUpgrade(float bonus)
-    {
-        _currentSightRangeBonus = bonus;
-        float finalRange = _baseSightRange + _currentSightRangeBonus;
+        _sightIncrease = increaseAmount;
+        Stats.SightRange = _baseSightRange + _sightIncrease;
 
         if (_lighting != null)
         {
-            _lighting.localScale = new Vector3(finalRange, finalRange, 1f);
+            _lighting.localScale = new Vector3(Stats.SightRange, Stats.SightRange, 1f);
         }
-
-        //Debug.Log($"[Core] 시야 범위 적용됨: {finalRange}");
     }
 
     private void UpdateStats()
     {
         int oldMaxHp = Stats.MaxHp;
 
-        Stats.MaxHp = Mathf.RoundToInt(_baseMaxHp + _currentHpBonus);
-        Stats.AttackPower = _baseAttackPower + _currentAttackPowerBonus;
-        Stats.AttackRange = _baseAttackRange + _currentAttackRangeBonus;
+        Stats.MaxHp = Mathf.RoundToInt(_baseMaxHp + _hpIncrease);
+        Stats.HpRegen = _baseHpRegen + _hpRegenIncrease;
 
         if (_core != null && oldMaxHp != Stats.MaxHp)
         {
-            _core.UpdateMaxHp(Stats.MaxHp);
+            SetHp(CurHp + (Stats.MaxHp - oldMaxHp));
         }
+    }
+    public void SetFullHp()
+    {
+        SetHp(Stats.MaxHp);
+    }
+
+    public void SetHp(int hp)
+    {
+        CurHp = Mathf.Clamp(hp, 0, Stats.MaxHp);
+
+        if (GameManager.Instance.IsTutorial && CurHp <= 10)
+        {
+            CurHp = 10;
+            ToastManager.Instance.ShowToast("코어는 플레이어를 슬프지 하지 않게 하려고 버텼다!");
+        }
+
+        if (_core.HpBar != null)
+            _core.HpBar.fillAmount = (float)CurHp / Stats.MaxHp;
     }
 
     public float GetSight()
     {
-        return _baseSightRange + _currentSightRangeBonus;
+        return _baseSightRange + _sightIncrease;
     }
 }

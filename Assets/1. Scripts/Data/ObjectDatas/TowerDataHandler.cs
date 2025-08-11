@@ -22,7 +22,7 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
             return prefab;
         }
 
-        Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        //Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
     public Sprite GetSpriteById(int id)
@@ -32,7 +32,7 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
             return sprite;
         }
 
-        Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 이미지가 존재하지 않습니다.");
+        //Debug.LogWarning($"[TowerDataHandler] ID {id}에 해당하는 이미지가 존재하지 않습니다.");
         return null;
     }
     protected override void AfterLoaded()
@@ -55,7 +55,7 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
                 }
                 else
                 {
-                    Debug.LogWarning($"[Setting Prefab] 프리팹 로드 실패: {tower.towerName} / {tower.prefabName}");
+                    //Debug.LogWarning($"[Setting Prefab] 프리팹 로드 실패: {tower.towerName} / {tower.prefabName}");
                 }
             }
 
@@ -66,11 +66,11 @@ public class TowerDataHandler : BaseDataHandler<TowerDatabase>
             }
             else
             {
-                Debug.LogWarning($"[Setting Prefab] 이미지 로드 실패: {tower.towerName} / {tower.spriteName}");
+                //Debug.LogWarning($"[Setting Prefab] 이미지 로드 실패: {tower.towerName} / {tower.spriteName}");
             }
 
         }
-        Debug.Log($"[Setting Prefab] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
+        //Debug.Log($"[Setting Prefab] 전체 타워 프리팹 데이터 ({_towerPrefabs.Count}개):");
     }
 
     /// <summary>

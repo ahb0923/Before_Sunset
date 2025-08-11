@@ -6,20 +6,34 @@ public class QuestManager : MonoSingleton<QuestManager>
     [SerializeField] private List<Quest> quests;
     private int curIndex = 0;
     private bool isAllClear = false;
-    public Quest CurQuest => curIndex == -1 ? null : quests[curIndex];
+    private Quest _curQuest => curIndex == -1 ? null : quests[curIndex];
+    private Dictionary<QUEST_TYPE, bool> _clearQuestDict;
 
-    [Header("Arrow 관련")]
-    [SerializeField] private GuideArrow _arrow;
-    public GuideArrow Arrow => _arrow;
-    [SerializeField] private List<Transform> _targets;
-    private int curTargetIndex = 0;
+    [SerializeField] private List<Transform> _portals;
+    private GuideArrow _guideArrow;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        if(quests != null && quests.Count > 0)
+        {
+            _clearQuestDict = new Dictionary<QUEST_TYPE, bool>();
+            foreach(Quest quest in quests)
+            {
+                _clearQuestDict[quest.Type] = false;
+            }
+        }
+    }
 
     private void Start()
     {
-        if (_arrow == null) return;
+        // 첫 퀘스트이므로 true
+        if (_clearQuestDict != null)
+            _clearQuestDict[_curQuest.Type] = true;
 
-        // 처음에 광산 입구 표시
-        _arrow.SettingTarget(_targets[curTargetIndex]);
+        _guideArrow = MapManager.Instance.Player.GetComponentInChildren<GuideArrow>();
+        SetArrowTargetIndex(0);
     }
 
     /// <summary>
@@ -28,7 +42,7 @@ public class QuestManager : MonoSingleton<QuestManager>
     [ContextMenu("다음 퀘스트")]
     private void NextQuest()
     {
-        if(curIndex + 1 >= quests.Count)
+        if (curIndex + 1 >= quests.Count)
         {
             curIndex = -1;
             isAllClear = true;
@@ -36,37 +50,32 @@ public class QuestManager : MonoSingleton<QuestManager>
         else
         {
             curIndex++;
+            _clearQuestDict[_curQuest.Type] = true;
 
-            // 타워 건설 전에는 필요 아이템 추가
-            if(CurQuest.InventoryItemId != -1)
+            // 퀘스트 수행 전에는 필요 아이템 추가
+            foreach(ProvidedItem need in _curQuest.ProvidedItems)
             {
-                InventoryManager.Instance.Inventory.AddItem(CurQuest.InventoryItemId, CurQuest.InventoryItemAmount);
+                InventoryManager.Instance.Inventory.AddItem(need.itemId, need.itemAmount);
             }
 
             // 코어 업그레이드 전에 정수 추가
-            if(CurQuest.Type == QUEST_TYPE.UpgradeCore)
+            if(_curQuest.Type == QUEST_TYPE.UpgradeCore)
             {
                 UpgradeManager.Instance.AddEssencePiece(300);
             }
 
-            // 광산 이동 퀘스트는 화살표 표시
-            if(CurQuest.Type == QUEST_TYPE.MoveToMine)
+            // 두번째 광산 입장 퀘스트는 2번 포탈로 설정 으로 설정
+            if (_curQuest.Type == QUEST_TYPE.MoveToMine)
             {
-                curTargetIndex++;
-                if(curTargetIndex < _targets.Count)
-                {
-                    _arrow?.SettingTarget(_targets[curTargetIndex]);
-                }
+                SetArrowTargetIndex(1);
             }
-
-            // 타임 스킵 퀘스트일 때, 타임 스킵 버튼 활성화
-            if(CurQuest.Type == QUEST_TYPE.TimeSkip)
+            else
             {
-                TimeManager.Instance.OnSkipQuest();
+                _guideArrow.SettingTarget(null);
             }
         }
 
-        UIManager.Instance.QuestUI.DisplayClear(CurQuest);
+        UIManager.Instance.QuestUI.DisplayClear(_curQuest);
     }
 
     /// <summary>
@@ -97,5 +106,38 @@ public class QuestManager : MonoSingleton<QuestManager>
                 NextQuest();
             }
         }
+    }
+
+    /// <summary>
+    /// 이전에 퀘스트를 클리어했거나, 현재 퀘스트일 경우에만 액션이 가능하도록 판단<br/>
+    /// ※ 튜토리얼이 아닌 경우, 무조건 true 반환
+    /// </summary>
+    public bool IsPossibleToAction(QUEST_TYPE type)
+    {
+        if (!GameManager.Instance.IsTutorial) return true;
+
+        bool isClear = _clearQuestDict[type];
+        if (!isClear)
+        {
+            ToastManager.Instance.ShowToast("선행 퀘스트를 먼저 완료해주세요.");
+        }
+
+        return isClear;
+    }
+
+    /// <summary>
+    /// 화살표 타겟 설정
+    /// </summary>
+    public void SetArrowTargetIndex(int index = -1)
+    {
+        if (!GameManager.Instance.IsTutorial || index >= _portals.Count || _curQuest.Type != QUEST_TYPE.MoveToMine) return;
+        
+        if (index == -1) 
+        {
+            _guideArrow.SettingTarget(null);
+            return; 
+        }
+
+        _guideArrow.SettingTarget(_portals[index]);
     }
 }

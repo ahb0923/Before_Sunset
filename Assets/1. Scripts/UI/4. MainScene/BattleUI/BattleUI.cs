@@ -100,7 +100,7 @@ public class BattleUI : MonoBehaviour
         CloseReturn();
         if (!MapManager.Instance.Player.IsInBase)
         {
-            MapManager.Instance.Player.InputHandler.StartRecall();
+            MapManager.Instance.Player.InputHandler.StartRecall(true);
         }
     }
     
