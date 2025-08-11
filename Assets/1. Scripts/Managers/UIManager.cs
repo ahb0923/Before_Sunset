@@ -66,13 +66,10 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void Start()
     {
-        CraftArea.gameObject.SetActive(false);
-        CraftMaterialArea.gameObject.SetActive(false);
-        
         TutorialSkipButton?.gameObject.SetActive(GameManager.Instance.IsTutorial);
         QuestUI?.gameObject.SetActive(GameManager.Instance.IsTutorial);
 
-        DaySkipButton.onClick.AddListener(() => TimeManager.Instance.SkipHalfDay());
+        DaySkipButton.onClick.AddListener(OnClickDaySkipButton);
     }
 
     private void Update()
@@ -88,6 +85,11 @@ public class UIManager : MonoSingleton<UIManager>
                 OptionUI.Open();
             }
         }
+    }
+
+    private void OnClickDaySkipButton()
+    {
+        TimeManager.Instance.SkipHalfDay();
     }
 
     /// <summary>
