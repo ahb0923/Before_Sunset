@@ -23,7 +23,7 @@ public class BasePlayer : MonoBehaviour
     public PlayerInputActions InputActions { get; private set; }
     public PlayerEffect Effect { get; private set; }
 
-    public bool IsInBase { get; private set; }
+    public bool IsInBase { get; private set; } = true;
 
     private void Awake()
     {
@@ -42,8 +42,6 @@ public class BasePlayer : MonoBehaviour
         Stat.Init(this);
         Controller.Init(this);
         InputHandler.Init(this);
-
-        IsInBase = true;
     }
 
     private void LateUpdate()

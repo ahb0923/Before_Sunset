@@ -37,6 +37,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnGetFromPool()
     {
+        _animator.Play("Ore_Idle", 0, 0f);
+        _animator.Update(0f);
+
         _currentHP = _data.hp;
         FindPlayer();
         Init(_player);
@@ -44,8 +47,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnReturnToPool()
     {
-        //
+        
     }
+
     private void FindPlayer()
     {
         if (_player == null)
@@ -167,7 +171,7 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
         float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        return edgeToEdgeDistance <= 0.5f;
+        return edgeToEdgeDistance <= 1f;
     }
 
     public int GetObejctSize()

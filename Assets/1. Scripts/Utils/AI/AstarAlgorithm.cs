@@ -550,6 +550,8 @@ public class NodePath
         {
             return;
         }
+
+        CurNode.monsterCount--;
         _index++;
     }
 

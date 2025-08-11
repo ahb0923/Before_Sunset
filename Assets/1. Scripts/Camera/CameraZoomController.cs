@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Cinemachine;
 
 public class CameraZoomController : MonoBehaviour
@@ -31,6 +32,9 @@ public class CameraZoomController : MonoBehaviour
     private void Update()
     {
         if (virtualCam == null) return;
+
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
 
         float scroll = Input.mouseScrollDelta.y;
 
