@@ -312,7 +312,7 @@ TextureImporter:
         width: 24
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -333,7 +333,7 @@ TextureImporter:
         width: 24
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -341,6 +341,48 @@ TextureImporter:
       bones: []
       spriteID: 0fcec851d3fc5cb48b3dec0c9b957323
       internalID: 1732328804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Buttons__Icons_Black_10
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 357
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d2ffce973f98724c99263d8ab8c7307
+      internalID: -1475553009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Buttons__Icons_Black_11
+      rect:
+        serializedVersion: 2
+        x: 500
+        y: 357
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4f7e3a917696844b9149a42b3b70861
+      internalID: 1856398331
       vertices: []
       indices: 
       edges: []
@@ -358,6 +400,8 @@ TextureImporter:
     nameFileIdTable:
       Buttons__Icons_Black_0: -2053718689
       Buttons__Icons_Black_1: 407855132
+      Buttons__Icons_Black_10: -1475553009
+      Buttons__Icons_Black_11: 1856398331
       Buttons__Icons_Black_2: -1802552078
       Buttons__Icons_Black_3: -41006976
       Buttons__Icons_Black_4: 768708554
