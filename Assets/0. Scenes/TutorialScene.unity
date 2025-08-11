@@ -3309,6 +3309,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 14925671142400398}
     m_Modifications:
+    - target: {fileID: 1668939289545011310, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1475553009, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
+    - target: {fileID: 1668939289545011310, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 1668939289545011310, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8784314
+      objectReference: {fileID: 0}
+    - target: {fileID: 1668939289545011310, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8784314
+      objectReference: {fileID: 0}
     - target: {fileID: 2473573032604507317, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
       propertyPath: m_Name
       value: TurorialSkipButton
@@ -3393,6 +3409,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4210724129037545127, guid: 8e47a42de1aafc14f90c85a6a263be6f, type: 3}
+      propertyPath: m_SpriteState.m_PressedSprite
+      value: 
+      objectReference: {fileID: 1856398331, guid: fadde940441e9bd4a8522a4c768a2c9d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] private RectTransform _itemRect;
     [SerializeField] private Image _itemImage;
@@ -168,8 +168,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         
         TooltipManager.Instance.HideTooltip();
     }
-    
-    public void OnPointerDown(PointerEventData eventData)
+
+    public void OnPointerClick(PointerEventData eventData)
     {
         
     }
