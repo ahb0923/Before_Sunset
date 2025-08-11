@@ -90,14 +90,6 @@ public class BaseMonster : MonoBehaviour, IPoolable
     }
 
     /// <summary>
-    /// 몬스터 타겟팅 적용
-    /// </summary>
-    public void SetMonsterTargeting(bool isAttackCore)
-    {
-        Detector.SetAttackCore(isAttackCore);
-    }
-
-    /// <summary>
     /// 몬스터가 죽었을 때 자신을 감지하던 모든 타워에 알림
     /// </summary>
     public void NotifyDeath()

@@ -69,6 +69,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         return CurState == MONSTER_STATE.Dead;
     }
 
+    /// <summary>
+    /// 공격 상태에서는 외부 전환이 안 되도록 막음
+    /// </summary>
     protected override bool IsTerminalState(MONSTER_STATE state)
     {
         return false;
@@ -86,6 +89,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             yield break;
         }
         
+        // 공격 상태에서 갑자기 타겟을 바꾸어서 공격하는 것 방지
+        if(PrevState == MONSTER_STATE.Attack && _isTargetAlive)
+        {
+            ChangeState(MONSTER_STATE.Attack);
+            yield break;
+        }
+
         // 시작 위치 설정 & 초기화
         Vector3 startPos = transform.position;
         if(_path != null)
@@ -117,7 +127,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
                     closedSet.Add(Target);
 
-                    _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+                    _path = DefenseManager.Instance.FindPathToTarget(startPos, 1, Target);
 
                     // 경로가 있으면, 이동 상태 전환
                     if(_path != null)
@@ -132,7 +142,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         // 2. 코어를 타겟으로 하여, 경로 탐색 진행
         Target = DefenseManager.Instance.Core.transform;
-        _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+        _path = DefenseManager.Instance.FindPathToTarget(startPos, 1, Target);
         ChangeState(MONSTER_STATE.Move);
     }
 
@@ -141,6 +151,9 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     /// </summary>
     private IEnumerator C_Move()
     {
+        // 다시 뒤로 돌아가는 현상 해결을 위해, 다음 노드로 이동
+        if (_path != null) _path.Next();
+
         // 목표 노드까지 도착하지 않았으면, 이동 상태 유지
         while (Vector2.Distance(transform.position, Target.transform.position) > 0.01f)
         {
@@ -160,7 +173,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             // 타겟이 사라지면, 탐색 상태 전환
             if (!_isTargetAlive)
             {
-                ChangeState(MONSTER_STATE.Move);
+                ChangeState(MONSTER_STATE.Explore);
                 yield break;
             }
 
@@ -178,12 +191,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 SetMonsterDirection(_path.CurNode.WorldPos);
                 _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
 
-                if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.05f)
-                {
-                    // 다음 노드로 이동할 예정이므로 도착한 노드의 해당 몬스터 해제
-                    _path.CurNode.monsterCount--;
-                    _path.Next();
-                }
+                if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.05f) _path.Next();
             }
             else
             {
@@ -224,7 +232,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
             // 공격 효과음 재생
             AudioManager.Instance.PlayMonsterSFX(_monster.Stat.MonsterName, "Attack");
-
 
             // 공격 타입에 따른 원/근거리 공격
             switch (_monster.Stat.AttackType)
