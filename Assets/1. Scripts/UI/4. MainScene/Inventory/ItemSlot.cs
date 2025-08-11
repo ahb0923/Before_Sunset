@@ -75,6 +75,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _sequence = DOTween.Sequence();
             _sequence.Append(_itemRect.DOScale(_scaleAmount, _scaleDuration).SetEase(Ease.InCubic));
+            _sequence.JoinCallback(PickUpSound);
             _sequence.Append(_itemRect.DOScale(1f, _scaleDuration).SetEase(Ease.OutCubic)).
                 OnComplete(() =>
                 {
@@ -82,6 +83,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     _sequence = null;
                 });
         }
+    }
+
+    private void PickUpSound()
+    {
+        AudioManager.Instance.PlaySFX("Item");
     }
 
     private void OnDisable()

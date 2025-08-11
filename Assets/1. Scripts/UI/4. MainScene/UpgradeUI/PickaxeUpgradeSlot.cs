@@ -97,7 +97,7 @@ public class PickaxeUpgradeSlot : MonoBehaviour
         }
         else
         {
-            ToastManager.Instance.ShowToast("재료가 부족합니다.");
+            ToastManager.Instance.ShowToast($"{requirement[0].Key}가 부족합니다.");
         }
     }
 

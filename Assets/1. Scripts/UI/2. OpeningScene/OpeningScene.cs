@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -36,10 +37,14 @@ public class OpeningScene : MonoBehaviour
     [Header("FadeIn")]
     [SerializeField] private GameObject _fadeInGo;
     [SerializeField] private Image _fadeInImage;
+
+    [SerializeField] private TextMeshProUGUI _skipText;
     
     private Queue<NarrationText> _activeTexts = new Queue<NarrationText>();
     private Queue<GameObject> _textPool = new Queue<GameObject>();
 
+    private bool _isSkip;
+    private Coroutine _startRoutine;
     private Coroutine _seqRoutine;
     private Coroutine _textRoutine;
     private Tween _blinkTween;
@@ -50,6 +55,7 @@ public class OpeningScene : MonoBehaviour
     private const string OPENING_TEXT_CONTAINER = "NarrationTextContainer";
     private const string BLINK_IMAGE = "BlinkImage";
     private const string FADE_IN = "FadeIn";
+    private const string SKIP = "Skip";
     
     private void Reset()
     {
@@ -61,6 +67,7 @@ public class OpeningScene : MonoBehaviour
         _canvas = GetComponent<Canvas>();
         _fadeInGo = Helper_Component.FindChildGameObjectByName(this.gameObject, FADE_IN);
         _fadeInImage = _fadeInGo.GetComponent<Image>();
+        _skipText = Helper_Component.FindChildComponent<TextMeshProUGUI>(this.transform, SKIP);
     }
 
     private void Start()
@@ -72,7 +79,37 @@ public class OpeningScene : MonoBehaviour
         AudioManager.Instance.StopAllSound();
         AudioManager.Instance.SetSFXVolume(1f);
         AudioManager.Instance.SetBGMVolume(1f);
-        StartCoroutine(C_StartOpening());
+        _startRoutine = StartCoroutine(C_StartOpening());
+    }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !_isSkip)
+        {
+            _isSkip = true;
+            Skip();
+        }
+    }
+
+    private void Skip()
+    {
+        if (_startRoutine != null)
+            StopCoroutine(_startRoutine);
+        if (_seqRoutine != null)
+            StopCoroutine(_seqRoutine);
+        if (_textRoutine != null)
+            StopCoroutine(_textRoutine);
+        _blinkTween?.Kill();
+        _moveTween?.Kill();
+
+        AudioManager.Instance.StopAllSound();
+        _fadeInImage.color = new Color(0f, 0f, 0f, 0f);
+        _fadeInGo.SetActive(true);
+        _fadeInImage.DOFade(1f, 2f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            GlobalState.HasPlayedOpening = true;
+            LoadScene();
+        });
     }
 
     private void InitTexts()
