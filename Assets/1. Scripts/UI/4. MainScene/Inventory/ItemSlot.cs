@@ -222,6 +222,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     inventory.InventoryUI.RefreshUI(inventory.Items);
                     inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
                     smelterSlot.RefreshUI();
+                    TooltipManager.Instance.HideTooltip();
                 }
                 else
                 {

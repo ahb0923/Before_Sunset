@@ -248,6 +248,8 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 
                 UIManager.Instance.SmelterUI.ReceiveItem();
             }
+            
+            TooltipManager.Instance.HideTooltip();
         }
     }
 
