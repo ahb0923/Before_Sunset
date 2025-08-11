@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -56,7 +56,7 @@ public class UIDebugWindow : EditorWindow
         
         if (GUILayout.Button("정수 4개 추가"))
         {
-            UpgradeManager.Instance.AddEssencePiece(120);
+            UpgradeManager.Instance.AddEssencePiece(12000);
         }
     }
 }

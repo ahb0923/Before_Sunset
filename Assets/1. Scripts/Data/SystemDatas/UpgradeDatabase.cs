@@ -10,8 +10,9 @@ public enum UPGRADE_TYPE
     SightRange,
     HP,
     AttackRange,
-    AttackPower
-    //HPRegen
+    AttackPower,
+    HpRegen,
+    DashCooldown
 }
 public enum UPGRADE_CATEGORY
 {
