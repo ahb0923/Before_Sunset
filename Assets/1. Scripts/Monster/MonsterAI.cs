@@ -36,9 +36,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     {
         AddState(MONSTER_STATE.Explore, new StateElem
         {
-            //Entered = () => Debug.Log("탐색 시작"),
             Doing = C_Explore,
-            //Exited = () => Debug.Log("탐색 종료")
         });
 
         AddState(MONSTER_STATE.Move, new StateElem
@@ -46,21 +44,17 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             Entered = () => 
             {
                 _animator?.SetBool(BaseMonster.MOVE, true);
-                //Debug.Log("이동 시작");
             },
             Doing = C_Move,
             Exited = () =>
             {
                 _animator?.SetBool(BaseMonster.MOVE, false);
-                //Debug.Log("이동 종료");
             },
         });
 
         AddState(MONSTER_STATE.Attack, new StateElem
         {
-           // Entered = () => Debug.Log("공격 시작"),
             Doing = C_Attack,
-            //Exited = () => Debug.Log("공격 종료")
         });
 
         AddState(MONSTER_STATE.Dead, new StateElem
@@ -91,19 +85,17 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             ChangeState(InvalidState);
             yield break;
         }
-
-        // 1. 탐색 범위 내에 타겟 리스트가 존재하면, 가장 가까운 타겟부터 순차적으로 경로 탐색
+        
+        // 시작 위치 설정 & 초기화
         Vector3 startPos = transform.position;
         if(_path != null)
         {
             // 새로운 경로를 받아올 예정이므로, 현재 경로 노드에서 해당 몬스터 제외
             _path.ReleaseMonsterCount();
-
-            // 다음 노드가 이동 가능하면 시작 지점을 다음 노드로 설정
-            _path.Next();
-            if(_path.CurNode.IsWalkable(-1)) startPos = _path.CurNode.WorldPos;
+            _path = null;
         }
 
+        // 1. 탐색 범위 내에 타겟 리스트가 존재하면, 가장 가까운 타겟부터 순차적으로 경로 탐색
         HashSet<Transform> closedSet = new HashSet<Transform>();
         if (_monster.Detector.DetectedObstacles.Count > 0)
         {
@@ -116,15 +108,23 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 Target = GetNearestTarget(_monster.Detector.DetectedObstacles, closedSet);
                 if (Target != null)
                 {
-                    closedSet.Add(Target);
-                    _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
-                    if(_path != null)
+                    // 공중 타입이면, 타겟이 설정되었으므로 이동 상태 전환
+                    if (_monster.Stat.MoveType == MOVE_TYPE.Air)
                     {
-                        // 경로가 있으면, 이동 상태 전환
                         ChangeState(MONSTER_STATE.Move);
                         yield break;
                     }
-                    yield return null;
+
+                    closedSet.Add(Target);
+
+                    _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
+
+                    // 경로가 있으면, 이동 상태 전환
+                    if(_path != null)
+                    {
+                        ChangeState(MONSTER_STATE.Move);
+                        yield break;
+                    }
                 }
             }
             while (Target != null);
@@ -133,50 +133,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         // 2. 코어를 타겟으로 하여, 경로 탐색 진행
         Target = DefenseManager.Instance.Core.transform;
         _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
-        if(_path != null)
-        {
-            ChangeState(MONSTER_STATE.Move);
-            yield break;
-        }
-        yield return null;
-
-        // 3. 코어에서 가까운 거리 순으로 정렬된 리스트에서 해당 몬스터에게 가까운 순으로 순차적으로 경로 탐색 진행
-        int count = 0;
-        while(count < 1000)
-        {
-            // 인터럽트 발생하면, 코루틴 탈출
-            if (IsInterrupted)
-                yield break;
-
-            // 타겟 리스트는 코어에서 체비쇼프 거리 기준 가까운 타겟 리스트를 순차적으로 가져옴
-            List<Transform> targetList = DefenseManager.Instance.GetTargetList(count);
-            if(targetList == null || targetList.Count == 0)
-            {
-                count++;
-                continue;
-            }
-
-            // 타겟 리스트 중에서 탐색 진행이 안된 타겟 중에서 현재 몬스터와 가장 가까운 타겟을 탐색
-            Target = GetNearestTarget(targetList, closedSet);
-            if (Target == null)
-            {
-                count++;
-                continue;
-            }
-
-            closedSet.Add(Target);
-            _path = DefenseManager.Instance.FindPathToTarget(startPos, _monster.Stat.Size, Target);
-            if (_path != null)
-            {
-                // 경로가 있으면, 이동 상태 전환
-                ChangeState(MONSTER_STATE.Move);
-                yield break;
-            }
-            yield return null;
-        }
-
-        // 4. 모든 타겟에 대한 경로가 존재하지 않으므로, invalid 상태 전환 - 아무것도 안함
-        ChangeState(MONSTER_STATE.Invalid);
+        ChangeState(MONSTER_STATE.Move);
     }
 
     /// <summary>
@@ -185,7 +142,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
     private IEnumerator C_Move()
     {
         // 목표 노드까지 도착하지 않았으면, 이동 상태 유지
-        while (Vector2.Distance(transform.position, _path.EndNode.WorldPos) > 0.01f)
+        while (Vector2.Distance(transform.position, Target.transform.position) > 0.01f)
         {
             // 코어가 부서지면, invalid 상태 전환 - 아무것도 안함
             if (DefenseManager.Instance.Core.IsDead)
@@ -200,6 +157,13 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                 yield break;
             }
 
+            // 타겟이 사라지면, 탐색 상태 전환
+            if (!_isTargetAlive)
+            {
+                ChangeState(MONSTER_STATE.Move);
+                yield break;
+            }
+
             // 공격 범위 안에 타겟이 감지되면, 공격 상태 전환
             if (IsTargetInAttackRange())
             {
@@ -208,30 +172,31 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
             }
 
             // 실제 오브젝트 이동
-            switch (_monster.Stat.MoveType)
+            if(_path != null)
             {
-                case MOVE_TYPE.Ground:
-                    SetMonsterDirection(_path.CurNode.WorldPos);
-                    break;
+                // 경로가 존재하면, 경로를 따라 이동
+                SetMonsterDirection(_path.CurNode.WorldPos);
+                _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
 
-                case MOVE_TYPE.Air:
-                    SetMonsterDirection(Target.position);
-                    break;
+                if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.05f)
+                {
+                    // 다음 노드로 이동할 예정이므로 도착한 노드의 해당 몬스터 해제
+                    _path.CurNode.monsterCount--;
+                    _path.Next();
+                }
             }
-            _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
-
-            if (Vector2.Distance(transform.position, _path.CurNode.WorldPos) < 0.25f)
+            else
             {
-                // 다음 노드로 이동할 예정이므로 도착한 노드의 해당 몬스터 해제
-                _path.CurNode.monsterCount--;
-                _path.Next();
+                // 경로가 없으면, 타겟을 향해 이동
+                SetMonsterDirection(Target.position);
+                _monster.Rigid.MovePosition(_monster.Rigid.position + _moveDir * _monster.Stat.Speed * Time.fixedDeltaTime);
             }
 
             yield return _waitFixedDeltaTime;
         }
 
-        // 현재 목표 노드에는 도달할 수 없는데 도달했으므로, invalid 상태 전환 - 아무것도 안함
-        ChangeState(MONSTER_STATE.Invalid);
+        // 현재 목표 노드에는 도달할 수 없는데 도달했으므로, 탐색 상태 전환
+        ChangeState(MONSTER_STATE.Explore);
     }
 
     /// <summary>
@@ -299,7 +264,6 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
                         IgnoreDefense = false
                     });
 
-                    Debug.Log($"{Target.name}에게 {_monster.Stat.AttackPower}만큼의 데미지!");
                     break;
             }
 
@@ -353,7 +317,7 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
 
         foreach (Transform target in targetList)
         {
-            if (closed.Contains(target)) continue;
+            if (closed.Contains(target) || !IsTargetInCoreDirection(target)) continue;
 
             float tempDist = Vector2.Distance(transform.position, target.position);
 
@@ -365,6 +329,19 @@ public class MonsterAI : StateBasedAI<MONSTER_STATE>
         }
 
         return nearest;
+    }
+
+    /// <summary>
+    /// 타겟이 코어 방향에 있는지 확인
+    /// </summary>
+    private bool IsTargetInCoreDirection(Transform target)
+    {
+        Vector3 coreDir = DefenseManager.Instance.Core.transform.position - transform.position;
+        Vector3 targetDir = target.position - transform.position;
+
+        // 내적을 통한 코사인 값 구하기
+        float dotProduct = Vector3.Dot(coreDir.normalized, targetDir.normalized);
+        return dotProduct > 0;
     }
 
     /// <summary>

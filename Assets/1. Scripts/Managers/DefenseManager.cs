@@ -29,7 +29,6 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     private int _nextId;
     private Stack<int> _walkableIdStack = new Stack<int>();
     private Dictionary<Transform, ObstacleData> _obstacleDict = new Dictionary<Transform, ObstacleData>();
-    private Dictionary<int, List<Transform>> _distFromCoreDict = new Dictionary<int, List<Transform>>();
 
     public Core Core { get; private set; }
     public MonsterSpawner MonsterSpawner { get; private set; }
@@ -88,19 +87,11 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         _obstacleDict[obstacle] = data;
         _grid.SetWalkableIndex(obstacle.position, data);
 
-        // 코어와 떨어진 거리 관련 타워 리스트에 추가
-        int dist = GetChebyshevDistanceFromCore(obstacle.position);
-        if (!_distFromCoreDict.ContainsKey(dist)) _distFromCoreDict[dist] = new List<Transform>();
-        _distFromCoreDict[dist].Add(obstacle);
-
         // 퀘스트 매니저에 건물 설치 알림
         if(obstacle.TryGetComponent<IPoolable>(out var poolable))
         {
             QuestManager.Instance?.AddQuestAmount(QUEST_TYPE.PlaceBuilding, poolable.GetId());
         }
-
-        // 몬스터 경로 재탐색 이벤트 호출
-        MonsterSpawner.OnObstacleChanged();
     }
 
     /// <summary>
@@ -116,26 +107,7 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
 
         // 노드 그리드에서 해당 타워의 walkable ID 제거
         _grid.SetWalkableIndex(obstacle.position, _obstacleDict[obstacle].obstacleSize);
-
-        // 딕셔너리에 해당 타워 정보 제거
         _obstacleDict.Remove(obstacle);
-        _distFromCoreDict[GetChebyshevDistanceFromCore(obstacle.position)].Remove(obstacle);
-
-        // 몬스터 경로 재탐색 이벤트 호출
-        MonsterSpawner.OnObstacleChanged();
-    }
-
-    /// <summary>
-    /// 코어에서 dist만큼 떨어진 타겟 리스트를 반환
-    /// </summary>
-    public List<Transform> GetTargetList(int dist)
-    {
-        int defaultDist = Core.Size / 2 + 2;
-
-        if (_distFromCoreDict.ContainsKey(defaultDist + dist))
-            return _distFromCoreDict[defaultDist + dist];
-        else
-            return null;
     }
 
     /// <summary>
@@ -162,18 +134,6 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
         if (!_obstacleDict.ContainsKey(obstacle)) return -1;
 
         return _obstacleDict[obstacle].walkableId;
-    }
-
-    /// <summary>
-    /// 코어로부터 체비쇼프 거리를 반환<br/>
-    /// ※ 체비쇼프 거리는 상하좌우나 대각선에서 1타일 떨어져 있으면 모두 1을 반환
-    /// </summary>
-    private int GetChebyshevDistanceFromCore(Vector3 targetPos)
-    {
-        Vector2Int coreGridIndex = _grid.GetGridIndex(Core.transform.position);
-        Vector2Int targetGridIndex = _grid.GetGridIndex(targetPos);
-
-        return Mathf.Max(Mathf.Abs(coreGridIndex.x - targetGridIndex.x), Mathf.Abs(coreGridIndex.y - targetGridIndex.y));
     }
 
     /// <summary>
@@ -225,24 +185,6 @@ public class DefenseManager : MonoSingleton<DefenseManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        // 기존 빌딩들 풀에 반환
-        foreach(Transform towerObj in _obstacleDict.Keys)
-        {
-            if (towerObj.TryGetComponent<IPoolable>(out var poolable))
-            {
-                PoolManager.Instance.ReturnToPool(poolable.GetId(), towerObj.gameObject);
-            }
-        }
-        
-        // 컬렉션 데이터 초기화
-        _walkableIdStack.Clear();
-        _obstacleDict.Clear();
-        _distFromCoreDict.Clear();
-
-        // 코어 옵스터클에 추가
-        _nextId = 0;
-        AddObstacle(Core.transform, Core.Size);
-
         // 로드된 타워 설치
         foreach (TowerSaveData towerData in data.constructedTowers)
         {
