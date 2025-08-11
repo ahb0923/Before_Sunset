@@ -64,7 +64,7 @@ public class PlayerStatHandler : MonoBehaviour
         ApplyMiningSpeedUpgrade(UpgradeManager.Instance.GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE.MiningSpeed));
         ApplyDropRateUpgrade(UpgradeManager.Instance.GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE.DropRate));
         ApplySightRangeUpgrade(UpgradeManager.Instance.GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE.SightRange));
-        ApplySightRangeUpgrade(UpgradeManager.Instance.GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE.DashCooldown));
+        ApplyDashCooldownUpgrade(UpgradeManager.Instance.GetCurrentPlayerUpgradeEffect(PLAYER_STATUS_TYPE.DashCooldown));
     }
 
     private void ResetToBaseStats()
