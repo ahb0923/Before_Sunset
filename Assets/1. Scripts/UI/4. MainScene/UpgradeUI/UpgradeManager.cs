@@ -88,78 +88,6 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
     }
 
     /// <summary>
-    /// 플레이어 스탯 업그레이드 시도
-    /// </summary>
-    public bool TryUpgradePlayer(PLAYER_STATUS_TYPE statusType)
-    {
-        int currentLevel = PlayerStatus[statusType];
-        int nextLevel = currentLevel + 1;
-
-        // JSON에서 업그레이드 데이터 가져오기
-        UpgradeDatabase upgradeData = GetPlayerUpgradeData(statusType, nextLevel);
-        if (upgradeData == null)
-        {
-            Debug.LogWarning($"플레이어 업그레이드 불가능: {statusType} 레벨 {nextLevel}");
-            return false;
-        }
-
-        // 에센스 비용 확인
-        if (!HasEnoughEssence(upgradeData.essenceCost))
-        {
-            Debug.LogWarning($"에센스 부족: 필요 {upgradeData.essenceCost}");
-            return false;
-        }
-
-        // 에센스 차감
-        ConsumeEssence(upgradeData.essenceCost);
-
-        // 레벨 업데이트
-        PlayerStatus[statusType] = nextLevel;
-
-        // 실제 스탯 적용
-        ApplyPlayerUpgrade(statusType, upgradeData);
-
-        Debug.Log($"플레이어 {statusType} 업그레이드 완료! 레벨: {nextLevel}");
-        return true;
-    }
-
-    /// <summary>
-    /// 코어 스탯 업그레이드 시도
-    /// </summary>
-    public bool TryUpgradeCore(CORE_STATUS_TYPE statusType)
-    {
-        int currentLevel = CoreStatus[statusType];
-        int nextLevel = currentLevel + 1;
-
-        // JSON에서 업그레이드 데이터 가져오기
-        UpgradeDatabase upgradeData = GetCoreUpgradeData(statusType, nextLevel);
-        if (upgradeData == null)
-        {
-            Debug.LogWarning($"코어 업그레이드 불가능: {statusType} 레벨 {nextLevel}");
-            return false;
-        }
-
-        // 에센스 비용 확인
-        if (!HasEnoughEssence(upgradeData.essenceCost))
-        {
-            Debug.LogWarning($"에센스 부족: 필요 {upgradeData.essenceCost}");
-            return false;
-        }
-
-        // 에센스 차감
-        ConsumeEssence(upgradeData.essenceCost);
-
-        // 레벨 업데이트
-        CoreStatus[statusType] = nextLevel;
-
-        // 실제 스탯 적용
-        ApplyCoreUpgrade(statusType, upgradeData);
-
-        Debug.Log($"코어 {statusType} 업그레이드 완료! 레벨: {nextLevel}");
-        return true;
-    }
-
-    /// <summary>
     /// 플레이어 업그레이드 데이터 가져오기
     /// </summary>
     private UpgradeDatabase GetPlayerUpgradeData(PLAYER_STATUS_TYPE statusType, int level)
@@ -211,72 +139,6 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
             CORE_STATUS_TYPE.SightRange => UPGRADE_TYPE.SightRange,
             _ => throw new ArgumentException($"Unknown core status type: {statusType}")
         };
-    }
-
-    /// <summary>
-    /// 플레이어 업그레이드 적용
-    /// </summary>
-    private void ApplyPlayerUpgrade(PLAYER_STATUS_TYPE statusType, UpgradeDatabase upgradeData)
-    {
-        if (_playerStatHandler == null) return;
-
-        switch (statusType)
-        {
-            case PLAYER_STATUS_TYPE.MoveSpeed:
-                _playerStatHandler.ApplyMoveSpeedUpgrade(upgradeData.increaseRate);
-                break;
-            case PLAYER_STATUS_TYPE.MiningSpeed:
-                _playerStatHandler.ApplyMiningSpeedUpgrade(upgradeData.increaseRate);
-                break;
-            case PLAYER_STATUS_TYPE.DropRate:
-                _playerStatHandler.ApplyDropRateUpgrade(upgradeData.increaseRate);
-                break;
-            case PLAYER_STATUS_TYPE.DashCooldown:
-                _playerStatHandler.ApplyDropRateUpgrade(upgradeData.increaseRate);
-                break;
-            case PLAYER_STATUS_TYPE.SightRange:
-                _playerStatHandler.ApplySightRangeUpgrade(upgradeData.increaseRate);
-                break;
-        }
-    }
-
-    /// <summary>
-    /// 코어 업그레이드 적용
-    /// </summary>
-    private void ApplyCoreUpgrade(CORE_STATUS_TYPE statusType, UpgradeDatabase upgradeData)
-    {
-        if (_coreStatHandler == null) return;
-
-        switch (statusType)
-        {
-            case CORE_STATUS_TYPE.HP:
-                _coreStatHandler.ApplyHPUpgrade(upgradeData.increaseRate);
-                break;
-            case CORE_STATUS_TYPE.HpRegen:
-                _coreStatHandler.ApplyHpRegenUpgrade(upgradeData.increaseRate);
-                break;
-            case CORE_STATUS_TYPE.SightRange:
-                _coreStatHandler.ApplySightRangeUpgrade(upgradeData.increaseRate);
-                break;
-        }
-    }
-
-    /// <summary>
-    /// 다음 플레이어 업그레이드 정보 가져오기
-    /// </summary>
-    public UpgradeDatabase GetNextPlayerUpgradeInfo(PLAYER_STATUS_TYPE statusType)
-    {
-        int nextLevel = PlayerStatus[statusType] + 1;
-        return GetPlayerUpgradeData(statusType, nextLevel);
-    }
-
-    /// <summary>
-    /// 다음 코어 업그레이드 정보 가져오기
-    /// </summary>
-    public UpgradeDatabase GetNextCoreUpgradeInfo(CORE_STATUS_TYPE statusType)
-    {
-        int nextLevel = CoreStatus[statusType] + 1;
-        return GetCoreUpgradeData(statusType, nextLevel);
     }
 
     /// <summary>
@@ -347,19 +209,6 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
                 CoreStatus[type] = data.level;
             }
         }
-    }
-
-    // 에센스 관련 메서드들 (실제 구현에서는 별도 매니저로 분리)
-    private bool HasEnoughEssence(int cost)
-    {
-        // TODO: 실제 에센스 매니저와 연동
-        return true; // 임시로 항상 true 반환
-    }
-
-    private void ConsumeEssence(int cost)
-    {
-        // TODO: 실제 에센스 매니저와 연동
-        Debug.Log($"에센스 {cost} 소모");
     }
 
     public void SetVirtualUpgrade()
