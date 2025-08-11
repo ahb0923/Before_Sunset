@@ -13,6 +13,7 @@ public class UIManager : MonoSingleton<UIManager>
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
 
     public bool isResultUIOpen = false;
+    public bool isSmelterUIOpen = false;
     
     public AskPopUpUI AskPopUpUI { get; private set; }
     public GameTimeUI GameTimeUI { get; private set; }
