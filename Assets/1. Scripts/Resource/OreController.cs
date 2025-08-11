@@ -44,7 +44,8 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnReturnToPool()
     {
-        //
+        _animator.Play("Ore_Idle", 0, 0f);
+        _animator.Update(0f);
     }
     private void FindPlayer()
     {

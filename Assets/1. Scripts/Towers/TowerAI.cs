@@ -191,12 +191,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
         _isDestroy = true;
         DefenseManager.Instance.RemoveObstacle(transform);
-        
-        /*
-        if (_tower.towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
-        {
-            wireTower.Disconnect();
-        }*/
 
         PoolManager.Instance.ReturnToPool(_tower.statHandler.ID, gameObject);
        
