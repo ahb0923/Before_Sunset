@@ -34,6 +34,7 @@ public class UIManager : MonoSingleton<UIManager>
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
     public SaveLoadSlot AutoSaveLoadSlot { get; private set; }
+    public DestroyModeUI DestroyModeUI { get; private set; }
 
     private void Reset()
     {
@@ -63,6 +64,7 @@ public class UIManager : MonoSingleton<UIManager>
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
         DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
         AutoSaveLoadSlot = Helper_Component.FindChildComponent<SaveLoadSlot>(transform, "AutoSaveSlot");
+        DestroyModeUI = Helper_Component.FindChildComponent<DestroyModeUI>(transform, "DestroyModeUI");
     }
 
     private void Start()

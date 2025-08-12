@@ -28,6 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (UIManager.Instance.UpgradeUI.isActiveAndEnabled) return;
 
         BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
+        UIManager.Instance.DestroyModeUI.SetMode(BuildManager.Instance.IsOnDestroy);
         //TODO UIManager에서 철거버튼 색상 바꿔주기
         InteractManager.Instance.SetCursorDestroyImage(BuildManager.Instance.IsOnDestroy);
     }
