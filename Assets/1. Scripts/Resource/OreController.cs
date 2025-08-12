@@ -11,13 +11,18 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     private int _currentHP;
 
+    private SpriteRenderer _spriteRenderer;
+    private Animator _animator;
+
     [SerializeField] private int _id;
     public int GetId() => _id;
 
 
     private void Awake()
     {
-        _collider = GetComponent<Collider2D>();
+        _collider = Helper_Component.GetComponent<Collider2D>(gameObject);
+        _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
+        _spriteRenderer = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
     }
 
     public void Init(BasePlayer basePlayer)
@@ -34,6 +39,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnGetFromPool()
     {
+        _spriteRenderer.size = new Vector3(1, 1, 1);
+        _animator.Play("Ore_Idle", 0, 0f);
+
         _currentHP = _data.hp;
         FindPlayer();
         Init(_player);
@@ -41,8 +49,9 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void OnReturnToPool()
     {
-        //
+        
     }
+
     private void FindPlayer()
     {
         if (_player == null)
@@ -117,12 +126,13 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
         // 확률 계산
         float dropRate = _player.Stat.DropRate;
-        float bonusRate = dropRate - 1.0f;
+        float bonusRate = dropRate / 100f - 1f;
 
-        if (bonusRate > 0f)
+        while (bonusRate > 0f)
         {
             float rand = Random.Range(0f, 1f);
             if (rand < bonusRate) dropAmount += 1;
+            bonusRate -= 1f;
         }
 
         ItemDropManager.Instance.DropItem(dropId, dropAmount, transform, false);
@@ -130,25 +140,50 @@ public class OreController : MonoBehaviour, IPoolable, IInteractable, IResourceS
 
     public void Interact()
     {
+        int wallLayerMask = LayerMask.GetMask("Wall");
+        Vector2 playerPos = _player.transform.position;
+
+        if (Physics2D.Linecast(playerPos, transform.position, wallLayerMask))
+        {
+            ToastManager.Instance.ShowToast("해당 위치에서 채굴할 수 없습니다.");
+            return;
+        }
+
+        /*
+        if (_player.Stat.Pickaxe.crushingForce < _data.def)
+        {
+            ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
+            return;
+        }*/
+        if(gameObject.activeInHierarchy)
+            EffectManager.Instance.MiningEffect(transform);
+        _animator.ResetTrigger("IsMining");
+        _animator.SetTrigger("IsMining");
+        Mine(_player.Stat.Pickaxe.damage);
     }
 
     public bool IsInteractable(Vector3 playerPos, float range, BoxCollider2D playerCollider)
     {
         if (_collider == null) return false;
 
-        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y);
+        Vector2 playerPos2D = new Vector2(playerPos.x, playerPos.y + 0.5f);
         Vector2 closestPoint = _collider.ClosestPoint(playerPos2D);
         float centerToEdge = Vector2.Distance(playerPos2D, closestPoint);
 
         float playerRadius = playerCollider.size.magnitude * 0.5f * Mathf.Max(playerCollider.transform.lossyScale.x, playerCollider.transform.lossyScale.y);
         float edgeToEdgeDistance = Mathf.Max(0f, centerToEdge - playerRadius);
 
-        return edgeToEdgeDistance <= 1.5f;
+        return edgeToEdgeDistance <= 1f;
     }
 
     public int GetObejctSize()
     {
         return 1;
 
+    }
+
+    public void OffAttackArea()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -26,9 +26,9 @@ public class SaveManager : MonoSingleton<SaveManager>
         // 시작 화면은 로드 X
         if (SceneManager.GetActiveScene().buildIndex == 0) return;
 
-        if (GlobalState.Index == 1 || GlobalState.Index == 2 || GlobalState.Index == 3 || GlobalState.Index == 99)
+        if (GlobalState.SaveIndex == 1 || GlobalState.SaveIndex == 2 || GlobalState.SaveIndex == 3 || GlobalState.SaveIndex == 99)
         {
-            LoadGameFromGlobalIndex(GlobalState.Index);
+            LoadGameFromGlobalIndex(GlobalState.SaveIndex);
         }
     }
 
@@ -115,8 +115,8 @@ public class SaveManager : MonoSingleton<SaveManager>
         }
 
         // 플레이어 위치 로드
+        MapManager.Instance.Player.SetPlayerInBase(data.mapLinks.currentMapIndex == 0);
         MapManager.Instance.MoveToMap(data.mapLinks.currentMapIndex, false);
-        MapManager.Instance.Player.SetPlayerInBase(MapManager.Instance.CurrentMapIndex == 0);
         MapManager.Instance.Player.transform.position = data.playerPosition;
 
         Debug.Log($"[SaveManager] {globalIndex}번 슬롯에서 게임 불러오기 완료");
@@ -129,7 +129,8 @@ public class SaveManager : MonoSingleton<SaveManager>
     /// </summary>
     public void LoadGameFromSlot(int slotIndex = -1)
     {
-        GlobalState.Index = slotIndex;
+        GlobalState.SaveIndex = slotIndex;
+        GameManager.Instance.SetTutorial(false);
         if(GlobalState.HasPlayedOpening)
             LoadingSceneController.LoadScene("MainScene");
         else
@@ -142,7 +143,7 @@ public class SaveManager : MonoSingleton<SaveManager>
     /// </summary>
     public void LoadGameFromAutoSlot()
     {
-        GlobalState.Index = 99;
+        GlobalState.SaveIndex = 99;
         LoadingSceneController.LoadScene("MainScene");
     }
 

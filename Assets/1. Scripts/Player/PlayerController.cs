@@ -5,10 +5,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    private const float ORE_INTERACT_RANGE = 1.5F;
+
     private BasePlayer _player;
     private PlayerInputActions _actions;
     private PlayerEffect _playerEffect;
     private EquipmentDatabase _equippedPickaxe;
+    private PlayerInputHandler _inputHandler;
 
     private Vector2 _moveDir;
     private Vector3 _clickDir;
@@ -22,21 +25,32 @@ public class PlayerController : MonoBehaviour
     private float _lastDashTime = -10f;
     private Vector2 _dashDirection;
 
+    private bool _isEnterPortal;
+
     private bool _isSwing => _swingCoroutine != null;
     private bool _isRecalling => PlayerInputHandler._isRecallInProgress;
 
     #region Event Subscriptions
     private void OnMoveStarted(InputAction.CallbackContext context)
     {
-        if (PlayerInputHandler._isRecallInProgress || _isDashing) return;
+        if (PlayerInputHandler._isRecallInProgress || _isDashing || _isEnterPortal) return;
 
         _player.Animator.SetBool(BasePlayer.MOVE, true);
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        if (_isDashing) return;
-        _moveDir = context.ReadValue<Vector2>().normalized;
+        if (_isDashing || _isEnterPortal) return;
+
+        Vector2 newMoveDir = context.ReadValue<Vector2>().normalized;
+
+        // 움직임이 시작되면 귀환 취소
+        if (newMoveDir != Vector2.zero && PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+        }
+
+        _moveDir = newMoveDir;
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
@@ -48,22 +62,36 @@ public class PlayerController : MonoBehaviour
 
     private void OnDashStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling || _isDashing || BuildManager.Instance.IsPlacing) return;
+        if (_isRecalling || _isDashing || BuildManager.Instance.IsPlacing || _isEnterPortal) return;
 
         // 쿨타임 체크
         if (Time.time - _lastDashTime < _player.Stat.DashCooldown) return;
+
+        // 대시 귀환 취소
+        if (PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+            if (PlayerInputHandler._isRecallInProgress) return;
+        }
 
         TryDash();
     }
 
     private void OnSwingStarted(InputAction.CallbackContext context)
     {
-        if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing) return;
+        if (_isRecalling || BuildManager.Instance.IsPlacing || _isDashing || _isEnterPortal) return;
+
+        // 스윙 귀환 취소
+        if (PlayerInputHandler._isRecallInProgress)
+        {
+            _inputHandler.CancelRecall();
+            if (PlayerInputHandler._isRecallInProgress) return;
+        }
 
         _isSwingButtonHeld = true;
 
-        if (_player.Animator.GetFloat(BasePlayer.MINING) != _player.Stat.MiningSpeed)
-            _player.Animator.SetFloat(BasePlayer.MINING, _player.Stat.MiningSpeed);
+        if (_player.Animator.GetFloat(BasePlayer.MINING) != (_player.Stat.MiningSpeed / 100f))
+            _player.Animator.SetFloat(BasePlayer.MINING, (_player.Stat.MiningSpeed / 100f));
 
         // 첫 번째 스윙 실행
         if (_swingCoroutine == null)
@@ -108,7 +136,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_isSwing || _isRecalling) return;
 
-        if (!_isDashing)
+        if (!_isDashing && !_isEnterPortal)
         {
             if (_moveDir != Vector2.zero)
             {
@@ -132,6 +160,7 @@ public class PlayerController : MonoBehaviour
         _player = player;
         _playerEffect = GetComponent<PlayerEffect>();
         _equippedPickaxe = player.Stat.Pickaxe;
+        _inputHandler = GetComponent<PlayerInputHandler>(); // 추가
 
         _actions = player.InputActions;
         _actions.Player.Move.started += OnMoveStarted;
@@ -184,10 +213,17 @@ public class PlayerController : MonoBehaviour
         SetAnimationDirection(_dashDirection);
 
         // 대시 사운드
-        // AudioManager.Instance.PlaySFX("Dash");
+        AudioManager.Instance.PlaySFX("Dash");
 
         // 대시 이펙트
         _playerEffect.PlayDashEffect(_player.Stat.DashDuration);
+
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int towerLayer = LayerMask.NameToLayer("Tower");
+        int smelterLayer = LayerMask.NameToLayer("Smelter");
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, true);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, true);
 
         float elapsed = 0f;
         Vector2 startPos = _player.Rigid.position;
@@ -202,6 +238,9 @@ public class PlayerController : MonoBehaviour
 
             yield return new WaitForFixedUpdate();
         }
+
+        Physics2D.IgnoreLayerCollision(playerLayer, towerLayer, false);
+        Physics2D.IgnoreLayerCollision(playerLayer, smelterLayer, false);
 
         _isDashing = false;
         Vector2 currentInput = _actions.Player.Move.ReadValue<Vector2>().normalized;
@@ -302,7 +341,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 애니메이션 끝나는 걸 기다렸다가 채광 시도
-        yield return Helper_Coroutine.WaitSeconds(0.5f / _player.Stat.MiningSpeed);
+        yield return Helper_Coroutine.WaitSeconds(0.5f / (_player.Stat.MiningSpeed / 100f));
 
         TryInteractTarget(target);
 
@@ -314,39 +353,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void TryInteractTarget(IInteractable target)
     {
+        if (InteractManager.Instance.IsPointerOverRealUI()) return;
+
         if (target == null)
         {
             ToastManager.Instance.ShowToast("목표가 존재하지 않습니다.");
             return;
-
         }
 
-        float range = (target is OreController) ? 1.5f : 5.0f;
-
-        if (!target.IsInteractable(_player.transform.position, range, _player.PlayerCollider))
-            return;
-
-        if (target is OreController ore)
-        {
-            int wallLayerMask = LayerMask.GetMask("Wall");
-            Vector2 playerPos = _player.transform.position;
-            Vector2 orePos = ore.transform.position;
-
-            if (Physics2D.Linecast(playerPos, orePos, wallLayerMask))
-            {
-                ToastManager.Instance.ShowToast("벽에 막혀 채굴할 수 없습니다.");
-                return;
-            }
-
-            if (_player.Stat.Pickaxe.crushingForce < ore._data.def)
-            {
-                ToastManager.Instance.ShowToast("곡괭이 힘이 부족합니다.");
-                return;
-            }
-
-            ore.Mine(_player.Stat.Pickaxe.damage);
-        }
-
+        if (!target.IsInteractable(_player.transform.position, ORE_INTERACT_RANGE, _player.PlayerCollider)) return;
         target.Interact();
     }
 
@@ -364,5 +379,18 @@ public class PlayerController : MonoBehaviour
         }
         _player.Animator.SetFloat(BasePlayer.X, moveDir.x);
         _player.Animator.SetFloat(BasePlayer.Y, moveDir.y);
+    }
+
+    public void SetEnterPortal(bool value)
+    {
+        _isEnterPortal = value;
+        if (value)
+        {
+            _moveDir = Vector2.zero;
+            _player.Animator.SetBool(BasePlayer.MOVE, false);
+
+            _actions.Player.Move.Disable();
+            _actions.Player.Move.Enable();
+        }
     }
 }

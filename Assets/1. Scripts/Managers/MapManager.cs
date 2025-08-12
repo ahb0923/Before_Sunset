@@ -10,7 +10,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     private GameObject _baseMap;
     private Transform _player;
     public BasePlayer Player => _player?.GetComponent<BasePlayer>();
-    private Transform _gateRune;
 
     [SerializeField] private float _mapSpacing = 100f;
 
@@ -23,6 +22,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     private Dictionary<int, List<InteractableState>> _interactableStates = new();
 
     private SpawnManager _spawnManager;
+
+    private string _currentBGM = "";
 
     protected override void Awake()
     {
@@ -44,19 +45,12 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             else
                 Debug.LogError("Player 오브젝트를 찾을 수 없습니다. 이름이 'Player'인지 확인하세요.");
         }
-        if (_gateRune == null)
-        {
-            var gateRuneGO = GameObject.Find("GateRune");
-            if (gateRuneGO != null)
-                _gateRune = gateRuneGO.transform;
-            else
-                Debug.LogError("Core 오브젝트를 찾을 수 없습니다. 이름이 'Core'인지 확인하세요.");
-        }
 
         _baseMap.SetActive(true);
         _spawnManager = FindObjectOfType<SpawnManager>();
         MoveToMap(0, false);
         AudioManager.Instance.PlayBGM("NormalBase");
+        _currentBGM = "NormalBase";
     }
 
     // 포탈 방향 받아서 맵 이동
@@ -117,17 +111,7 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         }
 
         MoveToMap(0, false);
-        _player.position = GetRandomPositionNearCore();
-    }
-
-    private Vector3 GetRandomPositionNearCore()
-    {
-        if (_gateRune == null)
-        {
-            return _baseMap.transform.position;
-        }
-
-        return _gateRune.position + new Vector3(0f, -0.2f, 0f);
+        _player.position = _player.position = new Vector3(0f, -0.2f, 0f);
     }
 
     // 맵이동
@@ -136,8 +120,6 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         if (TimeManager.Instance.IsNight && !PlayerInputHandler._isRecallInProgress) return;
 
         if (targetIndex == CurrentMapIndex) return;
-
-        _spawnManager?.SetMapResourcesActive(CurrentMapIndex, false);
 
         // 현재 맵 비활성화
         if (CurrentMapIndex == 0)
@@ -381,6 +363,8 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
         {
             PortalManager.Instance.LastEnteredPortalDirection = null;
         }
+
+        _currentBGM = "";
     }
 
     private void ChangeMapBGM(int mapIndex)
@@ -390,31 +374,37 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
             return;
         }
 
+        string targetBGM = "";
+
         if (mapIndex == 0 && !TimeManager.Instance.IsNight)
         {
-            AudioManager.Instance.PlayBGM("NormalBase");
-            return;
+            targetBGM = "NormalBase";
+        }
+        else if (mapIndex > 0)
+        {
+            int mapId = _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
+            var mapData = DataManager.Instance.MapData.GetById(mapId);
+
+            if (mapData != null)
+            {
+                switch (mapData.mapType)
+                {
+                    case MAP_TYPE.MineSmall:
+                    case MAP_TYPE.MineLarge:
+                        targetBGM = "BasicMine1";
+                        break;
+                    case MAP_TYPE.MineRare:
+                        targetBGM = "RareMine1";
+                        break;
+                }
+            }
         }
 
-        int mapId = _mapPrefabIdMap.GetValueOrDefault(mapIndex, -1);
-
-        var mapData = DataManager.Instance.MapData.GetById(mapId);
-        if (mapData == null)
+        // 재생 중인 BGM과 다를 때만 새로 재생
+        if (!string.IsNullOrEmpty(targetBGM) && _currentBGM != targetBGM)
         {
-            return;
-        }
-
-        switch (mapData.mapType)
-        {
-            case MAP_TYPE.MineSmall:
-                AudioManager.Instance.PlayBGM("BasicMine1");
-                break;
-            case MAP_TYPE.MineLarge:
-                AudioManager.Instance.PlayBGM("BasicMine1");
-                break;
-            case MAP_TYPE.MineRare:
-                AudioManager.Instance.PlayBGM("RareMine1");
-                break;
+            AudioManager.Instance.PlayBGM(targetBGM);
+            _currentBGM = targetBGM;
         }
     }
 
@@ -448,19 +438,16 @@ public class MapManager : MonoSingleton<MapManager>, ISaveable
     {
         _nextMapIndex = data.mapLinks.nextMapIndex;
 
-        _mapHistory.Clear();
         foreach(int stack in data.mapLinks.mapHistory)
         {
             _mapHistory.Push(stack);
         }
 
-        _mapPrefabIdMap.Clear();
         foreach(var pair in data.mapLinks.prefabIdDict)
         {
             _mapPrefabIdMap[pair.key] = pair.value;
         }
 
-        _portalMapLinks.Clear();
         foreach(var pair in data.mapLinks.portalMapLinks)
         {
             _portalMapLinks[(pair.key, pair.direction)] = pair.value;

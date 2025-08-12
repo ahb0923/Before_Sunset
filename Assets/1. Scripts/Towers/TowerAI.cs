@@ -13,7 +13,7 @@ public enum TOWER_ATTACK_TYPE
 {
     Projectile,
     Areaofeffect,
-    Trap
+    Barricade
 }
 
 
@@ -77,61 +77,33 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     {
         return state == TOWER_STATE.Destroy;
     }
+
     public void SetState(TOWER_STATE state, bool force = false)
     {
         if (state == TOWER_STATE.Attack)
             _isFirstAttack = true;
         TransitionTo(state, force);
-        /*
-        if (state == TOWER_STATE.Construction)
-            _tower._attackCollider.enabled = false;
-        else if (state == TOWER_STATE.Idle || state == TOWER_STATE.Attack)
-            _tower._attackCollider.enabled = true;*/
     }
+
     public IEnumerator C_Construction()
     {
-        //var sprites = _tower.constructionIcon;
         var ui = _tower.ui;
         var icon = ui.icon;
         var stat = _tower.statHandler;
 
-
         float totalTime = 1.5f;
-        //float interval = totalTime / sprites.Count;
         float elapsed = 0f;
 
-        //int spriteIndex = 0;
-
-        // 방어코드 기본 0으로 초기화 하긴함
-        //stat.CurrHp = 0f;
         stat.CurrHp = stat.MaxHp;
 
         
         while (elapsed < totalTime)
         {
             elapsed += Time.deltaTime;
-            //float t = Mathf.Clamp01(elapsed / totalTime);
-           // stat.CurrHp = Mathf.Lerp(0, stat.MaxHp, t);
-
-            //_tower.ui.SetConstructionProgress(t);
-
 
             yield return null;
         }
 
-
-        // 건설 완료 후 체력 100% 보장
-        //_tower.ui.SetConstructionProgress(1f);
-        //stat.CurrHp = stat.MaxHp;
-
-        /*
-        // 건설 직후, 공격 범위 내 적 검색
-        _tower.attackSensor.ScanInitialEnemies();
-
-        if (_tower.attackSensor.HasDetectedEnemy())
-            CurState = TOWER_STATE.Attack;
-        else
-            CurState = TOWER_STATE.Idle;*/
         CurState = TOWER_STATE.Idle;
     }
 
@@ -170,8 +142,6 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
             yield break; // 상태 Idle로 전환될 것
         }
  
-        AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
-
         while (true)
         {
             if (IsInterrupted || CurState == TOWER_STATE.Destroy)
@@ -196,6 +166,11 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
                     break;
             }
 
+            if (MapManager.Instance.Player.IsInBase)
+            {
+                AudioManager.Instance.PlaySFX(_tower.statHandler.TowerName);
+            }
+
             yield return _tower.attackStrategy.Attack(_tower);
 
             if (CurState == TOWER_STATE.Destroy)
@@ -206,7 +181,7 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
     }
     private IEnumerator C_Destroy()
     {
-        Debug.Log("C_Destroy() 실행됨");
+        //Debug.Log("C_Destroy() 실행됨");
         if (_animator != null)
         {
             _animator.SetTrigger("IsDestroy");
@@ -216,13 +191,9 @@ public class TowerAI : StateBasedAI<TOWER_STATE>
 
         _isDestroy = true;
         DefenseManager.Instance.RemoveObstacle(transform);
-        if (_tower.towerType == TOWER_TYPE.Electricline && TryGetComponent(out ElectriclineTower wireTower))
-        {
-            wireTower.Disconnect();
-        }
+
         PoolManager.Instance.ReturnToPool(_tower.statHandler.ID, gameObject);
        
-
         yield return null;
     }
     public void ResetStateMachine()

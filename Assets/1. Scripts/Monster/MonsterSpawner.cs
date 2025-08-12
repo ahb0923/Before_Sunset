@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,12 +20,6 @@ public class MonsterSpawner : MonoBehaviour
     private void Awake()
     {
         _arrowDisplay = GetComponentInChildren<WarningArrow>();
-    }
-
-    private void Start()
-    {
-        if(!GameManager.Instance.IsTutorial)
-            SetMonsterSpawnPoints();
     }
 
     /// <summary>

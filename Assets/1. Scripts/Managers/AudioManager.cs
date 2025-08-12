@@ -7,10 +7,8 @@ public class AudioManager : MonoSingleton<AudioManager>
     private float _wholeVolume = 1f;
     private float _bgmVolume = 0.5f;
     private float _sfxVolume = 0.2f;
-
-    private float _originalBgVolume;
-    private float _originalSfxVolume;
-
+    private float _originalBgVolume = 0.5f;
+    private float _originalSfxVolume = 0.2f;
     private bool _isWholeSoundMute = false;
     private bool _isBGSoundMute = false;
     private bool _isSFXSoundMute = false;
@@ -29,17 +27,17 @@ public class AudioManager : MonoSingleton<AudioManager>
         base.Awake();
         if (Instance != null)
             DontDestroyOnLoad(gameObject);
-        
+
         LoadAllClips();
         InitBGM();
         InitSFXPool();
+        ApplyVolumes();
     }
 
     private void InitBGM()
     {
         bgmSource = gameObject.AddComponent<AudioSource>();
         bgmSource.loop = true;
-        bgmSource.volume = _bgmVolume;
     }
 
     private void InitSFXPool()
@@ -161,7 +159,7 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public float GetBGMVolume()
     {
-        return _bgmVolume;
+        return _originalBgVolume;
     }
 
     public void SetSFXVolume(float volume)
@@ -178,15 +176,22 @@ public class AudioManager : MonoSingleton<AudioManager>
 
     public float GetSFXVolume()
     {
-        return _sfxVolume;
+        return _originalSfxVolume;
     }
 
     private void ApplyVolumes()
     {
         _bgmVolume = (_isWholeSoundMute || _isBGSoundMute) ? 0f : _originalBgVolume * _wholeVolume;
         _sfxVolume = (_isWholeSoundMute || _isSFXSoundMute) ? 0f : _originalSfxVolume * _wholeVolume;
-        
-        bgmSource.volume = _bgmVolume;
+
+        if (bgmSource != null)
+            bgmSource.volume = _bgmVolume;
+
+        foreach (var source in _sfxPool)
+        {
+            if (source.isPlaying)
+                source.volume = _sfxVolume;
+        }
     }
 
     public void PauseAllSound()
@@ -230,5 +235,29 @@ public class AudioManager : MonoSingleton<AudioManager>
                 sound.clip = null;
             }
         }
+    }
+
+    public Coroutine FadeOutBGM(float duration)
+    {
+        return StartCoroutine(FadeOutBGMRoutine(duration));
+    }
+
+    private IEnumerator FadeOutBGMRoutine(float duration)
+    {
+        if (bgmSource == null || !bgmSource.isPlaying)
+            yield break;
+
+        float startVolume = bgmSource.volume;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            yield return null;
+        }
+
+        bgmSource.volume = 0f;
+        bgmSource.Stop();
     }
 }

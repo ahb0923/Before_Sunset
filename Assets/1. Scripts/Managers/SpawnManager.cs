@@ -10,14 +10,15 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
     private OreSpawner oreSpawner;
     private OreDataHandler oreHandler;
 
-    private Vector3 currentMapPosition = Vector3.zero;
     private int currentMapIndex = -1;
 
     private Dictionary<int, List<GameObject>> _mapResources = new Dictionary<int, List<GameObject>>();
     private Dictionary<int, List<ResourceState>> _mapResourceStates = new();
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
         oreSpawner = Helper_Component.FindChildComponent<OreSpawner>(this.transform, "OreSpawner");
 
         StartCoroutine(WaitForDataManagerInit());
@@ -72,7 +73,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
         }
 
         currentMapIndex = mapIndex;
-        currentMapPosition = mapPosition;
         SetMapPositionAndArea(mapPosition);
 
         if (currentMapIndex == 0)
@@ -151,18 +151,8 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
             Destroy(parent.GetChild(i).gameObject);
     }
 
-    public void SetMapResourcesActive(int mapIndex, bool active)
-    {
-        if (_mapResources.TryGetValue(mapIndex, out var resources))
-        {
-            foreach (var obj in resources)
-                obj.SetActive(active);
-        }
-    }
-
     public void SetMapPositionAndArea(Vector3 mapPosition)
     {
-        currentMapPosition = mapPosition;
         oreSpawner?.SetSpawnCenter(mapPosition);
     }
 
@@ -207,8 +197,6 @@ public class SpawnManager : MonoSingleton<SpawnManager>, ISaveable
     /// </summary>
     public void LoadData(GameData data)
     {
-        _mapResourceStates.Clear();
-
         foreach(MineSaveData mineData in data.spawnedMines)
         {
             List<ResourceState> resourceStates = new List<ResourceState>();

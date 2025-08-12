@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OptionUI : MonoBehaviour, ICloseableUI
 {
+    [Header("Sound")]
     [SerializeField] private Slider _wholeSoundSlider;
     [SerializeField] private Slider _bGSoundSlider;
     [SerializeField] private Slider _effectSoundSlider;
@@ -14,6 +17,10 @@ public class OptionUI : MonoBehaviour, ICloseableUI
     [SerializeField] private GameObject _wholeSoundImage;
     [SerializeField] private GameObject _bGSoundImage;
     [SerializeField] private GameObject _effectSoundImage;
+    
+    [Header("Window")]
+    [SerializeField] private Toggle _windowToggle;
+    [SerializeField] private TMP_Dropdown _resolutionDropdown;
     
     private RectTransform _optionRect;
     private bool _isWholeSoundMute;
@@ -32,6 +39,9 @@ public class OptionUI : MonoBehaviour, ICloseableUI
     private const string BG_SOUND_IMAGE = "BGSoundButtonImage";
     private const string EFFECT_SOUND_BUTTON = "EffectSoundButton";
     private const string EFFECT_SOUND_IMAGE = "EffectSoundButtonImage";
+    
+    private const string WINDOW_TOGGLE = "WindowToggle";
+    private const string DROPDOWN = "Dropdown";
     
     private const string OPTION_BUTTON = "OptionButton";
     private const string UN_PAUSE_BUTTON = "UnPauseButton";
@@ -52,6 +62,8 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _wholeSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, WHOLE_SOUND_IMAGE);
         _bGSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, BG_SOUND_IMAGE);
         _effectSoundImage = Helper_Component.FindChildGameObjectByName(this.gameObject, EFFECT_SOUND_IMAGE);
+        _windowToggle = Helper_Component.FindChildComponent<Toggle>(this.transform, WINDOW_TOGGLE);
+        _resolutionDropdown = Helper_Component.FindChildComponent<TMP_Dropdown>(this.transform, DROPDOWN);
     }
 
     private void Awake()
@@ -73,6 +85,9 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _cancelButton.onClick.AddListener(Close);
         
         _optionRect = this.GetComponent<RectTransform>();
+        _windowToggle.isOn = GlobalState.IsFullScreen;
+        _windowToggle.onValueChanged.AddListener(SetFullScreen);
+        SetFullScreen(true);
     }
     
     private void Start()
@@ -89,6 +104,7 @@ public class OptionUI : MonoBehaviour, ICloseableUI
         _bGSoundSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
         _effectSoundSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
         
+        InitResolution();
         CloseUI();
     }
 
@@ -157,6 +173,40 @@ public class OptionUI : MonoBehaviour, ICloseableUI
             _effectSoundImage.gameObject.SetActive(false);
         }
         AudioManager.Instance.SetSFXMute(_isEffectSoundMute);
+    }
+    
+    private void SetFullScreen(bool isOn)
+    {
+        Screen.fullScreen = isOn;
+        PlayerPrefs.SetInt("IsFullScreen", isOn ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    private void InitResolution()
+    {
+        _resolutionDropdown.ClearOptions();
+        
+        var options = new List<string>();
+
+        foreach (var res in GlobalState.Resolutions)
+        {
+            options.Add($"{res.x} x {res.y}");
+        }
+
+        _resolutionDropdown.AddOptions(options);
+        _resolutionDropdown.value = GlobalState.ResolutionIndex;
+        _resolutionDropdown.RefreshShownValue();
+
+        SetResolution(GlobalState.ResolutionIndex);
+
+        _resolutionDropdown.onValueChanged.AddListener(SetResolution);
+    }
+    
+    private void SetResolution(int index)
+    {
+        var res = GlobalState.Resolutions[index];
+        GlobalState.ResolutionIndex = index;
+        Screen.SetResolution(res.x, res.y, Screen.fullScreen);
     }
 
     private void OnClickSaveLoadButton()

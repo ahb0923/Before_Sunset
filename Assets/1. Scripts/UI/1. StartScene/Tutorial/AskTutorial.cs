@@ -6,7 +6,6 @@ public class AskTutorial : MonoBehaviour
     [SerializeField] private Button _yesButton;
     [SerializeField] private Button _noButton;
     [SerializeField] private RectTransform _askRect;
-    [SerializeField] private StartSceneAnimation _startSceneAnimation;
     
     private const string YES_BUTTON = "YesButton";
     private const string NO_BUTTON = "NoButton";
@@ -18,7 +17,6 @@ public class AskTutorial : MonoBehaviour
         _yesButton = Helper_Component.FindChildComponent<Button>(this.transform, YES_BUTTON);
         _noButton = Helper_Component.FindChildComponent<Button>(this.transform, NO_BUTTON);
         _askRect = GetComponent<RectTransform>();
-        _startSceneAnimation = FindObjectOfType<StartSceneAnimation>();
     }
 
     private void Awake()
@@ -37,7 +35,7 @@ public class AskTutorial : MonoBehaviour
     {
         Close();
         GameManager.Instance.SetTutorial(true);
-        GlobalState.Index = -1;
+        GlobalState.SaveIndex = -1;
         LoadingSceneController.LoadScene("TutorialScene");
     }
 
@@ -46,11 +44,12 @@ public class AskTutorial : MonoBehaviour
         Close();
         if (!_clickTutorialBtn)
         {
-            GameManager.Instance.SetTutorial(false);
             SaveManager.Instance.LoadGameFromSlot();
         }
-
-        _startSceneAnimation.CameraAction();
+        else
+        {
+            StartSceneManager.Instance.CameraAction();
+        }
     }
     
     private void Close()

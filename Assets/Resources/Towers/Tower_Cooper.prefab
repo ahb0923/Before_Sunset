@@ -549,6 +549,7 @@ MonoBehaviour:
   id: 400
   buildSize: {x: 1, y: 1}
   spriteRenderer: {fileID: 1109353221721809788}
+  attackRangeColor: {r: 0.70980394, g: 0.39607844, b: 0.12941177, a: 1}
 --- !u!114 &8341232226603593089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,8 +680,8 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -2124863439
-  m_SortingOrder: 0
+  m_SortingLayerID: -535966705
+  m_SortingOrder: 200
   m_TargetDisplay: 0
 --- !u!114 &3238730029249634734
 MonoBehaviour:

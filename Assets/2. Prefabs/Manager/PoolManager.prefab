@@ -29,8 +29,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5873102479827229240}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2205486695308486813
@@ -49,65 +48,4 @@ MonoBehaviour:
   _electircline: {fileID: 1043253413555955752, guid: 6435bc628c9ee67418692aebd35df178, type: 3}
   _aoeEffect: {fileID: 2548693126781769948, guid: ac7472918cebe5d4089d9d023ce5deff, type: 3}
   _buildGuage: {fileID: 4540616778810988365, guid: 9d81fd763c9d2c745a03457feaada585, type: 3}
---- !u!1001 &8108291357146920192
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7440641397230689755}
-    m_Modifications:
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4753411708711911065, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-      propertyPath: m_Name
-      value: TowerPool
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
---- !u!4 &5873102479827229240 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2379874849419816760, guid: 7dc6f803db9b51f4eb1469e1c5a5d248, type: 3}
-  m_PrefabInstance: {fileID: 8108291357146920192}
-  m_PrefabAsset: {fileID: 0}
+  _miningEffect: {fileID: 2393111809793729749, guid: ee2a1fdd1844c9e4187240de6a817e75, type: 3}

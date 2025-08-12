@@ -9,8 +9,8 @@ public enum UPGRADE_TYPE
     DropRate,
     SightRange,
     HP,
-    AttackRange,
-    AttackPower
+    HpRegen,
+    DashCooldown
 }
 public enum UPGRADE_CATEGORY
 {

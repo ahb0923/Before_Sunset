@@ -84,7 +84,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3, y: 3}
   m_EdgeRadius: 0
 --- !u!114 &4663345754924475590
 MonoBehaviour:
@@ -102,7 +102,7 @@ MonoBehaviour:
   radius: 0.1
   currType: 1
   rayDirection: 0
-  size: {x: 1, y: 1, z: 1}
+  size: {x: 3, y: 3, z: 1}
 --- !u!114 &6044215668753884168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,7 +339,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -34, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4863951095676426394
@@ -566,6 +566,7 @@ MonoBehaviour:
   id: 460
   buildSize: {x: 3, y: 3}
   spriteRenderer: {fileID: 1109353221721809788}
+  attackRangeColor: {r: 0.9882353, g: 0.8352941, b: 0.12941177, a: 1}
 --- !u!1 &7063769191260737672
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,7 +680,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -2124863439
+  m_SortingLayerID: -535966705
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &3238730029249634734
@@ -750,7 +751,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 552974763930187615}

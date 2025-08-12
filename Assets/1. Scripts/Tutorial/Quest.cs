@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum QUEST_TYPE
@@ -14,6 +16,13 @@ public enum QUEST_TYPE
 }
 
 [System.Serializable]
+public class ProvidedItem
+{
+    public int itemId;
+    public int itemAmount;
+}
+
+[System.Serializable]
 public class Quest
 {
     [field: SerializeField] public QUEST_TYPE Type { get; private set; }
@@ -21,8 +30,7 @@ public class Quest
     [field: SerializeField] public string Title { get; private set; }
     [field: SerializeField] public string Description { get; private set; }
 
-    [field: SerializeField] public int InventoryItemId { get; private set; } = -1;
-    [field: SerializeField] public int InventoryItemAmount { get; private set; }
+    [field: SerializeField] public List<ProvidedItem> ProvidedItems { get; private set; }
 
     [field: SerializeField] public int objectId { get; private set; }
     [field: SerializeField] public int ClearAmount { get; private set; }

@@ -26,6 +26,9 @@ public class PoolManager : MonoSingleton<PoolManager>
     [SerializeField] private GameObject _electircline;
     [SerializeField] private GameObject _aoeEffect;
     [SerializeField] private GameObject _buildGuage;
+    [SerializeField] private GameObject _miningEffect;
+    [SerializeField] private GameObject _healEffect;
+    [SerializeField] private GameObject _upgradeEffect;
 
     private bool _isSet;
 
@@ -90,6 +93,23 @@ public class PoolManager : MonoSingleton<PoolManager>
         _objectPoolDatas.Add(new ObjectPoolData
         {
             prefab = _buildGuage,
+            count = 10
+        });
+
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _miningEffect,
+            count = 2
+        });
+
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _healEffect,
+            count = 10
+        });
+        _objectPoolDatas.Add(new ObjectPoolData
+        {
+            prefab = _upgradeEffect,
             count = 10
         });
         // 여기까지 ///////////////////////////////////////

@@ -13,6 +13,7 @@ public class UIManager : MonoSingleton<UIManager>
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
 
     public bool isResultUIOpen = false;
+    public bool isSmelterUIOpen = false;
     
     public AskPopUpUI AskPopUpUI { get; private set; }
     public GameTimeUI GameTimeUI { get; private set; }
@@ -28,10 +29,12 @@ public class UIManager : MonoSingleton<UIManager>
     public SmelterUI SmelterUI { get; private set; }
     public UpgradeUI UpgradeUI { get; private set; }
     public EssenceUI EssenceUI { get; private set; }
+    public ItemToastUI ItemToastUI { get; private set; }
     public TutorialSkip TutorialSkipButton { get; private set; }
     public QuestUI QuestUI { get; private set; }
     public Button DaySkipButton { get; private set; }
     public SaveLoadSlot AutoSaveLoadSlot { get; private set; }
+    public DestroyModeUI DestroyModeUI { get; private set; }
 
     private void Reset()
     {
@@ -56,21 +59,20 @@ public class UIManager : MonoSingleton<UIManager>
         SmelterUI= Helper_Component.FindChildComponent<SmelterUI>(this.transform, "SmelterUI");
         UpgradeUI = Helper_Component.FindChildComponent<UpgradeUI>(this.transform, "UpgradeUI");
         EssenceUI = Helper_Component.FindChildComponent<EssenceUI>(this.transform, "EssenceUI");
+        ItemToastUI = Helper_Component.FindChildComponent<ItemToastUI>(this.transform, "ItemToastUI");
         TutorialSkipButton = Helper_Component.FindChildComponent<TutorialSkip>(transform, "TurorialSkipButton");
         QuestUI = Helper_Component.FindChildComponent<QuestUI>(transform, "QuestUI");
         DaySkipButton = Helper_Component.FindChildComponent<Button>(transform, "DaySkipButton");
         AutoSaveLoadSlot = Helper_Component.FindChildComponent<SaveLoadSlot>(transform, "AutoSaveSlot");
+        DestroyModeUI = Helper_Component.FindChildComponent<DestroyModeUI>(transform, "DestroyModeUI");
     }
 
     private void Start()
     {
-        CraftArea.gameObject.SetActive(false);
-        CraftMaterialArea.gameObject.SetActive(false);
-        
         TutorialSkipButton?.gameObject.SetActive(GameManager.Instance.IsTutorial);
         QuestUI?.gameObject.SetActive(GameManager.Instance.IsTutorial);
 
-        DaySkipButton.onClick.AddListener(() => TimeManager.Instance.SkipHalfDay());
+        DaySkipButton.onClick.AddListener(OnClickDaySkipButton);
     }
 
     private void Update()
@@ -86,6 +88,11 @@ public class UIManager : MonoSingleton<UIManager>
                 OptionUI.Open();
             }
         }
+    }
+
+    private void OnClickDaySkipButton()
+    {
+        TimeManager.Instance.SkipHalfDay();
     }
 
     /// <summary>
@@ -119,10 +126,12 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void CloseLastUI()
     {
+        if (isResultUIOpen)
+            return;
         var ui = _uiStack.Pop();
         ui.CloseUI();
-        BuildManager.Instance.IsOnDestroy = false;
-        InteractManager.Instance.SetCursorDestroyImage(false);
+        //BuildManager.Instance.IsOnDestroy = false;
+        //InteractManager.Instance.SetCursorDestroyImage(false);
     }
 
     /// <summary>

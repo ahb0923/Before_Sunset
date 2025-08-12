@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] private RectTransform _itemRect;
     [SerializeField] private Image _itemImage;
@@ -75,6 +75,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             _sequence = DOTween.Sequence();
             _sequence.Append(_itemRect.DOScale(_scaleAmount, _scaleDuration).SetEase(Ease.InCubic));
+            _sequence.JoinCallback(PickUpSound);
             _sequence.Append(_itemRect.DOScale(1f, _scaleDuration).SetEase(Ease.OutCubic)).
                 OnComplete(() =>
                 {
@@ -82,6 +83,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                     _sequence = null;
                 });
         }
+    }
+
+    private void PickUpSound()
+    {
+        AudioManager.Instance.PlaySFX("Item");
     }
 
     private void OnDisable()
@@ -162,10 +168,68 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         
         TooltipManager.Instance.HideTooltip();
     }
-    
-    public void OnPointerDown(PointerEventData eventData)
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (UIManager.Instance.isSmelterUIOpen)
+            {
+                var smelter = UIManager.Instance.SmelterUI.CurrentSmelter();
+                var smelterSlot = UIManager.Instance.SmelterUI.smelterInputSlot;
+                var inventory = InventoryManager.Instance.Inventory;
+                var currentItem = InventoryManager.Instance.Inventory.Items[SlotIndex];
+
+                if (currentItem == null)
+                    return;
+                
+                if (smelterSlot.CanInputItem(currentItem))
+                {
+                    if (smelter.InputItem == null)
+                    {
+                        smelter.SetInputItem(currentItem);
+                        InventoryManager.Instance.Inventory.Items[SlotIndex] = null;
+                    }
+                    else
+                    {
+                        if (smelter.InputItem.Data.id == currentItem.Data.id)
+                        {
+                            var max = currentItem.MaxStack;
+                            var total = smelter.InputItem.stack + currentItem.stack;
+                            
+                            if (total <= max)
+                            {
+                                currentItem.stack = total;
+                                smelter.SetInputItem(currentItem);
+                                InventoryManager.Instance.Inventory.Items[SlotIndex] = null;
+                            }
+                            else
+                            {
+                                currentItem.stack = max;
+                                smelter.SetInputItem(currentItem);
+                                InventoryManager.Instance.Inventory.Items[SlotIndex].stack = total - max;
+                            }
+                        }
+                        else
+                        {
+                            var item = smelter.InputItem;
+                            smelter.StopSmelting();
+                            smelter.SetInputItem(currentItem);
+                            InventoryManager.Instance.Inventory.Items[SlotIndex] = item;
+                            
+                        }
+                    }
+                    inventory.InventoryUI.RefreshUI(inventory.Items);
+                    inventory.QuickSlotInventoryUI.RefreshUI(inventory.Items);
+                    smelterSlot.RefreshUI();
+                    TooltipManager.Instance.HideTooltip();
+                }
+                else
+                {
+                    ToastManager.Instance.ShowToast("현재 제련소에 넣을 수 없는 아이템입니다");
+                }
+            }
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -237,11 +301,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         //아이템을 다시 원래 자리로 복구 시킴.
         if (DragManager.DraggingItem != null)
         {
-            if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
-                && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
+            // 내 칸에 들어왔을때.
+            if (DragManager.OriginItemSlot == this)
             {
                 InventoryManager.Instance.Inventory.Items[DragManager.OriginItemSlot.SlotIndex] = DragManager.DraggingItem;
                 DragManager.OriginItemSlot.RefreshUI();
+            }
+            else
+            {
+                if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
+                    && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
+                {
+                    InventoryManager.Instance.Inventory.Items[DragManager.OriginItemSlot.SlotIndex] = DragManager.DraggingItem;
+                    DragManager.OriginItemSlot.RefreshUI();
+                }
             }
         }
 
@@ -266,11 +339,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             //해당칸이 비어있다면, 드래그 중인 아이템으로 넣어줌.
             if (targetItem == null)
             {
+                // 다른 칸
                 if (SlotIndex != DragManager.OriginItemSlot.SlotIndex)
                 {
                     inventory.Items[SlotIndex] = DragManager.DraggingItem;
                     inventory.Items[DragManager.OriginItemSlot.SlotIndex] = null;
                 }
+                // 원래 내가 가지고 있던 칸
                 else
                 {
                     inventory.Items[SlotIndex] = DragManager.DraggingItem;

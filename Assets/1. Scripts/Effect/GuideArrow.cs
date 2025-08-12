@@ -9,18 +9,17 @@ public class GuideArrow : MonoBehaviour
 
     // 목표와의 거리
     private const float HIDE_DISTANCE = 3f; 
-    private bool _isArrowVisible = false;
+    private bool _isArrowVisible;
 
     private void Update()
     {
-        if (_currentGoal == null)
+        if(_currentGoal == null)
         {
             SetArrowVisible(false);
             return;
         }
 
         float distance = Vector3.Distance(_currentGoal.position, transform.position);
-
         if (distance >= HIDE_DISTANCE)
         {
             SetArrowVisible(true);

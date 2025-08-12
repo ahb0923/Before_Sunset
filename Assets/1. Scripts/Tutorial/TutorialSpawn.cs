@@ -8,6 +8,11 @@ public class TutorialSpawn : MonoBehaviour
 
     [SerializeField] private int _oreAmount;
 
+    private void Start()
+    {
+        SpawnOres();
+    }
+
     public void SpawnOres()
     {
         // 돌 소환
