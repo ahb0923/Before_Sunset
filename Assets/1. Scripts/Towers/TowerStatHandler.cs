@@ -148,6 +148,8 @@ public class TowerStatHandler : MonoBehaviour, IDamageable
                 InventoryManager.Instance.Inventory.UseItem(item.Key, item.Value);
             QuestManager.Instance.AddQuestAmount(QUEST_TYPE.UpgradeTower, NextupgradeID ?? -1);
 
+            PoolManager.Instance.GetFromPool(10005, transform.position);
+
             ID = upgradeData.id;
             Level = upgradeData.level; 
             MaxHp += upgradeData.towerHp;

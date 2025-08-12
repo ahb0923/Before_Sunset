@@ -20,7 +20,7 @@ public class SmelterDataHandler : BaseDataHandler<SmelterDatabase>
             return prefab;
         }
 
-        Debug.LogWarning($"[SmelterDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        //Debug.LogWarning($"[SmelterDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
 

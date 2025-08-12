@@ -48,6 +48,8 @@ public class AttackStrategy_HealTower : IAttackStrategy
             var healStat = healables[i].GetComponent<TowerStatHandler>();
             healStat.CurrHp += healAmount;
 
+            PoolManager.Instance.GetFromPool(10004, healables[i].transform.position);
+            
             //Debug.Log($"힐타워: {healables[i].name} 체력 {healAmount} 회복");
         }
 

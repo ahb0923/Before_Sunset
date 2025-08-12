@@ -20,7 +20,7 @@ public class ProjectileDataHandler : BaseDataHandler<ProjectileDatabase>
             return prefab;
         }
 
-        Debug.LogWarning($"[ProjectileDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
+        //Debug.LogWarning($"[ProjectileDataHandler] ID {id}에 해당하는 프리팹이 존재하지 않습니다.");
         return null;
     }
 
