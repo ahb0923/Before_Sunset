@@ -238,7 +238,11 @@ public class EndingScene : MonoBehaviour
         seq.AppendCallback(IdleEnding);
         seq.AppendInterval(3f);
         seq.AppendCallback(WinkEnding);
-        seq.AppendInterval(3f).OnComplete(LoadScene);
+        seq.AppendInterval(2f);
+        seq.AppendCallback(() =>
+        {
+            _fadeImage.DOFade(1f, 1f).OnComplete(LoadScene);
+        });
     }
 
     private void PlayHeartBeat()

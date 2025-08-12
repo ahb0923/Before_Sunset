@@ -562,6 +562,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19da2f1e0357786409f1b96423a8a007, type: 3}
+--- !u!95 &652027844225814277 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6849808950945622446, guid: 19da2f1e0357786409f1b96423a8a007, type: 3}
+  m_PrefabInstance: {fileID: 652027844225814276}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3047958609245950258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -790,6 +795,10 @@ PrefabInstance:
       propertyPath: _mainCamera
       value: 
       objectReference: {fileID: 1808343682}
+    - target: {fileID: 7411640576927808466, guid: b55de31fbf23fd94f9dc662052b25664, type: 3}
+      propertyPath: _coreAnimator
+      value: 
+      objectReference: {fileID: 652027844225814277}
     - target: {fileID: 7411640576927808466, guid: b55de31fbf23fd94f9dc662052b25664, type: 3}
       propertyPath: _endingCredit
       value: 

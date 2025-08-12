@@ -1637,8 +1637,8 @@ RectTransform:
   m_Children:
   - {fileID: 7892277700294463241}
   - {fileID: 2597361543384348494}
-  - {fileID: 4966316035520298932}
   - {fileID: 3260073203059086736}
+  - {fileID: 4966316035520298932}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1744,9 +1744,12 @@ MonoBehaviour:
   _blinkDuration: 1
   _defaultOffset: {x: 10, y: 5, z: 0}
   _canvas: {fileID: 8061247647641571106}
+  _idleImage: {fileID: 0}
+  _winkImage: {fileID: 0}
   _fadeGameObject: {fileID: 624006312376546632}
   _fadeImage: {fileID: 6681304917522409872}
   _mainCamera: {fileID: 0}
   _globalVolume: {fileID: 0}
   _endingCredit: {fileID: 3260073203059086736}
   _endingCreditText: {fileID: 252039391736762538}
+  _coreAnimator: {fileID: 0}
