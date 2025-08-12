@@ -6008,6 +6008,8 @@ MonoBehaviour:
   minZoom: 4
   maxZoom: 6
   zoomSmoothSpeed: 0.2
+  focusZoom: 5
+  focusDuration: 0.5
 --- !u!1 &1926888075421373721
 GameObject:
   m_ObjectHideFlags: 0
@@ -6276,7 +6278,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2183808977613906780}
   - component: {fileID: 4840449636722315667}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

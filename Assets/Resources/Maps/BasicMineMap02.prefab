@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5254426529310726284}
   - component: {fileID: 579804605972386603}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2472,7 +2472,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5370922740828211469}
   - component: {fileID: 4844289983900230582}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3887,6 +3887,8 @@ MonoBehaviour:
   minZoom: 4
   maxZoom: 6
   zoomSmoothSpeed: 0.2
+  focusZoom: 5
+  focusDuration: 0.5
 --- !u!1 &3035915746333834705
 GameObject:
   m_ObjectHideFlags: 0
@@ -20219,7 +20221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 101240154593192130}
   - component: {fileID: 3648034812821809598}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20678,7 +20680,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1302531201319364372}
   - component: {fileID: 6891846148449059771}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27423,7 +27425,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5989294491344701717}
   - component: {fileID: 1227578517011893724}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: EdgeCollider (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
