@@ -211,6 +211,19 @@ public class UpgradeManager : MonoSingleton<UpgradeManager>, ISaveable
         }
     }
 
+    public void ResetUpgrades()
+    {
+        FixResetCounter();
+
+        FixedUpgrade = new Dictionary<string, int>(BaseUpgrade);
+
+        UpdateStatusFromFixedUpgrade();
+        ApplyAllUpgradesToAll();
+
+        SetVirtualUpgrade();
+        SetVirtualEssence();
+    }
+
     public void SetVirtualUpgrade()
     {
         VirtualUpgrade = new Dictionary<string, int>(FixedUpgrade);

@@ -13,6 +13,7 @@ public class UIManager : MonoSingleton<UIManager>
     private Stack<ICloseableUI> _uiStack = new Stack<ICloseableUI>();
 
     public bool isResultUIOpen = false;
+    public bool isSmelterUIOpen = false;
     
     public AskPopUpUI AskPopUpUI { get; private set; }
     public GameTimeUI GameTimeUI { get; private set; }
@@ -66,13 +67,10 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void Start()
     {
-        CraftArea.gameObject.SetActive(false);
-        CraftMaterialArea.gameObject.SetActive(false);
-        
         TutorialSkipButton?.gameObject.SetActive(GameManager.Instance.IsTutorial);
         QuestUI?.gameObject.SetActive(GameManager.Instance.IsTutorial);
 
-        DaySkipButton.onClick.AddListener(() => TimeManager.Instance.SkipHalfDay());
+        DaySkipButton.onClick.AddListener(OnClickDaySkipButton);
     }
 
     private void Update()
@@ -88,6 +86,11 @@ public class UIManager : MonoSingleton<UIManager>
                 OptionUI.Open();
             }
         }
+    }
+
+    private void OnClickDaySkipButton()
+    {
+        TimeManager.Instance.SkipHalfDay();
     }
 
     /// <summary>

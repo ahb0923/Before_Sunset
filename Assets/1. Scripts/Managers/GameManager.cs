@@ -52,6 +52,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void GoToEndScene()
     {
+        UIManager.Instance.ItemToastUI.StopToast();
         SceneManager.LoadScene("EndingScene");
         AudioManager.Instance.StopAllSound();
     }

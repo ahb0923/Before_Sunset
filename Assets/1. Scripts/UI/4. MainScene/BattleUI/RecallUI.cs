@@ -8,6 +8,8 @@ public class RecallUI : MonoBehaviour
 {
     public event Action OnCountdownFinished;
     public event Action OnRecallCanceled;
+    
+    [SerializeField] private Button _recallButton;
 
     [Header("UI References")]
     [SerializeField] private Image _recallProgressBar;
@@ -18,12 +20,14 @@ public class RecallUI : MonoBehaviour
     [SerializeField] private Vector3 _recallOffset = new Vector3(0, -1f, 0);
 
     private RectTransform _rect;
-    
+
+    private const string RECALL_BUTTON = "RecallButton";
     private const string RECALL_PROGRESS_BAR = "RecallProgressBar";
     private const string RECALL_BAR = "RecallBar";
     
     private void Reset()
     {
+        _recallButton = Helper_Component.FindChildComponent<Button>(this.transform.parent, RECALL_BUTTON);
         _recallProgressBar = Helper_Component.FindChildComponent<Image>(this.transform, RECALL_PROGRESS_BAR);
         _recallBar = Helper_Component.FindChildGameObjectByName(this.gameObject, RECALL_BAR);
         _playerTransform = GameObject.Find("Player").transform;
@@ -31,6 +35,7 @@ public class RecallUI : MonoBehaviour
 
     private void Awake()
     {
+        _recallButton.onClick.AddListener(StartRecall);
         _rect = GetComponent<RectTransform>();
         CloseRecall();
     }
@@ -41,6 +46,13 @@ public class RecallUI : MonoBehaviour
         {
             UpdateSliderPosition();
         }
+    }
+
+    private void StartRecall()
+    {
+        var player = MapManager.Instance.Player;
+        if (!player.IsInBase)
+            player.InputHandler.StartRecall();
     }
 
     public void OpenRecall()

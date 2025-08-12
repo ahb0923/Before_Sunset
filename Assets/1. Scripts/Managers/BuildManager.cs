@@ -67,6 +67,7 @@ public class BuildManager : MonoSingleton<BuildManager>
         }
         
         CalculateBuildableTiles(_groundTilemap, DefenseManager.Instance.Core.transform, DefenseManager.Instance.Core.GetLightAreaRadius());
+        Debug.Log(DefenseManager.Instance.Core.GetLightAreaRadius());
         ShowHighlightTiles();
     }
     

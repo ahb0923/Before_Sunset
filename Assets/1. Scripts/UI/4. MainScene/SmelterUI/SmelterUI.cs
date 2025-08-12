@@ -89,7 +89,8 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void OpenUI()
     {
-        AudioManager.Instance.PlaySFX("OpenSmelter");
+        AudioManager.Instance.PlaySFX("Smelter");
+        UIManager.Instance.isSmelterUIOpen = true;
         
         SetSmelterUI();
         InventoryManager.Instance.Inventory.InventoryUI.Open();
@@ -111,6 +112,7 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
 
     public void CloseUI()
     {
+        UIManager.Instance.isSmelterUIOpen = false;
         smelterInputSlot.ClearSlot();
         smelterOutputSlot.ClearSlot();
         DeactivateReceiveButton();
@@ -173,7 +175,7 @@ public class SmelterUI : MonoBehaviour, ICloseableUI
     /// <summary>
     /// 제련소 결과물슬롯의 아이템을 받을때 사용하는 메서드
     /// </summary>
-    private void ReceiveItem()
+    public void ReceiveItem()
     {
         smelterOutputSlot.ReceiveItem();
         DeactivateReceiveButton();

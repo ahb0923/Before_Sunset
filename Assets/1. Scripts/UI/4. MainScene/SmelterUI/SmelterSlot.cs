@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 
-public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] private Image _itemImage;
     [SerializeField] private TextMeshProUGUI _itemAmount;
@@ -224,8 +224,33 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         TooltipManager.Instance.HideTooltip();
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            var inventory = InventoryManager.Instance.Inventory;
+            var inputItem = _currentSmelter.InputItem;
+            var outputItem = _currentSmelter.OutputItem;
+
+            if (IsInputSlot)
+            {
+                if (inputItem == null)
+                    return;
+                
+                inventory.AddItem(inputItem.Data.id, inputItem.stack);
+                _currentSmelter.SetInputItem(null);
+                _currentSmelter.StopSmelting();
+            }
+            else
+            {
+                if (outputItem == null)
+                    return;
+                
+                UIManager.Instance.SmelterUI.ReceiveItem();
+            }
+            
+            TooltipManager.Instance.HideTooltip();
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -276,15 +301,24 @@ public class SmelterSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
 
         if (DragManager.DraggingItem != null)
-            if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
-                && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
+        {
+            if (DragManager.OriginSmelterSlot == this)
             {
                 _currentSmelter.SetInputItem(DragManager.DraggingItem);
                 DragManager.OriginSmelterSlot.RefreshUI();
             }
+            else
+            {
+                if (eventData.pointerEnter?.GetComponentInParent<ItemSlot>() == null
+                    && eventData.pointerEnter?.GetComponentInParent<SmelterSlot>() == null)
+                {
+                    _currentSmelter.SetInputItem(DragManager.DraggingItem);
+                    DragManager.OriginSmelterSlot.RefreshUI();
+                }
+            }
+        }
 
-        DragManager.DraggingItem = null;
-        DragManager.OriginSmelterSlot = null;
+        DragManager.Clear();
     }
 
     public void OnDrop(PointerEventData eventData)

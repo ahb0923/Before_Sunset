@@ -64,6 +64,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     {
         InventoryUI.gameObject.SetActive(true);
         QuickSlotInventoryUI.gameObject.SetActive(false);
+        AudioManager.Instance.PlaySFX("InventoryOpen");
 
         foreach (var slot in QuickSlotInventoryUI.quickSlots)
         {
@@ -75,6 +76,7 @@ public class Inventory : MonoBehaviour, ISaveable, ICloseableUI
     {
         InventoryUI.gameObject.SetActive(false);
         QuickSlotInventoryUI.gameObject.SetActive(true);
+        AudioManager.Instance.PlaySFX("InventoryClose");
         TooltipManager.Instance.HideTooltip();
 
         foreach (var slot in InventoryUI.itemSlots)

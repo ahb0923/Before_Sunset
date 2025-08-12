@@ -84,7 +84,7 @@ public class EndingScene : MonoBehaviour
         _endingCreditText.gameObject.SetActive(false);
         _endingCredit.gameObject.SetActive(false);
         InitTexts();
-        InteractManager.Instance.AimObject.gameObject.SetActive(false);
+        // InteractManager.Instance.AimObject.gameObject.SetActive(false);
         AudioManager.Instance.SetSFXVolume(1f);
         AudioManager.Instance.SetBGMVolume(1f);
         StartCoroutine(C_StartEnding());
@@ -200,7 +200,7 @@ public class EndingScene : MonoBehaviour
         
         Sequence seq = DOTween.Sequence();
         seq.AppendInterval(0.2f);
-        seq.Append(_mainCamera.DOFieldOfView(50f, 15f).SetEase(Ease.Linear));
+        seq.Append(_mainCamera.DOFieldOfView(50f, 15f).SetEase(Ease.InOutSine));
         seq.Join(DOVirtual.Float(start, end, 0.7f, val => _bloom.intensity.value = val).SetLoops(42, LoopType.Yoyo).OnComplete(StartEndingCredit));
         for (int i = 0; i <= 20; i++)
         {
@@ -242,6 +242,7 @@ public class EndingScene : MonoBehaviour
     
     private void LoadScene()
     {
+        AudioManager.Instance.StopAllSound();
         SceneManager.LoadScene("StartScene");
     }
     

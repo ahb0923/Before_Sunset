@@ -146,6 +146,6 @@ public class CoreStatHandler : MonoBehaviour
 
     public float GetSight()
     {
-        return _baseSightRange + _sightIncrease;
+        return Stats.SightRange;
     }
 }

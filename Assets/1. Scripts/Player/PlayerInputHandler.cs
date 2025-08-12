@@ -28,6 +28,7 @@ public class PlayerInputHandler : MonoBehaviour
         if (UIManager.Instance.UpgradeUI.isActiveAndEnabled) return;
 
         BuildManager.Instance.IsOnDestroy = !BuildManager.Instance.IsOnDestroy;
+        //TODO UIManager에서 철거버튼 색상 바꿔주기
         InteractManager.Instance.SetCursorDestroyImage(BuildManager.Instance.IsOnDestroy);
     }
 
@@ -107,18 +108,18 @@ public class PlayerInputHandler : MonoBehaviour
         _isRecallStarted = false;
     }
 
-    /// <summary>
-    /// R키 한 번 누르면 귀환 시작
-    /// </summary>
-    public void StartRecall()
-    {
-        StartRecall(false);
-    }
+    // /// <summary>
+    // /// R키 한 번 누르면 귀환 시작
+    // /// </summary>
+    // public void StartRecall()
+    // {
+    //     StartRecall(false);
+    // }
 
     /// <summary>
     /// 귀환 시작 (강제 귀환 여부 지정 가능)
     /// </summary>
-    public void StartRecall(bool isForced)
+    public void StartRecall(bool isForced = false)
     {
         _isRecallStarted = true;
         _isRecallInProgress = true;

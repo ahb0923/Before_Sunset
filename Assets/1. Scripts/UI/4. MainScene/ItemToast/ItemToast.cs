@@ -32,17 +32,15 @@ public class ItemToast : MonoBehaviour
         {
             fadeSequence.Kill();
             fadeSequence = null;
-            UIManager.Instance.ItemToastUI.ReturnToast(this.gameObject);
+            UIManager.Instance.ItemToastUI.ReturnToast(this);
         }));
     }
 
-    private void InitToast()
+    public void InitToast()
     {
-        if (fadeSequence != null)
-        {
-            fadeSequence.Kill();
-            fadeSequence = null;
-        }
+        fadeSequence.Kill();
+        fadeSequence = null;
+
         gameObject.transform.SetAsLastSibling();
         _itemToastText.alpha = 1f;
     }
