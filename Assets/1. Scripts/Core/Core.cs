@@ -55,6 +55,8 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
             IsDead = true;
             _spriter.color = _spriter.color.WithAlpha(0.5f);
 
+
+            _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
             // 게임 일시정지
             Time.timeScale = 0f;
 
@@ -67,6 +69,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     private IEnumerator DeathSequence()
     {
         // 카메라 줌인 효과
+        /*
         Camera mainCam = Camera.main;
         float startSize = mainCam.orthographicSize;
         float targetSize = 2.5f;
@@ -76,7 +79,6 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         Vector3 startPos = mainCam.transform.position;
         Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, mainCam.transform.position.z);
 
-
         while (elapsed < zoomDuration)
         {
             elapsed += Time.unscaledDeltaTime;
@@ -84,14 +86,13 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
             mainCam.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
             mainCam.transform.position = Vector3.Lerp(startPos, targetPos, t);
             yield return null;
-        }
+        }*/
 
-        // 죽음 애니메이션 실행
         _animator.SetTrigger("IsDead");
 
-        // 애니메이션 길이만큼 대기
-        AnimatorStateInfo state = _animator.GetCurrentAnimatorStateInfo(0);
-        yield return new WaitForSecondsRealtime(state.length);
+        yield return null;
+
+        yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && _animator.GetCurrentAnimatorStateInfo(0).loop == false);
 
         // 실패 UI 출력
         UIManager.Instance.ResultUI.Open(false);
