@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     public int Size => _size;
     [SerializeField] private Image _hpBar;
     public Image HpBar => _hpBar;
+    private Animator _animator;
     public bool IsDead { get; private set; }
 
     private SpriteRenderer _spriter;
@@ -16,6 +18,7 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
     {
         _spriter = Helper_Component.GetComponentInChildren<SpriteRenderer>(gameObject);
         _statHandler = Helper_Component.GetComponent<CoreStatHandler>(gameObject);
+        _animator = Helper_Component.GetComponentInChildren<Animator>(gameObject);
 
         _statHandler.Init(this);
     }
@@ -51,9 +54,37 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         if (_statHandler.CurHp == 0)
         {
             IsDead = true;
-            _spriter.color = _spriter.color.WithAlpha(0.5f);
-            UIManager.Instance.ResultUI.Open(false);
+            var camController = FindObjectOfType<CameraZoomController>();
+            if (camController != null)
+            {
+                camController.FocusGameOver(transform, () =>
+                {
+                    _spriter.color = _spriter.color.WithAlpha(0.5f);
+                    ShowDeathAnimation();
+                });
+            }
         }
+    }
+    private void ShowDeathAnimation()
+    {
+        _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        // 게임 일시정지
+        Time.timeScale = 0f;
+
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+
+        _animator.SetTrigger("IsDead");
+
+        yield return null;
+
+        yield return new WaitUntil(() => _animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && _animator.GetCurrentAnimatorStateInfo(0).loop == false);
+
+        // 실패 UI 출력
+        UIManager.Instance.ResultUI.Open(false);
     }
 
     /// <summary>

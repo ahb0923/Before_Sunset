@@ -236,4 +236,28 @@ public class AudioManager : MonoSingleton<AudioManager>
             }
         }
     }
+
+    public Coroutine FadeOutBGM(float duration)
+    {
+        return StartCoroutine(FadeOutBGMRoutine(duration));
+    }
+
+    private IEnumerator FadeOutBGMRoutine(float duration)
+    {
+        if (bgmSource == null || !bgmSource.isPlaying)
+            yield break;
+
+        float startVolume = bgmSource.volume;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+            bgmSource.volume = Mathf.Lerp(startVolume, 0f, timer / duration);
+            yield return null;
+        }
+
+        bgmSource.volume = 0f;
+        bgmSource.Stop();
+    }
 }

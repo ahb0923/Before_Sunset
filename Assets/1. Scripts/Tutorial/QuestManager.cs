@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestManager : MonoSingleton<QuestManager>
 {
@@ -9,8 +10,12 @@ public class QuestManager : MonoSingleton<QuestManager>
     private Quest _curQuest => curIndex == -1 ? null : quests[curIndex];
     private Dictionary<QUEST_TYPE, bool> _clearQuestDict;
 
+    [Header("Related Arrow")]
     [SerializeField] private List<Transform> _portals;
     private GuideArrow _guideArrow;
+
+    [Header("HighLighting")]
+    [SerializeField] private Material _highLight;
 
     protected override void Awake()
     {
@@ -72,6 +77,15 @@ public class QuestManager : MonoSingleton<QuestManager>
             else
             {
                 _guideArrow.SettingTarget(null);
+            }
+
+            if(_curQuest.Type == QUEST_TYPE.TimeSkip)
+            {
+                UIManager.Instance.DaySkipButton.GetComponent<Image>().material = _highLight;
+            }
+            else
+            {
+                UIManager.Instance.DaySkipButton.GetComponent<Image>().material = null;
             }
         }
 

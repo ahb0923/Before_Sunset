@@ -132,9 +132,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2205486695308486813, guid: f38a7d3b2ce5a4d4091307a8a5b599c0, type: 3}
+      propertyPath: _healEffect
+      value: 
+      objectReference: {fileID: 6283534012883352750, guid: b2b872e9e4b22fa4196455bce8eb73e7, type: 3}
+    - target: {fileID: 2205486695308486813, guid: f38a7d3b2ce5a4d4091307a8a5b599c0, type: 3}
       propertyPath: _miningEffect
       value: 
       objectReference: {fileID: 2393111809793729749, guid: ee2a1fdd1844c9e4187240de6a817e75, type: 3}
+    - target: {fileID: 2205486695308486813, guid: f38a7d3b2ce5a4d4091307a8a5b599c0, type: 3}
+      propertyPath: _upgradeEffect
+      value: 
+      objectReference: {fileID: 572420816548206666, guid: d3b66cd63882f8948bcc7fc8a1d600fb, type: 3}
     - target: {fileID: 7440641397230689755, guid: f38a7d3b2ce5a4d4091307a8a5b599c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
