@@ -197,7 +197,8 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     private void SetSlot(BaseTower tower)
     {
         var costs = _selectedTower.statHandler.AccumulatedCosts.ToList();
-        var ratio = _selectedTower.GetRefundRatio(_selectedTower.statHandler.CurrHp / _selectedTower.statHandler.MaxHp);
+        //var ratio = _selectedTower.GetRefundRatio(_selectedTower.statHandler.CurrHp / _selectedTower.statHandler.MaxHp);
+        var ratio = 1.0f;
 
         for (int i = 0; i < costs.Count; i++)
         {
