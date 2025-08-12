@@ -236,7 +236,7 @@ public class EndingScene : MonoBehaviour
         seq.AppendInterval(1f);
         seq.Append(_endingCredit.DOAnchorPosY(8000f, 40f).SetEase(Ease.Linear));
         seq.AppendCallback(IdleEnding);
-        seq.AppendInterval(3f);
+        seq.AppendInterval(5f);
         seq.AppendCallback(WinkEnding);
         seq.AppendInterval(2f);
         seq.AppendCallback(() =>
@@ -264,7 +264,7 @@ public class EndingScene : MonoBehaviour
 
     private void IdleEnding()
     {
-        AudioManager.Instance.FadeOutBGM(3f);
+        AudioManager.Instance.FadeOutBGM(5f);
         _idleImage.gameObject.SetActive(true);
     }
 

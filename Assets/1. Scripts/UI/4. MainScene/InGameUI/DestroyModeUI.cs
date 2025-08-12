@@ -5,7 +5,6 @@ using UnityEngine;
 public class DestroyModeUI : MonoBehaviour
 {
     [SerializeField] Transform onUI;
-    [SerializeField] Transform offUI;
     private void Reset()
     {
         onUI = Helper_Component.FindChildByName(transform, "On");

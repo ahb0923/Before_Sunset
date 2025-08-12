@@ -218,7 +218,8 @@ public class Smelter : MonoBehaviour, IPoolable, IDamageable, IInteractable
         var refundReq = DataManager.Instance.SmelterData.GetById(smelterID).buildRequirements;
         foreach (var kvp in refundReq)
         {
-            int refundAmount = Mathf.FloorToInt(kvp.Value * 0.9f);
+            //int refundAmount = Mathf.FloorToInt(kvp.Value * 0.9f);
+            int refundAmount = kvp.Value;
             if (refundAmount > 0)
             {
                 InventoryManager.Instance.Inventory.AddItem(

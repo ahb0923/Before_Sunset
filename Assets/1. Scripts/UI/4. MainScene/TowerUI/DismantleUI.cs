@@ -221,7 +221,8 @@ public class DismantleUI : MonoBehaviour, ICloseableUI
     private void SetSlot(Smelter smelter)
     {
         var costs = _selectedSmelter.smelterData.buildRequirements.ToList();
-        var ratio = 0.9f;
+        //var ratio = 0.9f;
+        var ratio = 1.0f;
 
         for (int i = 0; i < costs.Count; i++)
         {
