@@ -53,40 +53,28 @@ public class Core : MonoBehaviour, IDamageable, ISaveable, IInteractable
         if (_statHandler.CurHp == 0)
         {
             IsDead = true;
-            _spriter.color = _spriter.color.WithAlpha(0.5f);
-
-
-            _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
-            // 게임 일시정지
-            Time.timeScale = 0f;
-
-            StartCoroutine(DeathSequence());
-
-            //UIManager.Instance.ResultUI.Open(false);
+            var camController = FindObjectOfType<CameraZoomController>();
+            if (camController != null)
+            {
+                camController.FocusGameOver(transform, () =>
+                {
+                    _spriter.color = _spriter.color.WithAlpha(0.5f);
+                    ShowDeathAnimation();
+                });
+            }
         }
+    }
+    private void ShowDeathAnimation()
+    {
+        _animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        // 게임 일시정지
+        Time.timeScale = 0f;
+
+        StartCoroutine(DeathSequence());
     }
 
     private IEnumerator DeathSequence()
     {
-        // 카메라 줌인 효과
-        /*
-        Camera mainCam = Camera.main;
-        float startSize = mainCam.orthographicSize;
-        float targetSize = 2.5f;
-        float zoomDuration = 1.5f;
-        float elapsed = 0f;
-
-        Vector3 startPos = mainCam.transform.position;
-        Vector3 targetPos = new Vector3(transform.position.x, transform.position.y, mainCam.transform.position.z);
-
-        while (elapsed < zoomDuration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            float t = elapsed / zoomDuration;
-            mainCam.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
-            mainCam.transform.position = Vector3.Lerp(startPos, targetPos, t);
-            yield return null;
-        }*/
 
         _animator.SetTrigger("IsDead");
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,10 +17,12 @@ public class CameraZoomController : MonoBehaviour
 
     [Header("Focus Settings")]
     [SerializeField] private float focusZoom = 5f;
-    [SerializeField] private float focusDuration = 5f;
+    [SerializeField] private float focusDuration = 0.5f;
 
     private float _targetZoom;
     private float _currentZoom;
+    private bool _isFocusing;
+
 
     private void Start()
     {
@@ -36,7 +39,7 @@ public class CameraZoomController : MonoBehaviour
 
     private void Update()
     {
-        if (virtualCam == null) return;
+        if (virtualCam == null && !_isFocusing) return;
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             return;
@@ -56,37 +59,44 @@ public class CameraZoomController : MonoBehaviour
         virtualCam.m_Lens = lens;
     }
 
-    public void FocusGameOver(Transform target)
+    public void FocusGameOver(Transform target, Action onComplete = null)
     {
         if (virtualCam == null || target == null) return;
         StopAllCoroutines();
-        StartCoroutine(GameOverRoutine(target));
+        StartCoroutine(GameOverRoutine(target, onComplete));
     }
 
-    private IEnumerator GameOverRoutine(Transform target)
+    private IEnumerator GameOverRoutine(Transform target, Action onComplete, float pixelThreshold = 8f, float timeout = 3f)
     {
+        _isFocusing = true;      
         virtualCam.Follow = target;
 
-        float startZoom = virtualCam.m_Lens.OrthographicSize;
-        float endZoom = focusZoom;
-        float zoomTime = focusDuration;
-        float timer = 0f;
-
-        // BGM 서서히 꺼지는건데 게임오버 느낌 납니다.
-        AudioManager.Instance.FadeOutBGM(focusDuration);
-
-        while (timer < zoomTime)
+        var framing = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+        if (framing != null)
         {
-            timer += Time.deltaTime;
-            float t = Mathf.Clamp01(timer / zoomTime);
+            framing.m_DeadZoneWidth = 0f;
+            framing.m_DeadZoneHeight = 0f;
+        }
 
-            float smoothT = t * t * (3f - 2f * t);
+        yield return null;
 
-            var lens = virtualCam.m_Lens;
-            lens.OrthographicSize = Mathf.Lerp(startZoom, endZoom, smoothT);
-            virtualCam.m_Lens = lens;
+        var cam = Camera.main;
+        Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        float t = 0f;
 
+        while (t < timeout)
+        {
+            if (target == null || cam == null) break;
+
+            Vector2 p = cam.WorldToScreenPoint(target.position);
+            if ((p - screenCenter).sqrMagnitude <= pixelThreshold * pixelThreshold)
+                break;
+
+            t += Time.unscaledDeltaTime;
             yield return null;
         }
+
+        _isFocusing = false;
+        onComplete?.Invoke();
     }
 }
