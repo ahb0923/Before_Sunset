@@ -51,6 +51,8 @@ public class EndingScene : MonoBehaviour
 
     [SerializeField] private RectTransform _endingCredit;
     [SerializeField] private TextMeshProUGUI _endingCreditText;
+
+    [SerializeField] private Animator _coreAnimator;
     
     private Queue<NarrationText> _activeTexts = new Queue<NarrationText>();
     private Queue<GameObject> _textPool = new Queue<GameObject>();
@@ -93,7 +95,7 @@ public class EndingScene : MonoBehaviour
         _endingCredit.gameObject.SetActive(false);
         InitTexts();
         //InteractManager.Instance.AimObject.gameObject.SetActive(false);
-        _idleImage.gameObject.SetActive(false);
+        //_idleImage.gameObject.SetActive(false);
         _winkImage.gameObject.SetActive(false);
         AudioManager.Instance.SetSFXVolume(1f);
         AudioManager.Instance.SetBGMVolume(1f);
@@ -203,6 +205,7 @@ public class EndingScene : MonoBehaviour
 
     private void ZoomAndGlow()
     {
+        _coreAnimator.SetTrigger("IsEnding");
         _globalVolume.profile.TryGet<Bloom>(out _bloom);
         
         float start = 0f;
@@ -233,7 +236,7 @@ public class EndingScene : MonoBehaviour
         seq.AppendInterval(1f);
         seq.Append(_endingCredit.DOAnchorPosY(8000f, 40f).SetEase(Ease.Linear));
         seq.AppendCallback(IdleEnding);
-        seq.AppendInterval(2f);
+        seq.AppendInterval(3f);
         seq.AppendCallback(WinkEnding);
         seq.AppendInterval(3f).OnComplete(LoadScene);
     }
@@ -257,6 +260,7 @@ public class EndingScene : MonoBehaviour
 
     private void IdleEnding()
     {
+        AudioManager.Instance.FadeOutBGM(3f);
         _idleImage.gameObject.SetActive(true);
     }
 
@@ -264,6 +268,7 @@ public class EndingScene : MonoBehaviour
     {
         AudioManager.Instance.StopAllSound();
         AudioManager.Instance.SetSFXMute(false);
+        AudioManager.Instance.SetWholeVolume(1f);
         AudioManager.Instance.SetSFXVolume(1f);
         AudioManager.Instance.PlaySFX("Wink");
         _winkImage.gameObject.SetActive(true);
