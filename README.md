@@ -1,4 +1,4 @@
-# Before_Sunset - 스파르타 최종프로젝트
+# Before_Sunset - 스파르타 최종프로젝트(수정중)
 
 ##🎮 게임 조작 안내 (Controls)
 
