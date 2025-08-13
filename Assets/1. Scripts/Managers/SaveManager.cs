@@ -131,6 +131,7 @@ public class SaveManager : MonoSingleton<SaveManager>
     {
         GlobalState.SaveIndex = slotIndex;
         GameManager.Instance.SetTutorial(false);
+        InteractManager.Instance.SetCursorDestroyImage(false);
         if(GlobalState.HasPlayedOpening)
             LoadingSceneController.LoadScene("MainScene");
         else
@@ -144,6 +145,7 @@ public class SaveManager : MonoSingleton<SaveManager>
     public void LoadGameFromAutoSlot()
     {
         GlobalState.SaveIndex = 99;
+        InteractManager.Instance.SetCursorDestroyImage(false);
         LoadingSceneController.LoadScene("MainScene");
     }
 
