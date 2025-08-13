@@ -111,6 +111,8 @@ public class EndingScene : MonoBehaviour
             _textPool.Enqueue(text);
             text.SetActive(false);
         }
+
+        _coreAnimator.SetTrigger("IsEnding");
     }
 
     private IEnumerator C_StartEnding()
@@ -205,7 +207,6 @@ public class EndingScene : MonoBehaviour
 
     private void ZoomAndGlow()
     {
-        _coreAnimator.SetTrigger("IsEnding");
         _globalVolume.profile.TryGet<Bloom>(out _bloom);
         
         float start = 0f;
