@@ -46,11 +46,14 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
             UIManager.Instance.BattleUI.ShowWarningBeforeOneMin();
             _isWarned = true;
         }
-        
+
         // 10초 전에 기지 강제 귀환
-        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !MapManager.Instance.Player.IsInBase && !_isRecallOver)
+        if (_realSecDayLength - _dailyTimer <= RETURN_TIME && !_isRecallOver)
         {
-            UIManager.Instance.BattleUI.ShowReturnUI();
+            if (!MapManager.Instance.Player.IsInBase)
+            {
+                UIManager.Instance.BattleUI.ShowReturnUI();
+            }
             _isRecallOver = true;
         }
 
