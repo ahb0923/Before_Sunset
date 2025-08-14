@@ -15,10 +15,6 @@ public class CameraZoomController : MonoBehaviour
     [SerializeField] private float maxZoom = 20f;
     [SerializeField] private float zoomSmoothSpeed = 0.2f;
 
-    [Header("Focus Settings")]
-    [SerializeField] private float focusZoom = 5f;
-    [SerializeField] private float focusDuration = 0.5f;
-
     private float _targetZoom;
     private float _currentZoom;
     private bool _isFocusing;

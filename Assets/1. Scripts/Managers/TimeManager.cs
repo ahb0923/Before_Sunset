@@ -20,7 +20,7 @@ public class TimeManager : MonoSingleton<TimeManager>, ISaveable
     private bool _isSpawnOver;
     private bool _isWarned;
     private bool _isRecallOver;
-
+    public bool IsRecallOver => _isRecallOver;
     public bool IsStageClear => _isSpawned && _isSpawnOver && !DefenseManager.Instance.MonsterSpawner.IsMonsterAlive;
 
     private void Start()

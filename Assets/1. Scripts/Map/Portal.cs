@@ -20,6 +20,9 @@ public class Portal : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        if (TimeManager.Instance.IsNight || PlayerInputHandler._isRecallInProgress || TimeManager.Instance.IsRecallOver)
+            return;
+
         MapManager.Instance.Player.Controller.SetEnterPortal(true);
 
         if (_player == null)
