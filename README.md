@@ -1,6 +1,6 @@
 # Before_Sunset - 스파르타 최종프로젝트
-### **검은 원념의 존재들**에게 지배당한 세상,<br>
-### 이 세상의 **유일한 희망인 코어**를 지켜내는 당신만의 **디펜스**를 시작하세요!<br><br>
+<img width="1920" height="1080" alt="title_2" src="https://github.com/user-attachments/assets/7635a4ae-b7c1-4118-8731-607015589d05" />
+
 ## 🎮 게임 조작 안내 (Controls)
 
 ### 🔼 기본 조작  
